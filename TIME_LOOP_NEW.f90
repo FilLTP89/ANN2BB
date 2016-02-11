@@ -628,15 +628,18 @@
              rho = prop_mat(im,1)
 	         lambda = prop_mat(im,2)
              mu = prop_mat(im,3)
-
+             ! MODIFS : LOAD HARDENING PARAMETERS
+             sigma_yld  = prop_mat(im,4)
+             C_kin      = prop_mat(im,5)
+             kapa_kin   = prop_mat(im,6)
+             ! END MODIFS
              nn = sdeg_mat(im) +1
              allocate(ct(nn),ww(nn),dd(nn,nn))
              allocate(dxdx_el(nn),dxdy_el(nn),dydx_el(nn),dydy_el(nn))
              allocate(duxdx_el(nn,nn),duxdy_el(nn,nn),duydx_el(nn,nn),duydy_el(nn,nn))
              allocate(sxx_el(nn,nn),syy_el(nn,nn),szz_el(nn,nn),sxy_el(nn,nn))
-             allocate(fx_el(nn,nn),fy_el(nn,nn),det_j(nn,nn))					
-             allocate(mu_el(nn,nn),lambda_el(nn,nn))	
-      
+             allocate(fx_el(nn,nn),fy_el(nn,nn),det_j(nn,nn))
+             allocate(mu_el(nn,nn),lambda_el(nn,nn))      
              mu_el = mu; lambda_el = lambda; 
 
              call lgl(nn,ct,ww,dd)

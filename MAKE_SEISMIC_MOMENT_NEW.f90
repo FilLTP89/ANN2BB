@@ -38,13 +38,12 @@
 !> @param[in,out] syy nodal values for the stress tensor
 !> @param[in,out] szz nodal values for the stress tensor
 !> @param[in,out] sxy nodal values for the stress tensor
-
-      subroutine MAKE_SEISMIC_MOMENT_NEW(nn,& 
-	                                 sxx,syy,szz,sxy,&
-                                         check_node_sism,check_dist_node_sism,&
-                                         length_cns,ielem,facsmom,nl_sism,& 
-                                         func_type,func_indx,func_data,nf,tt2, &
-					 nfunc_data,tag_func) 
+!> @param[in] NLFLAG flag to run nonlinear calculations
+      subroutine MAKE_SEISMIC_MOMENT_NEW(nn,sxx,syy,szz,sxy,&
+            check_node_sism,check_dist_node_sism,&
+            length_cns,ielem,facsmom,nl_sism,& 
+            func_type,func_indx,func_data,nf,tt2, &
+            nfunc_data,tag_func,NLFLAG) 
       
       implicit none
       
@@ -66,7 +65,7 @@
       integer*4, dimension(nf) :: tag_func       
   
       real*8 :: get_func_value
-      
+      logical, intent(in) :: NLFLAG
       
       if (nl_sism.gt.0) then
          if ((ielem.ge.check_node_sism(1,1)).and. &
@@ -79,20 +78,27 @@
                       do ip = 1,nn
                          if ((check_node_sism(i,3).eq.iq).and. &
                             (check_node_sism(i,2).eq.ip)) then
+                            
 
-                            sxx(ip,iq) = sxx(ip,iq) &
-                                         + get_func_value(nf,func_type,func_indx,func_data, &  
-                                         check_node_sism(i,5),tt2,check_dist_node_sism(i,1)) &
-                                      * facsmom(check_node_sism(i,4),1)
-                            syy(ip,iq) = syy(ip,iq) &
-                                         + get_func_value(nf,func_type,func_indx,func_data, &  
-                                         check_node_sism(i,5),tt2,check_dist_node_sism(i,1)) &
-                                         * facsmom(check_node_sism(i,4),2)
-                            sxy(ip,iq) = sxy(ip,iq) &
-                                         + get_func_value(nf,func_type,func_indx,func_data, &  
-                                         check_node_sism(i,5),tt2,check_dist_node_sism(i,1)) &
-                                         * facsmom(check_node_sism(i,4),3)
-                           
+                            ! MODIFS : change stress predictor to 
+                            if (NLFLAG) then
+
+
+                            else
+
+                                sxx(ip,iq) = sxx(ip,iq) &
+                                             + get_func_value(nf,func_type,func_indx,func_data, &  
+                                             check_node_sism(i,5),tt2,check_dist_node_sism(i,1)) &
+                                          * facsmom(check_node_sism(i,4),1)
+                                syy(ip,iq) = syy(ip,iq) &
+                                             + get_func_value(nf,func_type,func_indx,func_data, &  
+                                             check_node_sism(i,5),tt2,check_dist_node_sism(i,1)) &
+                                             * facsmom(check_node_sism(i,4),2)
+                                sxy(ip,iq) = sxy(ip,iq) &
+                                             + get_func_value(nf,func_type,func_indx,func_data, &  
+                                             check_node_sism(i,5),tt2,check_dist_node_sism(i,1)) &
+                                             * facsmom(check_node_sism(i,4),3)
+                            endif
 
                          endif
                       enddo
