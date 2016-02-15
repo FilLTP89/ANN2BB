@@ -78,7 +78,7 @@
                 if ((t.ge.t0).and.(t.le.t1)) then
                    d_x = (u1x - u0x) / (t1 - t0) * (t - t0)  + u0x
                    d_y = (u1y - u0y) / (t1 - t0) * (t - t0)  + u0y
-				   exit 
+                    exit 
                  endif
               enddo
 			  disp_t(n,1) = d_x

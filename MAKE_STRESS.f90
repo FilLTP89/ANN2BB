@@ -33,40 +33,35 @@
 !> @param[out] szz nodal values for the stress tensor
 !> @param[out] sxy nodal values for the stress tensor
 
-      subroutine MAKE_STRESS(lambda_el,mu_el,nn,&
-			     duxdx,duxdy,duydx,duydy,&
-			     sxx,syy,szz,sxy)
-      
-      implicit none
-      
-      real*8 :: lambda,mu
+subroutine MAKE_STRESS(lambda_el,mu_el,nn,&
+    duxdx,duxdy,duydx,duydy,&
+    sxx,syy,szz,sxy)
 
-      integer*4 :: nn
-      real*8, dimension(nn,nn) :: duxdx,duxdy,duydx,duydy
-      real*8, dimension(nn,nn) :: sxx,syy,szz,sxy
+    implicit none
+    real*8, dimension(nn,nn), intent(in)    :: duxdx,duxdy,duydx,duydy
+    real*8, dimension(nn,nn), intent(in)    :: mu_el,lambda_el    
+    real*8, dimension(nn,nn), intent(inout) :: sxx,syy,szz,sxy
+    integer*4 :: ip,iq
+    real*8 :: lambda,mu
+    integer*4 :: nn
 
-      real*8, dimension(nn,nn) :: mu_el        
-      real*8, dimension(nn,nn) :: lambda_el    
-      
-      integer*4 :: ip,iq
-      
-                 
-      do iq = 1,nn   
-         do ip = 1,nn
 
-	    mu =mu_el(ip,iq)
+    do iq = 1,nn   
+        do ip = 1,nn
+
+            mu =mu_el(ip,iq)
             lambda = lambda_el(ip,iq)
-			
+
             sxx(ip,iq) = (lambda +2.0d0*mu) * duxdx(ip,iq) &
-                         + lambda * duydy(ip,iq)
+            + lambda * duydy(ip,iq)
             syy(ip,iq) = (lambda +2.0d0*mu) * duydy(ip,iq) &
-                         + lambda * duxdx(ip,iq)
+            + lambda * duxdx(ip,iq)
             sxy(ip,iq) = mu * (duxdy(ip,iq) + duydx(ip,iq))
-			szz(ip,iq) = lambda * duxdx(ip,iq) + lambda * duydy(ip,iq)
- 
-         enddo
-      enddo
-      
-      return
-      
-      end subroutine MAKE_STRESS
+            szz(ip,iq) = lambda * duxdx(ip,iq) + lambda * duydy(ip,iq)
+
+        enddo
+    enddo
+
+    return
+
+end subroutine MAKE_STRESS

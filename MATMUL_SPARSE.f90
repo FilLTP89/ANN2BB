@@ -47,7 +47,6 @@
         call OMP_set_num_threads(number_of_threads)
 
         !call OMP_get_num_threads()
-		
         vet_out = 0.d0
 
 !$OMP PARALLEL &

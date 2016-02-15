@@ -39,77 +39,65 @@
 !> @param[in,out] szz nodal values for the stress tensor
 !> @param[in,out] sxy nodal values for the stress tensor
 !> @param[in] NLFLAG flag to run nonlinear calculations
-      subroutine MAKE_SEISMIC_MOMENT_NEW(nn,sxx,syy,szz,sxy,&
-            check_node_sism,check_dist_node_sism,&
-            length_cns,ielem,facsmom,nl_sism,& 
-            func_type,func_indx,func_data,nf,tt2, &
-            nfunc_data,tag_func,NLFLAG) 
-      
-      implicit none
-      
-      integer*4 :: nn
-      real*8, dimension(nn,nn) :: sxx,syy,szz,sxy
 
-      integer*4 :: ip,iq,ielem,i
-      integer*4 :: length_cns
-      integer*4, dimension(length_cns,5) :: check_node_sism
-      real*8, dimension(length_cns,1) :: check_dist_node_sism
-      integer*4 :: nl_sism,nf
-      real*8, dimension(nl_sism,3) :: facsmom
-      real*8 :: tt2
-      integer*4, dimension(nf) :: func_type
-      integer*4, dimension(nf +1) :: func_indx
-      real*8, dimension(*) :: func_data
+subroutine MAKE_SEISMIC_MOMENT_NEW(nn,sxx,syy,szz,sxy,&
+    check_node_sism,check_dist_node_sism,&
+    length_cns,ielem,facsmom,nl_sism,& 
+    func_type,func_indx,func_data,nf,tt2, &
+    nfunc_data,tag_func) 
 
-      integer*4 :: nfunc_data                    
-      integer*4, dimension(nf) :: tag_func       
-  
-      real*8 :: get_func_value
-      logical, intent(in) :: NLFLAG
-      
-      if (nl_sism.gt.0) then
-         if ((ielem.ge.check_node_sism(1,1)).and. &
-            (ielem.le.check_node_sism(length_cns,1))) then
+    implicit none
 
-            do i = 1,length_cns
-               if (ielem.eq.check_node_sism(i,1)) then
-               
-                   do iq = 1,nn
-                      do ip = 1,nn
-                         if ((check_node_sism(i,3).eq.iq).and. &
-                            (check_node_sism(i,2).eq.ip)) then
-                            
+    integer*4 :: nn
+    real*8, dimension(nn,nn) :: sxx,syy,szz,sxy
 
-                            ! MODIFS : change stress predictor to 
-                            if (NLFLAG) then
+    integer*4 :: ip,iq,ielem,i
+    integer*4 :: length_cns
+    integer*4, dimension(length_cns,5) :: check_node_sism
+    real*8, dimension(length_cns,1) :: check_dist_node_sism
+    integer*4 :: nl_sism,nf
+    real*8, dimension(nl_sism,3) :: facsmom
+    real*8 :: tt2
+    integer*4, dimension(nf) :: func_type
+    integer*4, dimension(nf +1) :: func_indx
+    real*8, dimension(*) :: func_data
 
+    integer*4 :: nfunc_data                    
+    integer*4, dimension(nf) :: tag_func       
 
-                            else
+    real*8 :: get_func_value
 
-                                sxx(ip,iq) = sxx(ip,iq) &
-                                             + get_func_value(nf,func_type,func_indx,func_data, &  
-                                             check_node_sism(i,5),tt2,check_dist_node_sism(i,1)) &
-                                          * facsmom(check_node_sism(i,4),1)
-                                syy(ip,iq) = syy(ip,iq) &
-                                             + get_func_value(nf,func_type,func_indx,func_data, &  
-                                             check_node_sism(i,5),tt2,check_dist_node_sism(i,1)) &
-                                             * facsmom(check_node_sism(i,4),2)
-                                sxy(ip,iq) = sxy(ip,iq) &
-                                             + get_func_value(nf,func_type,func_indx,func_data, &  
-                                             check_node_sism(i,5),tt2,check_dist_node_sism(i,1)) &
-                                             * facsmom(check_node_sism(i,4),3)
-                            endif
+    if (nl_sism.gt.0) then
+        if ((ielem.ge.check_node_sism(1,1)).and. &
+          (ielem.le.check_node_sism(length_cns,1))) then
+              do i = 1,length_cns
+                  if (ielem.eq.check_node_sism(i,1)) then
+                      do iq = 1,nn
+                          do ip = 1,nn
+                              if ((check_node_sism(i,3).eq.iq).and. &
+                                  (check_node_sism(i,2).eq.ip)) then
 
-                         endif
+                                  sxx(ip,iq) = sxx(ip,iq) &
+                                      + get_func_value(nf,func_type,func_indx,func_data, &  
+                                      check_node_sism(i,5),tt2,check_dist_node_sism(i,1)) &
+                                      * facsmom(check_node_sism(i,4),1)
+                                  syy(ip,iq) = syy(ip,iq) &
+                                      + get_func_value(nf,func_type,func_indx,func_data, &  
+                                      check_node_sism(i,5),tt2,check_dist_node_sism(i,1)) &
+                                      * facsmom(check_node_sism(i,4),2)
+                                  sxy(ip,iq) = sxy(ip,iq) &
+                                      + get_func_value(nf,func_type,func_indx,func_data, &  
+                                      check_node_sism(i,5),tt2,check_dist_node_sism(i,1)) &
+                                      * facsmom(check_node_sism(i,4),3)
+                              endif
+                          enddo
                       enddo
-                   enddo
 
-               endif
-             enddo
-          endif  
-       endif !if (nl_sism.gt.0) then
-      
-      
-      return
-      
-      end subroutine MAKE_SEISMIC_MOMENT_NEW
+                  endif
+              enddo
+        endif  
+    endif 
+
+    return
+
+end subroutine MAKE_SEISMIC_MOMENT_NEW
