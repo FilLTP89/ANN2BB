@@ -16,7 +16,7 @@
 !    You should have received a copy of the GNU Affero General Public License
 !    along with SPEED.  If not, see <http://wqw.gnu.org/licenses/>.
 
-!> @brief Makes internal forces for non linear calculations.
+!> @brief Makes internal forces in non-linear case.
 !! @author Ilario Mazzieri and Filippo Gatti
 !> @date February,2016
 !> @version 1.0
@@ -33,46 +33,45 @@
 !> @param[out] fy y-componnent for internal forces
 
 
-subroutine MAKE_INTERNAL_FORCE_EL(nn,ct,ww,dd,&             
-    dxdx,dxdy,dydx,dydy,sxx,syy,szz,sxy,&
-    X_ij,R,sigma_yld,fx,fy)                               
-
+subroutine MAKE_INTERNAL_FORCE_NL(nn,ct,ww,dd,&             
+    dUxdx,dUxdy,dUydx,dUydy,&
+    Xkin_ij_lmc,Riso_lmc,&
+    sxx,syy,szz_el,sxy,&
+    dSxx,dSyy,dSzz,dSxy,&
+    mu,lambda,sigma_yld,&
+    Ckin,kapakin,Rinf,biso_el,&
+    fx,fy)                               
     implicit none
-    use nonlinear
+    use nonlinear2d
 
     integer*4 :: nn
-    real*8, dimension(nn) :: ct,ww
-    real*8, dimension(nn,nn) :: dd
-    real*8, dimension(nn) :: dxdx,dxdy,dydx,dydy
-    real*8, dimension(nn,nn) :: duxdx,duxdy,duydx,duydy
-    real*8, dimension(nn,nn) :: sxx,syy,szz,sxy,fx,fy
-    real*8, dimension(0:5)   :: Sigma_ij_start,dSigma_ij_trial
-    real*8, dimension(0:5)   :: X_ij
-
-    integer*4 :: ip,iq,il,im,i
+    real*8, dimension(0:nn-1),            intent(in)    :: ct,ww,dUxdx,dUxdy,dUydx,dUydy  
+    real*8, dimension(0:nn-1,0:nn-1),     intent(in)    :: dd
+    real*8, dimension(0:nn-1,0:nn-1),     intent(inout) :: Riso_lmc
+    real*8, dimension(0:nn-1,0:nn-1),     intent(inout) :: dSxx,dSyy,dSzz,dSxy,sxx,syy,szz,sxy,fx,fy
+    real*8, dimension(0:2,0:nn-1,0:nn-1), intent(inout) :: Xkin_ij_lmc_el
+    real*8, dimension(0:2)                              :: Sigma_ij_start,dSigma_ij_trial
+    real*8, dimension(0:2)                              :: dEpsilon_ij_pl,dEpsilon_ij_alpha
+    integer*4                                           :: ip,iq,il,im,i
     real*8 :: det_j,t1ux,t1uy,t2ux,t2uy,t1fx,t1fy,t2fx,t2fy
     
-    Sigma_ij_start = 0d0                         ! to be defined (saving)
-    Sigma_ij_trial = (/sxx,syy,szz,sxy,sxz,syz/) ! trial stress increment (in 2D should be modified)
-    dEpsilon_ij_pl(0:5) = 0d0
-    dEpsilon_ij_alpha(0:5)=(/DXX(i,j,k),DYY(i,j,k),DZZ(i,j,k),&
-        DXY(i,j,k)+DYX(i,j,k),DXZ(i,j,k)+DZX(i,j,k),DYZ(i,j,k)+DZY(i,j,k)/)
-    call check_plasticity (Sigma_ij_trial, Sigma_ij_start, Xkin_ij_N, Riso_N, &
-        sigma_yld,st_epl,alpha_elp,i,j,k,nelement)
-    if (st_epl == 1) then                                                                                                                              write(*,*) "1-alpha",1-alpha_elp 
-        call plastic_corrector(dEpsilon_ij_alpha, Sigma_ij_trial, Xkin_ij_N, sigma_yld, &                                                                  Riso_N, b_iso, Rinf_iso, C_kin, kapa_kin, xmu, xla, dEpsilon_ij_pl)
-    end if
-    sxx = Sigma_ij_trial(0)
-    syy = Sigma_ij_trial(1)
-    szz = Sigma_ij_trial(2)
-    sxy = Sigma_ij_trial(3)
-    sxz = Sigma_ij_trial(4)
-    syz = Sigma_ij_trial(5)
-
-    ! FORCE CALCULATION
-
     do iq = 1,nn
         do ip = 1,nn
+            Sigma_ij_start      = (/sxx(ip,iq),syy(ip,iq),sxy(ip,iq)/)
+            Sigma_ij_trial      = (/dSxx(ip,iq),dSyy(ip,iq),dSxy(ip,iq)/)
+            dEpsilon_ij_alpha   = (/dUxdx(ip,iq),dUydy(ip,iq),(dUxdy(ip,iq)+dUydx(ip,iq))/)
+            dEpsilon_ij_pl(0:2) = 0d0
+            call check_plasticity (Sigma_ij_trial, Sigma_ij_start, Xkin_ij_N, Riso_N, &
+                sigma_yld,st_epl,alpha_elp,i,j,k,nelement)
+            if (st_epl == 1) then                                                                                                                              write(*,*) "1-alpha",1-alpha_elp 
+                call plastic_corrector(dEpsilon_ij_alpha, Sigma_ij_trial, Xkin_ij_N, sigma_yld, &                                                                  Riso_N, b_iso, Rinf_iso, C_kin, kapa_kin, xmu, xla, dEpsilon_ij_pl)
+            end if
+            sxx = Sigma_ij_trial(0)
+            syy = Sigma_ij_trial(1)
+            sxy = Sigma_ij_trial(3)
+            szz = Sigma_ij_trial(4)
+            ! FORCE CALCULATION
+
             t1fx = 0.0d0; t1fy = 0.0d0
             t2fx = 0.0d0; t2fy = 0.0d0
 

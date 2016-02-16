@@ -611,10 +611,8 @@ subroutine TIME_LOOP_NEW(nnt,xs,ys,cs_nnz,cs,&                                  
         !********************************************************************************************
         ! SEISMIC MOMENT LOAD       
         !********************************************************************************************
-        if (nl_sism.gt.0.or.NLFLAG) then
-
+        if (nl_sism.gt.0) then
             do ie = 1,ne
-
                 im = cs(cs(ie -1) +0);   
                 rho = prop_mat(im,1)
                 lambda = prop_mat(im,2)
@@ -642,45 +640,32 @@ subroutine TIME_LOOP_NEW(nnt,xs,ys,cs_nnz,cs,&                                  
                         det_j(i,j) = dxdx_el(j)*dydy_el(i) - dxdy_el(i)*dydx_el(j)
                     enddo
                 enddo
-                if (nl_sism.gt.0.) then
-                    fe      = 0.d0
-                    fx_el   = 0.d0
-                    fy_el   = 0.d0
-                    sxx_el = 0.d0; syy_el = 0.d0; sxy_el = 0.d0; szz_el = 0.d0;
-                    call MAKE_SEISMIC_MOMENT_NEW(nn,sxx_el,syy_el,szz_el,sxy_el,&
-                        check_node_sism,check_dist_node_sism,&
-                        length_cns,ie,facsmom,&
-                        nl_sism,func_type,func_indx,func_data,nf,tt1, &
-                        nfunc_data,tag_func)
+                fe      = 0.d0
+                fx_el   = 0.d0
+                fy_el   = 0.d0
+                sxx_el = 0.d0; syy_el = 0.d0; sxy_el = 0.d0; szz_el = 0.d0;
+                call MAKE_SEISMIC_MOMENT_NEW(nn,sxx_el,syy_el,szz_el,sxy_el,&
+                    check_node_sism,check_dist_node_sism,&
+                    length_cns,ie,facsmom,&
+                    nl_sism,func_type,func_indx,func_data,nf,tt1, &
+                    nfunc_data,tag_func)
 
-                    call MAKE_INTERNAL_FORCE_EL(nn,ct,ww,dd,&
-                        dxdx_el,dxdy_el,dydx_el,dydy_el,&
-                        sxx_el,syy_el,szz_el,sxy_el,fx_el,fy_el)
-                    do j = 1,nn
-                        do i = 1,nn
-                            is = nn*(j -1) +i
-                            in = cs(cs(ie -1) + is)
-                            sism(in) = sism(in) + fx_el(i,j)
-                            sism(in+nnt) = sism(in+nnt) + fy_el(i,j)
-                        enddo
+                call MAKE_INTERNAL_FORCE_EL(nn,ct,ww,dd,&
+                    dxdx_el,dxdy_el,dydx_el,dydy_el,&
+                    sxx_el,syy_el,szz_el,sxy_el,fx_el,fy_el)
+                do j = 1,nn
+                    do i = 1,nn
+                        is = nn*(j -1) +i
+                        in = cs(cs(ie -1) + is)
+                        sism(in) = sism(in) + fx_el(i,j)
+                        sism(in+nnt) = sism(in+nnt) + fy_el(i,j)
                     enddo
-                    deallocate(fx_el,fy_el,det_j)
-                end if
-                if (NLFLAG) then
-                    sxx_el = 0.d0; syy_el = 0.d0; sxy_el = 0.d0; szz_el = 0.d0;
-                    
-                    ! COMPUTE TRIAL STRESS
-                    call MAKE_STRESS(lambda_el,mu_el,nn,&
-                        dxdx,dxdy,dydx,dydy,sxx_el,syy_el,szz_el,sxy_el)
-
-                end if
-
-
+                enddo
+                deallocate(fx_el,fy_el,det_j)
                 deallocate(ct,ww,dd,dxdx_el,dxdy_el,dydx_el,dydy_el)
                 deallocate(duxdx_el,duxdy_el,duydx_el,duydy_el)
                 deallocate(sxx_el,syy_el,szz_el,sxy_el)
-                deallocate(mu_el,lambda_el)     
-
+                deallocate(mu_el,lambda_el)      
             enddo  
         endif
 
@@ -697,15 +682,63 @@ subroutine TIME_LOOP_NEW(nnt,xs,ys,cs_nnz,cs,&                                  
 
         if(its .eq. 0) then
             !Compute fk = K_TOT*u1         
-            if (NLFLAG) then
-                
-                do ie = 1,ne ! LOOP ON THE ELEMENTS
+            if (NLFLAG) then ! NONLINEAR CASE: NODE BY NODE CALCULATION
+                do ie=1,ne
+                    im = cs(cs(ie -1) +0);   
+                    nn = sdeg_mat(im) +1
+                    allocate(ct(nn),ww(nn),dd(nn,nn))
+                    allocate(dUxdx_el(nn),dUxdy_el(nn),dUydx_el(nn),dUydy_el(nn))
+                    allocate(duxdx_el(nn,nn),duxdy_el(nn,nn),duydx_el(nn,nn),duydy_el(nn,nn))
+                    allocate(sxx_el(nn,nn),syy_el(nn,nn),szz_el(nn,nn),sxy_el(nn,nn))
+                    allocate(fx_el(nn,nn),fy_el(nn,nn),det_j(nn,nn))
+                    allocate(mu_el(nn,nn),lambda_el(nn,nn))
+                    allocate(Ckin_el(nn,nn),kapakin_el(nn,nn))
+                    allocate(Rinf_el(nn,nn),biso_el(nn,nn))
+                    
+                    lambda      = prop_mat(im,2)
+                    mu          = prop_mat(im,3)
+                    sigma_yld   = prop_mat(im,4)
+                    Ckin        = prop_mat(im,5)
+                    kapakin     = prop_mat(im,6)
+                    Rinf        = prop_mat(im,7)
+                    biso        = prop_mat(im,8)
+
+                    mu_el       = mu
+                    lambda_el   = lambda
+                    Ckin_el     = Ckin
+                    kapakin_el  = kapakin
+                    Rinf_el     = Rinf
+                    biso_el     = biso
+                    fk_el    = 0.d0
+                    fx_nel   = 0.d0
+                    fy_nel   = 0.d0
+                    dSxx_el = 0.d0; dSyy_el = 0.d0; dSxy_el = 0.d0; dSzz_el = 0.d0;
+                    
+                    ! COMPUTE LGL 
+                    call lgl(nn,ct,ww,dd)
+                    ! COMPUTE STRAIN INCREMENT
+                    do i = 1,nn
+                        dUxdy_el(i) = beta1(ie) + gamma1(ie) * ct(i)
+                        dUydy_el(i) = beta2(ie) + gamma2(ie) * ct(i)
+                        dUxdx_el(i) = alfa1(ie) + gamma1(ie) * ct(i)
+                        dUydx_el(i) = alfa2(ie) + gamma2(ie) * ct(i)
+                    enddo
+                    
+                    ! COMPUTE TRIAL STRESS INCREMENT
+                    call MAKE_STRESS(lambda_el,mu_el,nn,&
+                        dUxdx,dUxdy,dUydx,dUydy,dSxx_el,dSyy_el,dSzz_el,dSxy_el)
+                    
+                    ! COMPUTE NON LINEAR INTERNAL FORCES
                     call MAKE_INTERNAL_FORCE_NL(nn,ct,ww,dd,&
-                        dxdx_el,dxdy_el,dydx_el,dydy_el,&
-                        sxx_el,syy_el,szz_el,sxy_el,fx_el,fy_el)
-
+                        dUxdx_el,dUxdy_el,dUydx_el,dUydy_el,&
+                        Xkin_ij_lmc_el,Riso_el,&
+                        sxx_el,syy_el,szz_el,sxy_el,&
+                        dSxx_el,dSyy_el,dSzz_el,dSxy_el,&
+                        mu_el,lambda_el,sigma_yld_el,&
+                        Ckin_el,kapakin_el,Rinf_el,biso_el,&
+                        fx_el,fy_el)
+                    ! COMPUTE M^-1*F_NL
                 end do
-
             else
                 call MATMUL_SPARSE(K_TOT, NNZ_K, JK_TOT, IK_TOT, fk, 2*nnt, u0, 2*nnt, error)
             endif
