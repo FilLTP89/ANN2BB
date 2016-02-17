@@ -33,14 +33,11 @@
 !> @param[out] fy y-componnent for internal forces
 
 
-subroutine MAKE_INTERNAL_FORCE_NL(nn,ct,ww,dd,&             
-    dUxdx,dUxdy,dUydx,dUydy,&
-    Xkin_ij_lmc,Riso_lmc,&
-    sxx,syy,szz_el,sxy,&
-    dSxx,dSyy,dSzz,dSxy,&
-    mu,lambda,sigma_yld,&
-    Ckin,kapakin,Rinf,biso_el,&
-    fx,fy)                               
+subroutine MAKE_INTERNAL_FORCE_NL(nn,ct,ww,dd,      &             
+    dUxdx,dUxdy,dUydx,dUydy,sxx,syy,sxy,            &
+    dSxx,dSyy,dSzz,dSxy,Xkin_ij_lmc,Riso_lmc,       &
+    mu,lambda,sigma_yld,Ckin,kapakin,Rinf,biso_el,  &
+    dEpsilon_ij_pl,fx,fy)                               
     implicit none
     use nonlinear2d
 
@@ -51,7 +48,7 @@ subroutine MAKE_INTERNAL_FORCE_NL(nn,ct,ww,dd,&
     real*8, dimension(0:nn-1,0:nn-1),     intent(inout) :: dSxx,dSyy,dSzz,dSxy,sxx,syy,szz,sxy,fx,fy
     real*8, dimension(0:2,0:nn-1,0:nn-1), intent(inout) :: Xkin_ij_lmc_el
     real*8, dimension(0:2)                              :: Sigma_ij_start,dSigma_ij_trial
-    real*8, dimension(0:2)                              :: dEpsilon_ij_pl,dEpsilon_ij_alpha
+    real*8, dimension(0:2),               intent(inout) :: dEpsilon_ij_pl,dEpsilon_ij_alpha
     integer*4                                           :: ip,iq,il,im,i
     real*8 :: det_j,t1ux,t1uy,t2ux,t2uy,t1fx,t1fy,t2fx,t2fy
     
@@ -69,7 +66,7 @@ subroutine MAKE_INTERNAL_FORCE_NL(nn,ct,ww,dd,&
             sxx = Sigma_ij_trial(0)
             syy = Sigma_ij_trial(1)
             sxy = Sigma_ij_trial(3)
-            szz = Sigma_ij_trial(4)
+
             ! FORCE CALCULATION
 
             t1fx = 0.0d0; t1fy = 0.0d0

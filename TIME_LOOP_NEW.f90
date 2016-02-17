@@ -111,55 +111,57 @@ subroutine TIME_LOOP_NEW(nnt,xs,ys,cs_nnz,cs,&                                  
     fun_ord,node_PDRM,&                                                   !DRM Scandella 16.11.2005 ! 2
     glob_x,glob_y,&                                                       !DRM Scandella 11.04.2006 ! 2
     option_out_var,test,nelem_dg,&                                                                  ! 3
-    IDG_only_uv, JDG_only_uv, MDG_only_uv, nnz_dg_only_uv)                                          ! 4
+    IDG_only_uv, JDG_only_uv, MDG_only_uv, nnz_dg_only_uv,                                          ! 4
+    NLFLAG    
 
     implicit none
 
-    integer*4 :: NNZ_K, NNZ_N, error, test, nelem_dg,nnz_dg_only_uv
-    integer*4, dimension(0:2*nnt) :: IK_TOT, IN_TOT, IDG_only_uv
-    integer*4, dimension(nnz_dg_only_uv) :: JDG_only_uv
-    integer*4, dimension(NNZ_K) :: JK_TOT
-    integer*4, dimension(NNZ_N) :: JN_TOT
-    real*8, dimension(NNZ_K) :: K_TOT
-    real*8, dimension(NNZ_N) :: N_TOT
-    real*8, dimension(nnz_dg_only_uv) :: MDG_only_uv
+    integer*4 :: NNZ_K,NNZ_N,error,test,nelem_dg,nnz_dg_only_uv
+    integer*4 :: i,is,in,id1,id2,idt,j,jn,k,kn,iaz,jaz,kaz
+    integer*4 :: clock_start,clock_finish,start,finish
     integer*4 :: nnt,cs_nnz,nm,ne,cs_nnz_bc,nf
+    integer*4 :: isnap,its,fn,ie,nn,ip,im
     integer*4 :: nl_dirX,nl_dirY,nl_abc
     integer*4 :: nnd,nts,nmonit,nsnap
-    integer*4 :: nfunc_data
-    real*8, dimension(nnt) :: xs,ys
-    integer*4, dimension(0:cs_nnz) :: cs
-    integer*4, dimension(nm) :: tag_mat,sdeg_mat
-    real*8, dimension(nm,4) :: prop_mat
-    real*8, dimension(ne) :: alfa1,beta1,gamma1,alfa2,beta2,gamma2,delta1,delta2
-    integer*4, dimension(0:cs_nnz_bc) :: cs_bc
-    integer*4, dimension(nl_dirX) :: tag_dirX
-    integer*4, dimension(nl_dirY) :: tag_dirY
-    integer*4, dimension(nl_abc) :: tag_abc
-    integer*4, dimension(nf) :: func_type
-    integer*4, dimension(nf+1) :: func_indx
-    real*8, dimension(nfunc_data) :: func_data         
-    integer*4, dimension(nf) :: tag_func                
-    real*8, dimension(2*nnt) :: mvec
-    real*8, dimension(nf,2*nnt) :: Fmat
-    real*8, dimension(2*nnt) :: u0,v1
-    integer*4, dimension(nmonit) :: node_m
-    integer*4, dimension(nsnap) :: itersnap
-    real*8 :: dt      
-    integer*4, dimension(3) :: clock
-    integer*4 :: clock_start,clock_finish,start,finish
-    integer*4 :: isnap,its,fn,ie,nn,ip,im
-    integer*4 :: i,is,in,id1,id2,idt,j,jn,k,kn,iaz,jaz,kaz
-    real*8 :: time_in_seconds,time_total,time_u,total_u,&
-            time_fk,total_fk,time_fd,total_fd,time_fe,total_fe,&
-            time_force_DRM,total_force_DRM,time_disp_DRM,total_disp_DRM
-    real*8 :: tt0,tt1,tt2,dt2
-    real*8 :: r8t,eps,pi
-    integer*4 :: i4t
-    real*8 :: get_func_value
-    real*8, dimension(:), allocatable :: func_value
     integer*4 :: number_of_threads                        !PARALLEL Kiana 06.10.2015
+    integer*4 :: nfunc_data
+    integer*4 :: i4t
+    
+    integer*4, dimension(3)                 :: clock
+    integer*4, dimension(nm)                :: tag_mat,sdeg_mat
+    integer*4, dimension(nf)                :: func_type,tag_func
+    integer*4, dimension(nf+1)              :: func_indx
+    integer*4, dimension(NNZ_K)             :: JK_TOT
+    integer*4, dimension(NNZ_N)             :: JN_TOT
+    integer*4, dimension(nsnap)             :: itersnap
+    integer*4, dimension(nmonit)            :: node_m
+    integer*4, dimension(nl_abc)            :: tag_abc
+    integer*4, dimension(nl_dirX)           :: tag_dirX
+    integer*4, dimension(nl_dirY)           :: tag_dirY
+    integer*4, dimension(0:2*nnt)           :: IK_TOT,IN_TOT,IDG_only_uv
+    integer*4, dimension(0:cs_nnz)          :: cs
+    integer*4, dimension(0:cs_nnz_bc)       :: cs_bc
+    integer*4, dimension(nnz_dg_only_uv)    :: JDG_only_uv
+    
+    real*8 :: dt,r8t,eps,pi
+    real*8 :: time_disp_DRM,total_disp_DRM
+    real*8 :: get_func_value, tt0,tt1,tt2,dt2
+    real*8 :: time_in_seconds,time_total,time_u,total_u
+    real*8 :: time_fk,total_fk,time_fd,total_fd,time_fe
+    real*8 :: total_fe,time_force_DRM,total_force_DRM
+    
+    real*8, dimension(ne)                   :: alfa1,beta1,gamma1,delta1
+    real*8, dimension(ne)                   :: alfa2,beta2,gamma2,delta2
+    real*8, dimension(nnt)                  :: xs,ys
+    real*8, dimension(nm,4)                 :: prop_mat
+    real*8, dimension(2*nnt)                :: mvec,u0,v1
+    real*8, dimension(NNZ_K)                :: K_TOT
+    real*8, dimension(NNZ_N)                :: N_TOT
+    real*8, dimension(nf,2*nnt)             :: Fmat
+    real*8, dimension(nfunc_data)           :: func_data         
+    real*8, dimension(nnz_dg_only_uv)       :: MDG_only_uv
 
+    real*8, dimension(:), allocatable       :: func_value
 
     !*************************************************
     !
@@ -224,20 +226,25 @@ subroutine TIME_LOOP_NEW(nnt,xs,ys,cs_nnz,cs,&                                  
     !              ELEMENT BY ELEMENT
     !********************************************************************************************
 
-    real*8 :: lambda,mu,rho, gamma
-    real*8, dimension(:), allocatable :: ct,ww
-    real*8, dimension(:), allocatable :: dxdx_el,dxdy_el,dydx_el,dydy_el
-    real*8, dimension(:,:), allocatable :: dd
-    real*8, dimension(:,:), allocatable :: ux_el,uy_el
-    real*8, dimension(:,:), allocatable :: vx_el,vy_el
-    real*8, dimension(:,:), allocatable :: duxdx_el,duxdy_el
-    real*8, dimension(:,:), allocatable :: duydx_el,duydy_el
+    real*8 :: lambda,mu,rho,gamma
+    real*8, dimension(:), allocatable   :: ct,ww,dxdx_el,dxdy_el,dydx_el,dydy_el
+    real*8, dimension(:,:), allocatable :: dd,ux_el,uy_el,vx_el,vy_el
+    real*8, dimension(:,:), allocatable :: duxdx_el,duxdy_el,duydx_el,duydy_el
     real*8, dimension(:,:), allocatable :: sxx_el,syy_el,szz_el,sxy_el,fx_el,fy_el
-    real*8, dimension(:,:), allocatable :: det_j
-    real*8, dimension(:,:), allocatable :: mu_el       
-    real*8, dimension(:,:), allocatable :: lambda_el 
+    real*8, dimension(:,:), allocatable :: det_j,mu_el,lambda_el 
 
-
+    !********************************************************************************************
+    !              NONLINEAR
+    !********************************************************************************************
+    real*8                                  :: sigma_yld,Ckin,kapakin,Riso,biso
+    logical, intent(in)                     :: NLFLAG
+    real*8, dimension(:),   allocatable     :: Epsilon_pl_all,Stress_all
+    real*8, dimension(:),   allocatable     :: Xkin_all,Riso_all
+    real*8, dimension(:,:), allocatable     :: dSxx,dSyy,dSxy
+    real*8, dimension(:,:), allocatable     :: sigma_yld_el,Rinf_el,biso_el,Riso_el
+    real*8, dimension(:,:), allocatable     :: Ckin_el,kapakin_el
+    real*8, dimension(:,:,:), allocatable   :: Xkin_el,dEpsilon_pl_el
+    
     !********************************************************************************************
     !               GLOBAL VARIABLES
     !********************************************************************************************
@@ -512,7 +519,12 @@ subroutine TIME_LOOP_NEW(nnt,xs,ys,cs_nnz,cs,&                                  
     !********************************************************************************************
     !     ALL STEPS
     !********************************************************************************************	
-
+    ! ALLOCATE NONLINEAR VARIABLES TO BE UPDATED AT EACH TIME STEP
+    if (NLFLAG) then
+        allocate(Stress_all(0:3*NNT-3,Xkin_all(0:3*NNT-3),Riso_all(0:NNT-1))
+        allocate(Epsilon_pl_all(0:3*NNT-3))
+    end if
+    
     do its = 0,nts 
 
         fk = 0.d0; fd = 0.d0; sism = 0.d0;
@@ -524,7 +536,6 @@ subroutine TIME_LOOP_NEW(nnt,xs,ys,cs_nnz,cs,&                                  
         tt2 = dfloat(its +1) * dt
 
         write(*,'(A,F7.4)') 'TIME: ', tt1
-
 
         !-----DRM-----------------------------------------------------------------------------------------		       
         if (tagstep.eq.2) then     !DRM Scandella 28-10-05   
@@ -679,75 +690,122 @@ subroutine TIME_LOOP_NEW(nnt,xs,ys,cs_nnz,cs,&                                  
         !NO Damping
         !(u2 - 2*u1 + u0)/dt^2  = - K_TOT*u1 + Fel
 
+        if (NLFLAG) then ! NONLINEAR CASE: NODE BY NODE CALCULATION
+
+            do ie=1,ne
+                im = cs(cs(ie -1) +0);   
+                nn = sdeg_mat(im) +1
+                allocate(ct(nn),ww(nn),dd(nn,nn))
+                allocate(dxdx_el(nn),dxdy_el(nn),dydx_el(nn),dydy_el(nn))
+                allocate(duxdx_el(nn,nn),duxdy_el(nn,nn),duydx_el(nn,nn),duydy_el(nn,nn))
+                allocate(sxx_el(nn,nn),syy_el(nn,nn),szz_el(nn,nn),sxy_el(nn,nn))
+                allocate(dsxx_el(nn,nn),dsyy_el(nn,nn),dszz_el(nn,nn),dsxy_el(nn,nn))
+                allocate(Xkin_el(nn,nn,3),Riso_el(nn,nn),dEpsilon_pl_el(nn,nn,3))
+                allocate(fx_el(nn,nn),fy_el(nn,nn),det_j(nn,nn))
+                allocate(mu_el(nn,nn),lambda_el(nn,nn))
+                allocate(Ckin_el(nn,nn),kapakin_el(nn,nn))
+                allocate(Rinf_el(nn,nn),biso_el(nn,nn))
+                
+                lambda      = prop_mat(im,2)
+                mu          = prop_mat(im,3)
+                sigma_yld   = prop_mat(im,4)
+                Ckin        = prop_mat(im,5)
+                kapakin     = prop_mat(im,6)
+                Rinf        = prop_mat(im,7)
+                biso        = prop_mat(im,8)
+
+                mu_el       = mu
+                lambda_el   = lambda
+                Ckin_el     = Ckin
+                kapakin_el  = kapakin
+                Rinf_el     = Rinf
+                biso_el     = biso
+                fk_el       = 0.d0
+                fx_nel      = 0.d0
+                fy_nel      = 0.d0
+                dSxx_el     = 0.d0 
+                dSyy_el     = 0.d0 
+                dSxy_el     = 0.d0 
+                dSzz_el     = 0.d0
+                
+                do j = 1,nn
+                    do i = 1,nn
+                        is = nn*(j -1) +i
+                        in = cs(cs(ie -1) + is)
+                        sxx_el(i,j)=Sigma_ij_all(in)       = sxx_el(i,j)
+                        Sigma_ij_all(in+nnt)   = syy_el(i,j)
+                        Sigma_ij_all(in+2*nnt) = sxy_el(i,j)
+                        Xkin_ij_all(in)        = Xkin_ij_el(i,j,1)
+                        Xkin_ij_all(in+nnt)    = Xkin_ij_el(i,j,2)
+                        Xkin_ij_all(in+2*nnt)  = Xkin_ij_el(i,j,3)
+                        Riso_all(in)           = Riso_el(i,j)
+                        Epsilon_ij_pl(in)      = Epsilon_ij_pl(in)+dEpsilon_ij_pl_el(i,j,1)  
+                        Epsilon_ij_pl(in+nnt)  = Epsilon_ij_pl(in+nnt)+dEpsilon_ij_pl_el(i,j,2)
+                        Epsilon_ij_pl(in+2*nnt)= Epsilon_ij_pl(in+2*nnt)+dEpsilon_ij_pl_el(i,j,3)  
+                    enddo
+                enddo
+                
+
+                ! COMPUTE LGL 
+                call lgl(nn,ct,ww,dd)
+                ! COMPUTE STRAIN INCREMENT
+                do i = 1,nn
+                    dxdy_el(i) = beta1(ie) + gamma1(ie) * ct(i)
+                    dydy_el(i) = beta2(ie) + gamma2(ie) * ct(i)
+                    dxdx_el(i) = alfa1(ie) + gamma1(ie) * ct(i)
+                    dydx_el(i) = alfa2(ie) + gamma2(ie) * ct(i)
+                enddo
+               
+                call MAKE_STRAIN(nn,ct,ww,dd,&
+                      dxdx,dxdy,dydx,dydy,ux_el,uy_el, &
+                      dUxdx,dUxdy_el,dUydx_el,dUydy_el)
+
+                ! COMPUTE TRIAL STRESS INCREMENT
+                call MAKE_STRESS(lambda_el,mu_el,nn,&
+                    dUxdx,dUxdy,dUydx,dUydy,dSxx_el,dSyy_el,dSzz_el,dSxy_el)
+                
+                ! COMPUTE NON LINEAR INTERNAL FORCES
+                call MAKE_INTERNAL_FORCE_NL(nn,ct,ww,dd,&
+                    dUxdx_el,dUxdy_el,dUydx_el,dUydy_el,
+                    sxx_el,syy_el,szz_el,sxy_el,&
+                    dSxx_el,dSyy_el,dSzz_el,dSxy_el,&
+                    Xkin_ij_el,Riso_el,&
+                    mu_el,lambda_el,sigma_yld_el,&
+                    Ckin_el,kapakin_el,Rinf_el,biso_el,&
+                    dEpsilon_ij_pl_el,fx_el,fy_el)
+                    
+                    do j = 1,nn
+                        do i = 1,nn
+                            is = nn*(j -1) +i
+                            in = cs(cs(ie -1) + is)
+                            fk(in)      = fk(in)     + fx_el(i,j)
+                            fk(in+nnt)  = fk(in+nnt) + fy_el(i,j)
+                            Sigma_ij_all(in)       = sxx_el(i,j)
+                            Sigma_ij_all(in+nnt)   = syy_el(i,j)
+                            Sigma_ij_all(in+2*nnt) = sxy_el(i,j)
+                            Xkin_ij_all(in)        = Xkin_ij_el(i,j,1)
+                            Xkin_ij_all(in+nnt)    = Xkin_ij_el(i,j,2)
+                            Xkin_ij_all(in+2*nnt)  = Xkin_ij_el(i,j,3)
+                            Riso_all(in)           = Riso_el(i,j)
+                            Epsilon_ij_pl(in)      = Epsilon_ij_pl(in)+dEpsilon_ij_pl_el(i,j,1)  
+                            Epsilon_ij_pl(in+nnt)  = Epsilon_ij_pl(in+nnt)+dEpsilon_ij_pl_el(i,j,2)
+                            Epsilon_ij_pl(in+2*nnt)= Epsilon_ij_pl(in+2*nnt)+dEpsilon_ij_pl_el(i,j,3)  
+                        enddo
+                    enddo
+            end do
+        else
+            call MATMUL_SPARSE(K_TOT, NNZ_K, JK_TOT, IK_TOT, fk, 2*nnt, u0, 2*nnt, error)
+        endif
 
         if(its .eq. 0) then
             !Compute fk = K_TOT*u1         
-            if (NLFLAG) then ! NONLINEAR CASE: NODE BY NODE CALCULATION
-                do ie=1,ne
-                    im = cs(cs(ie -1) +0);   
-                    nn = sdeg_mat(im) +1
-                    allocate(ct(nn),ww(nn),dd(nn,nn))
-                    allocate(dUxdx_el(nn),dUxdy_el(nn),dUydx_el(nn),dUydy_el(nn))
-                    allocate(duxdx_el(nn,nn),duxdy_el(nn,nn),duydx_el(nn,nn),duydy_el(nn,nn))
-                    allocate(sxx_el(nn,nn),syy_el(nn,nn),szz_el(nn,nn),sxy_el(nn,nn))
-                    allocate(fx_el(nn,nn),fy_el(nn,nn),det_j(nn,nn))
-                    allocate(mu_el(nn,nn),lambda_el(nn,nn))
-                    allocate(Ckin_el(nn,nn),kapakin_el(nn,nn))
-                    allocate(Rinf_el(nn,nn),biso_el(nn,nn))
-                    
-                    lambda      = prop_mat(im,2)
-                    mu          = prop_mat(im,3)
-                    sigma_yld   = prop_mat(im,4)
-                    Ckin        = prop_mat(im,5)
-                    kapakin     = prop_mat(im,6)
-                    Rinf        = prop_mat(im,7)
-                    biso        = prop_mat(im,8)
-
-                    mu_el       = mu
-                    lambda_el   = lambda
-                    Ckin_el     = Ckin
-                    kapakin_el  = kapakin
-                    Rinf_el     = Rinf
-                    biso_el     = biso
-                    fk_el    = 0.d0
-                    fx_nel   = 0.d0
-                    fy_nel   = 0.d0
-                    dSxx_el = 0.d0; dSyy_el = 0.d0; dSxy_el = 0.d0; dSzz_el = 0.d0;
-                    
-                    ! COMPUTE LGL 
-                    call lgl(nn,ct,ww,dd)
-                    ! COMPUTE STRAIN INCREMENT
-                    do i = 1,nn
-                        dUxdy_el(i) = beta1(ie) + gamma1(ie) * ct(i)
-                        dUydy_el(i) = beta2(ie) + gamma2(ie) * ct(i)
-                        dUxdx_el(i) = alfa1(ie) + gamma1(ie) * ct(i)
-                        dUydx_el(i) = alfa2(ie) + gamma2(ie) * ct(i)
-                    enddo
-                    
-                    ! COMPUTE TRIAL STRESS INCREMENT
-                    call MAKE_STRESS(lambda_el,mu_el,nn,&
-                        dUxdx,dUxdy,dUydx,dUydy,dSxx_el,dSyy_el,dSzz_el,dSxy_el)
-                    
-                    ! COMPUTE NON LINEAR INTERNAL FORCES
-                    call MAKE_INTERNAL_FORCE_NL(nn,ct,ww,dd,&
-                        dUxdx_el,dUxdy_el,dUydx_el,dUydy_el,&
-                        Xkin_ij_lmc_el,Riso_el,&
-                        sxx_el,syy_el,szz_el,sxy_el,&
-                        dSxx_el,dSyy_el,dSzz_el,dSxy_el,&
-                        mu_el,lambda_el,sigma_yld_el,&
-                        Ckin_el,kapakin_el,Rinf_el,biso_el,&
-                        fx_el,fy_el)
-                    ! COMPUTE M^-1*F_NL
-                end do
-            else
-                call MATMUL_SPARSE(K_TOT, NNZ_K, JK_TOT, IK_TOT, fk, 2*nnt, u0, 2*nnt, error)
-            endif
             !Compute fd = N_TOT*v1
             call MATMUL_SPARSE(N_TOT, NNZ_N, JN_TOT, IN_TOT, fd, 2*nnt, v1, 2*nnt, error)
             fe = fe + sism/mvec;
             u1 = u0 + v1 *dt - 0.5d0*((fe - fk - fd)*dt2)
             !u2 = u0 + 2.d0*v1*dt
-        else      
+        else
+
             call system_clock(COUNT=clock_start,COUNT_RATE=clock(2))   
             !Compute fk = K_TOT*u1
             call MATMUL_SPARSE(K_TOT, NNZ_K, JK_TOT, IK_TOT, fk, 2*nnt, u1, 2*nnt, error) 
@@ -853,57 +911,60 @@ subroutine TIME_LOOP_NEW(nnt,xs,ys,cs_nnz,cs,&                                  
 
             if (option_out_var(1) .eq. 1) then   
                 do i = 1,nmonit
-                unit_disp = 40 + i
-                in = node_m(i)
+                    unit_disp = 40 + i
+                    in = node_m(i)
 
-                if (dabs(u1(in)).lt.(1.0d-99))     u1(in)= 0.d0
-                if (dabs(u1(in+nnt)).lt.(1.0d-99)) u1(in+nnt)=0.d0
-                write(unit_disp,'(F6.2,ES16.6,ES16.6)') tt1,u1(in),u1(in+nnt)
+                    if (dabs(u1(in)).lt.(1.0d-99))     u1(in)= 0.d0
+                    if (dabs(u1(in+nnt)).lt.(1.0d-99)) u1(in+nnt)=0.d0
+                    write(unit_disp,'(F6.2,ES16.6,ES16.6)') tt1,u1(in),u1(in+nnt)
                 enddo
             endif
 
             if (option_out_var(2) .eq. 1) then   
                 do i = 1,nmonit
-                unit_vel = 40 + i
-                in = node_m(i)
+                    unit_vel = 40 + i
+                    in = node_m(i)
 
-                if (dabs(vel(in)).lt.(1.0d-99))     vel(in)= 0.d0
-                if (dabs(vel(in+nnt)).lt.(1.0d-99)) vel(in+nnt)=0.d0
-                write(unit_vel,'(F6.2,ES16.6,ES16.6)') tt1,vel(in),vel(in+nnt)
+                    if (dabs(vel(in)).lt.(1.0d-99))     vel(in)= 0.d0
+                    if (dabs(vel(in+nnt)).lt.(1.0d-99)) vel(in+nnt)=0.d0
+                    write(unit_vel,'(F6.2,ES16.6,ES16.6)') tt1,vel(in),vel(in+nnt)
                 enddo
             endif
 
             if (option_out_var(3) .eq. 1) then   
                 do i = 1,nmonit
-                unit_acc = 40 + i
-                in = node_m(i)
+                    unit_acc = 40 + i
+                    in = node_m(i)
 
-                if (dabs(acc(in)).lt.(1.0d-99))     acc(in)= 0.d0
-                if (dabs(acc(in+nnt)).lt.(1.0d-99)) acc(in+nnt)=0.d0
-                write(unit_acc,'(F6.2,ES16.6,ES16.6)') tt1,acc(in),acc(in+nnt)
+                    if (dabs(acc(in)).lt.(1.0d-99))     acc(in)= 0.d0
+                    if (dabs(acc(in+nnt)).lt.(1.0d-99)) acc(in+nnt)=0.d0
+                    write(unit_acc,'(F6.2,ES16.6,ES16.6)') tt1,acc(in),acc(in+nnt)
                 enddo
             endif
 
 
             if (option_out_var(4) .eq. 1) then
-                do in = 1, nnt  
-                sxx(in) = sxx(in) / nodal_counter(in)
-                syy(in) = syy(in) / nodal_counter(in)
-                sxy(in) = sxy(in) / nodal_counter(in)
-                szz(in) = szz(in) / nodal_counter(in)
-                enddo
+                if (NLFLAG) then
 
-                do i = 1,nmonit	
-                unit_stress = 300000 + i									
-                in = node_m(i)											
-                if (dabs(sxx(in)).lt.(1.0d-99)) sxx(in)=0.0
-                if (dabs(syy(in)).lt.(1.0d-99)) syy(in)=0.0
-                if (dabs(sxy(in)).lt.(1.0d-99)) sxy(in)=0.0
-                if (dabs(szz(in)).lt.(1.0d-99)) szz(in)=0.0
+                else
+                    do in = 1, nnt  
+                        sxx(in) = sxx(in) / nodal_counter(in)
+                        syy(in) = syy(in) / nodal_counter(in)
+                        sxy(in) = sxy(in) / nodal_counter(in)
+                        szz(in) = szz(in) / nodal_counter(in)
+                    enddo
+                    do i = 1,nmonit
+                        unit_stress = 300000 + i
+                        in = node_m(i)
+                        if (dabs(sxx(in)).lt.(1.0d-99)) sxx(in)=0.0
+                        if (dabs(syy(in)).lt.(1.0d-99)) syy(in)=0.0
+                        if (dabs(sxy(in)).lt.(1.0d-99)) sxy(in)=0.0
+                        if (dabs(szz(in)).lt.(1.0d-99)) szz(in)=0.0
 
-                write(unit_stress,'(5E16.8)') tt1,sxx(in),syy(in),sxy(in),szz(in)
-                enddo
-            endif	
+                        write(unit_stress,'(5E16.8)') tt1,sxx(in),syy(in),sxy(in),szz(in)
+                    enddo
+                endif
+            endif
 
 
             if (option_out_var(5) .eq. 1) then  !Out Options Scandella 02.07.2007
