@@ -744,11 +744,11 @@ subroutine TIME_LOOP_NEW(nnt,xs,ys,cs_nnz,cs,&                                  
 
                         Epl_all(in+2*nnt)    = Epl_all(in+2*nnt)+dEpl_el(3,i,j)  
                         Xkin_all(in+2*nnt)   = Xkin_el(3,i,j)
-                        Stress_all(in+2*nnt) = sxy_el(i,j)
+                        Stress_all(in+2*nnt) = szz_el(i,j)
                         
                         Epl_all(in+3*nnt)    = Epl_all(in+3*nnt)+dEpl_el(4,i,j)  
                         Xkin_all(in+3*nnt)   = Xkin_el(4,i,j)
-                        Stress_all(in+3*nnt) = szz_el(i,j)
+                        Stress_all(in+3*nnt) = sxy_el(i,j)
 
                     enddo
                 enddo
@@ -889,7 +889,10 @@ subroutine TIME_LOOP_NEW(nnt,xs,ys,cs_nnz,cs,&                                  
 
             if (option_out_var(4) .eq. 1) then
                 if (NLFLAG) then
-
+                    sxx(in) = Stress_all(1)
+                    syy(in) = Stress_all(2)
+                    szz(in) = Stress_all(3)
+                    sxy(in) = Stress_all(4)
                 else
                     do in = 1, nnt  
                         sxx(in) = sxx(in) / nodal_counter(in)
