@@ -285,9 +285,8 @@ program SPEED2D
         nload_neuX_el,nload_neuY_el, &
         nload_poiX_el,nload_poiY_el, &
         nload_plaX_el,nload_plaY_el, &
-        nload_sism_el, & 
-        nload_abc_el, 
-    nload_MDRM_el,nload_BDRM_el,nload_PDRM_el, &  !DRM Scandella 17.10.2005
+        nload_sism_el,nload_abc_el,nload_MDRM_el,  &
+        nload_BDRM_el,nload_PDRM_el, &  !DRM Scandella 17.10.2005
         nfunc,nfunc_data,n_test,&
         nfunc_drm,nfunc_data_drm,&                     !DRM Scandella 11.04.2006 
         nload_dg_el)
@@ -1603,8 +1602,8 @@ program SPEED2D
         fn_ord,node_PDRM_el,&                                                 !DRM Scandella 16.11.2005  ! 2
         glob_drm_x,glob_drm_y, &                                              !DRM Scandella 11.04.2006  ! 2
         opt_out_var,test,nelem_dg,&                                                                      ! 3
-        IDG_only_uv, JDG_only_uv, MDG_only_uv,nnz_dg_only_uv)                                            ! 4
-
+        IDG_only_uv, JDG_only_uv, MDG_only_uv,nnz_dg_only_uv, & 
+        NLFLAG)
     write(*,'(A)')
     write(*,'(A)')'Bye.'
 

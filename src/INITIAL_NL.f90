@@ -1,19 +1,61 @@
-subroutine INITIAL_NL(cs_nnz,cs,nm,nn,nnt,im,prop_mat,Sxx_el,Syy_el,Sxy_el,Szz_el  &
-    lambda_el,mu_el,Syld_el,Ckin_el,kkin_el,Riso_el,Rinf_el,biso_el,Xkin_el,    &
+!    Copyright (C) 2014 The SPEED FOUNDATION
+!    Author: Ilario Mazzieri
+!
+!    This file is part of SPEED.
+!
+!    SPEED is free software; you can redistribute it and/or modify it
+!    under the terms of the GNU Affero General Public License as
+!    published by the Free Software Foundation, either version 3 of the
+!    License, or (at your option) any later version.
+!
+!    SPEED is distributed in the hope that it will be useful, but
+!    WITHOUT ANY WARRANTY; without even the implied warranty of
+!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+!    Affero General Public License for more details.
+!
+!    You should have received a copy of the GNU Affero General Public License
+!    along with SPEED.  If not, see <http://wqw.gnu.org/licenses/>.
+
+!> @brief Initialize variables for nonlinear calculations 
+!! @author Filippo Gatti
+!> @date February,2016
+!> @version 1.0
+!> @param[in] cs_nnz length of cs
+!> @param[in] cs spectral connectivity vector
+!> @param[in] nm number of materials
+!> @param[in] nn number of 1-D GLL nodes
+!> @param[in] nnt number of nodes
+!> @param[in] im material number
+!> @param[in] ie element identity
+!> @param[in] prop_mat material properties
+!> @param[inout] sxx_el,syy_el,sxy_el,szz_el nodal values for the stress tensor (on element)
+!> @param[inout] Xkin_el,Riso_el hardening variables on element LGL
+!> @param[in] lambda_el,mu_el Lamè parameters on element LGL
+!> @param[in] syld_el yield limit on element LGL
+!> @param[in] Ckin_el,kkin_el kinematic hardening parameters on element LGL
+!> @param[in] Rinf_el,biso_el isotropic hardening parameters on element LGL
+!> @param[inout] dEpl_el plastic strain increment on element LGL
+!> @param[inout] det_j determinant of jacobian
+!> @param[inout] fx_el internal forces along x-direction on element LGL
+!> @param[inout] fy_el internal forces along y-direction on element LGL
+
+subroutine INITIAL_NL(cs_nnz,cs,nm,nn,nnt,im,ie,prop_mat,Sxx_el,Syy_el,Sxy_el,Szz_el,  &
+    lambda_el,mu_el,Syld_el,Ckin_el,kkin_el,Riso_el,Rinf_el,biso_el,Xkin_el,        &
     Stress_all,Xkin_all,Riso_all,fx_el,fy_el)
     
     implicit none
-    integer*4, intent(in)                     :: im,nnt,nn,cs_nnz,nm
-    integer*4, intent(in), dimension(0:cs_nnz):: cs
-    real*8, intent(in), dimension(nm,8)       :: prop_mat
-    real*8, intent(in), dimension(nnt)        :: Riso_all
-    real*8, intent(inout), dimension(nn)      :: fx_el,fy_el
-    real*8, intent(in), dimension(4*nnt)      :: Stress_all,Xkin_all
-    real*8, intent(inout), dimension(nn,nn)   :: Sxx_el,Syy_el,Szz_el,Sxy_el
-    real*8, intent(inout), dimension(nn,nn)   :: lamdbda_el,mu_el,syld_el,Riso_el
-    real*8, intent(inout), dimension(nn,nn)   :: Ckin_el,kkin_el,Rinf_el,biso_el
-    real*8, intent(inout), dimension(4,nn,nn) :: Xkin_el
-    integer*4,                                :: i,j,is,in
+    integer*4, intent(in)                       :: im,nnt,nn,cs_nnz,nm,ie
+    integer*4, intent(in),  dimension(0:cs_nnz) :: cs
+    real*8, intent(in),     dimension(nm,8)     :: prop_mat
+    real*8, intent(in),     dimension(nnt)      :: Riso_all
+    real*8, intent(in),     dimension(4*nnt)    :: Stress_all,Xkin_all
+    real*8, intent(inout),  dimension(nn)       :: fx_el,fy_el
+    real*8, intent(inout),  dimension(nn,nn)    :: syld_el,lambda_el,mu_el
+    real*8, intent(inout),  dimension(nn,nn)    :: Sxx_el,Syy_el,Szz_el,Sxy_el
+    real*8, intent(inout),  dimension(nn,nn)    :: Riso_el
+    real*8, intent(inout),  dimension(nn,nn)    :: Ckin_el,kkin_el,Rinf_el,biso_el
+    real*8, intent(inout),  dimension(4,nn,nn)  :: Xkin_el
+    integer*4                                   :: i,j,is,in
 
     lambda_el = prop_mat(im,2)
     mu_el     = prop_mat(im,3)
@@ -23,7 +65,6 @@ subroutine INITIAL_NL(cs_nnz,cs,nm,nn,nnt,im,prop_mat,Sxx_el,Syy_el,Sxy_el,Szz_e
     Rinf_el   = prop_mat(im,7)
     biso_el   = prop_mat(im,8)
 
-    fk_el      = 0.d0
     fx_el      = 0.d0
     fy_el      = 0.d0
     
@@ -43,10 +84,8 @@ subroutine INITIAL_NL(cs_nnz,cs,nm,nn,nnt,im,prop_mat,Sxx_el,Syy_el,Sxy_el,Szz_e
         enddo
     enddo
 
-    return
 end subroutine INITIAL_NL
 !! mode: f90
 !! show-trailing-whitespace: t
 !! End:
 !! vim: set sw=4 ts=8 et tw=80 smartindent : !!
-

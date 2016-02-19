@@ -24,33 +24,41 @@
 !> @param[in] ct LGL nodes
 !> @param[in] ww LGL weights
 !> @param[in] dd matrix of spectral derivatives
-!> @param[in] dSxx,dSyy,dSxy nodal values for trial stress increment tensor (on element)
-!> @param[inout] dUxdx,dUxdy,dUydx,dUydy nodal values for strain tensor (on element)
-!> @param[inout] sxx,syy,sxy nodal values for the stress tensor (on element)
-!> @param[inout] Xkin
+!> @param[in] dUxdx,dUxdy,dUydx,dUydy nodal values for strain tensor (on element)
+!> @param[inout] sxx,syy,sxy,szz nodal values for the stress tensor (on element)
+!> @param[inout] Xkin_el,Riso_el hardening variables on element LGL
+!> @param[in] lambda_el,mu_el Lamè parameters on element LGL
+!> @param[in] syld_el yield limit on element LGL
+!> @param[in] Ckin_el,kkin_el kinematic hardening parameters on element LGL
+!> @param[in] Rinf_el,biso_el isotropic hardening parameters on element LGL
+!> @param[inout] dEpl_el plastic strain increment on element LGL
 !> @param[out] fx x-componnent for internal forces
 !> @param[out] fy y-componnent for internal forces
 
 
 subroutine MAKE_INTERNAL_FORCE_NL(nn,ct,ww,dd,      &             
-    dUxdx,dUxdy,dUydx,dUydy,sxx,syy,sxy,szz         &
+    dUxdx,dUxdy,dUydx,dUydy,sxx,syy,szz,sxy,        &
     Xkin_el,Riso_el,mu_el,lambda_el,syld_el,        &
-    Ckin_el,kkin_el,Rinf_el,biso_el,                &
-    dEpl_el,fx,fy)                               
+    Ckin_el,kkin_el,Rinf_el,biso_el,dEpl_el,        &
+    dxdx,dxdy,dydx,dydy,fx,fy)                               
+    
+    use nonlinear2d
     
     implicit none
-    use nonlinear2d
 
     integer*4                                 :: ip,iq,il,im,i
     real*8                                    :: t1fx,t1fy,t2fx,t2fy
     real*8                                    :: det_j,t1ux,t1uy,t2ux,t2uy
     
-    integer*4                   intent(in)    :: nn
-    real*8, dimension(3)                      :: dEalpha,Sstart,dStrial,Strial
-    real*8, dimension(nn),      intent(in)    :: ct,ww,dUxdx,dUxdy,dUydx,dUydy  
-    real*8, dimension(nn,nn),   intent(in)    :: dd,lambda_el,mu_el,syld_el
-    real*8, dimension(nn,nn),   intent(in)    :: Ckin_el,kkin_el
+    integer*4,                  intent(in)    :: nn
+    logical                                   :: st_epl
+    real*8                                    :: alpha_elp
+    real*8, dimension(4)                      :: dEalpha,Sstart,dStrial,Strial
+    real*8, dimension(nn),      intent(inout) :: ct,ww,dxdx,dxdy,dydx,dydy
+    real*8, dimension(nn,nn),   intent(inout) :: Ckin_el,kkin_el
     real*8, dimension(nn,nn),   intent(inout) :: Rinf_el,biso_el,Riso_el
+    real*8, dimension(nn,nn),   intent(inout) :: dUxdx,dUxdy,dUydx,dUydy  
+    real*8, dimension(nn,nn),   intent(inout) :: dd,lambda_el,mu_el,syld_el
     real*8, dimension(nn,nn),   intent(inout) :: sxx,syy,sxy,szz,fx,fy
     real*8, dimension(4,nn,nn), intent(inout) :: Xkin_el,dEpl_el
 
@@ -58,24 +66,27 @@ subroutine MAKE_INTERNAL_FORCE_NL(nn,ct,ww,dd,      &
         do ip = 1,nn
             
             ! FIRST MECHANISM XY
-            Sstart  = (/sxx(ip,iq),syy(ip,iq),sxy(ip,iq)/)
-            dEalpha = (/dUxdx(ip,iq),dUydy(ip,iq),(dUxdy(ip,iq)+dUydx(ip,iq))/)
+            Sstart  = (/sxx(ip,iq),syy(ip,iq),szz(ip,iq),sxy(ip,iq)/)
+            dEalpha = (/dUxdx(ip,iq),dUydy(ip,iq),0d0,(dUxdy(ip,iq)+dUydx(ip,iq))/)
 
             ! COMPUTE TRIAL STRESS INCREMENT
             call MAKE_STRESS_LOC(lambda_el(ip,iq),mu_el(ip,iq),dEalpha,Strial)
-            dStrial=Strial-Start
+            dStrial=Strial-Sstart
 
-            call check_plasticity (Strial, Sstart, Xkin_el(:,ip,iq), Riso(ip,iq), &
+            call check_plasticity (Strial, Sstart, Xkin_el(:,ip,iq), Riso_el(ip,iq), &
                 syld_el(ip,iq),st_epl,alpha_elp)
             
-            if (st_epl == 1) then                                                                                                                              write(*,*) "1-alpha",1-alpha_elp 
+            if (st_epl) then
+                write(*,*) "1-alpha",1-alpha_elp 
                 call plastic_corrector(dEalpha,Strial,syld_el(ip,iq), &
-                    Xkin_el(1:3,ip,iq),Riso_el(ip,iq),biso_el(ip,iq),Rinf_el(ip,iq), 
-                    Ckin_el(ip,iq),kkin(ip,iq),mu_el(ip,iq),lambda_el(ip,iq),dEpl_el(1:3,ip,iq))
+                    Xkin_el(:,ip,iq),Riso_el(ip,iq),biso_el(ip,iq),   &
+                    Rinf_el(ip,iq),Ckin_el(ip,iq),kkin_el(ip,iq),     &
+                    mu_el(ip,iq),lambda_el(ip,iq),dEpl_el(:,ip,iq))
             end if
             sxx(ip,iq) = Strial(1)
             syy(ip,iq) = Strial(2)
-            sxy(ip,iq) = Strial(3)
+            szz(ip,iq) = Strial(3)
+            sxy(ip,iq) = Strial(4)
         end do
     end do
 

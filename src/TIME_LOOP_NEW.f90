@@ -111,8 +111,8 @@ subroutine TIME_LOOP_NEW(nnt,xs,ys,cs_nnz,cs,&                                  
     fun_ord,node_PDRM,&                                                   !DRM Scandella 16.11.2005 ! 2
     glob_x,glob_y,&                                                       !DRM Scandella 11.04.2006 ! 2
     option_out_var,test,nelem_dg,&                                                                  ! 3
-    IDG_only_uv, JDG_only_uv, MDG_only_uv, nnz_dg_only_uv,                                          ! 4
-    NLFLAG    
+    IDG_only_uv, JDG_only_uv, MDG_only_uv, nnz_dg_only_uv,&                                         ! 4
+    NLFLAG)    
 
     implicit none
 
@@ -240,8 +240,8 @@ subroutine TIME_LOOP_NEW(nnt,xs,ys,cs_nnz,cs,&                                  
     logical, intent(in)                     :: NLFLAG
     real*8, dimension(:),     allocatable   :: Epl_all,Stress_all
     real*8, dimension(:),     allocatable   :: Xkin_all,Riso_all
-    real*8, dimension(:,:),   allocatable   :: sigma_yld_el,Rinf_el,biso_el,Riso_el
-    real*8, dimension(:,:),   allocatable   :: Ckin_el,kapakin_el
+    real*8, dimension(:,:),   allocatable   :: syld_el,Rinf_el,biso_el,Riso_el
+    real*8, dimension(:,:),   allocatable   :: Ckin_el,kkin_el
     real*8, dimension(:,:,:), allocatable   :: Xkin_el,dEpl_el
     
     !********************************************************************************************
@@ -697,18 +697,18 @@ subroutine TIME_LOOP_NEW(nnt,xs,ys,cs_nnz,cs,&                                  
                 im = cs(cs(ie -1) +0)   
                 nn = sdeg_mat(im) +1
                 
-                call ALLOCATE_NL(nn,ct,ww,dd,dxdx_el,dxdy_el,dydx_el,dydy_el,       &
-                    dUxdx_el,dUxdy_el,dUydx_el,dUydy_el,Sxx_el,Syy_el,Sxy_el,Szz_el &
-                    lambda_el,mu_el,Syld_el,Ckin_el,kkin_el,Riso_el,Rinf_el,biso_el &
-                    Xkin_el,dEpl_el)
-                call INITIAL_NL(cs_nnz,cs,nm,nn,nnt,im,prop_mat,Sxx_el,Syy_el,Sxy_el,Szz_el  &
+                call ALLOCATE_NL(nn,ct,ww,dd,dxdx_el,dxdy_el,dydx_el,dydy_el,det_j,  &
+                    dUxdx_el,dUxdy_el,dUydx_el,dUydy_el,Sxx_el,Syy_el,Sxy_el,Szz_el, &
+                    lambda_el,mu_el,Syld_el,Ckin_el,kkin_el,Riso_el,Rinf_el,biso_el, &
+                    Xkin_el,dEpl_el,fx_el,fy_el)
+                call INITIAL_NL(cs_nnz,cs,nm,nn,nnt,im,ie,prop_mat,Sxx_el,Syy_el,Sxy_el,Szz_el,  &
                     lambda_el,mu_el,Syld_el,Ckin_el,kkin_el,Riso_el,Rinf_el,biso_el,Xkin_el, &
                     Stress_all,Xkin_all,Riso_all,fx_el,fy_el)
 
                 ! COMPUTE LGL 
                 call lgl(nn,ct,ww,dd)
                 ! COMPUTE STRAIN INCREMENT
-                call MAKE_DERIVATIVES(alfa1,alfa2,beta1,beta2,gamma1,gamma2,ct,&
+                call MAKE_DERIVATIVES(nn,alfa1,alfa2,beta1,beta2,gamma1,gamma2,ct,&
                     dxdy_el,dydy_el,dxdx_el,dydx_el)
                
                 call MAKE_STRAIN(nn,ct,ww,dd,&
@@ -718,11 +718,12 @@ subroutine TIME_LOOP_NEW(nnt,xs,ys,cs_nnz,cs,&                                  
                 ! COMPUTE NON LINEAR INTERNAL FORCES
                 call MAKE_INTERNAL_FORCE_NL(nn,ct,ww,dd,    &
                     dUxdx_el,dUxdy_el,dUydx_el,dUydy_el,    &
-                    sxx_el,syy_el,sxy_el,szz_el             &
+                    sxx_el,syy_el,sxy_el,szz_el,            &
                     Xkin_el,Riso_el,                        &
                     mu_el,lambda_el,syld_el,                &
                     Ckin_el,kkin_el,Rinf_el,biso_el,        &
-                    dEpl_el,fx_el,fy_el)
+                    dEpl_el,dxdx_el,dxdy_el,dydx_el,dydy_el,&
+                    fx_el,fy_el)
                     
                 do j = 1,nn
                     do i = 1,nn
@@ -732,20 +733,20 @@ subroutine TIME_LOOP_NEW(nnt,xs,ys,cs_nnz,cs,&                                  
                         fk(in)          = fk(in)  + fx_el(i,j)
                        
                         Riso_all(in)    = Riso_el(i,j)
-                        Epl(in)         = Epl(in) + dEpl_el(1,i,j)  
+                        Epl_all(in)     = Epl_all(in) + dEpl_el(1,i,j)  
                         Xkin_all(in)    = Xkin_el(1,i,j)
                         Stress_all(in)  = sxx_el(i,j)
                         
                         fk(in+nnt)           = fk(in+nnt)  + fy_el(i,j)
-                        Epl(in+nnt)          = Epl(in+nnt) + dEpl_el(2,i,j)
+                        Epl_all(in+nnt)      = Epl_all(in+nnt) + dEpl_el(2,i,j)
                         Xkin_all(in+nnt)     = Xkin_el(2,i,j)
                         Stress_all(in+nnt)   = syy_el(i,j)
 
-                        Epl(in+2*nnt)        = Epl(in+2*nnt)+dEpl_el(3,i,j)  
+                        Epl_all(in+2*nnt)    = Epl_all(in+2*nnt)+dEpl_el(3,i,j)  
                         Xkin_all(in+2*nnt)   = Xkin_el(3,i,j)
                         Stress_all(in+2*nnt) = sxy_el(i,j)
                         
-                        Epl(in+3*nnt)        = Epl(in+3*nnt)+dEpl_el(4,i,j)  
+                        Epl_all(in+3*nnt)    = Epl_all(in+3*nnt)+dEpl_el(4,i,j)  
                         Xkin_all(in+3*nnt)   = Xkin_el(4,i,j)
                         Stress_all(in+3*nnt) = szz_el(i,j)
 
@@ -845,22 +846,6 @@ subroutine TIME_LOOP_NEW(nnt,xs,ys,cs_nnz,cs,&                                  
         total_fk = total_fk + time_fk
         total_fd = total_fd + time_fd
         total_u = total_u + time_u
-
-
-        !********************************************************************************************
-        ! COMPUTE ENERGY ERROR
-        !********************************************************************************************
-
-        !      if (test .eq. 1) then
-        !        call COMPUTE_ENERGY_ERROR(nnt, u0, v1, tt1, ne, cs, cs_nnz,&
-        !                                  nm, prop_mat, sdeg_mat, tag_mat, &
-        !                                  nelem_dg, &
-        !                                  alfa1,alfa2,beta1,beta2, &
-        !                                  gamma1,gamma2,delta1,delta2, &
-        !                                  xs,ys,&
-        !                                  IDG_only_uv, JDG_only_uv, MDG_only_uv, nnz_dg_only_uv)
-        !      
-        !      endif
 
         !********************************************************************************************
         !     WRITE OUTPUT FILE

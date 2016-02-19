@@ -28,6 +28,7 @@ module max_var
         integer, parameter :: nofqp             = 6      !<max number of 1-D quadrature point per element 
         integer, parameter :: nofinr            = 500    !<max number of newton rapson iterations
         integer, parameter :: max_quad_points   = 8000   !<max number of quadrature nodes on a DG surface
+        real,    parameter :: tol_nl            = 0.001  !<tolerance on nonlinear calculations
 end module max_var
 
 
@@ -252,91 +253,108 @@ end module qsort_c_module
 !> @brief  Module for non linear calculation in 2D
 
 module nonlinear2d
-    implicit none
+    use max_var, only : tol_nl
     contains
-        subroutine compute_stiffness_matrix(lambda,mu,DEL_ijhk)
+        ! COMPUTE ELASTIC STIFFNESS MATRIX
+        subroutine stiff_matrix(lambda,mu,DEL_ijhk)
+            
             implicit none
-            real, intent(in)                      :: lambda,mu
-            real, dimension(3,3), intent(inout)   :: DEL_ijhk
+            
+            real*8, intent(in)                      :: lambda,mu
+            real*8, dimension(4,4), intent(inout)   :: DEL_ijhk
 
-            ! COMPUTE ELASTIC STIFFNESS MATRIX
             DEL_ijhk(:,:) = 0d0
-            DEL_ijhk(1:2,1:2)   = DEL_ijhk(1:2,1:2) + lambda
+            DEL_ijhk(1:3,1:3)   = DEL_ijhk(1:3,1:3) + lambda
             DEL_ijhk(1,1)       = DEL_ijhk(1,1) + 2*mu
             DEL_ijhk(2,2)       = DEL_ijhk(2,2) + 2*mu
-            DEL_ijhk(3,3)       = DEL_ijhk(3,3) + mu
-
+            DEL_ijhk(3,3)       = DEL_ijhk(3,3) + 2*mu
+            DEL_ijhk(4,4)       = DEL_ijhk(4,4) + mu
+            
             return
-        end subroutine compute_stiffness_matrix
+        
+        end subroutine stiff_matrix
+        
         ! MISES YIELDING LOCUS AND GRADIENT
         subroutine mises_yld_locus(Sigma_ij, X_ij, R, sigma_yld, F_mises, gradF_mises)
+            
             implicit none
-            real, dimension(3), intent(in)  :: Sigma_ij,X_ij
-            real,               intent(in)  :: R,sigma_yld
-            real, dimension(3), intent(out) :: gradF_mises ! Mises yield locus gradient
-            real,               intent(out) :: F_mises     ! Mises yield locus
-            real, dimension(3), parameter   :: A = (/1.0,1.0,2.0/)
-            real, dimension(3)              :: Sigma_ij_dev
-            real                           :: tau_eq_mises
-            integer                        :: k
+            
+            real*8,               intent(in)    :: R,sigma_yld
+            real*8, dimension(4), intent(in)    :: Sigma_ij,X_ij
+            real*8, dimension(4), intent(out)   :: gradF_mises
+            real*8,               intent(out)   :: F_mises
+            real*8, dimension(4), parameter     :: A = (/1.0,1.0,1.0,2.0/)
+            real*8, dimension(4)                :: Sigma_ij_dev
+            real*8                              :: tau_eq_mises
+            integer                             :: k
             
             call tensor_components (Sigma_ij, Sigma_ij_dev)
             call tau_mises(Sigma_ij_dev-X_ij, tau_eq_mises)
             F_mises             =   tau_eq_mises-sigma_yld-R
-            gradF_mises(0:2)    =   0d0
-            do k=1,3
+            gradF_mises         =   0d0
+            do k=1,4
                 gradF_mises(k) = 0.5*A(k)*(Sigma_ij_dev(k)-X_ij(k))/tau_eq_mises
             end do
         
+            return
+
         end subroutine mises_yld_locus
         
         ! OCTAHEDRAL SHEAR STRESS
         subroutine tau_mises(tensor,tau_eq_mises)
+            
             implicit none
-            real, dimension(3), intent(in)  :: tensor
-            real,               intent(out) :: tau_eq_mises
-            real, dimension(3), parameter   :: A = (/1.0,1.0,2.0/) 
-            integer                        :: k
+            
+            real*8, dimension(4), intent(in)    :: tensor
+            real*8,               intent(out)   :: tau_eq_mises
+            real*8, dimension(4), parameter     :: A = (/1.0,1.0,1.0,2.0/) 
+            integer                             :: k
             
             tau_eq_mises = 0.0d0
-            do k=1,3
+            do k=1,4
                 tau_eq_mises = tau_eq_mises+A(k)*(tensor(k)**2)
             end do
             tau_eq_mises = sqrt(0.5*tau_eq_mises)
+
+            return
 
         end subroutine
         
         ! TENSOR COMPONENTS (SPHERICAL & DEVIATORIC)
         subroutine tensor_components(Sigma_ij, Sigma_ij_dev)
+            
             implicit none
-            real, dimension(3), intent(in)  :: Sigma_ij
-            real, dimension(3), intent(out) :: Sigma_ij_dev
-            real                           :: Sigma_P
-            integer:: k
+            
+            real*8, dimension(3), intent(in)    :: Sigma_ij
+            real*8, dimension(3), intent(out)   :: Sigma_ij_dev
+            real*8                              :: Sigma_P
+            integer                             :: k
 
             Sigma_ij_dev = Sigma_ij
-            Sigma_P=sum(Sigma_ij(1:2))*0.5
-            do k=1,2
+            Sigma_P=sum(Sigma_ij(1:3))/3
+            do k=1,3
                 Sigma_ij_dev(k) = Sigma_ij_dev(k)-Sigma_P
             end do
+
+            return
 
         end subroutine tensor_components
             
         ! CHECK PLASTIC CONSISTENCY (KKT CONDITIONS)
         subroutine check_plasticity (dSigma_ij_trial, Sigma_ij_start, X_ij, R, sigma_yld, &
-            st_elp, alpha_elp, nx,ny,nz,nelement)
+            st_elp, alpha_elp)
+            
             implicit none
-            real,               intent(in)    :: R,sigma_yld
-            real, dimension(3), intent(in)    :: X_ij,Sigma_ij_start
-            integer, optional,  intent(in)    :: nx,ny,nz,nelement
-            real, dimension(3), intent(inout) :: dSigma_ij_trial
-            real,               intent(out)   :: alpha_elp
-            integer,            intent(out)   :: st_elp
-            real, dimension(3), parameter     :: A=(/1.0,1.0,2.0/)
-            real, dimension(3)                :: gradFstart, gradFtrial, Sigma_ij_trial
-            real                             :: Fstart, Ftrial,checkload
-            real, parameter                   :: tol_nl = 0.001
-
+            
+            integer*4                               :: k
+            real*8                                  :: Fstart, Ftrial,checkload
+            real*8, dimension(4)                    :: gradFstart, gradFtrial, Sigma_ij_trial
+            real*8,                 intent(in)      :: R,sigma_yld
+            real*8, dimension(4),   intent(in)      :: X_ij,Sigma_ij_start
+            real*8,                 intent(out)     :: alpha_elp
+            logical,                intent(out)     :: st_elp
+            real*8, dimension(4),   intent(inout)   :: dSigma_ij_trial
+            real*8, dimension(4),   parameter       :: A=(/1.0,1.0,1.0,2.0/)
             ! Yield function at Sigma_ij_start
             call mises_yld_locus(Sigma_ij_start, X_ij, R, sigma_yld, &
                 Fstart, gradFstart)
@@ -349,34 +367,34 @@ module nonlinear2d
             write(*,*) "Fstart:",Fstart,"Ftrial:",Ftrial
             ! LOADING CONDITION    
             checkload=0d0
-            do k=1,3
+            do k=1,4
                 checkload=checkload+10*gradFstart(k)*dSigma_ij_trial(k)
             end do
             ! KKT CONDITION
             if (abs(Fstart) .le. tol_nl) then
                 if (checkload .ge. 0) then
                     alpha_elp = 0d0
-                    st_elp    = 1
+                    st_elp    = .true.
                     write(*,*) "PURE-PLASTIC STEP"
                 else
                     if (Ftrial .gt. tol_nl) then
                         alpha_elp = 2*sigma_yld/(2*sigma_yld+Ftrial)
-                        st_elp    = 1
+                        st_elp    = .true.
                         write(*,*) "ELASTO-PLASTIC WITH REVERSAL STEP"
                     else
                         alpha_elp = 1d0
-                        st_elp    = 2 
+                        st_elp    = .false. 
                         write(*,*) "PURE ELASTIC WITH REVERSAL STEP"
                     endif
                 end if
             elseif (Fstart .lt. -tol_nl) then
                 if (Ftrial .lt. tol_nl) then
                     alpha_elp = 1d0
-                    st_elp    = 2
+                    st_elp    = .false.
                     write(*,*) "PURE ELASTIC STEP"
                 else
                     call gotoFtan(Sigma_ij_start,dSigma_ij_trial,Fstart,Ftrial,X_ij,R,sigma_yld,alpha_elp)
-                    st_elp    = 1
+                    st_elp    = .true.
                     write(*,*) "ELASTO-PLASTIC STEP"
                 end if
             elseif (Fstart .gt. tol_nl) then
@@ -394,29 +412,31 @@ module nonlinear2d
         end subroutine check_plasticity
         
         ! NR ALGORITHM AND DRIFT CORRECTION
-        subroutine plastic_corrector (dEpsilon_ij_alpha, Sigma_ij, X_ij, sigma_yld, &
+        subroutine plastic_corrector (dEpsilon_ij_alpha, Sigma_ij, sigma_yld, X_ij, &
             R, b_lmc, Rinf_lmc, C_lmc, kapa_lmc, mu, lambda, dEpsilon_ij_pl)
+            
             implicit none
-            real,               intent(in)    :: sigma_yld            ! first yield limit
-            real,               intent(in)    :: b_lmc, Rinf_lmc      ! Lamaitre and Chaboche parameters (isotropic hardening)
-            real,               intent(in)    :: C_lmc, kapa_lmc      ! Lamaitre and Chaboche parameters (kinematic hardening)
-            real,               intent(in)    :: mu, lambda           ! elastic parameters
-            real,               intent(inout) :: R                    ! starting mises radius
-            real, dimension(3), intent(inout) :: Sigma_ij             ! starting stress state
-            real, dimension(3), intent(inout) :: X_ij                 ! starting back stress
-            real, dimension(3), intent(inout) :: dEpsilon_ij_alpha    ! percentage of elastic-plastic strain
-            real, dimension(3), intent(inout) :: dEpsilon_ij_pl       ! percentage of plastic strain
+            
+            real*8,               intent(in)    :: sigma_yld            ! first yield limit
+            real*8,               intent(in)    :: b_lmc, Rinf_lmc      ! Lamaitre and Chaboche parameters (isotropic hardening)
+            real*8,               intent(in)    :: C_lmc, kapa_lmc      ! Lamaitre and Chaboche parameters (kinematic hardening)
+            real*8,               intent(in)    :: mu, lambda           ! elastic parameters
+            real*8,               intent(inout) :: R                    ! starting mises radius
+            real*8, dimension(4), intent(inout) :: Sigma_ij             ! starting stress state
+            real*8, dimension(4), intent(inout) :: X_ij                 ! starting back stress
+            real*8, dimension(4), intent(inout) :: dEpsilon_ij_alpha    ! percentage of elastic-plastic strain
+            real*8, dimension(4), intent(inout) :: dEpsilon_ij_pl       ! percentage of plastic strain
 
-            real, dimension(3)            :: dX_ij, gradF_0, gradF_mises
-            real, dimension(3)            :: temp_vec
-            real, dimension(3), parameter :: A = (/1.0,1.0,0.5/)
-            real, dimension(3,3)          :: DEL_ijhk
-            integer,            parameter :: N_incr = 10
-            integer                      :: i,j,k
-            real                         :: dR, dPlastMult, F_mises_0, F_mises,Ffinal
-            real, parameter               :: tol_nl=0.001
+            real*8, dimension(4)                :: dX_ij, gradF_0, gradF_mises
+            real*8, dimension(4)                :: temp_vec
+            real*8, dimension(4), parameter     :: A = (/1.0,1.0,1.0,0.5/)
+            real*8, dimension(4,4)              :: DEL_ijhk
+            integer,            parameter       :: N_incr = 10
+            integer                             :: i,j,k
+            real*8                              :: dR, dPlastMult, F_mises_0, F_mises,Ffinal
+
             ! COMPUTE ELASTIC STIFFNESS MATRIX
-            call compute_stiffness_matrix(lambda,mu,DEL_ijhk)
+            call stiff_matrix(lambda,mu,DEL_ijhk)
 
             ! ELASTO-PLASTIC SUB-STEPPING
             dEpsilon_ij_alpha = dEpsilon_ij_alpha/N_incr
@@ -438,14 +458,14 @@ module nonlinear2d
                 dX_ij = dPlastMult*dX_ij
 
                 ! VARIABLE UPDATE
-                do k=1,3 ! plastic strains
+                do k=1,4 ! plastic strains
                     dEpsilon_ij_pl(k)=dEpsilon_ij_pl(k)+dPlastMult*gradF_0(k)*A(k)
                 end do
                 R=R+dR          ! isotropic hardening update
-                X_ij(1:3)=X_ij(1:3)+dX_ij(1:3) ! back-stress update
+                X_ij=X_ij+dX_ij ! back-stress update
                 ! stress update
-                do j = 1,3
-                    do k = 1,3
+                do j = 1,4
+                    do k = 1,4
                         Sigma_ij(j)=Sigma_ij(j)+DEL_ijhk(k,j)*(dEpsilon_ij_alpha(k)-A(k)*dPlastMult*gradF_0(k))
                     end do
                 end do
@@ -466,33 +486,33 @@ module nonlinear2d
         subroutine compute_plastic_modulus(dEpsilon_ij, Sigma_ij, X_ij, R, mu, lambda, &
             sigma_yld, b_lmc, Rinf_lmc, C_lmc, kapa_lmc, dPlastMult)
             implicit none
-            real, dimension(3), intent(in)   :: dEpsilon_ij         ! percentage of elastic-plastic strain
-            real, dimension(3), intent(in)   :: Sigma_ij            ! starting stress state
-            real, dimension(3), intent(in)   :: X_ij                ! starting back stress
-            real,                 intent(in) :: R                   ! starting mises radius
-            real,                 intent(in) :: b_lmc, Rinf_lmc     ! Lamaitre and Chaboche parameters (isotropic hardening)
-            real,                 intent(in) :: C_lmc, kapa_lmc     ! Lamaitre and Chaboche parameters (kinematic hardening)
-            real,                 intent(in) :: mu, lambda          ! elastic parameters
-            real,                 intent(in) :: sigma_yld           ! first yielding limit
-            real,                 intent(out):: dPlastMult          ! plastic multiplier increment
-            real, dimension(3)               :: gradF_mises
-            real, dimension(3),   parameter  :: A =(/1.0,1.0,0.5/)
-            real, dimension(3,3)             :: DEL_ijhk
-            real                            :: h_iso, h_kin        ! isotropic and kinematic hardening modula
-            real                            :: F_mises
-            real                            :: h_lmc               ! total hardening modulus
-            real                            :: temp_vec
+            real*8, dimension(4), intent(in)   :: dEpsilon_ij         ! percentage of elastic-plastic strain
+            real*8, dimension(4), intent(in)   :: Sigma_ij            ! starting stress state
+            real*8, dimension(4), intent(in)   :: X_ij                ! starting back stress
+            real*8,                 intent(in) :: R                   ! starting mises radius
+            real*8,                 intent(in) :: b_lmc, Rinf_lmc     ! Lamaitre and Chaboche parameters (isotropic hardening)
+            real*8,                 intent(in) :: C_lmc, kapa_lmc     ! Lamaitre and Chaboche parameters (kinematic hardening)
+            real*8,                 intent(in) :: mu, lambda          ! elastic parameters
+            real*8,                 intent(in) :: sigma_yld           ! first yielding limit
+            real*8,                 intent(out):: dPlastMult          ! plastic multiplier increment
+            real*8, dimension(4)               :: gradF_mises
+            real*8, dimension(4),   parameter  :: A =(/1.0,1.0,1.0,0.5/)
+            real*8, dimension(4,4)             :: DEL_ijhk
+            real*8                            :: h_iso, h_kin        ! isotropic and kinematic hardening modula
+            real*8                            :: F_mises
+            real*8                            :: h_lmc               ! total hardening modulus
+            real*8                            :: temp_vec
             integer                         :: j,k
             
             ! COMPUTE ELASTIC STIFFNESS MATRIX
-            call compute_stiffness_matrix(lambda,mu,DEL_ijhk)
+            call stiff_matrix(lambda,mu,DEL_ijhk)
 
             ! COMPUTE HARDENING MODULUS
             call mises_yld_locus (Sigma_ij, X_ij, R, sigma_yld, F_mises, gradF_mises)
 
             h_iso = b_lmc*(Rinf_lmc-R)
             h_kin = 0d0
-            do k=1,3
+            do k=1,4
                 h_kin=h_kin+kapa_lmc*X_ij(k)*gradF_mises(k)
             end do
             h_kin=C_lmc-h_kin
@@ -501,8 +521,8 @@ module nonlinear2d
             temp_vec   = 0d0
             dPlastMult = 0d0
 
-            do k=1,3
-                do j=1,3
+            do k=1,4
+                do j=1,4
                     temp_vec   = temp_vec+gradF_mises(j)*DEL_ijhk(j,k)*gradF_mises(k)*A(k)
                     dPlastMult = dPlastMult+gradF_mises(j)*DEL_ijhk(j,k)*dEpsilon_ij(k)
                 end do
@@ -517,24 +537,28 @@ module nonlinear2d
                 stop
             end if
 
+            return
+
         end subroutine compute_plastic_modulus
 
         ! INCREMENTS OF INTRINSIC STATIC VARIABLES
         subroutine hardening_increments(Sigma_ij, R, X_ij, sigma_yld, &
             b_lmc, Rinf_lmc, C_lmc, kapa_lmc, dR, dX_ij)
+            
             implicit none
-            real, dimension(3), intent(in) :: Sigma_ij        ! actual stress state
-            real, dimension(3), intent(in) :: X_ij            ! actual back stress state
-            real,               intent(in) :: sigma_yld       ! first yielding limit
-            real,               intent(in) :: R               ! actual mises radius
-            real,               intent(in) :: b_lmc, Rinf_lmc ! Lamaitre and Chaboche parameters (isotropic hardening)
-            real,               intent(in) :: C_lmc, kapa_lmc ! Lamaitre and Chaboche parameters (kinematic hardening)
-            real, dimension(3), intent(out):: dX_ij           ! back stress increment
-            real,               intent(out):: dR              ! mises radius increment
-            real, dimension(3), parameter  :: A = (/1.0,1.0,0.5/)
-            real, dimension(3)             :: gradF_mises
-            real                          :: F_mises
-            integer                       :: k
+            
+            real*8, dimension(4), intent(in)    :: Sigma_ij        ! actual stress state
+            real*8, dimension(4), intent(in)    :: X_ij            ! actual back stress state
+            real*8,               intent(in)    :: sigma_yld       ! first yielding limit
+            real*8,               intent(in)    :: R               ! actual mises radius
+            real*8,               intent(in)    :: b_lmc, Rinf_lmc ! Lamaitre and Chaboche parameters (isotropic hardening)
+            real*8,               intent(in)    :: C_lmc, kapa_lmc ! Lamaitre and Chaboche parameters (kinematic hardening)
+            real*8, dimension(4), intent(out)   :: dX_ij           ! back stress increment
+            real*8,               intent(out)   :: dR              ! mises radius increment
+            real*8, dimension(4), parameter     :: A = (/1.0,1.0,1.0,0.5/)
+            real*8, dimension(4)                :: gradF_mises
+            real*8                              :: F_mises
+            integer                             :: k
 
             ! INCREMENT IN ISOTROPIC HARDENING VARIABLES (R)
             dR = b_lmc*(Rinf_lmc-R)
@@ -542,106 +566,68 @@ module nonlinear2d
             call mises_yld_locus (Sigma_ij, X_ij, R, sigma_yld, F_mises, gradF_mises)
             dX_ij=2*A*gradF_mises*C_lmc/3-X_ij*kapa_lmc
 
+            return
+
         end subroutine hardening_increments
         
         ! DRIFT CORRECTION (RADIAL RETURN)
         subroutine drift_corr(drift,Sigma_ij, X_ij, R, sigma_yld, &
             b_lmc, Rinf_lmc, C_lmc, kapa_lmc, lambda, mu, dEpsilon_ij_pl)
+            
+            implicit none
 
-            logical, intent(in)                 :: drift
-            real, dimension(3), intent(inout)   :: Sigma_ij, X_ij, dEpsilon_ij_pl
-            real,                 intent(inout) :: R
-            real,                 intent(in)    :: lambda, mu, sigma_yld, b_lmc, Rinf_lmc, C_lmc, kapa_lmc
-            real, dimension(3)                  :: gradF_mises,gradF0,Sigma_temp,Sigma_dev_temp,Sigma_dev_ij
-            real, dimension(3), parameter       :: A = (/1.0,1.0,0.5/)
-            real, dimension(3,3)                :: DEL_ijhk
-            real:: Fmises,Fmises0,beta,h_kin,h_iso,h_lmc,dbeta,err0
+            logical, intent(in)                     :: drift
+            real*8, dimension(4), intent(inout)     :: Sigma_ij, X_ij, dEpsilon_ij_pl
+            real*8,                 intent(inout)   :: R
+            real*8,                 intent(in)      :: lambda, mu, sigma_yld, b_lmc, Rinf_lmc, C_lmc, kapa_lmc
+            real*8, dimension(4)                    :: gradF_mises,gradF0,Sigma_temp,Sigma_dev_temp,Sigma_dev_ij
+            real*8, dimension(4), parameter         :: A = (/1.0,1.0,1.0,0.5/)
+            real*8, dimension(4,4)                  :: DEL_ijhk
+            real*8:: Fmises,Fmises0,beta,h_kin,h_iso,h_lmc,dbeta,err0,err1
             integer:: k,j
-            real, parameter :: tol_nl =0.001
             
             ! INITIAL PLASTIC CONDITION
             call mises_yld_locus(Sigma_ij, X_ij, R, sigma_yld, Fmises0, gradF0)
-            if (drift) then ! B METHOD
-                beta=0d0
-                do 
-                    call mises_yld_locus(Sigma_ij,X_ij,R,sigma_yld,Fmises,gradF_mises)
-                    ! COMPUTE BETA FOR DRIFT CORRECTION
-                    dbeta=0d0
-                    do k=1,3
-                        dbeta = dbeta+gradF0(k)*gradF_mises(k)
-                    end do
-                    beta=beta-Fmises/dbeta
-                    ! STRESS CORRECTION (RADIAL RETURN)
-                    Sigma_temp=Sigma_ij+beta*gradF0*A
-                    call mises_yld_locus(Sigma_temp,X_ij,R,sigma_yld,Fmises,gradF_mises)
-                    call tensor_components(Sigma_temp, Sigma_dev_temp)
-                    call tensor_components(Sigma_ij,Sigma_dev_ij)
-                    call tau_mises(Sigma_dev_ij-Sigma_dev_temp,err0)
-                    call tau_mises(Sigma_dev_ij-X_ij,err1)
-                    err0=err0/err1
-                    Sigma_ij=Sigma_temp
-                    !if (abs(Fmises) .le. tol_nl) then
-                    if (err0 .le. 0.0000001 .or. abs(Fmises) .le. tol_nl) then
-                        exit
-                    end if
+            beta=0d0
+            do 
+                call mises_yld_locus(Sigma_ij,X_ij,R,sigma_yld,Fmises,gradF_mises)
+                ! COMPUTE BETA FOR DRIFT CORRECTION
+                dbeta=0d0
+                do k=1,4
+                    dbeta = dbeta+gradF0(k)*gradF_mises(k)
                 end do
-            else ! E METHOD
-                
-                call compute_stiffness_matrix(lambda,mu,DEL_ijhk)
-                
-                do 
-                    ! COMPUTE HARDENING INCREMENTS
-                    h_iso = b_lmc*(Rinf_lmc-R)
-                    h_kin = C_lmc
-                    do k=1,3
-                        h_kin = h_kin-kapa_lmc*X_ij(k)*gradF0(k)
-                    end do
-                    h_lmc=h_iso+h_kin
-                    write(*,*) "H: ", h_lmc
-                   ! COMPUTE BETA FOR DRIFT CORRECTION
-                    beta = 0d0
-                    do j=1,3
-                        do k=1,3
-                            beta=beta+gradF0(k)*DEL_ijhk(k,j)*A(j)*gradF0(j)
-                        end do
-                    end do
-                    write(*,*) "beta",beta
-                     
-                    beta=Fmises/(-h_lmc+beta)
-                    write(*,*) "beta",beta
-                    ! STRESS-STRAIN-HARDENING CORRECTION
-                    do k=1,3
-                        do j=1,3
-                            Sigma_temp(k)=Sigma_ij(k)-beta*DEL_ijhk(j,k)*A(j)*gradF0(j)
-                        end do
-                    end do
-                    
-                    call mises_yld_locus(Sigma_temp,X_ij,R,sigma_yld,Fmises,gradF_mises)
-                    call tensor_components(Sigma_temp, Sigma_dev_temp)
-                    call tensor_components(Sigma_ij,Sigma_dev_ij)
-                    call tau_mises(Sigma_dev_ij-Sigma_dev_temp,err0)
-                    call tau_mises(Sigma_dev_ij-X_ij,err1)
-                    err0=err0/err1
-                    Sigma_ij=Sigma_temp
-                    dEpsilon_ij_pl=dEpsilon_ij_pl+beta*A*gradF0
-                    X_ij=X_ij+beta*(2*A*gradF0*C_lmc/3-X_ij*kapa_lmc)
-                    R=R+beta*(Rinf_lmc-R)*b_lmc
-                    call mises_yld_locus(Sigma_ij, X_ij, R, sigma_yld, Fmises0, gradF0)
+                beta=beta-Fmises/dbeta
+                ! STRESS CORRECTION (RADIAL RETURN)
+                Sigma_temp=Sigma_ij+beta*gradF0*A
+                call mises_yld_locus(Sigma_temp,X_ij,R,sigma_yld,Fmises,gradF_mises)
+                call tensor_components(Sigma_temp, Sigma_dev_temp)
+                call tensor_components(Sigma_ij,Sigma_dev_ij)
+                call tau_mises(Sigma_dev_ij-Sigma_dev_temp,err0)
+                call tau_mises(Sigma_dev_ij-X_ij,err1)
+                err0=err0/err1
+                Sigma_ij=Sigma_temp
+                !if (abs(Fmises) .le. tol_nl) then
+                if (err0 .le. 0.0000001 .or. abs(Fmises) .le. tol_nl) then
+                    exit
+                end if
+            end do
 
-                    if (abs(Fmises0) .lt. tol_nl .or. err0/err1.lt.tol_nl/100) exit
-                end do
-            end if
+            return
+
         end subroutine drift_corr
 
         subroutine gotoFtan(start0,dtrial0,F0,Ftrial,center,radius,s0,alpha)
-            real, dimension(3), intent(in)      :: start0,dtrial0,center
-            real,               intent(in)      :: radius,s0
-            real,               intent(inout)   :: F0,Ftrial
-            real,               intent(out)     :: alpha
-            real, dimension(3)                  :: start,gradF,dev,dev_temp,temp,dev0
-            real                               :: Fstart,err0,err1,beta
-            integer                            :: counter
-            real, parameter :: tol_nl=0.001
+            
+            implicit none
+
+            real*8, dimension(3), intent(in)        :: start0,dtrial0,center
+            real*8,               intent(in)        :: radius,s0
+            real*8,               intent(inout)     :: F0,Ftrial
+            real*8,               intent(out)       :: alpha
+            real*8, dimension(3)                    :: start,gradF,dev,dev_temp,temp,dev0
+            real*8                                  :: Fstart,err0,err1,beta
+            integer                                 :: counter
+            
             call tensor_components(start0,dev0)
             alpha=F0/(F0-Ftrial)
             start=start0
@@ -667,17 +653,23 @@ module nonlinear2d
             write(*,*) "err0",err0
             write(*,*) "gotoF: stress:",start
             write(*,*) ""
+
+            return
+
         end subroutine gotoFtan
          
         subroutine gotoFsec(start0,dtrial0,F0,Ftrial,center,radius,s0,alpha)
-            real, dimension(3), intent(in)      :: start0,dtrial0,center
-            real,               intent(in)      :: radius,s0
-            real,               intent(inout)   :: F0,Ftrial
-            real,               intent(out)     :: alpha
-            real, dimension(3)                  :: start,gradF,dev,dev_temp,temp,dev0
-            real                               :: alphanew,err0,err1,beta
-            real, parameter :: tol_nl = 0.001
-            integer                            :: counter
+            
+            implicit none
+
+            real*8, dimension(4), intent(in)        :: start0,dtrial0,center
+            real*8,               intent(in)        :: radius,s0
+            real*8,               intent(inout)     :: F0,Ftrial
+            real*8,               intent(out)       :: alpha
+            real*8, dimension(4)                    :: start,gradF,dev,dev_temp,temp,dev0
+            real*8                                  :: alphanew,err0,err1,beta
+            integer                                 :: counter
+            
             call tensor_components(start0,dev0)
             alpha=F0/(F0-Ftrial)
             beta=0d0
@@ -700,6 +692,8 @@ module nonlinear2d
                 temp=start-(alpha-beta)*dtrial0
                 
             enddo
+
+            return
 
         end subroutine gotoFsec
 end module nonlinear2d
