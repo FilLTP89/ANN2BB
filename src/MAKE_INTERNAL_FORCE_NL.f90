@@ -121,3 +121,12 @@ subroutine MAKE_INTERNAL_FORCE_NL(nn,ct,ww,dd,      &
     return
 
 end subroutine MAKE_INTERNAL_FORCE_NL
+!! mode: f90
+!! show-trailing-whitespace: t
+!! End:
+!! vim: set sw=4 ts=8 et tw=80 smartindent : !!
+!! mode: f90
+!! show-trailing-whitespace: t
+!! End:
+!! vim: set sw=4 ts=8 et tw=80 smartindent : !!
+

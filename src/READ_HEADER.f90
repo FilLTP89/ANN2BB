@@ -40,11 +40,8 @@
 !> @param[out] pen_c penalty constant for DG method
 
     subroutine READ_HEADER(file_head,file_grid,file_mat,file_out,&
-      time_step,stop_time,&
-      option_out_var, &
-      nsnapshots,t_snapshot,ndt_monitor, &
-      depth_search_mon_lst,n_lst, monfile_lst,time_deg,test,&
-      dg_c,pen_c,NLFLAG)   
+      time_step,stop_time,option_out_var,nsnapshots,t_snapshot,ndt_monitor, &
+      depth_search_mon_lst,n_lst, monfile_lst,time_deg,test,dg_c,pen_c,NLFLAG)   
 
       implicit none
 
@@ -65,8 +62,8 @@
       real*8 :: ndt_monitor     
       real*8 :: depth_search_mon_lst 
       integer*4 :: n_lst
-      integer*4 :: monfile_lst, time_deg, test                
-      logical, intent(OUT) :: NLFLAG
+      integer*4 :: monfile_lst, time_deg, test,temp                
+      logical, intent(out) :: NLFLAG
 
       ndt_monitor = 1; n_lst = 0;
       im = 0
@@ -115,7 +112,12 @@
               elseif (keyword(1:7).eq.'TIMEDEG') then
                   read(input_line(ileft:iright),*) time_deg 
               elseif (keyword(1:7).eq.'NONLINE') then
-                  read(input_line(ileft:iright),*) NLFLAG
+                  read(input_line(ileft:iright),*) temp
+                  if (temp==1) then
+                      NLFLAG=.true.
+                  else
+                      NLFLAG=.false.
+                  endif
               endif
           enddo
 

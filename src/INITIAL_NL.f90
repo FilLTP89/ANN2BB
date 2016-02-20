@@ -46,7 +46,7 @@ subroutine INITIAL_NL(cs_nnz,cs,nm,nn,nnt,im,ie,prop_mat,Sxx_el,Syy_el,Sxy_el,Sz
     implicit none
     integer*4, intent(in)                       :: im,nnt,nn,cs_nnz,nm,ie
     integer*4, intent(in),  dimension(0:cs_nnz) :: cs
-    real*8, intent(in),     dimension(nm,8)     :: prop_mat
+    real*8, intent(in),     dimension(nm,9)     :: prop_mat
     real*8, intent(in),     dimension(nnt)      :: Riso_all
     real*8, intent(in),     dimension(4*nnt)    :: Stress_all,Xkin_all
     real*8, intent(inout),  dimension(nn)       :: fx_el,fy_el
@@ -59,11 +59,11 @@ subroutine INITIAL_NL(cs_nnz,cs,nm,nn,nnt,im,ie,prop_mat,Sxx_el,Syy_el,Sxy_el,Sz
 
     lambda_el = prop_mat(im,2)
     mu_el     = prop_mat(im,3)
-    syld_el   = prop_mat(im,4)
-    Ckin_el   = prop_mat(im,5)
-    kkin_el   = prop_mat(im,6)
-    Rinf_el   = prop_mat(im,7)
-    biso_el   = prop_mat(im,8)
+    syld_el   = prop_mat(im,5)
+    Ckin_el   = prop_mat(im,6)
+    kkin_el   = prop_mat(im,7)
+    Rinf_el   = prop_mat(im,8)
+    biso_el   = prop_mat(im,9)
 
     fx_el      = 0.d0
     fy_el      = 0.d0

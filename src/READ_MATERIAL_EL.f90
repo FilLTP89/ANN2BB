@@ -88,294 +88,278 @@
 !> @param[out] fmax  max frequency of the plane wave load 
 !> @param[out] lab_dg_yn label for projection of interface nodes
 
-      subroutine READ_MATERIAL_EL(file_mat,nm,propm, typem, tagm, &
-                                  ndX,valdX,fdX,tagdX, &
-                                  ndY,valdY,fdY,tagdY, &
-                                  nnX,valnX,fnX,tagnX, &
-                                  nnY,valnY,fnY,tagnY, &
-                                  npX,valpX,fpX, &
-                                  npY,valpY,fpY, &
-                                  nplX,valplX,fplX,tagplX, &
-                                  nplY,valplY,fplY,tagplY, &
-                                  nsism,valsism,fsism,tagsism, &
-                                  na,taga, &
-								  nMDRM,nBDRM,tag_MDRM,tag_BDRM,tagstep,  &      !DRM Scandella 27.09.2005
-							      nPDRM,valPDRM,fPDRM,&                          !DRM Scandella 10.10.2005
-                                  nf,func_type,func_indx,func_data,tag_func, &
-								  nf_drm,func_type_drm,func_indx_drm,func_data_drm,tag_func_drm,&  !DRM Scandella 11.04.2006                          !DRM Scandella 11.04.2006 
-                                  fmax, ntest, ftest, &
-                                  nb_dg,lab_dg,lab_dg_yn)
-      
+subroutine READ_MATERIAL_EL(file_mat,nm,propm, typem, tagm, &
+    ndX,valdX,fdX,tagdX,ndY,valdY,fdY,tagdY,nnX,valnX,fnX,tagnX,nnY,valnY,fnY,tagnY,    &
+    npX,valpX,fpX,npY,valpY,fpY,nplX,valplX,fplX,tagplX,nplY,valplY,fplY,tagplY,        &
+    nsism,valsism,fsism,tagsism,na,taga,nMDRM,nBDRM,tag_MDRM,tag_BDRM,tagstep,          & !DRM Scandella 27.09.2005
+    nPDRM,valPDRM,fPDRM,nf,func_type,func_indx,func_data,tag_func, & 
+    nf_drm,func_type_drm,func_indx_drm,func_data_drm,tag_func_drm,  & !DRM Scandella 11.04.2006
+    fmax, ntest, ftest,nb_dg,lab_dg,lab_dg_yn,NLFLAG)
 
-      
-      implicit none
-      
-      character*70 :: file_mat      
-      integer*4 :: nm,ndT,nnT,ncT,ndX,ndY,nnX,nnY,npX,npY,nplX,nplY,nsism,na,npdT,nf
-	  integer*4 :: nMDRM,nBDRM,nPDRM       !DRM Scandella 20.10.2005
-	  integer*4 :: tagstep                 !DRM Scandella 17.10.2005
-	  integer*4 :: nf_drm                  !DRM Scandella 11.04.2006
-      
-      integer*4 :: nb_dg, idg
-      integer*4, dimension(nb_dg) :: lab_dg, lab_dg_yn
+    implicit none
 
-      integer*4, dimension(nm) :: typem
-      real*8, dimension(nm,4) :: propm
-      integer*4, dimension(nm) :: tagm
+    character*70 :: file_mat      
+    integer*4 :: nm,ndT,nnT,ncT,ndX,ndY,nnX,nnY,npX,npY,nplX,nplY,nsism,na,npdT,nf
+    integer*4 :: nMDRM,nBDRM,nPDRM       !DRM Scandella 20.10.2005
+    integer*4 :: tagstep                 !DRM Scandella 17.10.2005
+    integer*4 :: nf_drm                  !DRM Scandella 11.04.2006
 
-      
-      integer*4, dimension(nf) :: func_type
-      integer*4, dimension(nf +1) :: func_indx
-      real*8, dimension(*) :: func_data
-      integer*4, dimension(nf) :: tag_func
-	  
-	  integer*4, dimension(nf_drm) :: func_type_drm    !DRM Scandella 11.04.2006 
-      integer*4, dimension(nf_drm +1) :: func_indx_drm !DRM Scandella 11.04.2006  
-      real*8, dimension(*) :: func_data_drm            !DRM Scandella 11.04.2006 
-      integer*4, dimension(nf_drm) :: tag_func_drm     !DRM Scandella 11.04.2006
+    integer*4 :: nb_dg, idg
+    integer*4, dimension(nb_dg) :: lab_dg, lab_dg_yn
 
-      
-      real*8, dimension(ndX,*) :: valdX
-      real*8, dimension(ndY,*) :: valdY
-      integer*4, dimension(*) :: fdX,tagdX,fdY,tagdY
-      
-      real*8, dimension(nnX,*) :: valnX
-      real*8, dimension(nnY,*) :: valnY
-      integer*4, dimension(*) :: fnX,tagnX,fnY,tagnY
-      
-      real*8, dimension(npX,*) :: valpX
-      real*8, dimension(npY,*) :: valpY
-      integer*4, dimension(*) :: fpX,fpY
+    integer*4, dimension(nm) :: typem
+    real*8, dimension(nm,9) :: propm
+    integer*4, dimension(nm) :: tagm
+    integer*4, dimension(nf) :: func_type
+    integer*4, dimension(nf +1) :: func_indx
+    real*8, dimension(*) :: func_data
+    integer*4, dimension(nf) :: tag_func
 
-      real*8, dimension(nplX,*) :: valplX
-      real*8, dimension(nplY,*) :: valplY
-      integer*4, dimension(*) :: fplX,tagplX,fplY,tagplY
-	  
-	  integer*4, dimension(*) :: fPDRM          ! DRM Scandella 20.10.2005
-      real*8, dimension(nPDRM,*) :: valPDRM     ! DRM Scandella 20.10.2005
-     
-      real*8, dimension(nsism,*) :: valsism  
-      integer*4, dimension(*) :: fsism,tagsism
+    integer*4, dimension(nf_drm) :: func_type_drm    !DRM Scandella 11.04.2006 
+    integer*4, dimension(nf_drm +1) :: func_indx_drm !DRM Scandella 11.04.2006  
+    real*8, dimension(*) :: func_data_drm            !DRM Scandella 11.04.2006 
+    integer*4, dimension(nf_drm) :: tag_func_drm     !DRM Scandella 11.04.2006
 
-      integer*4, dimension(*) :: taga
-	  integer*4, dimension(nMDRM) :: tag_MDRM   ! DRM Scandella 27.09.2005
-	  integer*4, dimension(nBDRM) :: tag_BDRM   ! DRM Scandella 27.09.2005
-      integer*4 :: ntest
-      integer*4, dimension(ntest) :: ftest
 
-      real*8 :: fmax
-      
-      integer*4 :: im,ifunc,idf,func_nd
-	  integer*4 :: ifunc_drm, func_nd_drm                        ! DRM Scandella 11.04.2006
+    real*8, dimension(ndX,*) :: valdX
+    real*8, dimension(ndY,*) :: valdY
+    integer*4, dimension(*) :: fdX,tagdX,fdY,tagdY
 
-      integer*4 :: iml                                        
-      integer*4 :: idX,idY,inX,inY,ipX,ipY,iplX,iplY,isism,ia
-	  integer*4 :: iMDRM,iBDRM,iPDRM                             !DRM Scandella 20.10.2005
-      integer*4 :: ileft,iright, itest
-      integer*4 :: i,j,trash,status
-      
-      character*2000000 :: input_line
-      character*4 :: keyword
-      
-      
-      open(23,file=file_mat)
-   
-      
-      im = 0
+    real*8, dimension(nnX,*) :: valnX
+    real*8, dimension(nnY,*) :: valnY
+    integer*4, dimension(*) :: fnX,tagnX,fnY,tagnY
 
-      idX = 0
-      idY = 0
-      inX = 0
-      inY = 0
-      ipX = 0
-      ipY = 0
-      iplX = 0
-      iplY = 0
-      isism = 0
-      ia = 0
-	  iMDRM = 0  ! DRM Scandella 27.09.2005
-	  iBDRM = 0  ! DRM Scandella 27.09.2005
-	  iPDRM = 0  ! DRM Scandella 20.10.2005
-      idg = 0
-      ifunc = 0
-	  ifunc_drm = 0 !DRM Scandella 11.04.2006
-      itest = 0
+    real*8, dimension(npX,*) :: valpX
+    real*8, dimension(npY,*) :: valpY
+    integer*4, dimension(*) :: fpX,fpY
 
-      fmax = 0
+    real*8, dimension(nplX,*) :: valplX
+    real*8, dimension(nplY,*) :: valplY
+    integer*4, dimension(*) :: fplX,tagplX,fplY,tagplY
 
-      
-      if (nf.gt.0) then
-         func_indx(1) = 1
-      endif
-	  
-	  if (nf_drm.gt.0) then      !DRM Scandella 11.04.2006
-         func_indx_drm(1) = 1    !DRM Scandella 11.04.2006
-      endif                      !DRM Scandella 11.04.2006
+    integer*4, dimension(*) :: fPDRM          ! DRM Scandella 20.10.2005
+    real*8, dimension(nPDRM,*) :: valPDRM     ! DRM Scandella 20.10.2005
 
-      do 
-         read(23,'(A)',IOSTAT = status) input_line
-         
-         if (status.ne.0) exit
-         
-         keyword = input_line(1:4)
-         
-         ileft = 0
-         iright = len(input_line)
-		 !write(*,*) iright
-		 !read(*,*)
-         do i = 1,iright
+    real*8, dimension(nsism,*) :: valsism  
+    integer*4, dimension(*) :: fsism,tagsism
+
+    integer*4, dimension(*) :: taga
+    integer*4, dimension(nMDRM) :: tag_MDRM   ! DRM Scandella 27.09.2005
+    integer*4, dimension(nBDRM) :: tag_BDRM   ! DRM Scandella 27.09.2005
+    integer*4 :: ntest
+    integer*4, dimension(ntest) :: ftest
+
+    real*8 :: fmax
+
+    integer*4 :: im,ifunc,idf,func_nd
+    integer*4 :: ifunc_drm, func_nd_drm                        ! DRM Scandella 11.04.2006
+
+    integer*4 :: iml                                        
+    integer*4 :: idX,idY,inX,inY,ipX,ipY,iplX,iplY,isism,ia
+    integer*4 :: iMDRM,iBDRM,iPDRM                             !DRM Scandella 20.10.2005
+    integer*4 :: ileft,iright, itest
+    integer*4 :: i,j,trash,status
+
+    character*2000000 :: input_line
+    character*4 :: keyword
+    logical,intent(in) :: NLFLAG
+
+    open(23,file=file_mat)
+
+    im = 0
+
+    idX = 0
+    idY = 0
+    inX = 0
+    inY = 0
+    ipX = 0
+    ipY = 0
+    iplX = 0
+    iplY = 0
+    isism = 0
+    ia = 0
+    iMDRM = 0  ! DRM Scandella 27.09.2005
+    iBDRM = 0  ! DRM Scandella 27.09.2005
+    iPDRM = 0  ! DRM Scandella 20.10.2005
+    idg = 0
+    ifunc = 0
+    ifunc_drm = 0 !DRM Scandella 11.04.2006
+    itest = 0
+
+    fmax = 0
+
+
+    if (nf.gt.0) then
+        func_indx(1) = 1
+    endif
+
+    if (nf_drm.gt.0) then      !DRM Scandella 11.04.2006
+        func_indx_drm(1) = 1    !DRM Scandella 11.04.2006
+    endif                      !DRM Scandella 11.04.2006
+
+    do 
+        read(23,'(A)',IOSTAT = status) input_line
+
+        if (status.ne.0) exit
+
+        keyword = input_line(1:4)
+
+        ileft = 0
+        iright = len(input_line)
+        do i = 1,iright
             if (input_line(i:i).eq.' ') exit
-         enddo
-         ileft = i		 
-         
-         if (keyword.eq.'MATE') then
-            im = im + 1
-            read(input_line(ileft:iright),*) tagm(im),typem(im),&
-                 propm(im,1),propm(im,2),propm(im,3),propm(im,4)
+        enddo
+        ileft = i 
 
-         elseif (keyword.eq.'DIRX') then
+        if (keyword.eq.'MATE') then
+            im = im + 1
+            if (NLFLAG) then
+                read(input_line(ileft:iright),*) tagm(im),typem(im), &
+                    propm(im,1),propm(im,2),propm(im,3),propm(im,4),&
+                    propm(im,5),propm(im,6),propm(im,7),propm(im,8),&
+                    propm(im,9)
+            else
+                read(input_line(ileft:iright),*) tagm(im),typem(im),&
+                    propm(im,1),propm(im,2),propm(im,3),propm(im,4)
+            endif
+        elseif (keyword.eq.'DIRX') then
             idX = idX + 1
             read(input_line(ileft:iright),*)tagdX(idX),fdX(idX),&
-                 valdX(idX,1),valdX(idX,2)
+             valdX(idX,1),valdX(idX,2)
 
-         elseif (keyword.eq.'DIRY') then
+        elseif (keyword.eq.'DIRY') then
             idY = idY + 1
             read(input_line(ileft:iright),*)tagdY(idY),fdY(idY),&
-                 valdY(idY,1),valdY(idY,2)
-                 
-         elseif (keyword.eq.'NEUX') then
+             valdY(idY,1),valdY(idY,2)
+         
+        elseif (keyword.eq.'NEUX') then
             inX = inX + 1
             read(input_line(ileft:iright),*)tagnX(inX),fnX(inX),&
-                 valnX(inX,1),valnX(inX,2)
+             valnX(inX,1),valnX(inX,2)
 
-         elseif (keyword.eq.'NEUY') then
+        elseif (keyword.eq.'NEUY') then
             inY = inY + 1
             read(input_line(ileft:iright),*)tagnY(inY),fnY(inY),&
-                 valnY(inY,1),valnY(inY,2)
+             valnY(inY,1),valnY(inY,2)
 
-         elseif (keyword.eq.'PLOX') then
+        elseif (keyword.eq.'PLOX') then
             ipX = ipX + 1
             read(input_line(ileft:iright),*)fpX(ipX),&
-                 valpX(ipX,1),valpX(ipX,2),valpX(ipX,3)
+             valpX(ipX,1),valpX(ipX,2),valpX(ipX,3)
 
-         elseif (keyword.eq.'PLOY') then
+        elseif (keyword.eq.'PLOY') then
             ipY = ipY + 1
             read(input_line(ileft:iright),*)fpY(ipY),&
-                 valpY(ipY,1),valpY(ipY,2),valpY(ipY,3)
- 
-         elseif (keyword.eq.'PLAX') then
+             valpY(ipY,1),valpY(ipY,2),valpY(ipY,3)
+
+        elseif (keyword.eq.'PLAX') then
             iplX = iplX + 1
             read(input_line(ileft:iright),*)fplX(iplX),&
-                 tagplX(iplX),valplX(iplX,1)
+             tagplX(iplX),valplX(iplX,1)
 
         elseif (keyword.eq.'PLAY') then
             iplY = iplY + 1
             read(input_line(ileft:iright),*)fplY(iplY),&
-                 tagplY(iplY),valplY(iplY,1)
+             tagplY(iplY),valplY(iplY,1)
 
         elseif (keyword.eq.'SISM') then
             isism = isism + 1
             read(input_line(ileft:iright),*)fsism(isism),&
-                 tagsism(isism),valsism(isism,1),valsism(isism,2),&
-		 valsism(isism,3),valsism(isism,4),valsism(isism,5),&
-		 valsism(isism,6),valsism(isism,7),valsism(isism,8),&
-		 valsism(isism,9),valsism(isism,10),valsism(isism,11),&
-		 valsism(isism,12)
-!
-
-         elseif (keyword.eq.'ABSO') then
+                tagsism(isism),valsism(isism,1),valsism(isism,2),&
+                valsism(isism,3),valsism(isism,4),valsism(isism,5),&
+                valsism(isism,6),valsism(isism,7),valsism(isism,8),&
+                valsism(isism,9),valsism(isism,10),valsism(isism,11),&
+                valsism(isism,12)
+        elseif (keyword.eq.'ABSO') then
             ia = ia + 1
             read(input_line(ileft:iright),*)taga(ia)
-		
-		 elseif (keyword.eq.'SDRM') then                           ! DRM Scandella 20.10.2005  
-		    read(input_line(ileft:iright),*) tagstep               ! DRM Scandella 20.10.2005 
-!
-         elseif (keyword.eq.'MDRM') then                           ! DRM Scandella 27.09.2005   
+
+        elseif (keyword.eq.'SDRM') then                           ! DRM Scandella 20.10.2005  
+            read(input_line(ileft:iright),*) tagstep               ! DRM Scandella 20.10.2005 
+        elseif (keyword.eq.'MDRM') then                           ! DRM Scandella 27.09.2005   
             iMDRM = iMDRM + 1                                      ! DRM Scandella 27.09.2005
             read(input_line(ileft:iright),*)tag_MDRM(iMDRM)        ! DRM Scandella 27.09.2005  
-!
-         elseif (keyword.eq.'BDRM') then                           ! DRM Scandella 27.09.2005 
+        !
+        elseif (keyword.eq.'BDRM') then                           ! DRM Scandella 27.09.2005 
             iBDRM = iBDRM + 1                                      ! DRM Scandella 27.09.2005    
             read(input_line(ileft:iright),*)tag_BDRM(iBDRM)        ! DRM Scandella 27.09.2005
 
-         elseif (keyword.eq.'PDRM') then                           ! DRM Scandella 20.10.2005 
+        elseif (keyword.eq.'PDRM') then                           ! DRM Scandella 20.10.2005 
             iPDRM = iPDRM + 1                                      ! DRM Scandella 20.10.2005    
             read(input_line(ileft:iright),*)fPDRM(iPDRM),&         ! DRM Scandella 20.10.2005 
-                 valPDRM(iPDRM,1),valPDRM(iPDRM,2),valPDRM(iPDRM,3)! DRM Scandella 20.10.2005
+                valPDRM(iPDRM,1),valPDRM(iPDRM,2),valPDRM(iPDRM,3)! DRM Scandella 20.10.2005
 
-         elseif (keyword.eq.'DGIC') then 
+        elseif (keyword.eq.'DGIC') then 
             idg = idg + 1
             read(input_line(ileft:iright),*) lab_dg(idg), lab_dg_yn(idg)            
-            
-         elseif (keyword.eq.'TEST') then                                        
+
+        elseif (keyword.eq.'TEST') then                                        
             itest = itest + 1                                                        
             read(input_line(ileft:iright),*) ftest(itest)            
 
-         elseif (keyword.eq.'FUNC') then
+        elseif (keyword.eq.'FUNC') then
             ifunc = ifunc + 1
             read(input_line(ileft:iright),*) tag_func(ifunc),&
-                 func_type(ifunc)
+                func_type(ifunc)
             if (func_type(ifunc).eq.0) then
-               func_indx(ifunc +1) = func_indx(ifunc) + 0 
+                func_indx(ifunc +1) = func_indx(ifunc) + 0 
             elseif (func_type(ifunc).eq.1) then
-               func_indx(ifunc +1) = func_indx(ifunc) + 2
-               read(input_line(ileft:iright),*)trash,trash,&
+                func_indx(ifunc +1) = func_indx(ifunc) + 2
+                read(input_line(ileft:iright),*)trash,trash,&
                     (func_data(j), j = func_indx(ifunc),func_indx(ifunc +1) -1)
             elseif (func_type(ifunc).eq.2) then
-               func_indx(ifunc +1) = func_indx(ifunc) + 2
-               read(input_line(ileft:iright),*)trash,trash,&
+                func_indx(ifunc +1) = func_indx(ifunc) + 2
+                read(input_line(ileft:iright),*)trash,trash,&
                     (func_data(j), j = func_indx(ifunc),func_indx(ifunc +1) -1)
             elseif (func_type(ifunc).eq.3) then
-               read(input_line(ileft:iright),*)trash,trash,func_nd
-               func_indx(ifunc +1) = func_indx(ifunc) + 2*func_nd
-               read(input_line(ileft:iright),*)trash,trash,trash,&
+                read(input_line(ileft:iright),*)trash,trash,func_nd
+                func_indx(ifunc +1) = func_indx(ifunc) + 2*func_nd
+                read(input_line(ileft:iright),*)trash,trash,trash,&
                     (func_data(j), j = func_indx(ifunc),func_indx(ifunc +1) -1)
             elseif (func_type(ifunc).eq.4) then
-               func_indx(ifunc +1) = func_indx(ifunc) + 2
-               read(input_line(ileft:iright),*)trash,trash,&
+                func_indx(ifunc +1) = func_indx(ifunc) + 2
+                read(input_line(ileft:iright),*)trash,trash,&
                     (func_data(j), j = func_indx(ifunc),func_indx(ifunc +1) -1)
             elseif (func_type(ifunc).eq.5) then
-               func_indx(ifunc +1) = func_indx(ifunc) + 2
-               read(input_line(ileft:iright),*)trash,trash,&
+                func_indx(ifunc +1) = func_indx(ifunc) + 2
+                read(input_line(ileft:iright),*)trash,trash,&
                     (func_data(j), j = func_indx(ifunc),func_indx(ifunc +1) -1)
             elseif (func_type(ifunc).eq.31) then
-               func_indx(ifunc +1) = func_indx(ifunc) + 3
-               read(input_line(ileft:iright),*)trash,trash,&
+                func_indx(ifunc +1) = func_indx(ifunc) + 3
+                read(input_line(ileft:iright),*)trash,trash,&
                     (func_data(j), j = func_indx(ifunc),func_indx(ifunc +1) -1)
             elseif (func_type(ifunc).eq.60) then                                   
-               read(input_line(ileft:iright),*)trash,trash,func_nd                 
-               func_indx(ifunc +1) = func_indx(ifunc) + 2*func_nd                  
-               read(input_line(ileft:iright),*)trash,trash,trash,&                 
+                read(input_line(ileft:iright),*)trash,trash,func_nd                 
+                func_indx(ifunc +1) = func_indx(ifunc) + 2*func_nd                  
+                read(input_line(ileft:iright),*)trash,trash,trash,&                 
                     (func_data(j), j = func_indx(ifunc),func_indx(ifunc +1) -1)    
             elseif (func_type(ifunc).eq.61) then                                   
-               read(input_line(ileft:iright),*)trash,trash,func_nd                 
-               func_indx(ifunc +1) = func_indx(ifunc) + 2*func_nd                  
-               read(input_line(ileft:iright),*)trash,trash,trash,&                 
+                read(input_line(ileft:iright),*)trash,trash,func_nd                 
+                func_indx(ifunc +1) = func_indx(ifunc) + 2*func_nd                  
+                read(input_line(ileft:iright),*)trash,trash,trash,&                 
                     (func_data(j), j = func_indx(ifunc),func_indx(ifunc +1) -1)     
             endif
-		 elseif (keyword.eq.'FDRM') then                                                           !DRM Scandella 11.04.2006
+        elseif (keyword.eq.'FDRM') then                                                           !DRM Scandella 11.04.2006
             ifunc_drm = ifunc_drm + 1                                                              !DRM Scandella 11.04.2006 
             read(input_line(ileft:iright),*)tag_func_drm(ifunc_drm),&                              !DRM Scandella 11.04.2006
-                 func_type_drm(ifunc_drm)                                                          !DRM Scandella 11.04.2006 
+                func_type_drm(ifunc_drm)                                                          !DRM Scandella 11.04.2006 
             if (func_type_drm(ifunc_drm).eq.50) then                                               !DRM Scandella 11.04.2006
-               read(input_line(ileft:iright),*)trash,trash,func_nd_drm                             !DRM Scandella 11.04.2006
-			   !write(*,*) func_nd_drm 
-		       !read(*,*)
-               func_indx_drm(ifunc_drm +1) = func_indx_drm(ifunc_drm) + 3*func_nd_drm              !DRM Scandella 11.04.2006
-               read(input_line(ileft:iright),*)trash,trash,trash,&                                 !DRM Scandella 11.04.2006
+                read(input_line(ileft:iright),*)trash,trash,func_nd_drm                             !DRM Scandella 11.04.2006
+                func_indx_drm(ifunc_drm +1) = func_indx_drm(ifunc_drm) + 3*func_nd_drm              !DRM Scandella 11.04.2006
+                read(input_line(ileft:iright),*)trash,trash,trash,&                                 !DRM Scandella 11.04.2006
                     (func_data_drm(j), j = func_indx_drm(ifunc_drm),func_indx_drm(ifunc_drm +1) -1)!DRM Scandella 11.04.2006
-		    endif
+            endif
 
-         elseif (keyword.eq.'FMAX') then
+        elseif (keyword.eq.'FMAX') then
             read(input_line(ileft:iright),*)fmax
 
         endif
 
-      enddo
+    enddo
 
 
-      close(23)
-      
-      return
-      
-      end subroutine READ_MATERIAL_EL
+    close(23)
+
+    return
+
+end subroutine READ_MATERIAL_EL

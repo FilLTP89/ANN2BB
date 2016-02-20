@@ -317,7 +317,9 @@ program SPEED2D
         stop
     endif
 
-    allocate (sdeg_mat(nmat), prop_mat(nmat,4), tag_mat(nmat))
+    allocate (sdeg_mat(nmat), tag_mat(nmat))
+    allocate(prop_mat(nmat,9))
+    prop_mat=-1d0
 
     if (nload_dirX_el.gt.0) &
         allocate (val_dirX_el(nload_dirX_el,2),fun_dirX_el(nload_dirX_el),tag_dirX_el(nload_dirX_el))
@@ -391,54 +393,57 @@ program SPEED2D
         nfunc,func_type,func_indx,func_data,tag_func, &
         nfunc_drm,func_type_drm,func_indx_drm,func_data_drm,tag_func_drm,& !DRM Scandella 11.04.2006
         fmax, n_test, fun_test, &
-        nload_dg_el,tag_dg_el,tag_dg_yn)
-    ! MODIFS: NEED TO READ MATERIAL PROPERTIES         
-
+        nload_dg_el,tag_dg_el,tag_dg_yn,NLFLAG)
 
     write(*,'(A)')'Read.'      
 
     do im = 1,nmat
-    write(*,'(A,I8)')    'MATERIAL : ',tag_mat(im)
-    write(*,'(A,I8)')    'DEGREE   : ',sdeg_mat(im)
-    write(*,'(A,E12.4)') 'rho      : ',prop_mat(im,1)
-    write(*,'(A,E12.4)') 'Vp       : ',((prop_mat(im,2) + 2*prop_mat(im,3))/prop_mat(im,1))**0.5
-    write(*,'(A,E12.4)') 'Vs       : ',(prop_mat(im,3)/prop_mat(im,1))**0.5
-    write(*,'(A,E12.4)') 'gamma    : ',prop_mat(im,4)
-    write(*,*)
+        write(*,'(A,I8)')    'MATERIAL : ',tag_mat(im)
+        write(*,'(A,I8)')    'DEGREE   : ',sdeg_mat(im)
+        write(*,'(A,E12.4)') 'rho      : ',prop_mat(im,1)
+        write(*,'(A,E12.4)') 'Vp       : ',((prop_mat(im,2) + 2*prop_mat(im,3))/prop_mat(im,1))**0.5
+        write(*,'(A,E12.4)') 'Vs       : ',(prop_mat(im,3)/prop_mat(im,1))**0.5
+        write(*,'(A,E12.4)') 'gamma    : ',prop_mat(im,4)
+        if (NLFLAG) then
+            write(*,'(A,E12.4)') 'sigma_yld    : ',prop_mat(im,5)
+            write(*,'(A,E12.4)') 'Ckin         : ',prop_mat(im,6)
+            write(*,'(A,E12.4)') 'kkin         : ',prop_mat(im,7)  
+            write(*,'(A,E12.4)') 'Rinf         : ',prop_mat(im,8)
+            write(*,'(A,E12.4)') 'biso         : ',prop_mat(im,9)  
+        endif
+        write(*,*)
     enddo
 
-    !----DRM---------------------------------------------------------------------------
-    if (nload_MDRM_el.ne.0) then                                   !DRM Scandella 10.05.2007
-
-        do im = 1,nmat                                                !DRM Kiana 19.10.2015
-        if (im.eq.tag_MDRM_el(1)) then                              !DRM Kiana 19.10.2015
+    !----DRM-----------------------------------------------------------------------------------------
+    if (nload_MDRM_el.ne.0) then                                        !DRM Scandella 10.05.2007
+        do im = 1,nmat                                                  !DRM Kiana 19.10.2015
+            if (im.eq.tag_MDRM_el(1)) then                              !DRM Kiana 19.10.2015
             ns = sdeg_mat(im)                                           !DRM Kiana 19.10.2015
-        endif		                                                  !DRM Kiana 19.10.2015
+            endif                                                       !DRM Kiana 19.10.2015
         enddo  
-
-        write(*,'(A,I8)') 'DRMSTEP : ',tagstep                      !DRM Scandella 10.05.2007
-        if ((tagstep.eq.2).and.(nfunc_drm.eq.0)) then               !DRM Scandella 11.05.2007
-            write(*,'(A)')'ERROR: Not equivalent DRM forces applied!' !DRM Scandella 11.05.2007
+        write(*,'(A,I8)') 'DRMSTEP : ',tagstep                          !DRM Scandella 10.05.2007
+        if ((tagstep.eq.2).and.(nfunc_drm.eq.0)) then                   !DRM Scandella 11.05.2007
+            write(*,'(A)')'ERROR: Not equivalent DRM forces applied!'   !DRM Scandella 11.05.2007
             read(*,*)
-            stop                                                      !DRM Scandella 11.05.2007
-        endif                                                       !DRM Scandella 11.05.2007
-        if ((tagstep.eq.2).and.(nload_PDRM_el.eq.0)) then           !DRM Scandella 11.05.2007
-            write(*,'(A)')'ERROR: Not equivalent DRM points defined!' !DRM Scandella 11.05.2007
+            stop                                                        !DRM Scandella 11.05.2007
+        endif                                                           !DRM Scandella 11.05.2007
+        if ((tagstep.eq.2).and.(nload_PDRM_el.eq.0)) then               !DRM Scandella 11.05.2007
+            write(*,'(A)')'ERROR: Not equivalent DRM points defined!'   !DRM Scandella 11.05.2007
             read(*,*)
-            stop                                                      !DRM Scandella 11.05.2007
-        endif                                                       !DRM Scandella 11.05.2007
-        write(*,*)                                                  !DRM Scandella 10.05.2007 
-        do j = 1,nload_MDRM_el                                      !DRM Scandella 27.09.2005
-        write(*,*)                                               !DRM Scandella 27.09.2005 
-        write(*,'(A,I8)') 'DRM BLOCKS : ',tag_MDRM_el(j)         !DRM Scandella 27.09.2005
-        enddo                                                       !DRM Scandella 27.09.2005
-        write(*,*)                                                  !DRM Scandella 27.09.2005  
-        do j = 1,nload_BDRM_el                                      !DRM Scandella 27.09.2005
-        write(*,*)                                               !DRM Scandella 27.09.2005 
-        write(*,'(A,I8)') 'DRM BOUNDARIES : ',tag_BDRM_el(j)     !DRM Scandella 27.09.2005 
-        enddo                                                       !DRM Scandella 27.09.2005
-        write(*,*)                                                  !DRM Scandella 27.09.2005  
-    endif	                                                        !DRM Scandella 10.05.2007 
+            stop                                                        !DRM Scandella 11.05.2007
+        endif                                                           !DRM Scandella 11.05.2007
+        write(*,*)                                                      !DRM Scandella 10.05.2007 
+        do j = 1,nload_MDRM_el                                          !DRM Scandella 27.09.2005
+            write(*,*)                                                  !DRM Scandella 27.09.2005 
+            write(*,'(A,I8)') 'DRM BLOCKS : ',tag_MDRM_el(j)            !DRM Scandella 27.09.2005
+        enddo                                                           !DRM Scandella 27.09.2005
+        write(*,*)                                                      !DRM Scandella 27.09.2005  
+        do j = 1,nload_BDRM_el                                          !DRM Scandella 27.09.2005
+            write(*,*)                                                  !DRM Scandella 27.09.2005 
+            write(*,'(A,I8)') 'DRM BOUNDARIES : ',tag_BDRM_el(j)        !DRM Scandella 27.09.2005 
+        enddo                                                           !DRM Scandella 27.09.2005
+        write(*,*)                                                      !DRM Scandella 27.09.2005  
+    endif                                                               !DRM Scandella 10.05.2007 
 
     !----------------------------------------------------------------------------------
 
@@ -1381,7 +1386,11 @@ program SPEED2D
             E_SUM, JE_SUM, IE_SUM, NNZ_AB, IW, ierr)
         call aplb ( 2*nnod, 2*nnod, 1, M_STIFF, J_STIFF, I_STIFF, D_SUM, JD_SUM, ID_SUM, &
             E_SUM, JE_SUM, IE_SUM, NNZ_AB, IW, ierr)
-    end if
+    else
+        !Summing E_SUM = D_SUM = M_STIFF + D_MASS - M_ABC_U
+        E_SUM = D_SUM
+    endif
+
     if(nelem_dg .gt. 0) then
         IDG = IDG + 1
 
@@ -1445,8 +1454,11 @@ program SPEED2D
         K_TOT, JK_TOT, IK_TOT, NNZ_AB, IW, ierr )
 
     NNZ_K = NNZ_AB
-
-    deallocate(M_MASS, I_MASS, J_MASS, C_SUM, JC_SUM, IC_SUM, E_SUM, JE_SUM, IE_SUM, NDEGR, IW)
+    if (.not.NLFLAG) then
+        deallocate(M_MASS, I_MASS, J_MASS, C_SUM, JC_SUM, IC_SUM, E_SUM, JE_SUM, IE_SUM, NDEGR, IW)
+    else
+        deallocate(
+    endif
     write(*,'(A)') 'Done'
 
     !********************************************************************************************************
@@ -1457,7 +1469,7 @@ program SPEED2D
     write(*,'(A)') '-------------------Building the RHS--------------------'
 
     do i = 1, nfunc
-    Fel(i,:) = Fel(i,:)/Mel
+        Fel(i,:) = Fel(i,:)/Mel
     enddo
 
     write(*,'(A)') 'Done'
