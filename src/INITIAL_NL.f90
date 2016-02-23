@@ -40,18 +40,19 @@
 !> @param[inout] fy_el internal forces along y-direction on element LGL
 
 subroutine INITIAL_NL(cs_nnz,cs,nm,nn,nnt,im,ie,prop_mat,Sxx_el,Syy_el,Sxy_el,Szz_el,  &
-    lambda_el,mu_el,Syld_el,Ckin_el,kkin_el,Riso_el,Rinf_el,biso_el,Xkin_el,        &
-    Stress_all,Xkin_all,Riso_all,fx_el,fy_el)
+    lambda_el,mu_el,Syld_el,Ckin_el,kkin_el,Riso_el,Rinf_el,biso_el,Xkin_el,Stress_all,&
+    Xkin_all,Riso_all,fx_el,fy_el,nl_sism,fxs_el,fys_el,Sxxs_el,Syys_el,Sxys_el,Szzs_el)
     
     implicit none
-    integer*4, intent(in)                       :: im,nnt,nn,cs_nnz,nm,ie
+    integer*4, intent(in)                       :: nl_sism,im,nnt,nn,cs_nnz,nm,ie
     integer*4, intent(in),  dimension(0:cs_nnz) :: cs
     real*8, intent(in),     dimension(nm,9)     :: prop_mat
     real*8, intent(in),     dimension(nnt)      :: Riso_all
     real*8, intent(in),     dimension(4*nnt)    :: Stress_all,Xkin_all
-    real*8, intent(inout),  dimension(nn)       :: fx_el,fy_el
+    real*8, intent(inout),  dimension(nn)       :: fx_el,fy_el,fxs_el,fys_el
     real*8, intent(inout),  dimension(nn,nn)    :: syld_el,lambda_el,mu_el
     real*8, intent(inout),  dimension(nn,nn)    :: Sxx_el,Syy_el,Szz_el,Sxy_el
+    real*8, intent(inout),  dimension(nn,nn)    :: Sxxs_el,Syys_el,Szzs_el,Sxys_el
     real*8, intent(inout),  dimension(nn,nn)    :: Riso_el
     real*8, intent(inout),  dimension(nn,nn)    :: Ckin_el,kkin_el,Rinf_el,biso_el
     real*8, intent(inout),  dimension(4,nn,nn)  :: Xkin_el
@@ -83,7 +84,17 @@ subroutine INITIAL_NL(cs_nnz,cs,nm,nn,nnt,im,ie,prop_mat,Sxx_el,Syy_el,Sxy_el,Sz
             Xkin_el(4,i,j)  = Xkin_all(in+3*nnt)
         enddo
     enddo
-
+    
+    if (nl_sism.gt.0) then
+        fxs_el=0d0
+        fys_el=0d0
+        sxxs_el=0d0
+        syys_el=0d0
+        sxys_el=0d0
+        szzs_el=0d0
+    endif
+    
+    return
 end subroutine INITIAL_NL
 !! mode: f90
 !! show-trailing-whitespace: t

@@ -28,26 +28,26 @@
 !> @param[in] ind_i row index
 !> @param[out] ind_j column index
  
-     subroutine FIND_INDEX(M,dim1,dim2,ind_i, ind_j)
+subroutine FIND_INDEX(M,dim1,dim2,ind_i, ind_j)
 
-      implicit none
+    implicit none
 
-      integer, intent(in) :: ind_i
-      integer, intent(out) :: ind_j      
-      integer*4 :: dim1, dim2
-      integer*4, dimension(dim1, dim2) :: M
-      
-      
-      ind_j = 1
+    integer, intent(in) :: ind_i
+    integer, intent(out) :: ind_j      
+    integer*4 :: dim1, dim2
+    integer*4, dimension(dim1, dim2) :: M
 
-      if(M(ind_i,ind_j) .eq. 0 ) then
-          return
-      endif 
-      
-      do while (M(ind_i,ind_j) .ne. 0 )
-          ind_j = ind_j + 1           
-      enddo  
 
-     return
-     end subroutine FIND_INDEX
+    ind_j = 1
+
+    if(M(ind_i,ind_j) .eq. 0 ) then
+      return
+    endif 
+
+    do while (M(ind_i,ind_j) .ne. 0 )
+      ind_j = ind_j + 1           
+    enddo  
+
+    return
+end subroutine FIND_INDEX
 

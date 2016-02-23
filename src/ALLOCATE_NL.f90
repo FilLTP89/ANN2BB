@@ -36,26 +36,33 @@
 !> @param[inout] det_j determinant of jacobian
 !> @param[inout] fx_el internal forces along x-direction on element LGL
 !> @param[inout] fy_el internal forces along y-direction on element LGL
+!> @param[in] nl_sism flag for seismic moment
+!> @param[inout] fxs_el seismic moment equivalent forces in x-direction on element LGL
+!> @param[inout] fys_el seismic moment equivalent forces in x-direction on element LGL
 
-subroutine ALLOCATE_NL(nn,ct,ww,dd,dxdx_el,dxdy_el,dydx_el,dydy_el,det_j,&
-        dUxdx_el,dUxdy_el,dUydx_el,dUydy_el,Sxx_el,Syy_el,Sxy_el,Szz_el, &
-        lambda_el,mu_el,Syld_el,Ckin_el,kkin_el,Riso_el,Rinf_el,biso_el, &
-        Xkin_el,dEpl_el,fx_el,fy_el)
+subroutine ALLOCATE_NL(nn,ct,ww,dd,dxdx_el,dxdy_el,dydx_el,dydy_el,det_j, &
+        dUxdx_el,dUxdy_el,dUydx_el,dUydy_el,Sxx_el,Syy_el,Sxy_el,Szz_el,  &
+        lambda_el,mu_el,Syld_el,Ckin_el,kkin_el,Riso_el,Rinf_el,biso_el,  &
+        Xkin_el,dEpl_el,fx_el,fy_el,nl_sism,fxs_el,fys_el,Sxxs_el,Syys_el,&
+        Sxys_el,Szzs_el)
+    
     implicit none
 
-    integer*4, intent(in)                               :: nn
-    real*8, intent(out), dimension(:),    allocatable :: ct,ww
-    real*8, intent(out), dimension(:),    allocatable :: dxdx_el,dydy_el
-    real*8, intent(out), dimension(:),    allocatable :: dxdy_el,dydx_el
-    real*8, intent(out), dimension(:,:),  allocatable :: dd,det_j,fx_el,fy_el
-    real*8, intent(out), dimension(:,:),  allocatable :: dUxdx_el,dUydy_el
-    real*8, intent(out), dimension(:,:),  allocatable :: dUxdy_el,dUydx_el
-    real*8, intent(out), dimension(:,:),  allocatable :: sxx_el,syy_el,sxy_el,szz_el
-    real*8, intent(out), dimension(:,:),  allocatable :: lambda_el,mu_el,syld_el
-    real*8, intent(out), dimension(:,:),  allocatable :: Riso_el,biso_el,Rinf_el
-    real*8, intent(out), dimension(:,:),  allocatable :: Ckin_el,kkin_el
-    real*8, intent(out), dimension(:,:,:),allocatable :: Xkin_el,dEpl_el
-
+    integer*4, intent(in)                             :: nn,nl_sism
+    real*8, intent(inout), dimension(:),    allocatable :: ct,ww
+    real*8, intent(inout), dimension(:),    allocatable :: dxdx_el,dydy_el
+    real*8, intent(inout), dimension(:),    allocatable :: dxdy_el,dydx_el
+    real*8, intent(inout), dimension(:,:),  allocatable :: dd,det_j,fx_el,fy_el
+    real*8, intent(inout), dimension(:,:),  allocatable :: fxs_el,fys_el
+    real*8, intent(inout), dimension(:,:),  allocatable :: dUxdx_el,dUydy_el
+    real*8, intent(inout), dimension(:,:),  allocatable :: dUxdy_el,dUydx_el
+    real*8, intent(inout), dimension(:,:),  allocatable :: sxx_el,syy_el,sxy_el,szz_el
+    real*8, intent(inout), dimension(:,:),  allocatable :: sxxs_el,syys_el,sxys_el,szzs_el
+    real*8, intent(inout), dimension(:,:),  allocatable :: lambda_el,mu_el,syld_el
+    real*8, intent(inout), dimension(:,:),  allocatable :: Riso_el,biso_el,Rinf_el
+    real*8, intent(inout), dimension(:,:),  allocatable :: Ckin_el,kkin_el
+    real*8, intent(inout), dimension(:,:,:),allocatable :: Xkin_el,dEpl_el
+    
     allocate(ct(nn))
     allocate(ww(nn))
     allocate(dd(nn,nn))
@@ -85,5 +92,13 @@ subroutine ALLOCATE_NL(nn,ct,ww,dd,dxdx_el,dxdy_el,dydx_el,dydy_el,det_j,&
     allocate(dEpl_el(4,nn,nn))
     allocate(Xkin_el(4,nn,nn))
     
+    if (nl_sism.gt.0) then
+        allocate(fxs_el(nn,nn))
+        allocate(fys_el(nn,nn))
+        allocate(sxxs_el(nn,nn))
+        allocate(syys_el(nn,nn))
+        allocate(szzs_el(nn,nn))
+        allocate(sxys_el(nn,nn))
+    endif
     return
 end subroutine ALLOCATE_NL

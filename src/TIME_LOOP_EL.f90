@@ -88,7 +88,7 @@
 !> @param[in] glob_drm_x
 !> @param[in] glob_drm_y
 
-subroutine TIME_LOOP_NEW(nnt,xs,ys,cs_nnz,cs,&                                                                          ! 5
+subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,&                                                                          ! 5
     nm,tag_mat,sdeg_mat,prop_mat,&                                                                  ! 4
     ne,alfa1,beta1,gamma1,alfa2,beta2,gamma2,delta1,delta2,&                                        ! 9
     cs_nnz_bc,cs_bc,&                                                                               ! 2
@@ -111,8 +111,7 @@ subroutine TIME_LOOP_NEW(nnt,xs,ys,cs_nnz,cs,&                                  
     fun_ord,node_PDRM,&                                                   !DRM Scandella 16.11.2005 ! 2
     glob_x,glob_y,&                                                       !DRM Scandella 11.04.2006 ! 2
     option_out_var,test,nelem_dg,&                                                                  ! 3
-    IDG_only_uv, JDG_only_uv, MDG_only_uv, nnz_dg_only_uv,&                                         ! 4
-    NLFLAG)    
+    IDG_only_uv, JDG_only_uv, MDG_only_uv, nnz_dg_only_uv)    
 
     implicit none
 
@@ -232,17 +231,6 @@ subroutine TIME_LOOP_NEW(nnt,xs,ys,cs_nnz,cs,&                                  
     real*8, dimension(:,:), allocatable :: duxdx_el,duxdy_el,duydx_el,duydy_el
     real*8, dimension(:,:), allocatable :: sxx_el,syy_el,szz_el,sxy_el,fx_el,fy_el
     real*8, dimension(:,:), allocatable :: det_j,mu_el,lambda_el 
-
-    !********************************************************************************************
-    !              NONLINEAR
-    !********************************************************************************************
-    real*8                                  :: sigma_yld,Ckin,kapakin,Riso,biso
-    logical, intent(in)                     :: NLFLAG
-    real*8, dimension(:),     allocatable   :: Epl_all,Stress_all
-    real*8, dimension(:),     allocatable   :: Xkin_all,Riso_all
-    real*8, dimension(:,:),   allocatable   :: syld_el,Rinf_el,biso_el,Riso_el
-    real*8, dimension(:,:),   allocatable   :: Ckin_el,kkin_el
-    real*8, dimension(:,:,:), allocatable   :: Xkin_el,dEpl_el
     
     !********************************************************************************************
     !               GLOBAL VARIABLES
@@ -500,10 +488,10 @@ subroutine TIME_LOOP_NEW(nnt,xs,ys,cs_nnz,cs,&                                  
 
     endif
 
-    do i = 1, nnt
-        u1(i) = -dsin(dsqrt(2.d0)*pi*dt) * (dsin(pi*xs(i)))**2 * dsin(2.d0*pi*ys(i))
-        u1(i+nnt) =  dsin(dsqrt(2.d0)*pi*dt) * dsin(2.d0*pi*xs(i)) * (dsin(pi*ys(i)))**2
-    enddo
+!    do i = 1, nnt
+!        u1(i) = -dsin(dsqrt(2.d0)*pi*dt) * (dsin(pi*xs(i)))**2 * dsin(2.d0*pi*ys(i))
+!        u1(i+nnt) =  dsin(dsqrt(2.d0)*pi*dt) * dsin(2.d0*pi*xs(i)) * (dsin(pi*ys(i)))**2
+!    enddo
 
     if (tagstep.eq.2) then 
         call get_disp_valueDRM(nf_drm,func_type_drm,func_indx_drm,nfunc_data_drm,func_data_drm, &     !DRM Scandella 12.04.2006  
@@ -518,13 +506,6 @@ subroutine TIME_LOOP_NEW(nnt,xs,ys,cs_nnz,cs,&                                  
     !********************************************************************************************
     !     ALL STEPS
     !********************************************************************************************	
-    ! ALLOCATE NONLINEAR VARIABLES TO BE UPDATED AT EACH TIME STEP
-    if (NLFLAG) then
-        allocate(Stress_all(4*nnt))
-        allocate(Xkin_all(4*nnt))
-        allocate(Riso_all(4*nnt))
-        allocate(Epl_all(4*nnt))
-    end if
     
     do its = 0,nts 
 
@@ -595,10 +576,6 @@ subroutine TIME_LOOP_NEW(nnt,xs,ys,cs_nnz,cs,&                                  
 
                 !-----------------------------------------------------------------------------------------------------
         else
-                !do fn = 1,nf
-                !   func_value(fn) = get_func_value(nf,func_type,func_indx,func_data,fn,dt,0.0d0)
-                !enddo
-
             if (nnode_neuX.gt.0) then
                 do i = 1,nnode_neuX
                     in = inode_neuX(i)                 
@@ -691,97 +668,22 @@ subroutine TIME_LOOP_NEW(nnt,xs,ys,cs_nnz,cs,&                                  
         !NO Damping
         !(u2 - 2*u1 + u0)/dt^2  = - K_TOT*u1 + Fel
 
-        if (NLFLAG) then ! NONLINEAR CASE: NODE BY NODE CALCULATION
 
-            do ie=1,ne
-                im = cs(cs(ie -1) +0)   
-                nn = sdeg_mat(im) +1
-                
-                call ALLOCATE_NL(nn,ct,ww,dd,dxdx_el,dxdy_el,dydx_el,dydy_el,det_j,  &
-                    dUxdx_el,dUxdy_el,dUydx_el,dUydy_el,Sxx_el,Syy_el,Sxy_el,Szz_el, &
-                    lambda_el,mu_el,Syld_el,Ckin_el,kkin_el,Riso_el,Rinf_el,biso_el, &
-                    Xkin_el,dEpl_el,fx_el,fy_el)
-                call INITIAL_NL(cs_nnz,cs,nm,nn,nnt,im,ie,prop_mat,Sxx_el,Syy_el,Sxy_el,Szz_el,  &
-                    lambda_el,mu_el,Syld_el,Ckin_el,kkin_el,Riso_el,Rinf_el,biso_el,Xkin_el, &
-                    Stress_all,Xkin_all,Riso_all,fx_el,fy_el)
-
-                ! COMPUTE LGL 
-                call lgl(nn,ct,ww,dd)
-                ! COMPUTE STRAIN INCREMENT
-                call MAKE_DERIVATIVES(nn,alfa1,alfa2,beta1,beta2,gamma1,gamma2,ct,&
-                    dxdy_el,dydy_el,dxdx_el,dydx_el)
-               
-                call MAKE_STRAIN(nn,ct,ww,dd,&
-                      dxdx_el,dxdy_el,dydx_el,dydy_el,ux_el,uy_el, &
-                      dUxdx,dUxdy_el,dUydx_el,dUydy_el)
-
-                ! COMPUTE NON LINEAR INTERNAL FORCES
-                call MAKE_INTERNAL_FORCE_NL(nn,ct,ww,dd,    &
-                    dUxdx_el,dUxdy_el,dUydx_el,dUydy_el,    &
-                    sxx_el,syy_el,sxy_el,szz_el,            &
-                    Xkin_el,Riso_el,                        &
-                    mu_el,lambda_el,syld_el,                &
-                    Ckin_el,kkin_el,Rinf_el,biso_el,        &
-                    dEpl_el,dxdx_el,dxdy_el,dydx_el,dydy_el,&
-                    fx_el,fy_el)
-                    
-                do j = 1,nn
-                    do i = 1,nn
-                        is = nn*(j -1) +i
-                        in = cs(cs(ie -1) + is)
-
-                        fk(in)          = fk(in)  + fx_el(i,j)
-                       
-                        Riso_all(in)    = Riso_el(i,j)
-                        Epl_all(in)     = Epl_all(in) + dEpl_el(1,i,j)  
-                        Xkin_all(in)    = Xkin_el(1,i,j)
-                        Stress_all(in)  = sxx_el(i,j)
-                        
-                        fk(in+nnt)           = fk(in+nnt)  + fy_el(i,j)
-                        Epl_all(in+nnt)      = Epl_all(in+nnt) + dEpl_el(2,i,j)
-                        Xkin_all(in+nnt)     = Xkin_el(2,i,j)
-                        Stress_all(in+nnt)   = syy_el(i,j)
-
-                        Epl_all(in+2*nnt)    = Epl_all(in+2*nnt)+dEpl_el(3,i,j)  
-                        Xkin_all(in+2*nnt)   = Xkin_el(3,i,j)
-                        Stress_all(in+2*nnt) = szz_el(i,j)
-                        
-                        Epl_all(in+3*nnt)    = Epl_all(in+3*nnt)+dEpl_el(4,i,j)  
-                        Xkin_all(in+3*nnt)   = Xkin_el(4,i,j)
-                        Stress_all(in+3*nnt) = sxy_el(i,j)
-
-                    enddo
-                enddo
-            end do
-        else
-            call MATMUL_SPARSE(K_TOT, NNZ_K, JK_TOT, IK_TOT, fk, 2*nnt, u0, 2*nnt, error)
-        endif
-
-        if(its .eq. 0) then
-            !Compute fk = K_TOT*u1         
-            !Compute fd = N_TOT*v1
-            call MATMUL_SPARSE(N_TOT, NNZ_N, JN_TOT, IN_TOT, fd, 2*nnt, v1, 2*nnt, error)
-            fe = fe + sism/mvec;
-            u1 = u0 + v1 *dt - 0.5d0*((fe - fk - fd)*dt2)
-            !u2 = u0 + 2.d0*v1*dt
-        else
-
-            call system_clock(COUNT=clock_start,COUNT_RATE=clock(2))   
-            !Compute fk = K_TOT*u1
-            call MATMUL_SPARSE(K_TOT, NNZ_K, JK_TOT, IK_TOT, fk, 2*nnt, u1, 2*nnt, error) 
-            call system_clock(COUNT=clock_finish)
-            time_fk = float(clock_finish - clock_start) / float(clock(2))
-            call system_clock(COUNT=clock_start,COUNT_RATE=clock(2)) 
-            !Compute fd = N_TOT*v1
-            call MATMUL_SPARSE(N_TOT, NNZ_N, JN_TOT, IN_TOT, fd, 2*nnt, v1, 2*nnt, error)
-            call system_clock(COUNT=clock_finish)
-            time_fd = float(clock_finish - clock_start) / float(clock(2))
-            call system_clock(COUNT=clock_start,COUNT_RATE=clock(2)) 
-            fe = fe + sism/mvec;  
-            u2 = 2.0d0 * u1 - u0 + dt2*(fe - fk - fd)
-            call system_clock(COUNT=clock_finish)
-            time_u = float(clock_finish - clock_start) / float(clock(2))
-        endif
+        call system_clock(COUNT=clock_start,COUNT_RATE=clock(2))   
+        !Compute fk = K_TOT*u1
+        call MATMUL_SPARSE(K_TOT, NNZ_K, JK_TOT, IK_TOT, fk, 2*nnt, u0, 2*nnt, error)
+        call system_clock(COUNT=clock_finish)
+        time_fk = float(clock_finish - clock_start) / float(clock(2))
+        call system_clock(COUNT=clock_start,COUNT_RATE=clock(2)) 
+        !Compute fd = N_TOT*v1
+        call MATMUL_SPARSE(N_TOT, NNZ_N, JN_TOT, IN_TOT, fd, 2*nnt, v1, 2*nnt, error)
+        call system_clock(COUNT=clock_finish)
+        time_fd = float(clock_finish - clock_start) / float(clock(2))
+        call system_clock(COUNT=clock_start,COUNT_RATE=clock(2)) 
+        fe = fe + sism/mvec;  
+        u2 = 2.0d0 * u1 - u0 + dt2*(fe - fk - fd)
+        call system_clock(COUNT=clock_finish)
+        time_u = float(clock_finish - clock_start) / float(clock(2))
 
         !-----DRM---------------------------------------------------------------------------------------------------        
         if (tagstep.eq.2) then                                                                      !DRM Scandella 28.10.2005 
@@ -803,8 +705,6 @@ subroutine TIME_LOOP_NEW(nnt,xs,ys,cs_nnz,cs,&                                  
             enddo
         endif                                                                                       !DRM Scandella 28.10.2005 
 
-        ! write(*,*) func_value, dsin(sqrt(2.d0)*pi*tt2) 
-        ! read(*,*)
 
         !********************************************************************************************
         ! DIRICHLET BOUNDARY CONDITIONS
@@ -812,15 +712,15 @@ subroutine TIME_LOOP_NEW(nnt,xs,ys,cs_nnz,cs,&                                  
 
         if (nnode_dirX.gt.0) then
             do i = 1,nnode_dirX
-            in = inode_dirX(i)
-            u2(in) = 0.0d0; u1(in) = 0.d0; v1(in) = 0.d0;
+                in = inode_dirX(i)
+                u2(in) = 0.0d0; u1(in) = 0.d0; v1(in) = 0.d0;
             enddo
         endif
 
         if (nnode_dirY.gt.0) then
             do i = 1,nnode_dirY
-            in = inode_dirY(i) + nnt
-            u2(in) = 0.0d0; u1(in) = 0.d0; v1(in) = 0.d0;
+                in = inode_dirY(i) + nnt
+                u2(in) = 0.0d0; u1(in) = 0.d0; v1(in) = 0.d0;
             enddo
         endif
 
@@ -888,64 +788,57 @@ subroutine TIME_LOOP_NEW(nnt,xs,ys,cs_nnz,cs,&                                  
 
 
             if (option_out_var(4) .eq. 1) then
-                if (NLFLAG) then
-                    sxx(in) = Stress_all(1)
-                    syy(in) = Stress_all(2)
-                    szz(in) = Stress_all(3)
-                    sxy(in) = Stress_all(4)
-                else
-                    do in = 1, nnt  
-                        sxx(in) = sxx(in) / nodal_counter(in)
-                        syy(in) = syy(in) / nodal_counter(in)
-                        sxy(in) = sxy(in) / nodal_counter(in)
-                        szz(in) = szz(in) / nodal_counter(in)
-                    enddo
-                    do i = 1,nmonit
-                        unit_stress = 300000 + i
-                        in = node_m(i)
-                        if (dabs(sxx(in)).lt.(1.0d-99)) sxx(in)=0.0
-                        if (dabs(syy(in)).lt.(1.0d-99)) syy(in)=0.0
-                        if (dabs(sxy(in)).lt.(1.0d-99)) sxy(in)=0.0
-                        if (dabs(szz(in)).lt.(1.0d-99)) szz(in)=0.0
+                do in = 1, nnt  
+                    sxx(in) = sxx(in) / nodal_counter(in)
+                    syy(in) = syy(in) / nodal_counter(in)
+                    sxy(in) = sxy(in) / nodal_counter(in)
+                    szz(in) = szz(in) / nodal_counter(in)
+                enddo
+                do i = 1,nmonit
+                    unit_stress = 300000 + i
+                    in = node_m(i)
+                    if (dabs(sxx(in)).lt.(1.0d-99)) sxx(in)=0.0
+                    if (dabs(syy(in)).lt.(1.0d-99)) syy(in)=0.0
+                    if (dabs(sxy(in)).lt.(1.0d-99)) sxy(in)=0.0
+                    if (dabs(szz(in)).lt.(1.0d-99)) szz(in)=0.0
 
-                        write(unit_stress,'(5E16.8)') tt1,sxx(in),syy(in),sxy(in),szz(in)
-                    enddo
-                endif
+                    write(unit_stress,'(5E16.8)') tt1,sxx(in),syy(in),sxy(in),szz(in)
+                enddo
             endif
 
 
             if (option_out_var(5) .eq. 1) then  !Out Options Scandella 02.07.2007
                 do in = 1, nnt  
-                duxdx(in) = duxdx(in) / nodal_counter(in)
-                duydy(in) = duydy(in) / nodal_counter(in)
-                duxdy(in) = duxdy(in) / nodal_counter(in)
-                duydx(in) = duydx(in) / nodal_counter(in) 
+                    duxdx(in) = duxdx(in) / nodal_counter(in)
+                    duydy(in) = duydy(in) / nodal_counter(in)
+                    duxdy(in) = duxdy(in) / nodal_counter(in)
+                    duydx(in) = duydx(in) / nodal_counter(in) 
                 enddo 
 
-                do i = 1,nmonit	 
-                unit_strain = 400000 + i	
-                in = node_m(i) 
-                if (dabs(duxdx(in)).lt.(1.0d-99)) duxdx(in)=0.0
-                if (dabs(duydy(in)).lt.(1.0d-99)) duydy(in)=0.0
-                if (dabs(duxdy(in)).lt.(1.0d-99)) duxdy(in)=0.0
-                if (dabs(duydx(in)).lt.(1.0d-99)) duydx(in)=0.0
+                do i = 1,nmonit 
+                    unit_strain = 400000 + i
+                    in = node_m(i) 
+                    if (dabs(duxdx(in)).lt.(1.0d-99)) duxdx(in)=0.0
+                    if (dabs(duydy(in)).lt.(1.0d-99)) duydy(in)=0.0
+                    if (dabs(duxdy(in)).lt.(1.0d-99)) duxdy(in)=0.0
+                    if (dabs(duydx(in)).lt.(1.0d-99)) duydx(in)=0.0
 
-                write(unit_strain,'(4E16.8)') tt1,duxdx(in),duydy(in),0.5*(duxdy(in)+duydx(in)) 
+                    write(unit_strain,'(4E16.8)') tt1,duxdx(in),duydy(in),0.5*(duxdy(in)+duydx(in)) 
                 enddo
             endif
 
             if (option_out_var(6) .eq. 1) then  !Out Options Scandella 02.07.2007
                 if (option_out_var(5) .ne. 1) then
                     do in = 1, nnt  
-                    duxdx(in) = duxdx(in) / nodal_counter(in)
-                    duydy(in) = duydy(in) / nodal_counter(in)
-                    duxdy(in) = duxdy(in) / nodal_counter(in)
-                    duydx(in) = duydx(in) / nodal_counter(in) 
+                        duxdx(in) = duxdx(in) / nodal_counter(in)
+                        duydy(in) = duydy(in) / nodal_counter(in)
+                        duxdy(in) = duxdy(in) / nodal_counter(in)
+                        duydx(in) = duydx(in) / nodal_counter(in) 
                     enddo 
                 endif
 
-                do i = 1,nmonit	 
-                unit_omega = 500000 + i	
+                do i = 1,nmonit 
+                unit_omega = 500000 + i
                 in = node_m(i) 
                 if (dabs(duxdy(in)).lt.(1.0d-99)) duxdy(in)=0.0
                 if (dabs(duydx(in)).lt.(1.0d-99)) duydx(in)=0.0
@@ -962,19 +855,19 @@ subroutine TIME_LOOP_NEW(nnt,xs,ys,cs_nnz,cs,&                                  
         if ((nnode_TOT.ne.0).and.(tagstep.eq.1)) then  !DRM Scandella 16.11.2005
             if (int(real(its)/ndt_monitor).eq.(real(its)/ndt_monitor)) then  !DRM Scandella 24.01.2006
                 do i = 1,nnode_TOT                          !DRM Scandella 16.11.2005
-                unit_uDRM = 600000 + i                    !DRM Scandella 16.11.2005
-                in = node_TOT(i)                          !DRM Scandella 16.11.2005
+                    unit_uDRM = 600000 + i                    !DRM Scandella 16.11.2005
+                    in = node_TOT(i)                          !DRM Scandella 16.11.2005
 
-                if (dabs(u1(in)).lt.(1.0d-99)) then
-                    u1(in)=0.0
-                endif
-                if (dabs(u1(in+nnt)).lt.(1.0d-99)) then
-                    u1(in+nnt)=0.0
-                endif
-                !open(unit_uDRM,file=file_uDRM,position='append')
-                write(unit_uDRM,'(3E16.8)') &          !DRM Scandella 16.11.2005
-                    tt1,u1(in),u1(in+nnt)             !DRM Scandella 16.11.2005
-                !close(unit_uDRM)
+                    if (dabs(u1(in)).lt.(1.0d-99)) then
+                        u1(in)=0.0
+                    endif
+                    if (dabs(u1(in+nnt)).lt.(1.0d-99)) then
+                        u1(in+nnt)=0.0
+                    endif
+                    !open(unit_uDRM,file=file_uDRM,position='append')
+                    write(unit_uDRM,'(3E16.8)') &          !DRM Scandella 16.11.2005
+                        tt1,u1(in),u1(in+nnt)             !DRM Scandella 16.11.2005
+                    !close(unit_uDRM)
                 enddo 
             endif                                        !DRM Scandella 24.01.2006
         endif                                           !DRM Scandella 16.11.2005
@@ -992,50 +885,49 @@ subroutine TIME_LOOP_NEW(nnt,xs,ys,cs_nnz,cs,&                                  
             u1 = u2
         endif    
 
-        enddo
+    enddo
 
-        !write(*,*) size(fe)
+    !write(*,*) size(fe)
 
-        if (nmonit.ge.1) call CLOSE_OUTPUT_FILES(option_out_var, nmonit, &
-            unit_disp, unit_vel, unit_acc,&
-            unit_stress, unit_strain, unit_omega)
+    if (nmonit.ge.1) call CLOSE_OUTPUT_FILES(option_out_var, nmonit, &
+        unit_disp, unit_vel, unit_acc,&
+        unit_stress, unit_strain, unit_omega)
 
-        !-----DRM---------------------------------------------------------------------------------------------------
-        !DRM out files of I step closed
+    !-----DRM---------------------------------------------------------------------------------------------------
+    !DRM out files of I step closed
 
-        if ((nnode_TOT.ne.0).and.(tagstep.eq.1)) then  !DRM Scandella 16.11.2005 
-            if (nnode_TOT.ne.0) then                    !DRM Scandella 16.11.2005
-                do i = 1,nnode_TOT                       !DRM Scandella 16.11.2005
-                unit_uDRM = 600000 + i                !DRM Scandella 16.11.2005
-                in = node_TOT(i)                      !DRM Scandella 16.11.2005
-                close(unit_uDRM)                   !DRM Scandella 16.11.2005
-                enddo                                    !DRM Scandella 16.11.2005
-            endif                                      !DRM Scandella 16.11.2005
-        endif                                          !DRM Scandella 16.11.2005
-        !-----------------------------------------------------------------------------------------------------------
+    if ((nnode_TOT.ne.0).and.(tagstep.eq.1)) then  !DRM Scandella 16.11.2005 
+        if (nnode_TOT.ne.0) then                    !DRM Scandella 16.11.2005
+            do i = 1,nnode_TOT                       !DRM Scandella 16.11.2005
+            unit_uDRM = 600000 + i                !DRM Scandella 16.11.2005
+            in = node_TOT(i)                      !DRM Scandella 16.11.2005
+            close(unit_uDRM)                   !DRM Scandella 16.11.2005
+            enddo                                    !DRM Scandella 16.11.2005
+        endif                                      !DRM Scandella 16.11.2005
+    endif                                          !DRM Scandella 16.11.2005
+    !-----------------------------------------------------------------------------------------------------------
 
-        write(*,'(A,F16.8,A)')'total force_DRM time = ',total_force_DRM,' s' 
-        write(*,'(A,F16.8,A)')'total disp_DRM time = ',total_disp_DRM,' s' 
-        write(*,'(A,F16.8,A)')'total fe time = ',total_fe,' s' 
-        write(*,'(A,F16.8,A)')'total fk time = ',total_fk,' s' 
-        write(*,'(A,F16.8,A)')'total fd time = ',total_fd,' s' 
-        write(*,'(A,F16.8,A)')'total u time = ',total_u,' s' 
+    write(*,'(A,F16.8,A)')'total force_DRM time = ',total_force_DRM,' s' 
+    write(*,'(A,F16.8,A)')'total disp_DRM time = ',total_disp_DRM,' s' 
+    write(*,'(A,F16.8,A)')'total fe time = ',total_fe,' s' 
+    write(*,'(A,F16.8,A)')'total fk time = ',total_fk,' s' 
+    write(*,'(A,F16.8,A)')'total fd time = ',total_fd,' s' 
+    write(*,'(A,F16.8,A)')'total u time = ',total_u,' s' 
 
-        write(*,'(A,F16.8,A)')'time loop total time= ',time_total,' s'
+    write(*,'(A,F16.8,A)')'time loop total time= ',time_total,' s'
 
-        write(*,'(A,F8.4,A)')'Mean time-step CPU time= ', &
-            time_total / dfloat(nts - 1),' s'
+    write(*,'(A,F8.4,A)')'Mean time-step CPU time= ', &
+        time_total / dfloat(nts - 1),' s'
 
-        deallocate(update_index_el_az)      
-        deallocate(u1,u2,fk,fe,vel,acc,fd)
-        if(option_out_var(4) .eq. 1) deallocate(sxx,syy,sxy,szz)
-        if(option_out_var(5) .eq. 1) deallocate(duxdx,duydy,duxdy,duydx) 
-        if (nf.gt.0) deallocate(func_value) 
+    deallocate(update_index_el_az)      
+    deallocate(u1,u2,fk,fe,vel,acc,fd)
+    if(option_out_var(4) .eq. 1) deallocate(sxx,syy,sxy,szz)
+    if(option_out_var(5) .eq. 1) deallocate(duxdx,duydy,duxdy,duydx) 
+    if (nf.gt.0) deallocate(func_value) 
 
-        if (nnode_dirX.gt.0) deallocate(inode_dirX)
-        if (nnode_dirY.gt.0) deallocate(inode_dirY)
-        if (nnode_neuX.gt.0) deallocate(inode_neuX)
-        if (nnode_neuY.gt.0) deallocate(inode_neuY)
-
-        return      
-    end subroutine TIME_LOOP_NEW
+    if (nnode_dirX.gt.0) deallocate(inode_dirX)
+    if (nnode_dirY.gt.0) deallocate(inode_dirY)
+    if (nnode_neuX.gt.0) deallocate(inode_neuX)
+    if (nnode_neuY.gt.0) deallocate(inode_neuY)
+    return      
+end subroutine TIME_LOOP_EL

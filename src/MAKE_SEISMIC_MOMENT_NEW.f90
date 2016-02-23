@@ -66,6 +66,11 @@ subroutine MAKE_SEISMIC_MOMENT_NEW(nn,sxx,syy,szz,sxy,&
     integer*4, dimension(nf) :: tag_func       
 
     real*8 :: get_func_value
+    
+    sxx=0d0
+    syy=0d0
+    szz=0d0
+    sxy=0d0
 
     if (nl_sism.gt.0) then
         if ((ielem.ge.check_node_sism(1,1)).and. &

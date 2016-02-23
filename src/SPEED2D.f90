@@ -239,7 +239,8 @@ program SPEED2D
     head_file = 'SPEED.input'
 
     write(*,'(A)') 
-    write(*,'(A)')'------------------Reading Header File------------------'
+    write(*,'(A)')'*******************************************************'
+    write(*,'(A)')'------------------READING HEADER FILE------------------'
     write(*,'(A,A36)') 'Header File: ',head_file
 
     inquire(file=head_file,exist=filefound); 
@@ -265,12 +266,14 @@ program SPEED2D
     !  READ MATE FILE
     !*****************************************************************************************      
 
-    write(*,'(A)')'Read.'
+    write(*,'(A)')'HEADER FILE: OK'
+    write(*,'(A)')'*******************************************************'
 
     mat_file = mat_file(1:len_trim(mat_file)) // '.mate'
 
     write(*,'(A)')    
-    write(*,'(A,A20)')'-----------------Reading Material File-----------------'
+    write(*,'(A)')'*******************************************************'
+    write(*,'(A,A20)')'-----------------READING MATERIAL FILE-----------------'
     write(*,'(A,A20)')'Material File : ',mat_file
 
     inquire(file=mat_file,exist=filefound); 
@@ -395,8 +398,6 @@ program SPEED2D
         fmax, n_test, fun_test, &
         nload_dg_el,tag_dg_el,tag_dg_yn,NLFLAG)
 
-    write(*,'(A)')'Read.'      
-
     do im = 1,nmat
         write(*,'(A,I8)')    'MATERIAL : ',tag_mat(im)
         write(*,'(A,I8)')    'DEGREE   : ',sdeg_mat(im)
@@ -411,8 +412,9 @@ program SPEED2D
             write(*,'(A,E12.4)') 'Rinf         : ',prop_mat(im,8)
             write(*,'(A,E12.4)') 'biso         : ',prop_mat(im,9)  
         endif
-        write(*,*)
     enddo
+    write(*,'(A)') 'MATERIAL FILE:OK'
+    write(*,'(A)') '****************************************************'
 
     !----DRM-----------------------------------------------------------------------------------------
     if (nload_MDRM_el.ne.0) then                                        !DRM Scandella 10.05.2007
@@ -444,6 +446,7 @@ program SPEED2D
         enddo                                                           !DRM Scandella 27.09.2005
         write(*,*)                                                      !DRM Scandella 27.09.2005  
     endif                                                               !DRM Scandella 10.05.2007 
+    write(*,'(A)') '****************************************************'
 
     !----------------------------------------------------------------------------------
 
@@ -452,7 +455,9 @@ program SPEED2D
     !*****************************************************************************************      
 
     grid_file = grid_file(1:len_trim(grid_file)) // '.mesh'    
-    write(*,'(A)') '-------------------Reading Grid File-------------------'
+    write(*,'(A)') ''
+    write(*,'(A)') '*******************************************************'
+    write(*,'(A)') '-------------------READING MESH FILE-------------------'
     write(*,'(A,A20)') 'Grid File : ',grid_file
 
     inquire(file=grid_file,exist=filefound); 
@@ -500,14 +505,15 @@ program SPEED2D
         nload_dg_el,tag_dg_el,&
         nnod_macro,xx_macro,yy_macro,nelem,con,nedge,con_bc)
 
-    write(*,'(A)')'Read.'    
+    write(*,'(A)')'MESH FILE: OK'    
+    write(*,'(A)') '****************************************************'
     write(*,'(A)')
 
     !*****************************************************************************************      
     !  MAKING SPECTRAL CONNECTIVITY
     !*****************************************************************************************      
-
-    write(*,'(A)') '-------------Making Spectral connectivities------------'
+    write(*,'(A)') '*******************************************************'
+    write(*,'(A)') '-------------MAKING SPECTRAL CONNECTIVITIES------------'
 
     call system_clock(COUNT=start,COUNT_RATE=clock(2))
 
@@ -600,11 +606,12 @@ program SPEED2D
             con_nnz_bc,con_spx_bc)
     endif
 
-    write(*,'(A)')'Made.'
+    write(*,'(A)')'SPECTRAL CONNECTIVITY: OK'
 
     call system_clock(COUNT=finish)
     time_MAKE_SPECTRAL_BOUNDARY = float(finish-start)/float(clock(2))
     write(*,'(A,F8.4,A)')'MAKE_SPECTRAL_BOUNDARY time = ',time_MAKE_SPECTRAL_BOUNDARY,' s'
+    write(*,'(A)') '****************************************************'
 
     nnode_dom = nnod
 
@@ -613,10 +620,10 @@ program SPEED2D
     !*****************************************************************************************      
 
     write(*,'(A)')
-    write(*,'(A)') '------------Building the ELASTIC matrices--------------'
+    write(*,'(A)') '****************************************************'
+    write(*,'(A)') '--------------COMPUTING MASS MATRIX-----------------'
     write(*,'(A)')
-    write(*,'(A)') '--------------Building the mass matrix-----------------'
-
+    
     call system_clock(COUNT=start,COUNT_RATE=clock(2))
 
     allocate (Mel(2*nnod))
@@ -624,11 +631,12 @@ program SPEED2D
         nmat,tag_mat,sdeg_mat,prop_mat,&
         nelem,alfa1,beta1,gamma1,alfa2,beta2,gamma2,Mel)
 
-    write(*,'(A)') 'Mass matrix built'
+    write(*,'(A)') 'Mass matrix: OK'
 
     call system_clock(COUNT=finish)
     time_MAKE_MEL = float(finish-start)/float(clock(2))
     write(*,'(A,F8.4,A)')'MAKE_MEL time = ',time_MAKE_MEL,' s'
+    write(*,'(A)') '****************************************************'
 
 
     !*****************************************************************************************      
@@ -644,8 +652,8 @@ program SPEED2D
 
     if (make_damping_yes_or_not.eq.1) then
 
-        write(*,'(A)')
-        write(*,'(A)') '-------------Building the damping matrix---------------'
+        write(*,'(A)') '****************************************************'
+        write(*,'(A)') '-------------COMPUTING DAMPING MATRIX---------------'
 
         call system_clock(COUNT=start,COUNT_RATE=clock(2))
 
@@ -656,33 +664,32 @@ program SPEED2D
             nelem,alfa1,beta1,gamma1,alfa2,beta2,gamma2,&
             Cel,KCel)
 
-        write(*,'(A)') 'Damping matrix built'
+        write(*,'(A)') 'Damping matrix: OK'
 
         call system_clock(COUNT=finish)
         time_MAKE_CEL_KCEL = float(finish-start)/float(clock(2))
         write(*,'(A,F8.4,A)')'MAKE_CEL_KCEL time = ',time_MAKE_CEL_KCEL,' s'
+        write(*,'(A)') '****************************************************'
 
     else
 
-        write(*,'(A)')
-        write(*,'(A)') 'Damping matrix... NOT BUILT!!!'
+        write(*,'(A)') '****************************************************'
+        write(*,'(A)') 'NO Damping Matrix!!!'
         write(*,'(A)') 'There are no materials with damping defined on'
+        write(*,'(A)') '****************************************************'
 
     endif
 
     !*****************************************************************************************      
     !  MAKE THE LOAD MATRIX --- EXTERNAL LOADS --- SEISmIC MOMENT
     !*****************************************************************************************      
-
-    write(*,'(A)')
-    write(*,'(A)') '--------------Building the laod matrix-----------------'
-
+    write(*,'(A)') 
+    write(*,'(A)') '****************************************************'
 
     ! Dimensioning vector 'num_node_sism'(nodes number generating each single fault)
     if (nload_sism_el.gt.0) then
 
-        write(*,'(A)')
-        write(*,'(A)') '---------------Make the seismic moment-----------------'
+        write(*,'(A)') '---------------COMPUTING SEISMIC MOMENT-----------------'
 
         allocate (num_node_sism(nload_sism_el))
 
@@ -744,7 +751,8 @@ program SPEED2D
         enddo
 
         write(*,'(A)')
-        write(*,'(A)') 'Seismic moment built.'
+        write(*,'(A)') 'SEISMIC MOMENT:OK'
+        write(*,'(A)') '****************************************************'
     endif
 
     !---DRM---------------------------------------------------------------------------------------------
@@ -958,83 +966,88 @@ program SPEED2D
     endif
 
 
-    write(*,'(A)')'Load matrix built.'
+    write(*,'(A)')'LOAD MATRIX:OK'
+     
 
     deallocate (Ebin)
 
     write(*,'(A)')
-    write(*,'(A)') '--------------Building the time matrix-----------------'
+    write(*,'(A)') '*******************************************************'
+    write(*,'(A)') '--------------COMPUTING TIME-INDEPENDENT MATRICES-----------------'
 
     !********************************************************************************************************
     !     REWRITE MASS MATRIX & DUMPING MATRIX IN CRS SPARSE FORMAT
     !********************************************************************************************************
 
     write(*,'(A)')
-    write(*,'(A)') '------------Building the sparse mass matrix------------'
+    write(*,'(A)') '------------COMPUTING SPARSE MASS MATRIX------------'
 
     allocate(I_MASS(0:2*nnod));     I_MASS = 0;
     do i = 1, 2*nnod
-    I_MASS(i) = I_MASS(i-1) + 1;
+        I_MASS(i) = I_MASS(i-1) + 1;
     enddo
 
     allocate(J_MASS(2*nnod), M_MASS(2*nnod));   J_MASS = 0; M_MASS = 0.d0
     allocate(C_MASS(2*nnod), D_MASS(2*nnod));   C_MASS = 0.d0; D_MASS = 0.d0
 
     do i = 1, 2*nnod
-    J_MASS(i) = i;
-    M_MASS(i) = Mel(i);
-    if (make_damping_yes_or_not .eq. 1) C_MASS(i) = Cel(i);
-    if (make_damping_yes_or_not .eq. 1) D_MASS(i) = KCel(i);                
+        J_MASS(i) = i;
+        M_MASS(i) = Mel(i);
+        if (make_damping_yes_or_not .eq. 1) C_MASS(i) = Cel(i);
+        if (make_damping_yes_or_not .eq. 1) D_MASS(i) = KCel(i);                
     enddo   
 
-    write(*,'(A)') 'Done'
+    write(*,'(A)') 'SPARSE MATRIX: OK'
 
     !********************************************************************************************************
     !     BUILD THE STIFFNESS MATRIX  IN CRS SPARSE FORMAT
     !********************************************************************************************************
-
-    write(*,'(A)')     
-    write(*,'(A)') '----------Building pattern 4 stiffness matrix----------'
-
-    call system_clock(COUNT=start,COUNT_RATE=clock(2))
-
-    allocate(STIFF_PATTERN(2*nnod, max_nodes));    STIFF_PATTERN = 0;
-    allocate(I_STIFF(0:2*nnod));                   I_STIFF = 0;
-
-    call MAKE_PATTERN_STIFF_MATRIX(STIFF_PATTERN, nnod, max_nodes, nelem, nmat, sdeg_mat, &
-        con_spx, con_nnz, I_STIFF, length)
-
-    allocate(J_STIFF(1:length),M_STIFF(1:length))
-    J_STIFF = 0;     M_STIFF = 0.d0;
-
-    j = 0
-    do i = 1 , 2*nnod
-    call COUNT_NNZ_EL(STIFF_PATTERN, 2*nnod, max_nodes, i,ic)
-    J_STIFF(j+1 : j + ic) = STIFF_PATTERN(i,1:ic)
-    j = j + ic
-    enddo
-
-    deallocate(STIFF_PATTERN)       
-    write(*,'(A)') 'Done.'
-
-    call system_clock(COUNT=finish)
-    time_MAKE_PATTERN_STIFF_MATRIX = float(finish-start)/float(clock(2))
-    write(*,'(A,F8.4,A)')'MAKE_PATTERN_STIFF_MATRIX time = ',time_MAKE_PATTERN_STIFF_MATRIX,' s'        
-
-    write(*,'(A)')
-    write(*,'(A)') '-------------Building the stiffness matrix-------------'
-
-    call system_clock(COUNT=start,COUNT_RATE=clock(2))
     if (.not.NLFLAG) then
-        call MAKE_STIFF_MATRIX(nnod,length,I_STIFF,J_STIFF,M_STIFF, &
-            nelem, con_nnz, con_spx, nmat, tag_mat, prop_mat, sdeg_mat, &
-            alfa1, alfa2, beta1, beta2, gamma1, gamma2)
-    endif
-    write(*,'(A)') 'Done.'
 
-    call system_clock(COUNT=finish)
-    time_MAKE_STIFF_MATRIX = float(finish-start)/float(clock(2))
-    write(*,'(A,F8.4,A)')'MAKE_STIFF_MATRIX time = ',time_MAKE_STIFF_MATRIX,' s'  
+        write(*,'(A)')     
+        write(*,'(A)') '----------COMPUTING STIFFNESS MATRIX PATTERN----------'
+
+        call system_clock(COUNT=start,COUNT_RATE=clock(2))
+
+        allocate(STIFF_PATTERN(2*nnod, max_nodes));    STIFF_PATTERN = 0;
+        allocate(I_STIFF(0:2*nnod));                   I_STIFF = 0;
+
+        call MAKE_PATTERN_STIFF_MATRIX(STIFF_PATTERN, nnod, max_nodes, nelem, nmat, sdeg_mat, &
+            con_spx, con_nnz, I_STIFF, length)
+
+        allocate(J_STIFF(1:length),M_STIFF(1:length))
+        J_STIFF = 0;     M_STIFF = 0.d0;
+
+        j = 0
+        do i = 1 , 2*nnod
+        call COUNT_NNZ_EL(STIFF_PATTERN, 2*nnod, max_nodes, i,ic)
+        J_STIFF(j+1 : j + ic) = STIFF_PATTERN(i,1:ic)
+        j = j + ic
+        enddo
+
+        deallocate(STIFF_PATTERN)       
+        write(*,'(A)') 'STIFFNESS MATRIX PATTERN:OK'
+
+        call system_clock(COUNT=finish)
+        time_MAKE_PATTERN_STIFF_MATRIX = float(finish-start)/float(clock(2))
+        write(*,'(A,F8.4,A)')'MAKE_PATTERN_STIFF_MATRIX time = ',time_MAKE_PATTERN_STIFF_MATRIX,' s'        
+
+        write(*,'(A)')
+        write(*,'(A)') '-------------COMPUTING STIFFNESS MATRIX-------------'
+
+        call system_clock(COUNT=start,COUNT_RATE=clock(2))
+            call MAKE_STIFF_MATRIX(nnod,length,I_STIFF,J_STIFF,M_STIFF, &
+                nelem, con_nnz, con_spx, nmat, tag_mat, prop_mat, sdeg_mat, &
+                alfa1, alfa2, beta1, beta2, gamma1, gamma2)
+        write(*,'(A)') 'Done.'
+
+        call system_clock(COUNT=finish)
+        time_MAKE_STIFF_MATRIX = float(finish-start)/float(clock(2))
+        write(*,'(A,F8.4,A)')'MAKE_STIFF_MATRIX time = ',time_MAKE_STIFF_MATRIX,' s'  
+    endif
+    write(*,'(A)') '*******************************************************'
+    write(*,'(A)')
+    write(*,'(A)') '*******************************************************'
 
     !********************************************************************************************************
     !     BUILD THE ABCs MATRIX IN CRS SPARSE FORMAT
@@ -1087,8 +1100,7 @@ program SPEED2D
                 enddo
             enddo
 
-            write(*,'(A)')
-            write(*,'(A)') '----------Building pattern 4 abc conditions------------'
+            write(*,'(A)') '----------COMPUTING ABC PATTERN------------'
 
             call system_clock(COUNT=start,COUNT_RATE=clock(2))
 
@@ -1111,14 +1123,14 @@ program SPEED2D
             deallocate(ABC_PATTERN)       
         endif
 
-        write(*,'(A)') 'Done.'
+        write(*,'(A)') 'ABC PATTERN:OK'
 
         call system_clock(COUNT=finish)
         time_MAKE_PATTERN_ABC_MATRIX = float(finish-start)/float(clock(2))
         write(*,'(A,F8.4,A)')'MAKE_PATTERN_ABC_MATRIX time = ',time_MAKE_PATTERN_ABC_MATRIX,' s' 
 
         write(*,'(A)')
-        write(*,'(A)') '----------------Building the ABC matrices--------------'
+        write(*,'(A)') '----------------COMPUTING ABC MATRIX--------------'
 
         call system_clock(COUNT=start,COUNT_RATE=clock(2))
 
@@ -1127,14 +1139,14 @@ program SPEED2D
             con_nnz_bc, con_spx_bc, con_nnz, con_spx, nmat, tag_mat, prop_mat, sdeg_mat, &
             alfa1, alfa2, beta1, beta2, gamma1, gamma2, xx_spx, yy_spx)
 
-        write(*,'(A)') 'Done'
+        write(*,'(A)') 'ABC MATRIX:OK'
 
         call system_clock(COUNT=finish)
         time_MAKE_ABCS_MATRIX = float(finish-start)/float(clock(2))
         write(*,'(A,F8.4,A)')'MAKE_ABCS_MATRIX time = ',time_MAKE_ABCS_MATRIX,' s' 
 
     endif
-
+    write(*,*)'*********************************************'
     !********************************************************************************************************
     !     MAKE LOCAL DG MATRIX
     !********************************************************************************************************
@@ -1209,7 +1221,7 @@ program SPEED2D
 
             call system_clock(COUNT=finish)
             time_SETUP_DG_ELEM = float(finish-start)/float(clock(2))
-            write(*,'(A,F8.4,A)')'SETUP_DG_ELEM time = ',time_SETUP_DG_ELEM,' s' 								   
+            write(*,'(A,F8.4,A)')'SETUP_DG_ELEM time = ',time_SETUP_DG_ELEM,' s'  
 
             call WRITE_FILE_DGFS(nmat, sdeg_mat, tag_mat, con_nnz, con_spx, &
                 nnod, nelem, xx_spx, yy_spx,&
@@ -1342,9 +1354,11 @@ program SPEED2D
         I_ABC = 0;   J_ABC = 0;     M_ABC_U = 0.d0;  M_ABC_V = 0.d0; 
     endif
 
+    write(*,'(A)') '*******************************************************'
 
     write(*,'(A)')
-    write(*,'(A)') '-------------------Summing  matrices-------------------'
+    write(*,'(A)') '*******************************************************'
+    write(*,'(A)') '-------------------COMPUTE MATRIX SUM-------------------'
 
     allocate(NDEGR(2*nnod),IW(2*nnod))
 
@@ -1371,23 +1385,20 @@ program SPEED2D
     call aplb ( 2*nnod, 2*nnod, 1, D_MASS, J_MASS, I_MASS, M_ABC_U, J_ABC, I_ABC, &
         D_SUM, JD_SUM, ID_SUM, NNZ_AB, IW, ierr)
 
-
-    I_STIFF = I_STIFF + 1
-
-    !Computing the nonzero elements for the sum
-    call aplbdg ( 2*nnod, 2*nnod,  J_STIFF, I_STIFF, JD_SUM, ID_SUM, NDEGR, NNZ_AB, IW )
-
-
-    allocate(IE_SUM(0:2*nnod), JE_SUM(NNZ_AB), E_SUM(NNZ_AB))
-    
     if (.not.NLFLAG) then
+        I_STIFF = I_STIFF + 1
+        !Computing the nonzero elements for the sum
+        call aplbdg ( 2*nnod, 2*nnod,  J_STIFF, I_STIFF, JD_SUM, ID_SUM, NDEGR, NNZ_AB, IW )
+        allocate(IE_SUM(0:2*nnod), JE_SUM(NNZ_AB), E_SUM(NNZ_AB))
         !Summing E_SUM = M_STIFF + D_SUM = M_STIFF + D_MASS - M_ABC_U
         call aplb ( 2*nnod, 2*nnod, 0, M_STIFF, J_STIFF, I_STIFF, D_SUM, JD_SUM, ID_SUM, &
             E_SUM, JE_SUM, IE_SUM, NNZ_AB, IW, ierr)
         call aplb ( 2*nnod, 2*nnod, 1, M_STIFF, J_STIFF, I_STIFF, D_SUM, JD_SUM, ID_SUM, &
             E_SUM, JE_SUM, IE_SUM, NNZ_AB, IW, ierr)
+        deallocate(I_STIFF,J_STIFF,M_STIFF)
     else
         !Summing E_SUM = D_SUM = M_STIFF + D_MASS - M_ABC_U
+        allocate(IE_SUM(0:2*nnod), JE_SUM(NNZ_AB), E_SUM(NNZ_AB))
         E_SUM = D_SUM
     endif
 
@@ -1415,21 +1426,22 @@ program SPEED2D
 
     endif
 
-    deallocate(C_MASS, D_MASS, I_STIFF, J_STIFF, M_STIFF, I_ABC, J_ABC, M_ABC_U, M_ABC_V)
-    write(*,'(A)') 'Done'
+    deallocate(C_MASS, D_MASS, I_ABC, J_ABC, M_ABC_U, M_ABC_V)
+    write(*,'(A)') 'MATRIX SUM:OK'
+    write(*,'(A)') '*******************************************************'
 
     !********************************************************************************************************
     !     COMPUTE M^-1*(C-S) AND M^-1*(A+B+D-R)
     !********************************************************************************************************
 
     write(*,'(A)')
-    write(*,'(A)') '----------------Multiplying  matrices------------------'
+    write(*,'(A)') '*******************************************************'
+    write(*,'(A)') '----------------MATRIX MULTIPLICATION------------------'
 
     M_MASS = 1./M_MASS;
 
     !Computing the nonzero elements for the mul      
     call amubdg ( 2*nnod, 2*nnod, 2*nnod, J_MASS, I_MASS, JC_SUM, IC_SUM, NDEGR, NNZ_AB, IW )
-
     allocate(IN_TOT(0:2*nnod), JN_TOT(NNZ_AB), N_TOT(NNZ_AB))
 
     !Multiplying N = M^-1*(C-S)      
@@ -1444,41 +1456,44 @@ program SPEED2D
     !Computing the nonzero elements for the mul      
     call amubdg ( 2*nnod, 2*nnod, 2*nnod, J_MASS, I_MASS, JE_SUM, IE_SUM, NDEGR, NNZ_AB, IW )
 
+    WRITE(*,*) '================== debug ========================'
     allocate(IK_TOT(0:2*nnod), JK_TOT(NNZ_AB), K_TOT(NNZ_AB))
 
     !Multiplying K = M^-1*(A+B+D-R)
     call amub ( 2*nnod, 2*nnod, 0, M_MASS, J_MASS, I_MASS, E_SUM, JE_SUM, IE_SUM, &
         K_TOT, JK_TOT, IK_TOT, NNZ_AB, IW, ierr )
 
+    WRITE(*,*) '================== debug ========================'
     call amub ( 2*nnod, 2*nnod, 1, M_MASS, J_MASS, I_MASS, E_SUM, JE_SUM, IE_SUM, &
         K_TOT, JK_TOT, IK_TOT, NNZ_AB, IW, ierr )
+    WRITE(*,*) '================== debug ========================'
 
     NNZ_K = NNZ_AB
-    if (.not.NLFLAG) then
-        deallocate(M_MASS, I_MASS, J_MASS, C_SUM, JC_SUM, IC_SUM, E_SUM, JE_SUM, IE_SUM, NDEGR, IW)
-    else
-        deallocate(
-    endif
-    write(*,'(A)') 'Done'
+    deallocate(M_MASS, I_MASS, J_MASS, C_SUM, JC_SUM, IC_SUM, E_SUM, JE_SUM, IE_SUM, NDEGR, IW)
+    write(*,'(A)') 'MATRIX MULTIPLICATION:OK'
+    write(*,'(A)') '*******************************************************'
 
     !********************************************************************************************************
     !     BUILDING THE RHS M^-1*F
     !********************************************************************************************************
 
     write(*,'(A)')
-    write(*,'(A)') '-------------------Building the RHS--------------------'
+    write(*,'(A)') '*******************************************************'
+    write(*,'(A)') '-------------------COMPUTING RHS--------------------'
 
     do i = 1, nfunc
         Fel(i,:) = Fel(i,:)/Mel
     enddo
 
-    write(*,'(A)') 'Done'
+    write(*,'(A)') 'RHS:OK'
+    write(*,'(A)') '*******************************************************'
 
     !********************************************************************************************************
     !     SETTING CALCULATION PARAMETERS
     !********************************************************************************************************
 
     write(*,'(A)')
+    write(*,'(A)') '*******************************************************'
     write(*,'(A)') '-----------Setting calculation parameters--------------'
 
 
@@ -1512,14 +1527,13 @@ program SPEED2D
 
     call system_clock(COUNT=finish)
     time_DELTAT_MAX = float(finish-start)/float(clock(2))
-    write(*,'(A,F8.4,A)')'DELTAT_MAX time = ',time_DELTAT_MAX,' s' 	
+    write(*,'(A,F8.4,A)')'DELTAT_MAX time = ',time_DELTAT_MAX,' s'
 
     nts = int(xtime / deltat)
     write(*,'(A,I8)')'Number of time-steps = ',nts
 
     xtime = dfloat(nts) * deltat
     write(*,'(A,E12.4)')'Final time = ',xtime
-
 
     !     SNAPSHOTS
 
@@ -1543,14 +1557,14 @@ program SPEED2D
         allocate(x_monitor_lst(nmonitors),y_monitor_lst(nmonitors))
         allocate(x_monitor(nmonitors),y_monitor(nmonitors))
 
-        call READ_FILEPG(file_LS,nmonitors,x_monitor_lst,y_monitor_lst)		
+        call READ_FILEPG(file_LS,nmonitors,x_monitor_lst,y_monitor_lst)
 
         if (file_mon_lst.eq.0) then ! NO input file with the position of LST monitors
 
             do i = 1,nmonitors
             call GET_NEAREST_NODE_PGM(nnod, xx_spx, yy_spx, &
                 x_monitor_lst(i), y_monitor_lst(i),&
-                n_monitor(i), dist_monitor_lst(i), depth_search_mon_lst)	
+                n_monitor(i), dist_monitor_lst(i), depth_search_mon_lst)
 
             x_monitor(i) = xx_spx(n_monitor(i))
             y_monitor(i) = yy_spx(n_monitor(i))
@@ -1590,32 +1604,47 @@ program SPEED2D
     write(*,'(A)')'             Beginning of the time-loop                 '
     write(*,'(A)')
 
-    call TIME_LOOP_NEW(nnod,xx_spx,yy_spx,con_nnz,con_spx,&                                                         ! 5
-        nmat,tag_mat,sdeg_mat,prop_mat,&                                                                 ! 4
-        nelem,alfa1,beta1,gamma1,alfa2,beta2,gamma2,delta1,delta2,&                                      ! 9
-        con_nnz_bc,con_spx_bc,&                                                                          ! 2
-        nload_dirX_el,tag_dirX_el,nload_dirY_el,tag_dirY_el,&                                            ! 4
-        nload_abc_el,tag_abc_el,&                                                                        ! 2
-        nelem_abc,nedge_abc,ielem_abc,iedge_abc,&                                                        ! 4
-        nfunc,func_type,func_indx,nfunc_data,func_data,tag_func,&                                        ! 6
-        nfunc_drm,func_type_drm,func_indx_drm,nfunc_data_drm,func_data_drm,&  !DRM Scandella 11.04.2006  ! 5
-        ndt_mon, &                                                            !DRM Scandella 24.01.2006  ! 1          
-        K_TOT, IK_TOT, JK_TOT, NNZ_K, &                                                                  ! 4
-        N_TOT, IN_TOT, JN_TOT, NNZ_N, Mel,&                                                              ! 5
-        Fel,u0,v0,&                                                                                      ! 3
-        nts,deltat,nmonitors,n_monitor,nsnaps,itersnap,&                                                 ! 6
-        check_node_sism,check_dist_node_sism,&                                                           ! 2
-        length_check_node_sism,facsmom,&                                                                 ! 2
-        nload_sism_el,&                                                                                  ! 1
-        make_damping_yes_or_not,&                                                                        ! 1
-        nnode_TOT_eff,node_TOT_eff,tagstep,&                                  !DRM Scandella 17.10.2005  ! 3 
-        ns,n_el_DRM,el_DRM_eff,K_DRM,nnode_BD_eff,&                           !DRM Scandella 21.10.2005  ! 5
-        nload_MDRM_el,tag_MDRM_el,val_PDRM_el,&                               !DRM Scandella 25.10.2005  ! 3
-        fn_ord,node_PDRM_el,&                                                 !DRM Scandella 16.11.2005  ! 2
-        glob_drm_x,glob_drm_y, &                                              !DRM Scandella 11.04.2006  ! 2
-        opt_out_var,test,nelem_dg,&                                                                      ! 3
-        IDG_only_uv, JDG_only_uv, MDG_only_uv,nnz_dg_only_uv, & 
-        NLFLAG)
+    if (.not.NLFLAG) then
+        call TIME_LOOP_EL(nnod,xx_spx,yy_spx,con_nnz,con_spx,&                                                         ! 5
+            nmat,tag_mat,sdeg_mat,prop_mat,&                                                                 ! 4
+            nelem,alfa1,beta1,gamma1,alfa2,beta2,gamma2,delta1,delta2,&                                      ! 9
+            con_nnz_bc,con_spx_bc,&                                                                          ! 2
+            nload_dirX_el,tag_dirX_el,nload_dirY_el,tag_dirY_el,&                                            ! 4
+            nload_abc_el,tag_abc_el,&                                                                        ! 2
+            nelem_abc,nedge_abc,ielem_abc,iedge_abc,&                                                        ! 4
+            nfunc,func_type,func_indx,nfunc_data,func_data,tag_func,&                                        ! 6
+            nfunc_drm,func_type_drm,func_indx_drm,nfunc_data_drm,func_data_drm,&  !DRM Scandella 11.04.2006  ! 5
+            ndt_mon, &                                                            !DRM Scandella 24.01.2006  ! 1          
+            K_TOT, IK_TOT, JK_TOT, NNZ_K, &                                                                  ! 4
+            N_TOT, IN_TOT, JN_TOT, NNZ_N, Mel,&                                                              ! 5
+            Fel,u0,v0,&                                                                                      ! 3
+            nts,deltat,nmonitors,n_monitor,nsnaps,itersnap,&                                                 ! 6
+            check_node_sism,check_dist_node_sism,&                                                           ! 2
+            length_check_node_sism,facsmom,&                                                                 ! 2
+            nload_sism_el,&                                                                                  ! 1
+            make_damping_yes_or_not,&                                                                        ! 1
+            nnode_TOT_eff,node_TOT_eff,tagstep,&                                  !DRM Scandella 17.10.2005  ! 3 
+            ns,n_el_DRM,el_DRM_eff,K_DRM,nnode_BD_eff,&                           !DRM Scandella 21.10.2005  ! 5
+            nload_MDRM_el,tag_MDRM_el,val_PDRM_el,&                               !DRM Scandella 25.10.2005  ! 3
+            fn_ord,node_PDRM_el,&                                                 !DRM Scandella 16.11.2005  ! 2
+            glob_drm_x,glob_drm_y, &                                              !DRM Scandella 11.04.2006  ! 2
+            opt_out_var,test,nelem_dg,&                                                                      ! 3
+            IDG_only_uv, JDG_only_uv, MDG_only_uv,nnz_dg_only_uv)
+    else
+        call TIME_LOOP_NL(nnod,xx_spx,yy_spx,con_nnz,con_spx,nmat,tag_mat,sdeg_mat,   &
+            prop_mat,nelem,alfa1,beta1,gamma1,alfa2,beta2,gamma2,delta1,delta2,       &
+            con_nnz_bc,con_spx_bc,nload_dirX_el,tag_dirX_el,nload_dirY_el,tag_dirY_el,&
+            nload_abc_el,tag_abc_el,nelem_abc,nedge_abc,ielem_abc,iedge_abc,          &
+            nfunc,func_type,func_indx,nfunc_data,func_data,tag_func,                  &
+            nfunc_drm,func_type_drm,func_indx_drm,nfunc_data_drm,func_data_drm,       & 
+            ndt_mon, N_TOT, IN_TOT, JN_TOT, NNZ_N, Mel,Fel,u0,v0,nts,deltat,nmonitors,&
+            n_monitor,nsnaps,itersnap,check_node_sism,check_dist_node_sism,           &
+            length_check_node_sism,facsmom,nload_sism_el,make_damping_yes_or_not,     &
+            nnode_TOT_eff,node_TOT_eff,tagstep,ns,n_el_DRM,el_DRM_eff,K_DRM,          &
+            nnode_BD_eff,nload_MDRM_el,tag_MDRM_el,val_PDRM_el,fn_ord,node_PDRM_el,   &
+            glob_drm_x,glob_drm_y,opt_out_var,test,nelem_dg,IDG_only_uv,JDG_only_uv,  &
+            MDG_only_uv,nnz_dg_only_uv)
+    endif
     write(*,'(A)')
     write(*,'(A)')'Bye.'
 
@@ -1652,8 +1681,9 @@ program SPEED2D
     !----------------------------------------------------------------------------------------  
 
     deallocate(IN_TOT, JN_TOT, N_TOT)
-    deallocate(IK_TOT, JK_TOT, K_TOT)
-
+    if(.not.NLFLAG) then
+        deallocate(IK_TOT, JK_TOT, K_TOT)
+    endif
 
 
 end program SPEED2D

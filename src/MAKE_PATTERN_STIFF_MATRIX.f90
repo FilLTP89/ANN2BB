@@ -32,103 +32,99 @@
 !> @param[out] length_stiff number of nnzero elements for CRS format
 
 
-       subroutine MAKE_PATTERN_STIFF_MATRIX(MM,nnod,nnod_max,nelem, nmat, sd, &
-                                            cs, cs_nnz, I_stiff, length_stiff)
+subroutine MAKE_PATTERN_STIFF_MATRIX(MM,nnod,nnod_max,nelem, nmat, sd, &
+    cs, cs_nnz, I_stiff, length_stiff)
 
-       implicit none
-       integer*4 :: nnod, nnod_max, nelem,cs_nnz
-       integer*4 :: im, nmat, nn, ie, j,i, n, m, it, jm 
-       integer*4 :: is, in, irow1, irow2, icol1, icol2
-       integer*4 :: ind_c, tt, jk, ji, length_stiff
-       integer*4, dimension(0:cs_nnz) :: cs
-       integer*4, dimension(nmat) :: sd
-  
-       integer*4, dimension(2*nnod,nnod_max) :: MM
-       integer*4, dimension(0:2*nnod) :: I_stiff
-       
-       integer*4 :: number_of_threads
+    implicit none
+    integer*4 :: nnod, nnod_max, nelem,cs_nnz
+    integer*4 :: im, nmat, nn, ie, j,i, n, m, it, jm 
+    integer*4 :: is, in, irow1, irow2, icol1, icol2
+    integer*4 :: ind_c, tt, jk, ji, length_stiff
+    integer*4, dimension(0:cs_nnz) :: cs
+    integer*4, dimension(nmat) :: sd
 
-       number_of_threads = 1;
-       
-       write(*,*) 'inside'
+    integer*4, dimension(2*nnod,nnod_max) :: MM
+    integer*4, dimension(0:2*nnod) :: I_stiff
 
+    integer*4 :: number_of_threads
 
-       call OMP_set_num_threads(number_of_threads)
+    number_of_threads = 1;
 
-       !call OMP_get_num_threads()
+    write(*,*) 'inside'
 
 
-!$OMP PARALLEL &
-!$OMP PRIVATE(ie, im, nn, j, i, is, in, irow1, irow2, n, m, it, jm) &
-!$OMP PRIVATE(icol1, icol2, ind_c, tt)
- 
-!$OMP DO  
-	   
-       
-      do ie = 1, nelem
+    call OMP_set_num_threads(number_of_threads)
 
-           im = cs(cs(ie -1) +0);
-           nn = sd(im) + 1;      
- 
-           do j = 1,nn
-              do i = 1,nn
-                 is = nn*(j -1) + i
-                 in = cs(cs(ie -1) + is)
+    !call OMP_get_num_threads()
 
-                 irow1 = in;    irow2 = in + nnod
+    !$OMP PARALLEL &
+    !$OMP PRIVATE(ie, im, nn, j, i, is, in, irow1, irow2, n, m, it, jm) &
+    !$OMP PRIVATE(icol1, icol2, ind_c, tt)
+
+    !$OMP DO  
+
+    do ie = 1, nelem
+
+       im = cs(cs(ie -1) +0);
+       nn = sd(im) + 1;      
+
+       do j = 1,nn
+          do i = 1,nn
+             is = nn*(j -1) + i
+             in = cs(cs(ie -1) + is)
+
+             irow1 = in;    irow2 = in + nnod
 
 
-                  do n = 1,nn
-                     do m = 1,nn
-                        it = nn*(n -1) + m
-                        jm = cs(cs(ie -1) + it)
-                        icol1 = jm;    icol2 = jm + nnod;
-                               
-                        call FIND_INDEX(MM, 2*nnod, nnod_max, irow1, ind_c)  
-                        call FIND_INT(MM, 2*nnod, nnod_max, irow1, icol1, tt)
-                               
-                        if(tt .eq. 0)  MM(irow1,ind_c) = icol1
+              do n = 1,nn
+                 do m = 1,nn
+                    it = nn*(n -1) + m
+                    jm = cs(cs(ie -1) + it)
+                    icol1 = jm;    icol2 = jm + nnod;
+                           
+                    call FIND_INDEX(MM, 2*nnod, nnod_max, irow1, ind_c)  
+                    call FIND_INT(MM, 2*nnod, nnod_max, irow1, icol1, tt)
+                           
+                    if(tt .eq. 0)  MM(irow1,ind_c) = icol1
 
-                        call FIND_INDEX(MM, 2*nnod, nnod_max, irow1, ind_c)  
-                        call FIND_INT(MM, 2*nnod, nnod_max, irow1, icol2, tt)
+                    call FIND_INDEX(MM, 2*nnod, nnod_max, irow1, ind_c)  
+                    call FIND_INT(MM, 2*nnod, nnod_max, irow1, icol2, tt)
 
-                        if(tt .eq. 0) MM(irow1,ind_c) = icol2 
+                    if(tt .eq. 0) MM(irow1,ind_c) = icol2 
 
-                        call FIND_INDEX(MM, 2*nnod, nnod_max, irow2, ind_c)    
-                        call FIND_INT(MM, 2*nnod, nnod_max, irow2, icol1, tt)
+                    call FIND_INDEX(MM, 2*nnod, nnod_max, irow2, ind_c)    
+                    call FIND_INT(MM, 2*nnod, nnod_max, irow2, icol1, tt)
 
-                        if(tt .eq. 0) MM(irow2,ind_c) = icol1
+                    if(tt .eq. 0) MM(irow2,ind_c) = icol1
 
-                        call FIND_INDEX(MM, 2*nnod, nnod_max, irow2, ind_c)  
-                        call FIND_INT(MM, 2*nnod, nnod_max, irow2, icol2, tt)
+                    call FIND_INDEX(MM, 2*nnod, nnod_max, irow2, ind_c)  
+                    call FIND_INT(MM, 2*nnod, nnod_max, irow2, icol2, tt)
 
-                        if(tt .eq. 0) MM(irow2,ind_c) = icol2 
-                                      
-                     enddo
-                  enddo
+                    if(tt .eq. 0) MM(irow2,ind_c) = icol2 
+                                  
+                 enddo
               enddo
-           enddo
-      enddo   
-		 
-		 
-!$OMP END DO
-!$OMP END PARALLEL
-
-       jk = 0
-       do ji = 1 , 2*nnod
-           call COUNT_NNZ_EL(MM, 2*nnod, nnod_max, ji, ind_c)
-
-           if (ind_c .ne. 0) then
-              I_stiff(ji) = I_stiff(ji-1) + ind_c
-           else 
-              I_stiff(ji) = I_stiff(ji-1)
-           endif
-           jk = jk + ind_c
+          enddo
        enddo
+    enddo   
+     
+     
+    !$OMP END DO
+    !$OMP END PARALLEL
+
+    jk = 0
+    do ji = 1 , 2*nnod
+       call COUNT_NNZ_EL(MM, 2*nnod, nnod_max, ji, ind_c)
+
+       if (ind_c .ne. 0) then
+          I_stiff(ji) = I_stiff(ji-1) + ind_c
+       else 
+          I_stiff(ji) = I_stiff(ji-1)
+       endif
+       jk = jk + ind_c
+    enddo
+
+    length_stiff = jk
 
 
-
-       length_stiff = jk
-       
-       
-       end subroutine MAKE_PATTERN_STIFF_MATRIX
+end subroutine MAKE_PATTERN_STIFF_MATRIX
