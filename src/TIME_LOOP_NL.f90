@@ -259,18 +259,19 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne, &
     integer*4, dimension(:), allocatable :: nodal_counter
 
     interface
-        subroutine ALLOCATE_NL(nn,ct,ww,dd,dxdx_el,dxdy_el,dydx_el,dydy_el,det_j,   &
-            dUxdx_el,dUxdy_el,dUydx_el,dUydy_el,Sxx_el,Syy_el,Sxy_el,Szz_el,        &
-            lambda_el,mu_el,Syld_el,Ckin_el,kkin_el,Riso_el,Rinf_el,biso_el,        &
-            Xkin_el,dEpl_el,fx_el,fy_el,nl_sism,fxs_el,fys_el,Sxxs_el,Syys_el,      &
+        subroutine ALLOCATE_NL(nn,ct,ww,dd,dxdx_el,dxdy_el,dydx_el,dydy_el,det_j,  &
+            Ux_el,Uy_el,dUxdx_el,dUxdy_el,dUydx_el,dUydy_el,Sxx_el,Syy_el,Sxy_el,  &
+            Szz_el,lambda_el,mu_el,Syld_el,Ckin_el,kkin_el,Riso_el,Rinf_el,biso_el,&
+            Xkin_el,dEpl_el,fx_el,fy_el,nl_sism,fxs_el,fys_el,Sxxs_el,Syys_el,     &
             Sxys_el,Szzs_el)
-            
+            implicit none 
             integer*4,                              intent(in ) :: nn,nl_sism
             real*8,     dimension(:),  allocatable, intent(out) :: ct,ww
             real*8,     dimension(:),  allocatable, intent(out) :: dxdx_el,dydy_el
             real*8,     dimension(:),  allocatable, intent(out) :: dxdy_el,dydx_el
             real*8,     dimension(:,:),allocatable, intent(out) :: dd,det_j,fx_el,fy_el
             real*8,     dimension(:,:),allocatable, intent(out) :: fxs_el,fys_el
+            real*8,     dimension(:,:),allocatable, intent(out) :: Ux_el,Uy_el
             real*8,     dimension(:,:),allocatable, intent(out) :: dUxdx_el,dUydy_el
             real*8,     dimension(:,:),allocatable, intent(out) :: dUxdy_el,dUydx_el
             real*8,     dimension(:,:),allocatable, intent(out) :: sxx_el,syy_el,sxy_el,szz_el
@@ -280,19 +281,16 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne, &
             real*8,     dimension(:,:),allocatable, intent(out) :: Ckin_el,kkin_el
             real*8,     dimension(:,:,:),allocatable, intent(out) :: Xkin_el,dEpl_el
         end subroutine ALLOCATE_NL
-    
-        subroutine MAKE_STRAIN(nn,ct,ww,dd,dxdx,dxdy,dydx,dydy,&
-            ux,uy,duxdx,duxdy,duydx,duydy)
-
-            real*8                                 :: t1ux,t1uy,t2ux,t2uy
-            real*8                                 :: t1fx,t1fy,t2fx,t2fy,det_j
-            integer*4                              :: ip,iq,il,im
-            integer*4,               intent(in)    :: nn
-            real*8, dimension(nn),   intent(inout) :: ct,ww
-            real*8, dimension(nn),   intent(inout) :: dxdx,dxdy,dydx,dydy
-            real*8, dimension(nn,nn),intent(inout) :: dd,ux,uy
-            real*8, dimension(nn,nn),intent(out)   :: duxdx,duxdy,duydx,duydy
-        end subroutine MAKE_STRAIN 
+subroutine MAKE_STRAIN(nn,dd,dxdx,dxdy,dydx,dydy,&
+    ux,uy,duxdx,duxdy,duydx,duydy)
+    real*8                                 :: t1ux,t1uy,t2ux,t2uy
+    real*8                                 :: t1fx,t1fy,t2fx,t2fy,det_j
+    integer*4                              :: ip,iq,il,im
+    integer*4,               intent(in)    :: nn
+    real*8, dimension(nn),   intent(in) :: dxdx,dxdy,dydx,dydy
+    real*8, dimension(nn,nn),intent(in) :: dd,ux,uy
+    real*8, dimension(nn,nn),intent(inout) :: duxdx,duxdy,duydx,duydy
+    end subroutine MAKE_STRAIN    
     end interface
     
     
@@ -535,11 +533,17 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne, &
     !     ALL STEPS
     !********************************************************************************************	
     ! ALLOCATE NONLINEAR VARIABLES TO BE UPDATED AT EACH TIME STEP
+    
     allocate(Stress_all(4*nnt))
     allocate(Xkin_all(4*nnt))
     allocate(Riso_all(4*nnt))
     allocate(Epl_all(4*nnt))
     
+    Stress_all=0d0
+    Xkin_all=0d0
+    Riso_all=0d0
+    Epl_all=0d0
+
     do its = 0,nts 
 
         fk = 0.d0; fd = 0.d0; sism = 0.d0;
@@ -653,23 +657,22 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne, &
             nn = sdeg_mat(im) +1
             
             ! ALLOCATE VARIABLES
-            call ALLOCATE_NL(nn,ct,ww,dd,dxdx_el,dxdy_el,dydx_el,dydy_el,det_j,     &
-                duxdx_el,duxdy_el,duydx_el,duydy_el,sxx_el,syy_el,sxy_el,szz_el,    &
-                lambda_el,mu_el,Syld_el,Ckin_el,kkin_el,Riso_el,Rinf_el,biso_el,    &
-                Xkin_el,dEpl_el,fx_el,fy_el,nl_sism,fxs_el,fys_el,Sxxs_el,Syys_el,  &
-                Sxys_el,Szzs_el)
+            call ALLOCATE_NL(nn,ct,ww,dd,dxdx_el,dxdy_el,dydx_el,dydy_el,det_j,   &
+                ux_el,uy_el,duxdx_el,duxdy_el,duydx_el,duydy_el,sxx_el,syy_el,    &
+                sxy_el,szz_el,lambda_el,mu_el,Syld_el,Ckin_el,kkin_el,Riso_el,    &
+                Rinf_el,biso_el,Xkin_el,dEpl_el,fx_el,fy_el,nl_sism,fxs_el,fys_el,&
+                Sxxs_el,Syys_el,Sxys_el,Szzs_el)
             
             ! INITIALIZE VARIABLES
-            call INITIAL_NL(cs_nnz,cs,nm,ct,ww,dd,nn,nnt,im,ie,prop_mat,Sxx_el,Syy_el,Sxy_el,Szz_el,  &
-                lambda_el,mu_el,Syld_el,Ckin_el,kkin_el,Riso_el,Rinf_el,biso_el,Xkin_el, &
-                Stress_all,Xkin_all,Riso_all,fx_el,fy_el,nl_sism,fxs_el,fys_el,Sxxs_el,  &
-                Syys_el,Sxys_el,Szzs_el)
-
+            call INITIAL_NL(cs_nnz,cs,nm,ct,ww,dd,nn,nnt,im,ie,prop_mat,ux_el,uy_el,&
+                Sxx_el,Syy_el,Sxy_el,Szz_el,lambda_el,mu_el,Syld_el,Ckin_el,kkin_el,&
+                Riso_el,Rinf_el,biso_el,Xkin_el,Stress_all,Xkin_all,Riso_all,fx_el, &
+                fy_el,nl_sism,fxs_el,fys_el,Sxxs_el,Syys_el,Sxys_el,Szzs_el,u1)
             ! COMPUTE STRAIN INCREMENT
             call MAKE_DERIVATIVES(nn,alfa1,alfa2,beta1,beta2,gamma1,gamma2,ct,&
                 dxdy_el,dydy_el,dxdx_el,dydx_el)
-           
-            call MAKE_STRAIN(nn,ct,ww,dd,dxdx_el,dxdy_el,dydx_el,dydy_el,ux_el,uy_el, &
+
+            call MAKE_STRAIN(nn,dd,dxdx_el,dxdy_el,dydx_el,dydy_el,ux_el,uy_el, &
                   dUxdx,dUxdy_el,dUydx_el,dUydy_el)
 
             ! COMPUTE NON LINEAR INTERNAL FORCES
@@ -729,7 +732,7 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne, &
                 dUxdx_el,dUxdy_el,dUydx_el,dUydy_el,Sxx_el,Syy_el,Sxy_el,Szz_el, &
                 lambda_el,mu_el,Syld_el,Ckin_el,kkin_el,Riso_el,Rinf_el,biso_el, &
                 Xkin_el,dEpl_el,fx_el,fy_el,nl_sism,fxs_el,fys_el,Sxxs_el,Syys_el,&
-                Sxys_el,Szzs_el)
+                Sxys_el,Szzs_el,ux_el,uy_el)
 
         end do
         fk=fk/mvec 
@@ -879,8 +882,8 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne, &
                 duydx(in) = duydx(in) / nodal_counter(in) 
                 enddo 
 
-                do i = 1,nmonit	 
-                unit_strain = 400000 + i	
+                do i = 1,nmonit
+                unit_strain = 400000 + i
                 in = node_m(i) 
                 if (dabs(duxdx(in)).lt.(1.0d-99)) duxdx(in)=0.0
                 if (dabs(duydy(in)).lt.(1.0d-99)) duydy(in)=0.0
@@ -901,8 +904,8 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne, &
                     enddo 
                 endif
 
-                do i = 1,nmonit	 
-                unit_omega = 500000 + i	
+                do i = 1,nmonit
+                unit_omega = 500000 + i
                 in = node_m(i) 
                 if (dabs(duxdy(in)).lt.(1.0d-99)) duxdy(in)=0.0
                 if (dabs(duydx(in)).lt.(1.0d-99)) duydx(in)=0.0
@@ -944,7 +947,7 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne, &
         if(its .gt. 0) then
             vel = (u2 - u0) / (2*dt) 
             acc = (u2 - 2*u1 + u0) / (dt*dt)
-            v1 = vel;
+            v1 = vel
             u0 = u1
             u1 = u2
         endif    

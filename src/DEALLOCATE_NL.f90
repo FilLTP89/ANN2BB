@@ -44,25 +44,26 @@ subroutine DEALLOCATE_NL(nn,ct,ww,dd,dxdx_el,dxdy_el,dydx_el,dydy_el,det_j,   &
     dUxdx_el,dUxdy_el,dUydx_el,dUydy_el,Sxx_el,Syy_el,Sxy_el,Szz_el,        &
     lambda_el,mu_el,Syld_el,Ckin_el,kkin_el,Riso_el,Rinf_el,biso_el,        &
     Xkin_el,dEpl_el,fx_el,fy_el,nl_sism,fxs_el,fys_el,Sxxs_el,Syys_el,      &
-    Sxys_el,Szzs_el)
+    Sxys_el,Szzs_el,ux_el,uy_el)
     
     implicit none
 
     integer*4,  intent(in)                             :: nn,nl_sism
-    real*8,     intent(inout), dimension(:),    allocatable :: ct,ww
-    real*8,     intent(inout), dimension(:),    allocatable :: dxdx_el,dydy_el
-    real*8,     intent(inout), dimension(:),    allocatable :: dxdy_el,dydx_el
-    real*8,     intent(inout), dimension(:,:),  allocatable :: dd,det_j,fx_el,fy_el
-    real*8,     intent(inout), dimension(:,:),  allocatable :: fxs_el,fys_el
-    real*8,     intent(inout), dimension(:,:),  allocatable :: dUxdx_el,dUydy_el
-    real*8,     intent(inout), dimension(:,:),  allocatable :: dUxdy_el,dUydx_el
-    real*8,     intent(inout), dimension(:,:),  allocatable :: sxx_el,syy_el,sxy_el,szz_el
-    real*8,     intent(inout), dimension(:,:),  allocatable :: sxxs_el,syys_el,sxys_el,szzs_el
-    real*8,     intent(inout), dimension(:,:),  allocatable :: lambda_el,mu_el,syld_el
-    real*8,     intent(inout), dimension(:,:),  allocatable :: Riso_el,biso_el,Rinf_el
-    real*8,     intent(inout), dimension(:,:),  allocatable :: Ckin_el,kkin_el
-    real*8,     intent(inout), dimension(:,:,:),allocatable :: Xkin_el,dEpl_el
-    
+    real*8,     intent(inout), dimension(:), allocatable     :: ct,ww
+    real*8,     intent(inout), dimension(:), allocatable     :: dxdx_el,dydy_el
+    real*8,     intent(inout), dimension(:), allocatable     :: dxdy_el,dydx_el
+    real*8,     intent(inout), dimension(:,:), allocatable   :: dd,det_j,fx_el,fy_el
+    real*8,     intent(inout), dimension(:,:), allocatable   :: fxs_el,fys_el
+    real*8,     intent(inout), dimension(:,:), allocatable   :: dUxdx_el,dUydy_el
+    real*8,     intent(inout), dimension(:,:), allocatable   :: dUxdy_el,dUydx_el
+    real*8,     intent(inout), dimension(:,:), allocatable   :: sxx_el,syy_el,sxy_el,szz_el
+    real*8,     intent(inout), dimension(:,:), allocatable   :: sxxs_el,syys_el,sxys_el,szzs_el
+    real*8,     intent(inout), dimension(:,:), allocatable   :: lambda_el,mu_el,syld_el
+    real*8,     intent(inout), dimension(:,:), allocatable   :: Riso_el,biso_el,Rinf_el
+    real*8,     intent(inout), dimension(:,:), allocatable   :: Ckin_el,kkin_el
+    real*8,     intent(inout), dimension(:,:), allocatable   :: ux_el,uy_el 
+    real*8,     intent(inout), dimension(:,:,:), allocatable :: Xkin_el,dEpl_el
+
     deallocate(ct)
     deallocate(ww)
     deallocate(dd)

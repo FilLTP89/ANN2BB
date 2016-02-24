@@ -25,6 +25,7 @@
 !> @param[in] ww LGL weights
 !> @param[in] dd matrix of spectral derivatives
 !> @param[in] dxdx_el,dxdy_el,dydx_el,dydy_el coordinates spectral derivatives on element LGL
+!> @param[in] Ux_el,Uy_el
 !> @param[in] dUxdx,dUxdy,dUydx,dUydy 
 !> @param[inout] sxx,syy,sxy,szz nodal values for the stress tensor (on element)
 !> @param[inout] Xkin_el,Riso_el hardening variables on element LGL
@@ -41,16 +42,18 @@
 !> @param[inout] fys_el seismic moment equivalent forces in x-direction on element LGL
 
 subroutine ALLOCATE_NL(nn,ct,ww,dd,dxdx_el,dxdy_el,dydx_el,dydy_el,det_j,   &
-    dUxdx_el,dUxdy_el,dUydx_el,dUydy_el,Sxx_el,Syy_el,Sxy_el,Szz_el,        &
-    lambda_el,mu_el,Syld_el,Ckin_el,kkin_el,Riso_el,Rinf_el,biso_el,        &
+    Ux_el,Uy_el,dUxdx_el,dUxdy_el,dUydx_el,dUydy_el,Sxx_el,Syy_el,Sxy_el,   &
+    Szz_el,lambda_el,mu_el,Syld_el,Ckin_el,kkin_el,Riso_el,Rinf_el,biso_el, &
     Xkin_el,dEpl_el,fx_el,fy_el,nl_sism,fxs_el,fys_el,Sxxs_el,Syys_el,      &
     Sxys_el,Szzs_el)
-    
+    implicit none
+    integer*4,                              intent(in)  :: nn, nl_sism
     real*8,     dimension(:),  allocatable, intent(out) :: ct,ww
     real*8,     dimension(:),  allocatable, intent(out) :: dxdx_el,dydy_el
     real*8,     dimension(:),  allocatable, intent(out) :: dxdy_el,dydx_el
     real*8,     dimension(:,:),allocatable, intent(out) :: dd,det_j,fx_el,fy_el
     real*8,     dimension(:,:),allocatable, intent(out) :: fxs_el,fys_el
+    real*8,     dimension(:,:),allocatable, intent(out) :: Ux_el,Uy_el
     real*8,     dimension(:,:),allocatable, intent(out) :: dUxdx_el,dUydy_el
     real*8,     dimension(:,:),allocatable, intent(out) :: dUxdy_el,dUydx_el
     real*8,     dimension(:,:),allocatable, intent(out) :: sxx_el,syy_el,sxy_el,szz_el
@@ -67,6 +70,8 @@ subroutine ALLOCATE_NL(nn,ct,ww,dd,dxdx_el,dxdy_el,dydx_el,dydy_el,det_j,   &
     allocate(dxdy_el(nn))
     allocate(dydx_el(nn))
     allocate(dydy_el(nn))
+    allocate(Ux_el(nn,nn))
+    allocate(Uy_el(nn,nn))
     allocate(duxdx_el(nn,nn))
     allocate(duxdy_el(nn,nn))
     allocate(duydx_el(nn,nn))

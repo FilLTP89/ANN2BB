@@ -21,8 +21,6 @@
 !> @date April,2014
 !> @version 1.0
 !> @param[in] nn number of 1-D Legendre nodes
-!> @param[in] ct GLL nodes
-!> @param[in] ww GLL weights
 !> @param[in] dd matrix of spectral derivatives
 !> @param[in] dxdx,dxdy,dydx,dydy component of the jacobian for coor. transf.
 !> @param[in] ux x-displacement
@@ -33,16 +31,14 @@
 !> @param[out] duydy nodal values for spatial derivatives of the displacement
 
 
-subroutine MAKE_STRAIN(nn,ct,ww,dd,dxdx,dxdy,dydx,dydy,&
+subroutine MAKE_STRAIN(nn,dd,dxdx,dxdy,dydx,dydy,&
     ux,uy,duxdx,duxdy,duydx,duydy)
-
     real*8                                 :: t1ux,t1uy,t2ux,t2uy
     real*8                                 :: t1fx,t1fy,t2fx,t2fy,det_j
     integer*4                              :: ip,iq,il,im
     integer*4,               intent(in)    :: nn
-    real*8, dimension(nn),   intent(inout) :: ct,ww
-    real*8, dimension(nn),   intent(inout) :: dxdx,dxdy,dydx,dydy
-    real*8, dimension(nn,nn),intent(inout) :: dd,ux,uy
+    real*8, dimension(nn),   intent(in) :: dxdx,dxdy,dydx,dydy
+    real*8, dimension(nn,nn),intent(in) :: dd,ux,uy
     real*8, dimension(nn,nn),intent(inout) :: duxdx,duxdy,duydx,duydy
 
     !   DERIVATIVE CALCULATION
@@ -61,17 +57,12 @@ subroutine MAKE_STRAIN(nn,ct,ww,dd,dxdx,dxdy,dydx,dydy,&
                t2ux = t2ux + ux(ip,im) * dd(iq,im)
                t2uy = t2uy + uy(ip,im) * dd(iq,im)
             enddo
+            write(*,*) '======== debug =========='
 
-            duxdx(ip,iq) = 1.0d0 / det_j &
-                 * ((dydy(ip) * t1ux) - (dydx(iq) * t2ux))
-            duydx(ip,iq) = 1.0d0 / det_j &
-                 * ((dydy(ip) * t1uy) - (dydx(iq) * t2uy))
-            duxdy(ip,iq) = -1.0d0 / det_j &
-                 * ((dxdy(ip) * t1ux) - (dxdx(iq) * t2ux))
-            duydy(ip,iq) = -1.0d0 / det_j &
-                 * ((dxdy(ip) * t1uy) - (dxdx(iq) * t2uy))
+            duxdx(ip,iq) = (1.0d0 / det_j)*((dydy(ip) * t1ux) - (dydx(iq) * t2ux))
+            duydx(ip,iq) = (1.0d0 / det_j)*((dydy(ip) * t1uy) - (dydx(iq) * t2uy))
+            duxdy(ip,iq) = (-1.0d0 / det_j)*((dxdy(ip) * t1ux) - (dxdx(iq) * t2ux))
+            duydy(ip,iq) = (-1.0d0 / det_j)*((dxdy(ip) * t1uy) - (dxdx(iq) * t2uy))
         enddo
     enddo
-    return
-
 end subroutine MAKE_STRAIN
