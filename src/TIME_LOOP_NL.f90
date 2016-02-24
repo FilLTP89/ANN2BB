@@ -259,12 +259,12 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne, &
     integer*4, dimension(:), allocatable :: nodal_counter
 
     interface
-        subroutine ALLOCATE_NL(nn,ct,ww,dd,dxdx_el,dxdy_el,dydx_el,dydy_el,det_j,  &
-            Ux_el,Uy_el,dUxdx_el,dUxdy_el,dUydx_el,dUydy_el,Sxx_el,Syy_el,Sxy_el,  &
-            Szz_el,lambda_el,mu_el,Syld_el,Ckin_el,kkin_el,Riso_el,Rinf_el,biso_el,&
-            Xkin_el,dEpl_el,fx_el,fy_el,nl_sism,fxs_el,fys_el,Sxxs_el,Syys_el,     &
-            Sxys_el,Szzs_el)
-            implicit none 
+        subroutine ALLOCATE_NL(nn,ct,ww,dd,dxdx_el,dxdy_el,dydx_el,dydy_el,det_j,   &
+            ux_el,uy_el,duxdx_el,duxdy_el,duydx_el,duydy_el,sxx_el,syy_el,sxy_el,   &
+            szz_el,lambda_el,mu_el,syld_el,Ckin_el,kkin_el,Riso_el,Rinf_el,biso_el, &
+            Xkin_el,dEpl_el,fx_el,fy_el,nl_sism,fxs_el,fys_el,sxxs_el,syys_el,      &
+            sxys_el,szzs_el)
+            
             integer*4,                              intent(in ) :: nn,nl_sism
             real*8,     dimension(:),  allocatable, intent(out) :: ct,ww
             real*8,     dimension(:),  allocatable, intent(out) :: dxdx_el,dydy_el
@@ -281,18 +281,39 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne, &
             real*8,     dimension(:,:),allocatable, intent(out) :: Ckin_el,kkin_el
             real*8,     dimension(:,:,:),allocatable, intent(out) :: Xkin_el,dEpl_el
         end subroutine ALLOCATE_NL
-subroutine MAKE_STRAIN(nn,dd,dxdx,dxdy,dydx,dydy,&
-    ux,uy,duxdx,duxdy,duydx,duydy)
-    real*8                                 :: t1ux,t1uy,t2ux,t2uy
-    real*8                                 :: t1fx,t1fy,t2fx,t2fy,det_j
-    integer*4                              :: ip,iq,il,im
-    integer*4,               intent(in)    :: nn
-    real*8, dimension(nn),   intent(in) :: dxdx,dxdy,dydx,dydy
-    real*8, dimension(nn,nn),intent(in) :: dd,ux,uy
-    real*8, dimension(nn,nn),intent(inout) :: duxdx,duxdy,duydx,duydy
-    end subroutine MAKE_STRAIN    
+        subroutine MAKE_STRAIN(nn,dd,dxdx,dxdy,dydx,dydy,&
+            ux,uy,duxdx,duxdy,duydx,duydy)
+            real*8                                  :: t1ux,t1uy,t2ux,t2uy
+            real*8                                  :: t1fx,t1fy,t2fx,t2fy,det_j
+            integer*4                               :: ip,iq,il,im
+            integer*4,               intent(in)     :: nn
+            real*8, dimension(nn),   intent(in)     :: dxdx,dxdy,dydx,dydy
+            real*8, dimension(nn,nn),intent(in)     :: dd,ux,uy
+            real*8, dimension(nn,nn),intent(in)  :: duxdx,duxdy,duydx,duydy
+        end subroutine MAKE_STRAIN    
+        subroutine DEALLOCATE_NL(nn,ct,ww,dd,dxdx_el,dxdy_el,dydx_el,dydy_el,det_j,   &
+            dUxdx_el,dUxdy_el,dUydx_el,dUydy_el,Sxx_el,Syy_el,Sxy_el,Szz_el,        &
+            lambda_el,mu_el,Syld_el,Ckin_el,kkin_el,Riso_el,Rinf_el,biso_el,        &
+            Xkin_el,dEpl_el,fx_el,fy_el,nl_sism,fxs_el,fys_el,Sxxs_el,Syys_el,      &
+            Sxys_el,Szzs_el,ux_el,uy_el)
+            
+            integer*4,  intent(in)                             :: nn,nl_sism
+            real*8,     intent(inout), dimension(:)     :: ct,ww
+            real*8,     intent(inout), dimension(:), allocatable     :: dxdx_el,dydy_el
+            real*8,     intent(inout), dimension(:), allocatable     :: dxdy_el,dydx_el
+            real*8,     intent(inout), dimension(:,:), allocatable   :: dd,det_j,fx_el,fy_el
+            real*8,     intent(inout), dimension(:,:), allocatable   :: fxs_el,fys_el
+            real*8,     intent(inout), dimension(:,:), allocatable   :: duxdx_el,dUydy_el
+            real*8,     intent(inout), dimension(:,:), allocatable   :: duxdy_el,dUydx_el
+            real*8,     intent(inout), dimension(:,:), allocatable   :: sxx_el,syy_el,sxy_el,szz_el
+            real*8,     intent(inout), dimension(:,:), allocatable   :: sxxs_el,syys_el,sxys_el,szzs_el
+            real*8,     intent(inout), dimension(:,:), allocatable   :: lambda_el,mu_el,syld_el
+            real*8,     intent(inout), dimension(:,:), allocatable   :: Riso_el,biso_el,Rinf_el
+            real*8,     intent(inout), dimension(:,:), allocatable   :: Ckin_el,kkin_el
+            real*8,     intent(inout), dimension(:,:), allocatable   :: ux_el,uy_el 
+            real*8,     intent(inout), dimension(:,:,:), allocatable :: Xkin_el,dEpl_el
+        end subroutine DEALLOCATE_NL
     end interface
-    
     
     
     
@@ -661,19 +682,18 @@ subroutine MAKE_STRAIN(nn,dd,dxdx,dxdy,dydx,dydy,&
                 ux_el,uy_el,duxdx_el,duxdy_el,duydx_el,duydy_el,sxx_el,syy_el,    &
                 sxy_el,szz_el,lambda_el,mu_el,Syld_el,Ckin_el,kkin_el,Riso_el,    &
                 Rinf_el,biso_el,Xkin_el,dEpl_el,fx_el,fy_el,nl_sism,fxs_el,fys_el,&
-                Sxxs_el,Syys_el,Sxys_el,Szzs_el)
-            
+                sxxs_el,syys_el,sxys_el,szzs_el)
             ! INITIALIZE VARIABLES
             call INITIAL_NL(cs_nnz,cs,nm,ct,ww,dd,nn,nnt,im,ie,prop_mat,ux_el,uy_el,&
-                Sxx_el,Syy_el,Sxy_el,Szz_el,lambda_el,mu_el,Syld_el,Ckin_el,kkin_el,&
+                sxx_el,syy_el,sxy_el,szz_el,lambda_el,mu_el,syld_el,Ckin_el,kkin_el,&
                 Riso_el,Rinf_el,biso_el,Xkin_el,Stress_all,Xkin_all,Riso_all,fx_el, &
-                fy_el,nl_sism,fxs_el,fys_el,Sxxs_el,Syys_el,Sxys_el,Szzs_el,u1)
+                fy_el,nl_sism,fxs_el,fys_el,sxxs_el,syys_el,sxys_el,szzs_el,u1)
             ! COMPUTE STRAIN INCREMENT
             call MAKE_DERIVATIVES(nn,alfa1,alfa2,beta1,beta2,gamma1,gamma2,ct,&
                 dxdy_el,dydy_el,dxdx_el,dydx_el)
 
             call MAKE_STRAIN(nn,dd,dxdx_el,dxdy_el,dydx_el,dydy_el,ux_el,uy_el, &
-                  dUxdx,dUxdy_el,dUydx_el,dUydy_el)
+                  duxdx_el,duxdy_el,duydx_el,duydy_el)
 
             ! COMPUTE NON LINEAR INTERNAL FORCES
             call MAKE_INTERNAL_FORCE_NL(nn,ct,ww,dd,    &
@@ -729,10 +749,10 @@ subroutine MAKE_STRAIN(nn,dd,dxdx,dxdy,dydx,dydy,&
                 enddo
             enddo
             call DEALLOCATE_NL(nn,ct,ww,dd,dxdx_el,dxdy_el,dydx_el,dydy_el,det_j,  &
-                dUxdx_el,dUxdy_el,dUydx_el,dUydy_el,Sxx_el,Syy_el,Sxy_el,Szz_el, &
+                duxdx_el,duxdy_el,duydx_el,duydy_el,sxx_el,syy_el,sxy_el,szz_el, &
                 lambda_el,mu_el,Syld_el,Ckin_el,kkin_el,Riso_el,Rinf_el,biso_el, &
-                Xkin_el,dEpl_el,fx_el,fy_el,nl_sism,fxs_el,fys_el,Sxxs_el,Syys_el,&
-                Sxys_el,Szzs_el,ux_el,uy_el)
+                Xkin_el,dEpl_el,fx_el,fy_el,nl_sism,fxs_el,fys_el,sxxs_el,syys_el,&
+                sxys_el,szzs_el,ux_el,uy_el)
 
         end do
         fk=fk/mvec 
@@ -999,3 +1019,8 @@ subroutine MAKE_STRAIN(nn,dd,dxdx,dxdy,dydx,dydy,&
 
     return      
 end subroutine TIME_LOOP_NL
+!! mode: f90
+!! show-trailing-whitespace: t
+!! End:
+!! vim: set sw=4 ts=8 et tw=80 smartindent : !!
+
