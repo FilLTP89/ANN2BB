@@ -16,7 +16,7 @@
 !    You should have received a copy of the GNU Affero General Public License
 !    along with SPEED.  If not, see <http://wqw.gnu.org/licenses/>.
 
-!> @brief Allocate all variables necessary for nonlinear calculations 
+!> @brief Deallocate all variables necessary for nonlinear calculations 
 !! @author Filippo Gatti
 !> @date February,2016
 !> @version 1.0
@@ -40,62 +40,65 @@
 !> @param[inout] fxs_el seismic moment equivalent forces in x-direction on element LGL
 !> @param[inout] fys_el seismic moment equivalent forces in x-direction on element LGL
 
-subroutine ALLOCATE_NL(nn,ct,ww,dd,dxdx_el,dxdy_el,dydx_el,dydy_el,det_j,   &
+subroutine DEALLOCATE_NL(nn,ct,ww,dd,dxdx_el,dxdy_el,dydx_el,dydy_el,det_j,   &
     dUxdx_el,dUxdy_el,dUydx_el,dUydy_el,Sxx_el,Syy_el,Sxy_el,Szz_el,        &
     lambda_el,mu_el,Syld_el,Ckin_el,kkin_el,Riso_el,Rinf_el,biso_el,        &
     Xkin_el,dEpl_el,fx_el,fy_el,nl_sism,fxs_el,fys_el,Sxxs_el,Syys_el,      &
     Sxys_el,Szzs_el)
     
-    real*8,     dimension(:),  allocatable, intent(out) :: ct,ww
-    real*8,     dimension(:),  allocatable, intent(out) :: dxdx_el,dydy_el
-    real*8,     dimension(:),  allocatable, intent(out) :: dxdy_el,dydx_el
-    real*8,     dimension(:,:),allocatable, intent(out) :: dd,det_j,fx_el,fy_el
-    real*8,     dimension(:,:),allocatable, intent(out) :: fxs_el,fys_el
-    real*8,     dimension(:,:),allocatable, intent(out) :: dUxdx_el,dUydy_el
-    real*8,     dimension(:,:),allocatable, intent(out) :: dUxdy_el,dUydx_el
-    real*8,     dimension(:,:),allocatable, intent(out) :: sxx_el,syy_el,sxy_el,szz_el
-    real*8,     dimension(:,:),allocatable, intent(out) :: sxxs_el,syys_el,sxys_el,szzs_el
-    real*8,     dimension(:,:),allocatable, intent(out) :: lambda_el,mu_el,syld_el
-    real*8,     dimension(:,:),allocatable, intent(out) :: Riso_el,biso_el,Rinf_el
-    real*8,     dimension(:,:),allocatable, intent(out) :: Ckin_el,kkin_el
-    real*8,     dimension(:,:,:),allocatable, intent(out) :: Xkin_el,dEpl_el
+    implicit none
+
+    integer*4,  intent(in)                             :: nn,nl_sism
+    real*8,     intent(inout), dimension(:),    allocatable :: ct,ww
+    real*8,     intent(inout), dimension(:),    allocatable :: dxdx_el,dydy_el
+    real*8,     intent(inout), dimension(:),    allocatable :: dxdy_el,dydx_el
+    real*8,     intent(inout), dimension(:,:),  allocatable :: dd,det_j,fx_el,fy_el
+    real*8,     intent(inout), dimension(:,:),  allocatable :: fxs_el,fys_el
+    real*8,     intent(inout), dimension(:,:),  allocatable :: dUxdx_el,dUydy_el
+    real*8,     intent(inout), dimension(:,:),  allocatable :: dUxdy_el,dUydx_el
+    real*8,     intent(inout), dimension(:,:),  allocatable :: sxx_el,syy_el,sxy_el,szz_el
+    real*8,     intent(inout), dimension(:,:),  allocatable :: sxxs_el,syys_el,sxys_el,szzs_el
+    real*8,     intent(inout), dimension(:,:),  allocatable :: lambda_el,mu_el,syld_el
+    real*8,     intent(inout), dimension(:,:),  allocatable :: Riso_el,biso_el,Rinf_el
+    real*8,     intent(inout), dimension(:,:),  allocatable :: Ckin_el,kkin_el
+    real*8,     intent(inout), dimension(:,:,:),allocatable :: Xkin_el,dEpl_el
     
-    allocate(ct(nn))
-    allocate(ww(nn))
-    allocate(dd(nn,nn))
-    allocate(dxdx_el(nn))
-    allocate(dxdy_el(nn))
-    allocate(dydx_el(nn))
-    allocate(dydy_el(nn))
-    allocate(duxdx_el(nn,nn))
-    allocate(duxdy_el(nn,nn))
-    allocate(duydx_el(nn,nn))
-    allocate(duydy_el(nn,nn))
-    allocate(sxx_el(nn,nn))
-    allocate(syy_el(nn,nn))
-    allocate(szz_el(nn,nn))
-    allocate(sxy_el(nn,nn))
-    allocate(Riso_el(nn,nn))
-    allocate(fx_el(nn,nn))
-    allocate(fy_el(nn,nn))
-    allocate(det_j(nn,nn))
-    allocate(mu_el(nn,nn))
-    allocate(lambda_el(nn,nn))
-    allocate(syld_el(nn,nn))
-    allocate(Ckin_el(nn,nn))
-    allocate(kkin_el(nn,nn))
-    allocate(Rinf_el(nn,nn))
-    allocate(biso_el(nn,nn))
-    allocate(dEpl_el(4,nn,nn))
-    allocate(Xkin_el(4,nn,nn))
+    deallocate(ct)
+    deallocate(ww)
+    deallocate(dd)
+    deallocate(dxdx_el)
+    deallocate(dxdy_el)
+    deallocate(dydx_el)
+    deallocate(dydy_el)
+    deallocate(duxdx_el)
+    deallocate(duxdy_el)
+    deallocate(duydx_el)
+    deallocate(duydy_el)
+    deallocate(sxx_el)
+    deallocate(syy_el)
+    deallocate(szz_el)
+    deallocate(sxy_el)
+    deallocate(Riso_el)
+    deallocate(fx_el)
+    deallocate(fy_el)
+    deallocate(det_j)
+    deallocate(mu_el)
+    deallocate(lambda_el)
+    deallocate(syld_el)
+    deallocate(Ckin_el)
+    deallocate(kkin_el)
+    deallocate(Rinf_el)
+    deallocate(biso_el)
+    deallocate(dEpl_el)
+    deallocate(Xkin_el)
     
     if (nl_sism.gt.0) then
-        allocate(fxs_el(nn,nn))
-        allocate(fys_el(nn,nn))
-        allocate(sxxs_el(nn,nn))
-        allocate(syys_el(nn,nn))
-        allocate(szzs_el(nn,nn))
-        allocate(sxys_el(nn,nn))
+        deallocate(fxs_el)
+        deallocate(fys_el)
+        deallocate(sxxs_el)
+        deallocate(syys_el)
+        deallocate(szzs_el)
+        deallocate(sxys_el)
     endif
     return
-end subroutine ALLOCATE_NL
+end subroutine DEALLOCATE_NL

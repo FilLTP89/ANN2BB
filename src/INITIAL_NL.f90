@@ -39,7 +39,7 @@
 !> @param[inout] fx_el internal forces along x-direction on element LGL
 !> @param[inout] fy_el internal forces along y-direction on element LGL
 
-subroutine INITIAL_NL(cs_nnz,cs,nm,nn,nnt,im,ie,prop_mat,Sxx_el,Syy_el,Sxy_el,Szz_el,  &
+subroutine INITIAL_NL(cs_nnz,cs,nm,ct,ww,dd,nn,nnt,im,ie,prop_mat,Sxx_el,Syy_el,Sxy_el,Szz_el,  &
     lambda_el,mu_el,Syld_el,Ckin_el,kkin_el,Riso_el,Rinf_el,biso_el,Xkin_el,Stress_all,&
     Xkin_all,Riso_all,fx_el,fy_el,nl_sism,fxs_el,fys_el,Sxxs_el,Syys_el,Sxys_el,Szzs_el)
     
@@ -49,8 +49,8 @@ subroutine INITIAL_NL(cs_nnz,cs,nm,nn,nnt,im,ie,prop_mat,Sxx_el,Syy_el,Sxy_el,Sz
     real*8, intent(in),     dimension(nm,9)     :: prop_mat
     real*8, intent(in),     dimension(nnt)      :: Riso_all
     real*8, intent(in),     dimension(4*nnt)    :: Stress_all,Xkin_all
-    real*8, intent(inout),  dimension(nn)       :: fx_el,fy_el,fxs_el,fys_el
-    real*8, intent(inout),  dimension(nn,nn)    :: syld_el,lambda_el,mu_el
+    real*8, intent(inout),  dimension(nn)       :: ct,ww,fx_el,fy_el,fxs_el,fys_el
+    real*8, intent(inout),  dimension(nn,nn)    :: dd,syld_el,lambda_el,mu_el
     real*8, intent(inout),  dimension(nn,nn)    :: Sxx_el,Syy_el,Szz_el,Sxy_el
     real*8, intent(inout),  dimension(nn,nn)    :: Sxxs_el,Syys_el,Szzs_el,Sxys_el
     real*8, intent(inout),  dimension(nn,nn)    :: Riso_el
@@ -58,6 +58,9 @@ subroutine INITIAL_NL(cs_nnz,cs,nm,nn,nnt,im,ie,prop_mat,Sxx_el,Syy_el,Sxy_el,Sz
     real*8, intent(inout),  dimension(4,nn,nn)  :: Xkin_el
     integer*4                                   :: i,j,is,in
 
+    ! COMPUTE LGL 
+    call lgl(nn,ct,ww,dd)
+    
     lambda_el = prop_mat(im,2)
     mu_el     = prop_mat(im,3)
     syld_el   = prop_mat(im,5)

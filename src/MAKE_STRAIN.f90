@@ -36,16 +36,14 @@
 subroutine MAKE_STRAIN(nn,ct,ww,dd,dxdx,dxdy,dydx,dydy,&
     ux,uy,duxdx,duxdy,duydx,duydy)
 
-    implicit none
-
-    integer*4, intent(in)                   :: nn
-    integer*4                               :: ip,iq,il,im
-    real*8                                  :: t1ux,t1uy,t2ux,t2uy
-    real*8                                  :: t1fx,t1fy,t2fx,t2fy,det_j
-    real*8, intent(in), dimension(nn)       :: ct,ww
-    real*8, intent(inout), dimension(nn)    :: dxdx,dxdy,dydx,dydy
-    real*8, intent(in), dimension(nn,nn)    :: dd,ux,uy
-    real*8, intent(inout), dimension(nn,nn) :: duxdx,duxdy,duydx,duydy
+    real*8                                 :: t1ux,t1uy,t2ux,t2uy
+    real*8                                 :: t1fx,t1fy,t2fx,t2fy,det_j
+    integer*4                              :: ip,iq,il,im
+    integer*4,               intent(in)    :: nn
+    real*8, dimension(nn),   intent(inout) :: ct,ww
+    real*8, dimension(nn),   intent(inout) :: dxdx,dxdy,dydx,dydy
+    real*8, dimension(nn,nn),intent(inout) :: dd,ux,uy
+    real*8, dimension(nn,nn),intent(inout) :: duxdx,duxdy,duydx,duydy
 
     !   DERIVATIVE CALCULATION
 
