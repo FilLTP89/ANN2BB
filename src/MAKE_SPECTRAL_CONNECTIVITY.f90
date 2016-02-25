@@ -30,315 +30,267 @@
 !> @param[out] con_spx  spectral connectivity vector 
 !> @param[out] nnode    number of spectral nodes
 
-      subroutine MAKE_SPECTRAL_CONNECTIVITY(nelem,con_mac,nmat,tag_mat,sdeg,&
-                                            Ennz,Ebin,con_nnz,con_spx,nnode)
-      
-      implicit none
-      
-      integer*4 :: nelem,nmat,Ennz,con_nnz,nnode
-      integer*4, dimension(nelem,5) :: con_mac
-      integer*4, dimension(nmat) :: tag_mat
-      integer*4, dimension(nmat) :: sdeg
-      integer*4, dimension(0:Ennz) :: Ebin
-      integer*4, dimension(0:con_nnz) :: con_spx
-      
-      integer*4 :: nnode_mac,nn,imat,ie,i,j,k,an,bn,check
-      
-!     Makes spectral connectivity for counter clockwise oriented elements
-      
-      
-      con_spx(0) = nelem +1
-      do ie = 1,nelem
-         do imat = 1,nmat
+subroutine MAKE_SPECTRAL_CONNECTIVITY(nelem,con_mac,nmat,tag_mat,sdeg,&
+    Ennz,Ebin,con_nnz,con_spx,nnode)
+
+    implicit none
+
+    integer*4                       :: nnode_mac,nn,imat,ie,i,j,k,an,bn
+    integer*4                       :: nelem,nmat,Ennz,con_nnz,nnode,check
+    integer*4, dimension(nmat)      :: tag_mat,sdeg
+    integer*4, dimension(0:Ennz)    :: Ebin
+    integer*4, dimension(nelem,5)   :: con_mac
+    integer*4, dimension(0:con_nnz) :: con_spx
+
+    ! Makes spectral connectivity for counter clockwise oriented elements
+
+    con_spx(0) = nelem +1
+    do ie = 1,nelem
+        do imat = 1,nmat
             if (con_mac(ie,1).eq.tag_mat(imat)) then
-               nn = sdeg(imat) +1
-               con_spx(ie) = con_spx(ie -1) + nn*nn +1
+                nn = sdeg(imat) +1
+                con_spx(ie) = con_spx(ie -1) + nn*nn +1
             endif
-         enddo
-      enddo
-      
-      nnode_mac = Ebin(0) -1
-      
-      nnode = nnode_mac
-      
-      do ie = 1,nelem
-         do imat = 1,nmat
+        enddo
+    enddo
+
+    nnode_mac = Ebin(0) -1
+
+    nnode = nnode_mac
+
+    do ie = 1,nelem
+        do imat = 1,nmat
             if (con_mac(ie,1).eq.tag_mat(imat)) then
-               nn = sdeg(imat) +1
-               
-! First put material index
-               con_spx(con_spx(ie -1) +0) = con_mac(ie,1)
-               
-! Then put vertices
-               con_spx(con_spx(ie -1) +1) = con_mac(ie,2)
-               con_spx(con_spx(ie -1) + nn) = con_mac(ie,3)
-               con_spx(con_spx(ie -1) + nn*(nn-1) +1) = con_mac(ie,5)
-               con_spx(con_spx(ie -1) + nn*nn) = con_mac(ie,4)
-               
-! Then construct edge connectivity
-               
-! First edge (down)
-               
-               an = con_spx(con_spx(ie -1) +1)
-               bn = con_spx(con_spx(ie -1) +nn)
-               
-               check = 0
-               do i = Ebin(an -1),Ebin(an) -1
-                  do j = Ebin(bn -1),Ebin(bn) -1
-                     if (Ebin(i).eq.Ebin(j)) then
-                        if ((Ebin(i).lt.ie).and.((nn*nn +1)&
-                        .eq.(con_spx(Ebin(i)) - con_spx(Ebin(i) -1)))) then
-                           
-                           if (an.eq.con_spx(con_spx(Ebin(i) -1) &
-                                +1)) then
-                              do k = 2,(nn -1)
-                                 con_spx(con_spx(ie -1) + k) = &
-                                      con_spx(con_spx(Ebin(i) -1) &
-                                      +nn*(k -1) +1)
-                              enddo
-                              check = 1
-                              
-                           else if (an.eq.con_spx(con_spx(Ebin(i) -1) &
-                                +nn)) then
-                              do k = 2,(nn -1)
-                                 con_spx(con_spx(ie -1) + k) = &
-                                      con_spx(con_spx(Ebin(i) -1) &
-                                      +nn -k +1)
-                              enddo
-                              check = 1
-                              
-                           else if (an.eq.con_spx(con_spx(Ebin(i) -1) &
-                                +nn*(nn -1) +1)) then
-                              do k = 2,(nn -1)
-                                 con_spx(con_spx(ie -1) + k) = &
-                                      con_spx(con_spx(Ebin(i) -1) &
-                                      +nn*(nn -1) +k)
-                              enddo
-                              check = 1
-                              
-                           else if (an.eq.con_spx(con_spx(Ebin(i) -1) &
-                                +nn*nn)) then
-                              do k = 2,(nn -1)
-                                 con_spx(con_spx(ie -1) + k) = &
-                                      con_spx(con_spx(Ebin(i) -1) &
-                                      +nn*(nn -k +1))
-                              enddo
-                              check = 1
-                              
-                           endif
-                        endif
-                     endif
-                  enddo
-               enddo
-               
-               if (check.eq.0) then
-                  do k = 2,(nn -1)
-                     nnode = nnode +1
-                     con_spx(con_spx(ie -1) + k) = nnode
-                  enddo
-               endif
-               
-               
-! Fourth edge (left)
-               
-               an = con_spx(con_spx(ie -1) +1)
-               bn = con_spx(con_spx(ie -1) +nn*(nn -1) +1)
-               
-               check = 0
-               do i = Ebin(an -1),Ebin(an) -1
-                  do j = Ebin(bn -1),Ebin(bn) -1
-                     if (Ebin(i).eq.Ebin(j)) then
-                        if ((Ebin(i).lt.ie).and.((nn*nn +1)&
-                        .eq.(con_spx(Ebin(i)) - con_spx(Ebin(i) -1)))) then
-                           
-                           if (an.eq.con_spx(con_spx(Ebin(i) -1) &
-                                +1)) then
-                              do k = 2,(nn -1)
-                                 con_spx(con_spx(ie -1) +nn*(k -1) +1) = &
-                                      con_spx(con_spx(Ebin(i) -1) &
-                                      +k)
-                              enddo
-                              check = 1
-                              
-                           else if (an.eq.con_spx(con_spx(Ebin(i) -1) &
-                                +nn)) then
-                              do k = 2,(nn -1)
-                                 con_spx(con_spx(ie -1) +nn*(k -1) +1) = &
-                                      con_spx(con_spx(Ebin(i) -1) &
-                                      +nn*k)
-                              enddo
-                              check = 1
-                              
-                           else if (an.eq.con_spx(con_spx(Ebin(i) -1) &
-                                +nn*(nn -1) +1)) then
-                              do k = 2,(nn -1)
-                                 con_spx(con_spx(ie -1) +nn*(k -1) +1) = &
-                                      con_spx(con_spx(Ebin(i) -1) &
-                                      +nn*(nn -k) +1)
-                              enddo
-                              check = 1
-                              
-                           else if (an.eq.con_spx(con_spx(Ebin(i) -1) &
-                                +nn*nn)) then
-                              do k = 2,(nn -1)
-                                 con_spx(con_spx(ie -1) +nn*(k -1) +1) = &
-                                      con_spx(con_spx(Ebin(i) -1) &
-                                      +nn*nn -k +1)
-                              enddo
-                              check = 1
-                              
-                           endif
-                        endif
-                     endif
-                  enddo
-               enddo
-               
-               if (check.eq.0) then
-                  do k = 2,(nn -1)
-                     nnode = nnode +1
-                     con_spx(con_spx(ie -1) +nn*(k -1) +1) = nnode
-                  enddo
-               endif
-               
-               
-! Third edge (up)
-               
-               an = con_spx(con_spx(ie -1) +nn*(nn -1) +1)
-               bn = con_spx(con_spx(ie -1) +nn*nn)
-               
-               check = 0
-               do i = Ebin(an -1),Ebin(an) -1
-                  do j = Ebin(bn -1),Ebin(bn) -1
-                     if (Ebin(i).eq.Ebin(j)) then
-                        if ((Ebin(i).lt.ie).and.((nn*nn +1)&
-                        .eq.(con_spx(Ebin(i)) - con_spx(Ebin(i) -1)))) then
-                           
-                           if (an.eq.con_spx(con_spx(Ebin(i) -1) &
-                                +1)) then
-                              do k = 2,(nn -1)
-                                 con_spx(con_spx(ie -1) +nn*(nn -1) +k) = &
-                                      con_spx(con_spx(Ebin(i) -1) &
-                                      +k)
-                              enddo
-                              check = 1
-                              
-                           else if (an.eq.con_spx(con_spx(Ebin(i) -1) &
-                                +nn)) then
-                              do k = 2,(nn -1)
-                                 con_spx(con_spx(ie -1) +nn*(nn -1) +k) = &
-                                      con_spx(con_spx(Ebin(i) -1) &
-                                      +nn*k)
-                              enddo
-                              check = 1
-                              
-                           else if (an.eq.con_spx(con_spx(Ebin(i) -1) &
-                                +nn*(nn -1) +1)) then
-                              do k = 2,(nn -1)
-                                 con_spx(con_spx(ie -1) +nn*(nn -1) +k) = &
-                                      con_spx(con_spx(Ebin(i) -1) &
-                                      +nn*(nn -k) +1)
-                              enddo
-                              check = 1
-                              
-                           else if (an.eq.con_spx(con_spx(Ebin(i) -1) &
-                                +nn*nn)) then
-                              do k = 2,(nn -1)
-                                 con_spx(con_spx(ie -1) +nn*(nn -1) +k) = &
-                                      con_spx(con_spx(Ebin(i) -1) &
-                                      +nn*nn -k +1)
-                              enddo
-                              check = 1
-                              
-                           endif
-                        endif
-                     endif
-                  enddo
-               enddo
-               
-               if (check.eq.0) then
-                  do k = 2,(nn -1)
-                     nnode = nnode +1
-                     con_spx(con_spx(ie -1) +nn*(nn -1) +k) = nnode
-                  enddo
-               endif
-               
-               
-! Second edge (rigth)
-               
-               an = con_spx(con_spx(ie -1) +nn)
-               bn = con_spx(con_spx(ie -1) +nn*nn)
-               
-               check = 0
-               do i = Ebin(an -1),Ebin(an) -1
-                  do j = Ebin(bn -1),Ebin(bn) -1
-                     if (Ebin(i).eq.Ebin(j)) then
-                        if ((Ebin(i).lt.ie).and.((nn*nn +1)&
-                        .eq.(con_spx(Ebin(i)) - con_spx(Ebin(i) -1)))) then
-                           
-                           if (an.eq.con_spx(con_spx(Ebin(i) -1) &
-                                +1)) then
-                              do k = 2,(nn -1)
-                                 con_spx(con_spx(ie -1) +nn*k) = &
-                                      con_spx(con_spx(Ebin(i) -1) &
-                                      +nn*(k -1) +1)
-                              enddo
-                              check = 1
-                              
-                           else if (an.eq.con_spx(con_spx(Ebin(i) -1) &
-                                +nn)) then
-                              do k = 2,(nn -1)
-                                 con_spx(con_spx(ie -1) +nn*k) = &
-                                      con_spx(con_spx(Ebin(i) -1) &
-                                      +nn -k +1)
-                              enddo
-                              check = 1
-                              
-                           else if (an.eq.con_spx(con_spx(Ebin(i) -1) &
-                                +nn*(nn -1) +1)) then
-                              do k = 2,(nn -1)
-                                 con_spx(con_spx(ie -1) +nn*k) = &
-                                      con_spx(con_spx(Ebin(i) -1) &
-                                      +nn*(nn -1) +k)
-                              enddo
-                              check = 1
-                              
-                           else if (an.eq.con_spx(con_spx(Ebin(i) -1) &
-                                +nn*nn)) then
-                              do k = 2,(nn -1)
-                                 con_spx(con_spx(ie -1) +nn*k) = &
-                                      con_spx(con_spx(Ebin(i) -1) &
-                                      +nn*(nn -k +1))
-                              enddo
-                              check = 1
-                              
-                           endif
-                        endif
-                     endif
-                  enddo
-               enddo
-               
-               if (check.eq.0) then
-                  do k = 2,(nn -1)
-                     nnode = nnode +1
-                     con_spx(con_spx(ie -1) +nn*k) = nnode
-                  enddo
-               endif
-               
-               
-! End of edge connectivity
-               
-! Finally fill inside the elements
-               
-               do j = 2,(nn -1)
-                  do i = 2,(nn -1)
-                     nnode = nnode +1
-                     con_spx(con_spx(ie -1) +nn*(j -1) +i) = nnode
-                  enddo
-               enddo
+                nn = sdeg(imat) +1
+
+                ! First put material index
+                con_spx(con_spx(ie -1) +0) = con_mac(ie,1)
+
+                ! Then put vertices
+                con_spx(con_spx(ie -1) +1) = con_mac(ie,2)
+                con_spx(con_spx(ie -1) + nn) = con_mac(ie,3)
+                con_spx(con_spx(ie -1) + nn*(nn-1) +1) = con_mac(ie,5)
+                con_spx(con_spx(ie -1) + nn*nn) = con_mac(ie,4)
+
+                ! Then construct edge connectivity
+
+                ! First edge (down)
+
+                an = con_spx(con_spx(ie -1) +1)
+                bn = con_spx(con_spx(ie -1) +nn)
+
+                check = 0
+                do i = Ebin(an -1),Ebin(an) -1
+                    do j = Ebin(bn -1),Ebin(bn) -1
+                        if (Ebin(i).eq.Ebin(j)) then
+                            if ((Ebin(i).lt.ie).and.((nn*nn +1).eq.(con_spx(Ebin(i)) - con_spx(Ebin(i) -1)))) then
+                                if (an.eq.con_spx(con_spx(Ebin(i) -1)+1)) then
+                                    do k = 2,(nn -1)
+                                        con_spx(con_spx(ie -1) + k) = con_spx(con_spx(Ebin(i) -1) +nn*(k -1) +1)
+                                    enddo
+                                    check = 1
+                                else if (an.eq.con_spx(con_spx(Ebin(i) -1)+nn)) then
+                                    do k = 2,(nn -1)
+                                        con_spx(con_spx(ie -1) + k) = con_spx(con_spx(Ebin(i) -1)+nn -k +1)
+                                    enddo
+                                    check = 1
+                                else if (an.eq.con_spx(con_spx(Ebin(i) -1)+nn*(nn -1) +1)) then
+                                    do k = 2,(nn -1)
+                                        con_spx(con_spx(ie -1) + k) = con_spx(con_spx(Ebin(i) -1) +nn*(nn -1) +k)
+                                    enddo
+                                    check = 1
+                                else if (an.eq.con_spx(con_spx(Ebin(i) -1)+nn*nn)) then
+                                    do k = 2,(nn -1)
+                                        con_spx(con_spx(ie -1) + k) = con_spx(con_spx(Ebin(i) -1)+nn*(nn -k +1))
+                                    enddo
+                                    check = 1
+                                endif
+                            endif
+                         endif
+                    enddo
+                enddo
+
+                if (check.eq.0) then
+                    do k = 2,(nn -1)
+                        nnode = nnode +1
+                        con_spx(con_spx(ie -1) + k) = nnode
+                    enddo
+                endif
+
+
+        ! Fourth edge (left)
+
+        an = con_spx(con_spx(ie -1) +1)
+        bn = con_spx(con_spx(ie -1) +nn*(nn -1) +1)
+
+        check = 0
+        do i = Ebin(an -1),Ebin(an) -1
+            do j = Ebin(bn -1),Ebin(bn) -1
+            if (Ebin(i).eq.Ebin(j)) then
+                if ((Ebin(i).lt.ie).and.((nn*nn +1).eq.(con_spx(Ebin(i)) - con_spx(Ebin(i) -1)))) then
+                    if (an.eq.con_spx(con_spx(Ebin(i) -1)+1)) then
+                        do k = 2,(nn -1)
+                            con_spx(con_spx(ie -1) +nn*(k -1) +1) = con_spx(con_spx(Ebin(i) -1)+k)
+                        enddo
+                        check = 1
+                    else if (an.eq.con_spx(con_spx(Ebin(i) -1)+nn)) then
+                        do k = 2,(nn -1)
+                            con_spx(con_spx(ie -1) +nn*(k -1) +1) = con_spx(con_spx(Ebin(i) -1)+nn*k)
+                        enddo
+                        check = 1
+                    else if (an.eq.con_spx(con_spx(Ebin(i) -1)+nn*(nn -1) +1)) then
+                        do k = 2,(nn -1)
+                            con_spx(con_spx(ie -1) +nn*(k -1) +1) = con_spx(con_spx(Ebin(i) -1)+nn*(nn -k) +1)
+                        enddo
+                        check = 1
+                    else if (an.eq.con_spx(con_spx(Ebin(i) -1)+nn*nn)) then
+                        do k = 2,(nn -1)
+                        con_spx(con_spx(ie -1) +nn*(k -1) +1) = &
+                            con_spx(con_spx(Ebin(i) -1) &
+                            +nn*nn -k +1)
+                        enddo
+                        check = 1
+                    endif
+                endif
             endif
-         enddo
-      enddo
-      
-      return
-      
-      end subroutine MAKE_SPECTRAL_CONNECTIVITY
+        enddo
+    enddo
+
+    if (check.eq.0) then
+        do k = 2,(nn -1)
+            nnode = nnode +1
+            con_spx(con_spx(ie -1) +nn*(k -1) +1) = nnode
+        enddo
+    endif
+
+
+    ! Third edge (up)
+
+    an = con_spx(con_spx(ie -1) +nn*(nn -1) +1)
+    bn = con_spx(con_spx(ie -1) +nn*nn)
+
+    check = 0
+    do i = Ebin(an -1),Ebin(an) -1
+        do j = Ebin(bn -1),Ebin(bn) -1
+            if (Ebin(i).eq.Ebin(j)) then
+                if ((Ebin(i).lt.ie).and.((nn*nn +1).eq.(con_spx(Ebin(i)) - con_spx(Ebin(i) -1)))) then
+           
+                    if (an.eq.con_spx(con_spx(Ebin(i) -1)+1)) then
+                        do k = 2,(nn -1)
+                            con_spx(con_spx(ie -1) +nn*(nn -1) +k) = con_spx(con_spx(Ebin(i) -1)+k)
+                        enddo
+                        check = 1
+              
+                    elseif (an.eq.con_spx(con_spx(Ebin(i) -1)+nn)) then
+                        do k = 2,(nn -1)
+                            con_spx(con_spx(ie -1) +nn*(nn -1) +k) = con_spx(con_spx(Ebin(i) -1)+nn*k)
+                        enddo
+                        check = 1
+                    elseif (an.eq.con_spx(con_spx(Ebin(i) -1) +nn*(nn -1) +1)) then
+                        do k = 2,(nn -1)
+                            con_spx(con_spx(ie -1) +nn*(nn -1) +k) = con_spx(con_spx(Ebin(i) -1)+nn*(nn -k) +1)
+                        enddo
+                        check = 1
+                    elseif (an.eq.con_spx(con_spx(Ebin(i) -1)+nn*nn)) then
+                        do k = 2,(nn -1)
+                            con_spx(con_spx(ie -1) +nn*(nn -1) +k) = con_spx(con_spx(Ebin(i) -1)+nn*nn -k +1)
+                        enddo
+                        check = 1
+                    endif
+                endif
+            endif
+        enddo
+    enddo
+
+    if (check.eq.0) then
+        do k = 2,(nn -1)
+            nnode = nnode +1
+            con_spx(con_spx(ie -1) +nn*(nn -1) +k) = nnode
+        enddo
+    endif
+
+
+    ! Second edge (rigth)
+
+    an = con_spx(con_spx(ie -1) +nn)
+    bn = con_spx(con_spx(ie -1) +nn*nn)
+
+    check = 0
+    do i = Ebin(an -1),Ebin(an) -1
+    do j = Ebin(bn -1),Ebin(bn) -1
+     if (Ebin(i).eq.Ebin(j)) then
+        if ((Ebin(i).lt.ie).and.((nn*nn +1)&
+        .eq.(con_spx(Ebin(i)) - con_spx(Ebin(i) -1)))) then
+           
+           if (an.eq.con_spx(con_spx(Ebin(i) -1) &
+                +1)) then
+              do k = 2,(nn -1)
+                 con_spx(con_spx(ie -1) +nn*k) = &
+                      con_spx(con_spx(Ebin(i) -1) &
+                      +nn*(k -1) +1)
+              enddo
+              check = 1
+              
+           else if (an.eq.con_spx(con_spx(Ebin(i) -1) &
+                +nn)) then
+              do k = 2,(nn -1)
+                 con_spx(con_spx(ie -1) +nn*k) = &
+                      con_spx(con_spx(Ebin(i) -1) &
+                      +nn -k +1)
+              enddo
+              check = 1
+              
+           else if (an.eq.con_spx(con_spx(Ebin(i) -1) &
+                +nn*(nn -1) +1)) then
+              do k = 2,(nn -1)
+                 con_spx(con_spx(ie -1) +nn*k) = &
+                      con_spx(con_spx(Ebin(i) -1) &
+                      +nn*(nn -1) +k)
+              enddo
+              check = 1
+              
+           else if (an.eq.con_spx(con_spx(Ebin(i) -1) &
+                +nn*nn)) then
+              do k = 2,(nn -1)
+                 con_spx(con_spx(ie -1) +nn*k) = &
+                      con_spx(con_spx(Ebin(i) -1) &
+                      +nn*(nn -k +1))
+              enddo
+              check = 1
+              
+           endif
+        endif
+     endif
+    enddo
+    enddo
+
+    if (check.eq.0) then
+    do k = 2,(nn -1)
+     nnode = nnode +1
+     con_spx(con_spx(ie -1) +nn*k) = nnode
+    enddo
+    endif
+
+
+    ! End of edge connectivity
+
+    ! Finally fill inside the elements
+
+    do j = 2,(nn -1)
+    do i = 2,(nn -1)
+     nnode = nnode +1
+     con_spx(con_spx(ie -1) +nn*(j -1) +i) = nnode
+    enddo
+    enddo
+    endif
+    enddo
+    enddo
+
+    return
+
+end subroutine MAKE_SPECTRAL_CONNECTIVITY
+!! mode: f90
+!! show-trailing-whitespace: t
+!! End:
+!! vim: set sw=4 ts=8 et tw=80 smartindent : !!
+

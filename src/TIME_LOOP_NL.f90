@@ -255,12 +255,13 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne, &
     integer*4, dimension(:), allocatable :: nodal_counter
 
     interface
-        subroutine ALLOCATE_INITIAL_ALL(ne,nn,nnt,cs_nnz,cs,u1,u2,fk,fe,fd,sism,vel,acc,v1,update_index_el_az,&
+        subroutine ALLOCATE_INITIAL_ALL(ne,sdeg_mat,nm,nnt,cs_nnz,cs,u1,u2,fk,fe,fd,sism,vel,acc,v1,update_index_el_az,&
             duxdx,duxdy,duydx,duydy,sxx,syy,szz,sxy,option_out_var,nodal_counter,stress_all,xkin_all,     &
             riso_all,epl_all)  
 
-            integer*4,                              intent(in)  :: ne,nn,nnt,cs_nnz
+            integer*4,                              intent(in)  :: ne,nm,nnt,cs_nnz
             integer*4,  dimension(6),               intent(in)  :: option_out_var
+            integer*4,  dimension(nm),              intent(in)  :: sdeg_mat
             integer*4,  dimension(0:cs_nnz),        intent(in)  :: cs
             integer*4,  dimension(:),  allocatable, intent(out) :: update_index_el_az
             integer*4,  dimension(:),  allocatable, intent(out) :: nodal_counter
@@ -450,7 +451,7 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne, &
     ! INITIALIZATION
     !********************************************************************************************
     
-    call ALLOCATE_INITIAL_ALL(ne,nn,nnt,cs_nnz,cs,u1,u2,fk,fe,fd,sism,vel,acc,v1,update_index_el_az,&
+    call ALLOCATE_INITIAL_ALL(ne,sdeg_mat,nm,nnt,cs_nnz,cs,u1,u2,fk,fe,fd,sism,vel,acc,v1,update_index_el_az,&
         duxdx,duxdy,duydx,duydy,sxx,syy,szz,sxy,option_out_var,nodal_counter,stress_all,xkin_all,   &
         riso_all,epl_all)  
     dt2 = dt*dt

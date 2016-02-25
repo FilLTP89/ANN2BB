@@ -497,13 +497,12 @@ program SPEED2D
 
     if (nedge.gt.0) allocate (con_bc(nedge,3))
 
-    call READ_GRID_EL(grid_file,nmat,tag_mat,prop_mat,&
-        nload_dirX_el,tag_dirX_el,nload_dirY_el,tag_dirY_el,&
-        nload_neuX_el,tag_neuX_el,nload_neuY_el,tag_neuY_el,&
-        nload_abc_el,tag_abc_el,&
-        nload_BDRM_el,tag_BDRM_el, &                            !DRM Scandella 27.09.2005
-        nload_dg_el,tag_dg_el,&
-        nnod_macro,xx_macro,yy_macro,nelem,con,nedge,con_bc)
+    call READ_GRID_EL(grid_file,nmat,tag_mat,prop_mat,       &
+        nload_dirX_el,tag_dirX_el,nload_dirY_el,tag_dirY_el, &
+        nload_neuX_el,tag_neuX_el,nload_neuY_el,tag_neuY_el, &
+        nload_abc_el,tag_abc_el,nload_BDRM_el,tag_BDRM_el,   &
+        nload_dg_el,tag_dg_el,nnod_macro,xx_macro,yy_macro,  &
+        nelem,con,nedge,con_bc)
 
     write(*,'(A)')'MESH FILE: OK'    
     write(*,'(A)') '****************************************************'
@@ -537,10 +536,10 @@ program SPEED2D
 
     con_nnz = nelem +1
     do ie = 1,nelem
-    do j = 1,nmat
-    if (tag_mat(j).eq.con(ie,1)) nn = sdeg_mat(j) +1
-    enddo
-    con_nnz = con_nnz + nn*nn +1
+        do j = 1,nmat
+            if (tag_mat(j).eq.con(ie,1)) nn = sdeg_mat(j) +1
+        enddo
+        con_nnz = con_nnz + nn*nn +1
     enddo
 
     call system_clock(COUNT=start,COUNT_RATE=clock(2))
@@ -789,7 +788,7 @@ program SPEED2D
             write(*,'(A)')
             write(*,'(A)')'Bye.'
             read(*,*)
-            stop				   
+            stop 
 
         endif
 
@@ -1684,6 +1683,9 @@ program SPEED2D
     if(.not.NLFLAG) then
         deallocate(IK_TOT, JK_TOT, K_TOT)
     endif
-
-
 end program SPEED2D
+!! mode: f90
+!! show-trailing-whitespace: t
+!! End:
+!! vim: set sw=4 ts=8 et tw=80 smartindent : !!
+

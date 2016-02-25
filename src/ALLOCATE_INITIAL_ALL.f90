@@ -22,12 +22,13 @@
 !> @version 1.0
 !> @param[inout] sxx,syy,sxy,szz nodal values for the stress tensor (on element)
 
-subroutine ALLOCATE_INITIAL_ALL(ne,nn,nnt,cs_nnz,cs,u1,u2,fk,fe,fd,sism,vel,acc,v1,update_index_el_az,&
+subroutine ALLOCATE_INITIAL_ALL(ne,sdeg_mat,nm,nnt,cs_nnz,cs,u1,u2,fk,fe,fd,sism,vel,acc,v1,update_index_el_az,&
         duxdx,duxdy,duydx,duydy,sxx,syy,szz,sxy,option_out_var,nodal_counter,stress_all,xkin_all,     &
         riso_all,epl_all)  
 
-    integer*4,                              intent(in)  :: ne,nn,nnt,cs_nnz
+    integer*4,                              intent(in)  :: ne,nm,nnt,cs_nnz
     integer*4,  dimension(6),               intent(in)  :: option_out_var
+    integer*4,  dimension(nm),              intent(in)  :: sdeg_mat
     integer*4,  dimension(0:cs_nnz),        intent(in)  :: cs
     integer*4,  dimension(:),  allocatable, intent(out) :: update_index_el_az
     integer*4,  dimension(:),  allocatable, intent(out) :: nodal_counter
@@ -37,7 +38,7 @@ subroutine ALLOCATE_INITIAL_ALL(ne,nn,nnt,cs_nnz,cs,u1,u2,fk,fe,fd,sism,vel,acc,
     real*8,     dimension(:),  allocatable, intent(out) :: epl_all,riso_all
     real*8,     dimension(:),  allocatable, intent(out) :: duxdx,duydy,duydx,duxdy
     real*8,     dimension(:),  allocatable, intent(out) :: sxx,syy,szz,sxy,vel,acc
-    integer*4                                           :: iaz,ie,in,is,i,j
+    integer*4                                           :: nn,im,iaz,ie,in,is,i,j
 
     allocate(u1(2*nnt))
     allocate(u2(2*nnt))
@@ -67,8 +68,11 @@ subroutine ALLOCATE_INITIAL_ALL(ne,nn,nnt,cs_nnz,cs,u1,u2,fk,fe,fd,sism,vel,acc,
     endif
 
     if(option_out_var(4) .eq. 1 .or. option_out_var(5) .eq. 1 .or. option_out_var(6) .eq. 1) then 
-        allocate(nodal_counter(nnt)); nodal_counter = 0
-        do ie = 1,ne 
+        allocate(nodal_counter(nnt)) 
+        nodal_counter = 0
+        do ie = 1,ne
+            im = cs(cs(ie-1)+0)
+            nn = sdeg_mat(im)+1
             do j = 1,nn
                 do i = 1,nn 
                     is = nn*(j -1) +i
