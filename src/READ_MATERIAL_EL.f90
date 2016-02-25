@@ -210,7 +210,7 @@ subroutine READ_MATERIAL_EL(file_mat,nm,propm, typem, tagm, &
             if (input_line(i:i).eq.' ') exit
         enddo
         ileft = i 
-
+        write(*,*) 'material no: ',im
         if (keyword.eq.'MATE') then
             im = im + 1
             if (NLFLAG) then

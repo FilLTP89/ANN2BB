@@ -1,19 +1,19 @@
-!    Copyright (C) 2014 The SPEED FOUNDATION
+!    Copyright (C) 2014 The SPEED FOuNDATION
 !    Author: Ilario Mazzieri
 !
 !    This file is part of SPEED.
 !
 !    SPEED is free software; you can redistribute it and/or modify it
-!    under the terms of the GNU Affero General Public License as
+!    under the terms of the GNu Affero General Public License as
 !    published by the Free Software Foundation, either version 3 of the
 !    License, or (at your option) any later version.
 !
 !    SPEED is distributed in the hope that it will be useful, but
-!    WITHOUT ANY WARRANTY; without even the implied warranty of
-!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+!    WITHOuT ANY WARRANTY; without even the implied warranty of
+!    MERCHANTABILITY or FITNESS FOR A PARTICuLAR PURPOSE.  See the GNU
 !    Affero General Public License for more details.
 !
-!    You should have received a copy of the GNU Affero General Public License
+!    You should have received a copy of the GNu Affero General Public License
 !    along with SPEED.  If not, see <http://wqw.gnu.org/licenses/>.
 
 !> @brief Makes internal forces in non-linear case.
@@ -24,7 +24,7 @@
 !> @param[in] ct LGL nodes
 !> @param[in] ww LGL weights
 !> @param[in] dd matrix of spectral derivatives
-!> @param[in] dUxdx,dUxdy,dUydx,dUydy nodal values for strain tensor (on element)
+!> @param[in] duxdx,dUxdy,dUydx,dUydy nodal values for strain tensor (on element)
 !> @param[inout] sxx,syy,sxy,szz nodal values for the stress tensor (on element)
 !> @param[inout] Xkin_el,Riso_el hardening variables on element LGL
 !> @param[in] lambda_el,mu_el Lamè parameters on element LGL
@@ -36,10 +36,8 @@
 !> @param[out] fy y-componnent for internal forces
 
 
-subroutine MAKE_INTERNAL_FORCE_NL(nn,ct,ww,dd,      &             
-    dUxdx,dUxdy,dUydx,dUydy,sxx,syy,szz,sxy,        &
-    Xkin_el,Riso_el,mu_el,lambda_el,syld_el,        &
-    Ckin_el,kkin_el,Rinf_el,biso_el,dEpl_el,        &
+subroutine MAKE_INTERNAL_FORCE_NL(nn,ct,ww,dd,duxdx,duxdy,duydx,duydy,sxx,syy,szz,sxy, &
+    Xkin_el,Riso_el,mu_el,lambda_el,syld_el,Ckin_el,kkin_el,Rinf_el,biso_el,dEpl_el,   &
     dxdx,dxdy,dydx,dydy,fx,fy)                               
     
     use nonlinear2d
@@ -53,11 +51,11 @@ subroutine MAKE_INTERNAL_FORCE_NL(nn,ct,ww,dd,      &
     integer*4,                  intent(in)    :: nn
     logical                                   :: st_epl
     real*8                                    :: alpha_elp
-    real*8, dimension(4)                      :: dEalpha,Sstart,dStrial,Strial
+    real*8, dimension(4)                      :: dEalpha,stress0,stress1,dtrial
     real*8, dimension(nn),      intent(inout) :: ct,ww,dxdx,dxdy,dydx,dydy
     real*8, dimension(nn,nn),   intent(inout) :: Ckin_el,kkin_el
     real*8, dimension(nn,nn),   intent(inout) :: Rinf_el,biso_el,Riso_el
-    real*8, dimension(nn,nn),   intent(inout) :: dUxdx,dUxdy,dUydx,dUydy  
+    real*8, dimension(nn,nn),   intent(inout) :: duxdx,duxdy,duydx,duydy  
     real*8, dimension(nn,nn),   intent(inout) :: dd,lambda_el,mu_el,syld_el
     real*8, dimension(nn,nn),   intent(inout) :: sxx,syy,sxy,szz,fx,fy
     real*8, dimension(4,nn,nn), intent(inout) :: Xkin_el,dEpl_el
@@ -65,35 +63,33 @@ subroutine MAKE_INTERNAL_FORCE_NL(nn,ct,ww,dd,      &
     do iq = 1,nn
         do ip = 1,nn
             
-            ! FIRST MECHANISM XY
-            Sstart  = (/sxx(ip,iq),syy(ip,iq),szz(ip,iq),sxy(ip,iq)/)
-            dEalpha = (/dUxdx(ip,iq),dUydy(ip,iq),0d0,(dUxdy(ip,iq)+dUydx(ip,iq))/)
+            ! FIRsT MECHANISM XY
+            stress0  = (/sxx(ip,iq),syy(ip,iq),szz(ip,iq),sxy(ip,iq)/)
+            dEalpha = (/duxdx(ip,iq),duydy(ip,iq),0d0,(duxdy(ip,iq)+duydx(ip,iq))/)
 
-            ! COMPUTE TRIAL STRESS INCREMENT
-            call MAKE_STRESS_LOC(lambda_el(ip,iq),mu_el(ip,iq),dEalpha,Strial)
-            dStrial=Strial-Sstart
+            ! COMPuTE TRIAL sTRESS INCREMENT
+            call MAKE_sTRESS_LOC(lambda_el(ip,iq),mu_el(ip,iq),dEalpha,dtrial)
+            dtrial=stress1-stress0
 
-            call check_plasticity (Strial, Sstart, Xkin_el(:,ip,iq), Riso_el(ip,iq), &
+            call check_plasticity(dtrial,stress0,Xkin_el(:,ip,iq),Riso_el(ip,iq), &
                 syld_el(ip,iq),st_epl,alpha_elp)
             
             if (st_epl) then
-                write(*,*) "1-alpha",1-alpha_elp 
-                call plastic_corrector(dEalpha,Strial,syld_el(ip,iq), &
+                call plastic_corrector(dEalpha,dtrial,syld_el(ip,iq), &
                     Xkin_el(:,ip,iq),Riso_el(ip,iq),biso_el(ip,iq),   &
                     Rinf_el(ip,iq),Ckin_el(ip,iq),kkin_el(ip,iq),     &
                     mu_el(ip,iq),lambda_el(ip,iq),dEpl_el(:,ip,iq))
             end if
-            sxx(ip,iq) = Strial(1)
-            syy(ip,iq) = Strial(2)
-            szz(ip,iq) = Strial(3)
-            sxy(ip,iq) = Strial(4)
+            sxx(ip,iq) = dtrial(1)
+            syy(ip,iq) = dtrial(2)
+            szz(ip,iq) = dtrial(3)
+            sxy(ip,iq) = dtrial(4)
         end do
     end do
 
+    ! FORCE CALCULATION
     do iq = 1,nn
         do ip = 1,nn
-
-            ! FORCE CALCULATION
 
             t1fx = 0.0d0; t1fy = 0.0d0
             t2fx = 0.0d0; t2fy = 0.0d0

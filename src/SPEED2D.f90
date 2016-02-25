@@ -445,8 +445,8 @@ program SPEED2D
             write(*,'(A,I8)') 'DRM BOUNDARIES : ',tag_BDRM_el(j)        !DRM Scandella 27.09.2005 
         enddo                                                           !DRM Scandella 27.09.2005
         write(*,*)                                                      !DRM Scandella 27.09.2005  
+        write(*,'(A)') '****************************************************'
     endif                                                               !DRM Scandella 10.05.2007 
-    write(*,'(A)') '****************************************************'
 
     !----------------------------------------------------------------------------------
 
@@ -592,11 +592,11 @@ program SPEED2D
     if (nedge.gt.0) then
         con_nnz_bc = nedge +1
         do i = 1,nedge
-        call GET_EDGE_ELEMENT(Ennz,Ebin,con_bc(i,2),con_bc(i,3),ie)
-        do j = 1,nmat
-        if (tag_mat(j).eq.con(ie,1)) nn = sdeg_mat(j) +1
-        enddo
-        con_nnz_bc = con_nnz_bc +nn +1
+            call GET_EDGE_ELEMENT(Ennz,Ebin,con_bc(i,2),con_bc(i,3),ie)
+            do j = 1,nmat
+                if (tag_mat(j).eq.con(ie,1)) nn = sdeg_mat(j) +1
+            enddo
+            con_nnz_bc = con_nnz_bc +nn +1
         enddo
 
         allocate(con_spx_bc(0:con_nnz_bc))

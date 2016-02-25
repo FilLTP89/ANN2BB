@@ -84,22 +84,30 @@
 
               if (keyword(1:8).eq.'GRIDFILE') then
                   read(input_line(ileft:iright),*) file_grid
+                  write(*,*) 'Grid File: ',file_grid
               elseif (keyword(1:7).eq.'MATFILE') then
                   read(input_line(ileft:iright),*) file_mat
+                  write(*,*) 'Material File: ',file_mat
               elseif (keyword(1:7).eq.'OUTFILE') then
                   read(input_line(ileft:iright),*) file_out
+                  write(*,*) 'Output File: ',file_out
               elseif (keyword(1:8).eq.'TIMESTEP') then
                   read(input_line(ileft:iright),*) time_step
+                  write(*,*) 'Time Step: ',time_step
               elseif (keyword(1:8).eq.'STOPTIME') then
                   read(input_line(ileft:iright),*) stop_time
+                  write(*,*) 'Stop Time: ', stop_time
               elseif (keyword(1:8).eq.'TMONITOR') then
                   read(input_line(ileft:iright),*) ndt_monitor
+                  write(*,*) 'Monitor Time Step :',ndt_monitor
               elseif (keyword(1:8).eq.'SNAPSHOT') then
                   is = is +1
                   read(input_line(ileft:iright),*) t_snapshot(is)
+                  write(*,*) 'Snapshots: ',t_snapshot(is)
               elseif (keyword(1:7).eq.'OPTIOUT') then
                   read(input_line(ileft:iright),*) option_out_var(1),option_out_var(2),option_out_var(3),&
                       option_out_var(4),option_out_var(5),option_out_var(6)
+                  write(*,*) 'Output Var: ',option_out_var(:)
               elseif (keyword(1:4) .eq. 'MLST') then                        
                   n_lst = 1                                
                   read(input_line(ileft:iright),*) depth_search_mon_lst, monfile_lst
@@ -107,10 +115,13 @@
                   test = 1                                
               elseif (keyword(1:8) .eq. 'DGMETHOD') then
                   read(input_line(ileft:iright),*) dg_c
+                  write(*,*) 'DG Method: ',dg_c
               elseif (keyword(1:8) .eq. 'PENALIZC') then
                   read(input_line(ileft:iright),*) pen_c
+                  write(*,*) 'Penalize: ',pen_c
               elseif (keyword(1:7).eq.'TIMEDEG') then
-                  read(input_line(ileft:iright),*) time_deg 
+                  read(input_line(ileft:iright),*) time_deg
+                  write(*,*) 'Time Deg: ', time_deg
               elseif (keyword(1:7).eq.'NONLINE') then
                   read(input_line(ileft:iright),*) temp
                   if (temp==1) then
@@ -118,6 +129,7 @@
                   else
                       NLFLAG=.false.
                   endif
+                  write(*,*) 'Nonlinear: ',NLFLAG
               endif
           enddo
 

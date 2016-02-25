@@ -684,7 +684,6 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,&                                   
         u2 = 2.0d0 * u1 - u0 + dt2*(fe - fk - fd)
         call system_clock(COUNT=clock_finish)
         time_u = float(clock_finish - clock_start) / float(clock(2))
-
         !-----DRM---------------------------------------------------------------------------------------------------        
         if (tagstep.eq.2) then                                                                      !DRM Scandella 28.10.2005 
             ! Calculation of displacements at all DRM points at a fixed time step                               !DRM Scandella 12.04.2006  
@@ -931,3 +930,8 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,&                                   
     if (nnode_neuY.gt.0) deallocate(inode_neuY)
     return      
 end subroutine TIME_LOOP_EL
+!! mode: f90
+!! show-trailing-whitespace: t
+!! End:
+!! vim: set sw=4 ts=8 et tw=80 smartindent : !!
+
