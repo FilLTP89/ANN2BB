@@ -26,4 +26,4 @@ $(OBJS) : $(BUILDDIR)/%.o : $(SRCDIR)/%.f90 $(BUILDDIR)/MODULES.o
 # Make clean instructions
 .PHONY: clean
 clean:
-	-rm -fr $(BUILDDIR)
+	-rm -fr $(BUILDDIR) $(SRCDIR)/*.mod
