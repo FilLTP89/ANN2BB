@@ -1455,17 +1455,14 @@ program SPEED2D
     !Computing the nonzero elements for the mul      
     call amubdg ( 2*nnod, 2*nnod, 2*nnod, J_MASS, I_MASS, JE_SUM, IE_SUM, NDEGR, NNZ_AB, IW )
 
-    WRITE(*,*) '================== debug ========================'
     allocate(IK_TOT(0:2*nnod), JK_TOT(NNZ_AB), K_TOT(NNZ_AB))
 
     !Multiplying K = M^-1*(A+B+D-R)
     call amub ( 2*nnod, 2*nnod, 0, M_MASS, J_MASS, I_MASS, E_SUM, JE_SUM, IE_SUM, &
         K_TOT, JK_TOT, IK_TOT, NNZ_AB, IW, ierr )
 
-    WRITE(*,*) '================== debug ========================'
     call amub ( 2*nnod, 2*nnod, 1, M_MASS, J_MASS, I_MASS, E_SUM, JE_SUM, IE_SUM, &
         K_TOT, JK_TOT, IK_TOT, NNZ_AB, IW, ierr )
-    WRITE(*,*) '================== debug ========================'
 
     NNZ_K = NNZ_AB
     deallocate(M_MASS, I_MASS, J_MASS, C_SUM, JC_SUM, IC_SUM, E_SUM, JE_SUM, IE_SUM, NDEGR, IW)

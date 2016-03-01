@@ -405,12 +405,13 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,&                                   
         duxdx = 0.d0; duydy = 0.d0; duxdy = 0.d0; duydx = 0.d0;
     endif
 
-    if(option_out_var(4) .eq. 1 .or. option_out_var(5) .eq. 1 .or. option_out_var(6) .eq. 1) then 
-        allocate(nodal_counter(nnt)); nodal_counter = 0
+    if(sum(option_out_var(4:6)).gt.0) then 
+        allocate(nodal_counter(nnt))
+        nodal_counter = 0
         do ie = 1,ne 
             do j = 1,nn
                 do i = 1,nn 
-                    is = nn*(j -1) +i
+                    is = nn*(j +0) +i
                     in = cs(cs(ie -1) + is)
                     nodal_counter(in) = nodal_counter(in)+1
                 enddo 
