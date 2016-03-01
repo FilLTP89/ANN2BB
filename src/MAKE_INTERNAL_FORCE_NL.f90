@@ -59,24 +59,30 @@ subroutine MAKE_INTERNAL_FORCE_NL(nn,ct,ww,dd,duxdx,duxdy,duydx,duydy,sxx,syy,sz
     real*8, dimension(nn,nn),   intent(inout) :: dd,lambda_el,mu_el,syld_el
     real*8, dimension(nn,nn),   intent(inout) :: sxx,syy,sxy,szz,fx,fy
     real*8, dimension(4,nn,nn), intent(inout) :: Xkin_el,dEpl_el
+    real*8 :: syld,radius
+    real*8, dimension(4) :: center
 
     do iq = 1,nn
         do ip = 1,nn
             
+            
             ! FIRsT MECHANISM XY
             stress0  = (/sxx(ip,iq),syy(ip,iq),szz(ip,iq),sxy(ip,iq)/)
             dEalpha = (/duxdx(ip,iq),duydy(ip,iq),0d0,(duxdy(ip,iq)+duydx(ip,iq))/)
+            syld=syld_el(ip,iq)
+            radius=riso_el(ip,iq)
+            center=Xkin_el(:,ip,iq)
 
             ! COMPuTE TRIAL sTRESS INCREMENT
             call MAKE_sTRESS_LOC(lambda_el(ip,iq),mu_el(ip,iq),dEalpha,dtrial)
             dtrial=stress1-stress0
 
-            call check_plasticity(dtrial,stress0,Xkin_el(:,ip,iq),Riso_el(ip,iq), &
-                syld_el(ip,iq),st_epl,alpha_elp)
+            call check_plasticity(dtrial,stress0,center,radius, &
+                syld,st_epl,alpha_elp)
             
             if (st_epl) then
-                call plastic_corrector(dEalpha,dtrial,syld_el(ip,iq), &
-                    Xkin_el(:,ip,iq),Riso_el(ip,iq),biso_el(ip,iq),   &
+                call plastic_corrector(dEalpha,dtrial,center,syld, &
+                    radius,biso_el(ip,iq),   &
                     Rinf_el(ip,iq),Ckin_el(ip,iq),kkin_el(ip,iq),     &
                     mu_el(ip,iq),lambda_el(ip,iq),dEpl_el(:,ip,iq))
             end if

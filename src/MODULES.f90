@@ -392,9 +392,9 @@ module nonlinear2d
 
             implicit none
             real*8, dimension(4), intent(inout) :: dEps_alpha,stress,center,dEpl 
-            real*8,                 intent(inout) :: radius 
-            real*8,                 intent(in)    :: syld,biso,Rinf,Ckin,kkin,mu,lambda
-            real*8, dimension(4,4)            :: DEL
+            real*8,               intent(inout) :: radius 
+            real*8,               intent(in)    :: syld,biso,Rinf,Ckin,kkin,mu,lambda
+            real*8, dimension(4,4)              :: DEL
             real*8, dimension(4), parameter     :: A = (/1.0,1.0,1.0,0.5/)
             real*8                              :: Ttot,deltaTk,qq,R1,R2,dR1,dR2,err0,err1
             real*8                              :: FM,hard1,hard2,deltaTmin
