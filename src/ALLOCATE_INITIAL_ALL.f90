@@ -67,7 +67,7 @@ subroutine ALLOCATE_INITIAL_ALL(ne,sdeg_mat,nm,nnt,cs_nnz,cs,u1,u2,fk,fe,fd,sism
         duxdx = 0.d0; duydy = 0.d0; duxdy = 0.d0; duydx = 0.d0;
     endif
 
-    if(option_out_var(4) .eq. 1 .or. option_out_var(5) .eq. 1 .or. option_out_var(6) .eq. 1) then 
+    if(sum(option_out_var(4:6).gt.0) then 
         allocate(nodal_counter(nnt)) 
         nodal_counter = 0
         do ie = 1,ne
