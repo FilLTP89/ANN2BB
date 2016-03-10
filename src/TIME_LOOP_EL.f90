@@ -674,7 +674,7 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,&                                   
 
         call system_clock(COUNT=clock_start,COUNT_RATE=clock(2))   
         !Compute fk = K_TOT*u1
-        call MATMUL_SPARSE(K_TOT, NNZ_K, JK_TOT, IK_TOT, fk, 2*nnt, u0, 2*nnt, error)
+        call MATMUL_SPARSE(K_TOT, NNZ_K, JK_TOT, IK_TOT, fk, 2*nnt, u1, 2*nnt, error)
         call system_clock(COUNT=clock_finish)
         time_fk = float(clock_finish - clock_start) / float(clock(2))
         call system_clock(COUNT=clock_start,COUNT_RATE=clock(2)) 
@@ -762,7 +762,7 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,&                                   
 
                     if (dabs(u1(in)).lt.(1.0d-99))     u1(in)= 0.d0
                     if (dabs(u1(in+nnt)).lt.(1.0d-99)) u1(in+nnt)=0.d0
-                    write(unit_disp,'(F6.2,ES16.6,ES16.6)') tt1,u1(in),u1(in+nnt)
+                    write(unit_disp,'(F6.4,ES16.6,ES16.6)') tt1,u1(in),u1(in+nnt)
                 enddo
             endif
 

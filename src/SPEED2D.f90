@@ -1035,7 +1035,7 @@ program SPEED2D
         write(*,'(A)') '-------------COMPUTING STIFFNESS MATRIX-------------'
 
         call system_clock(COUNT=start,COUNT_RATE=clock(2))
-            call MAKE_STIFF_MATRIX(nnod,length,I_STIFF,J_STIFF,M_STIFF, &
+        call MAKE_STIFF_MATRIX(nnod,length,I_STIFF,J_STIFF,M_STIFF, &
                 nelem, con_nnz, con_spx, nmat, tag_mat, prop_mat, sdeg_mat, &
                 alfa1, alfa2, beta1, beta2, gamma1, gamma2)
         write(*,'(A)') 'Done.'
@@ -1383,8 +1383,12 @@ program SPEED2D
     !Summing D_SUM = D_MASS - M_ABC_U 
     call aplb ( 2*nnod, 2*nnod, 1, D_MASS, J_MASS, I_MASS, M_ABC_U, J_ABC, I_ABC, &
         D_SUM, JD_SUM, ID_SUM, NNZ_AB, IW, ierr)
+    
 
-    if (.not.NLFLAG) then
+    if (NLFLAG) then
+        !Summing E_SUM = D_SUM = D_MASS - M_ABC_U
+        E_SUM = D_SUM
+    else
         I_STIFF = I_STIFF + 1
         !Computing the nonzero elements for the sum
         call aplbdg ( 2*nnod, 2*nnod,  J_STIFF, I_STIFF, JD_SUM, ID_SUM, NDEGR, NNZ_AB, IW )
@@ -1395,34 +1399,22 @@ program SPEED2D
         call aplb ( 2*nnod, 2*nnod, 1, M_STIFF, J_STIFF, I_STIFF, D_SUM, JD_SUM, ID_SUM, &
             E_SUM, JE_SUM, IE_SUM, NNZ_AB, IW, ierr)
         deallocate(I_STIFF,J_STIFF,M_STIFF)
-    else
-        !Summing E_SUM = D_SUM = M_STIFF + D_MASS - M_ABC_U
-        allocate(IE_SUM(0:2*nnod), JE_SUM(NNZ_AB), E_SUM(NNZ_AB))
-        E_SUM = D_SUM
     endif
 
     if(nelem_dg .gt. 0) then
         IDG = IDG + 1
-
         !Computing the nonzero elements for the sum
         call aplbdg ( 2*nnod, 2*nnod,  JE_SUM, IE_SUM, JDG, IDG, NDEGR, NNZ_AB, IW )
-
         allocate(IDG_SUM(0:2*nnod), JDG_SUM(NNZ_AB), MDG_SUM(NNZ_AB))
-
         !Summing MDG_SUM = E_SUM + MDG = M_STIFF + MDG + D_MASS - M_ABC_U 
         call aplb ( 2*nnod, 2*nnod, 0, E_SUM, JE_SUM, IE_SUM, MDG, JDG, IDG, &
             MDG_SUM, JDG_SUM, IDG_SUM, NNZ_AB, IW, ierr)
-
         call aplb ( 2*nnod, 2*nnod, 1, E_SUM, JE_SUM, IE_SUM, MDG, JDG, IDG, &
             MDG_SUM, JDG_SUM, IDG_SUM, NNZ_AB, IW, ierr)
-
         deallocate(IE_SUM,JE_SUM,E_SUM)
         allocate(IE_SUM(0:2*nnod), JE_SUM(NNZ_AB), E_SUM(NNZ_AB))
-
         IE_SUM = IDG_SUM; JE_SUM = JDG_SUM; E_SUM = MDG_SUM;
-
         deallocate(IDG_SUM,JDG_SUM,MDG_SUM)
-
     endif
 
     deallocate(C_MASS, D_MASS, I_ABC, J_ABC, M_ABC_U, M_ABC_V)
