@@ -39,10 +39,13 @@
 !> @param[inout] fx_el internal forces along x-direction on element LGL
 !> @param[inout] fy_el internal forces along y-direction on element LGL
 
-subroutine INITIAL_NL(cs_nnz,cs,nm,ct,ww,dd,nn,nnt,im,ie,prop_mat,ux_el,uy_el,   &
-    sxx_el,syy_el,szz_el,sxy_el,lambda_el,mu_el,syld_el,Ckin_el,kkin_el,Riso_el, &
-    Rinf_el,biso_el,Xkin_el,stress_all,Xkin_all,Riso_all,fx_el,fy_el,nl_sism,    &
-    fxs_el,fys_el,sxxs_el,syys_el,sxys_el,Szzs_el,displ)
+subroutine INITIAL_NL(cs_nnz,cs,nm,ct,ww,dd,nn,nnt,im,ie,prop_mat, &
+    displ,ux_el,uy_el,sxx_el,syy_el,szz_el,sxy_el,                 &
+    lambda_el,mu_el,syld_el,Ckin_el,kkin_el,Rinf_el,biso_el,       &
+    Riso_el,Xkin_el,                                               &
+    stress_all,Xkin_all,Riso_all,                                  &
+    fx_el,fy_el,                                                   &
+    nl_sism,fxs_el,fys_el,sxxs_el,syys_el,sxys_el,Szzs_el)
     
     implicit none
     integer*4, intent(in)                       :: nl_sism,im,nnt,nn,cs_nnz,nm,ie
@@ -55,8 +58,9 @@ subroutine INITIAL_NL(cs_nnz,cs,nm,ct,ww,dd,nn,nnt,im,ie,prop_mat,ux_el,uy_el,  
     real*8, intent(inout),  dimension(nn,nn)    :: dd,ux_el,uy_el,lambda_el,mu_el
     real*8, intent(inout),  dimension(nn,nn)    :: sxx_el,Syy_el,Szz_el,Sxy_el
     real*8, intent(inout),  dimension(nn,nn)    :: sxxs_el,Syys_el,Szzs_el,Sxys_el
-    real*8, intent(inout),  dimension(nn,nn)    :: Riso_el,syld_el
-    real*8, intent(inout),  dimension(nn,nn)    :: Ckin_el,kkin_el,Rinf_el,biso_el
+    real*8, intent(inout),  dimension(nn,nn)    :: syld_el,Riso_el
+    real*8, intent(inout),  dimension(nn,nn)    :: Ckin_el,kkin_el
+    real*8, intent(inout),  dimension(nn,nn)    :: Rinf_el,biso_el
     real*8, intent(inout),  dimension(4,nn,nn)  :: Xkin_el
     integer*4                                   :: i,j,is,in
 
@@ -80,7 +84,7 @@ subroutine INITIAL_NL(cs_nnz,cs,nm,ct,ww,dd,nn,nnt,im,ie,prop_mat,ux_el,uy_el,  
             in = cs(cs(ie -1) + is)
            
             ux_el(i,j)      = displ(in)
-            ux_el(i,j)      = displ(in+nnt)
+            uy_el(i,j)      = displ(in+nnt)
 
             sxx_el(i,j)     = stress_all(in)
             syy_el(i,j)     = stress_all(in+nnt)

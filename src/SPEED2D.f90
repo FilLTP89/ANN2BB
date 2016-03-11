@@ -1387,7 +1387,10 @@ program SPEED2D
 
     if (NLFLAG) then
         !Summing E_SUM = D_SUM = D_MASS - M_ABC_U
-        E_SUM = D_SUM
+        allocate(IE_SUM(0:2*nnod), JE_SUM(NNZ_AB), E_SUM(NNZ_AB))
+        E_SUM  = D_SUM
+        IE_SUM = ID_SUM
+        JE_SUM = JD_SUM
     else
         I_STIFF = I_STIFF + 1
         !Computing the nonzero elements for the sum

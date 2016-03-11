@@ -419,18 +419,20 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,&                                   
                 enddo 
             enddo
         enddo
-    endif  
+    endif 
 
     fe = 0.d0; u1 = 0.d0; u2 = 0.d0; fk = 0.d0; fd = 0.d0  
     vel = v1; acc = 0.0d0; sism = 0.d0
     dt2 = dt*dt
-    number_of_threads = 1;                                               !PARALLEL Kiana 06.10.2015
+    number_of_threads = 1;
+    
+    !PARALLEL Kiana 06.10.2015
     call OMP_set_num_threads(number_of_threads)                          !PARALLEL Kiana 06.10.2015
 
     !********************************************************************************************
     !     FIRST STEP
     !********************************************************************************************	 
-
+    
     if (tagstep.eq.2) then !DRM Scandella 28-10-05   
 
         !-----DRM----------------------------------------------------------------------------------
@@ -660,8 +662,7 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,&                                   
                 deallocate(mu_el,lambda_el)      
             enddo  
         endif
-
-
+        
         !********************************************************************************************
         ! LEAP-FROG        
         !********************************************************************************************
@@ -683,7 +684,8 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,&                                   
         call system_clock(COUNT=clock_finish)
         time_fd = float(clock_finish - clock_start) / float(clock(2))
         call system_clock(COUNT=clock_start,COUNT_RATE=clock(2)) 
-        fe = fe + sism/mvec;  
+        fe = fe + sism/mvec
+        
         u2 = 2.0d0 * u1 - u0 + dt2*(fe - fk - fd)
         call system_clock(COUNT=clock_finish)
         time_u = float(clock_finish - clock_start) / float(clock(2))

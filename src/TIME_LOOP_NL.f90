@@ -296,6 +296,7 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne, &
             real*8,     dimension(:,:),allocatable, intent(out) :: Ckin_el,kkin_el
             real*8,     dimension(:,:,:),allocatable, intent(out) :: Xkin_el,dEpl_el
         end subroutine ALLOCATE_NL
+        
         subroutine MAKE_STRAIN(nn,dd,dxdx,dxdy,dydx,dydy,&
             ux,uy,duxdx,duxdy,duydx,duydy)
             real*8                                  :: t1ux,t1uy,t2ux,t2uy
@@ -457,7 +458,7 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne, &
     dt2 = dt*dt
     number_of_threads = 1                                                !PARALLEL Kiana 06.10.2015
     call OMP_set_num_threads(number_of_threads)                          !PARALLEL Kiana 06.10.2015
-
+    
     !********************************************************************************************
     !     FIRST STEP
     !********************************************************************************************	 
@@ -652,23 +653,33 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne, &
                 Rinf_el,biso_el,Xkin_el,dEpl_el,fx_el,fy_el,nl_sism,fxs_el,fys_el,&
                 sxxs_el,syys_el,sxys_el,szzs_el)
             ! INITIALIZE VARIABLES
-            call INITIAL_NL(cs_nnz,cs,nm,ct,ww,dd,nn,nnt,im,ie,prop_mat,ux_el,uy_el,&
-                sxx_el,syy_el,szz_el,sxy_el,lambda_el,mu_el,syld_el,Ckin_el,kkin_el,&
-                Riso_el,Rinf_el,biso_el,Xkin_el,stress_all,Xkin_all,Riso_all,fx_el, &
-                fy_el,nl_sism,fxs_el,fys_el,sxxs_el,syys_el,sxys_el,szzs_el,u1)
+            call INITIAL_NL(cs_nnz,cs,nm,ct,ww,dd,nn,nnt,im,ie,prop_mat, &
+                u1,ux_el,uy_el,sxx_el,syy_el,szz_el,sxy_el,              &
+                lambda_el,mu_el,syld_el,Ckin_el,kkin_el,Rinf_el,biso_el, &
+                Riso_el,Xkin_el,                                         &
+                stress_all,Xkin_all,Riso_all,                            &
+                fx_el,fy_el,                                             &
+                nl_sism,fxs_el,fys_el,sxxs_el,syys_el,sxys_el,szzs_el)
             ! COMPUTE STRAIN INCREMENT
             call MAKE_DERIVATIVES(nn,alfa1,alfa2,beta1,beta2,gamma1,gamma2,ct,&
                 dxdy_el,dydy_el,dxdx_el,dydx_el)
 
             call MAKE_STRAIN(nn,dd,dxdx_el,dxdy_el,dydx_el,dydy_el,ux_el,uy_el, &
                   duxdx_el,duxdy_el,duydx_el,duydy_el)
-
+            if (duxdx_el(1,1).ne.0d0.and.its>10) then
+                write(*,*) 'STRAIN'
+                write(*,*) 'xx',duxdx_el(1:nn,1:nn)
+                write(*,*) 'xy',duxdy_el(1:nn,1:nn)
+                write(*,*) 'yx',duydx_el(1:nn,1:nn)
+                write(*,*) 'yy',duydy_el(1:nn,1:nn)
+                read(*,*)
+            endif
             ! COMPUTE NON LINEAR INTERNAL FORCES
             call MAKE_INTERNAL_FORCE_NL(nn,ct,ww,dd,duxdx_el,duxdy_el,duydx_el,duydy_el,    &
                 sxx_el,syy_el,szz_el,sxy_el,Xkin_el,Riso_el,mu_el,lambda_el,syld_el,        &
                 Ckin_el,kkin_el,Rinf_el,biso_el,dEpl_el,dxdx_el,dxdy_el,dydx_el,dydy_el,    &
                 fx_el,fy_el)
-            
+                        
             if (nl_sism.gt.0) then
 
                 call MAKE_SEISMIC_MOMENT_NEW(nn,sxxs_el,syys_el,szzs_el,sxys_el,&
@@ -684,7 +695,6 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne, &
                 do i = 1,nn
                     is = nn*(j -1) +i
                     in = cs(cs(ie -1) + is)
-
                     fk(in)               = fk(in)      + fx_el(i,j)
                     fk(in+nnt)           = fk(in+nnt)  + fy_el(i,j)
                     stress_all(in)       = sxx_el(i,j)
@@ -714,8 +724,10 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne, &
                 sxys_el,szzs_el,ux_el,uy_el)
 
         end do
+        
         fk=fk/mvec 
         fe = fe + sism/mvec;  
+
         call system_clock(COUNT=clock_finish)
         time_fk = float(clock_finish - clock_start) / float(clock(2))
         write(*,'(A)') 'Non Linear Internal Forces: OK'

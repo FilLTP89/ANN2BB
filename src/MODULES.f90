@@ -385,6 +385,7 @@ module nonlinear2d
             end if
             dtrial=stress0+dtrial*alpha_elp
             call mises_yld_locus(dtrial,center,radius,syld,FS,gradFS)
+            write(*,*) 'F:',FS
         end subroutine check_plasticity
         
         subroutine plastic_corrector(dEps_alpha,stress,center,syld, &

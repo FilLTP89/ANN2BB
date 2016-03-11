@@ -64,9 +64,6 @@ subroutine MAKE_INTERNAL_FORCE_NL(nn,ct,ww,dd,duxdx,duxdy,duydx,duydy,sxx,syy,sz
 
     do iq = 1,nn
         do ip = 1,nn
-            
-            
-            ! FIRsT MECHANISM XY
             stress0  = (/sxx(ip,iq),syy(ip,iq),szz(ip,iq),sxy(ip,iq)/)
             dEalpha = (/duxdx(ip,iq),duydy(ip,iq),0d0,(duxdy(ip,iq)+duydx(ip,iq))/)
             syld=syld_el(ip,iq)
@@ -74,12 +71,13 @@ subroutine MAKE_INTERNAL_FORCE_NL(nn,ct,ww,dd,duxdx,duxdy,duydx,duydy,sxx,syy,sz
             center=Xkin_el(:,ip,iq)
 
             ! COMPuTE TRIAL sTRESS INCREMENT
-            call MAKE_sTRESS_LOC(lambda_el(ip,iq),mu_el(ip,iq),dEalpha,dtrial)
+            call MAKE_STRESS_LOC(lambda_el(ip,iq),mu_el(ip,iq),dEalpha,dtrial)
             dtrial=stress1-stress0
 
             call check_plasticity(dtrial,stress0,center,radius, &
                 syld,st_epl,alpha_elp)
-            
+            write(*,*) 'plastic?',st_epl
+
             if (st_epl) then
                 call plastic_corrector(dEalpha,dtrial,center,syld, &
                     radius,biso_el(ip,iq),   &
