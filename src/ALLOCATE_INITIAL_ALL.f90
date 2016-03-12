@@ -22,17 +22,17 @@
 !> @version 1.0
 !> @param[inout] sxx,syy,sxy,szz nodal values for the stress tensor (on element)
 
-subroutine ALLOCATE_INITIAL_ALL(ne,sdeg_mat,nm,nnt,cs_nnz,cs,u1,u2,fk,fe,fd,sism,vel,acc,v1,update_index_el_az,&
-        duxdx,duxdy,duydx,duydy,sxx,syy,szz,sxy,option_out_var,nodal_counter,stress_all,xkin_all,     &
-        riso_all,epl_all)  
+subroutine ALLOCATE_INITIAL_ALL(ne,sdeg_mat,nm,nnt,cs_nnz,cs,u1,u2,fk,fe,fd,sism,vel,&
+        acc,v1,update_index_el_az,duxdx,duxdy,duydx,duydy,sxx,syy,szz,sxy,option_out_var,&
+        nodal_counter,stress_all,xkin_all,riso_all,epl_all)  
 
     integer*4,                              intent(in)  :: ne,nm,nnt,cs_nnz
     integer*4,  dimension(6),               intent(in)  :: option_out_var
     integer*4,  dimension(nm),              intent(in)  :: sdeg_mat
     integer*4,  dimension(0:cs_nnz),        intent(in)  :: cs
+    real*8,     dimension(2*nnt),           intent(in)  :: v1
     integer*4,  dimension(:),  allocatable, intent(out) :: update_index_el_az
     integer*4,  dimension(:),  allocatable, intent(out) :: nodal_counter
-    real*8,     dimension(2*nnt),           intent(in)  :: v1
     real*8,     dimension(:),  allocatable, intent(out) :: u1,u2,fk,fe,fd,sism
     real*8,     dimension(:),  allocatable, intent(out) :: stress_all,xkin_all
     real*8,     dimension(:),  allocatable, intent(out) :: epl_all,riso_all
@@ -58,16 +58,28 @@ subroutine ALLOCATE_INITIAL_ALL(ne,sdeg_mat,nm,nnt,cs_nnz,cs,u1,u2,fk,fe,fd,sism
         update_index_el_az(iaz) = iaz
     enddo
     
-    if(option_out_var(4) .eq. 1) then
-        allocate(sxx(nnt), syy(nnt), sxy(nnt), szz(nnt))           
-        sxx = 0.d0; syy = 0.d0; sxy = 0.d0; szz = 0.d0;  
+    if(option_out_var(4).eq.1) then
+        allocate(sxx(nnt))
+        allocate(syy(nnt))
+        allocate(sxy(nnt))
+        allocate(szz(nnt))           
+        sxx = 0.d0
+        syy = 0.d0 
+        sxy = 0.d0
+        szz = 0.d0  
     endif    
-    if(option_out_var(5) .eq. 1 .or. option_out_var(6) .eq. 1 ) then
-        allocate(duxdx(nnt), duydy(nnt), duxdy(nnt), duydx(nnt)) 
-        duxdx = 0.d0; duydy = 0.d0; duxdy = 0.d0; duydx = 0.d0;
+    if(sum(option_out_var(5:6).ge.1)) then
+        allocate(duxdx(nnt))
+        allocate(duydy(nnt))
+        allocate(duxdy(nnt))
+        allocate(duydx(nnt)) 
+        duxdx = 0.d0
+        duydy = 0.d0
+        duxdy = 0.d0
+        duydx = 0.d0
     endif
 
-    if(sum(option_out_var(4:6)).gt.0) then 
+    if(sum(option_out_var(4:6)).ge.1) then 
         allocate(nodal_counter(nnt)) 
         nodal_counter = 0
         do ie = 1,ne
@@ -95,6 +107,7 @@ subroutine ALLOCATE_INITIAL_ALL(ne,sdeg_mat,nm,nnt,cs_nnz,cs,u1,u2,fk,fe,fd,sism
     xkin_all = 0.0d0
     epl_all = 0.0d0
     riso_all = 0.0d0
+    return
 end subroutine ALLOCATE_INITIAL_ALL
 !! mode: f90
 !! show-trailing-whitespace: t

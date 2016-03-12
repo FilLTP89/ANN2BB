@@ -41,21 +41,24 @@
 !> @param[inout] fxs_el seismic moment equivalent forces in x-direction on element LGL
 !> @param[inout] fys_el seismic moment equivalent forces in x-direction on element LGL
 
-subroutine ALLOCATE_NL(nn,ct,ww,dd,dxdx_el,dxdy_el,dydx_el,dydy_el,det_j,   &
-    ux_el,uy_el,duxdx_el,duxdy_el,duydx_el,duydy_el,sxx_el,syy_el,sxy_el,   &
-    szz_el,lambda_el,mu_el,syld_el,Ckin_el,kkin_el,Riso_el,Rinf_el,biso_el, &
-    Xkin_el,dEpl_el,fx_el,fy_el,nl_sism,fxs_el,fys_el,sxxs_el,syys_el,      &
-    sxys_el,szzs_el)
+subroutine ALLOCATE_NL(nn,ct,ww,dd,ux_el,uy_el,      &
+         dxdx_el, dxdy_el, dydx_el, dydy_el,det_j,   &
+        duxdx_el,duxdy_el,duydx_el,duydy_el,         &
+          sxx_el,  sxy_el,  syy_el,szz_el,           &
+       lambda_el,   mu_el, syld_el, Ckin_el, kkin_el,&
+         Rinf_el, biso_el, Riso_el, Xkin_el, dEpl_el,&
+           fx_el,   fy_el,  fxs_el,  fys_el, nl_sism,&
+         sxxs_el, sxys_el, syys_el,szzs_el)
     
-    integer*4,                              intent(in)  :: nn, nl_sism
+    integer*4,                              intent(in ) :: nn, nl_sism
     real*8,     dimension(:),  allocatable, intent(out) :: ct,ww
     real*8,     dimension(:),  allocatable, intent(out) :: dxdx_el,dydy_el
     real*8,     dimension(:),  allocatable, intent(out) :: dxdy_el,dydx_el
     real*8,     dimension(:,:),allocatable, intent(out) :: dd,det_j,fx_el,fy_el
     real*8,     dimension(:,:),allocatable, intent(out) :: fxs_el,fys_el
     real*8,     dimension(:,:),allocatable, intent(out) :: ux_el,uy_el
-    real*8,     dimension(:,:),allocatable, intent(inout) :: duxdx_el,duydy_el
-    real*8,     dimension(:,:),allocatable, intent(inout) :: duxdy_el,duydx_el
+    real*8,     dimension(:,:),allocatable, intent(out) :: duxdx_el,duydy_el
+    real*8,     dimension(:,:),allocatable, intent(out) :: duxdy_el,duydx_el
     real*8,     dimension(:,:),allocatable, intent(out) :: sxx_el,syy_el,sxy_el,szz_el
     real*8,     dimension(:,:),allocatable, intent(out) :: sxxs_el,syys_el,sxys_el,szzs_el
     real*8,     dimension(:,:),allocatable, intent(out) :: lambda_el,mu_el,syld_el

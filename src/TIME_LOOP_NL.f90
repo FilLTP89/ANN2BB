@@ -263,9 +263,9 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne, &
             integer*4,  dimension(6),               intent(in)  :: option_out_var
             integer*4,  dimension(nm),              intent(in)  :: sdeg_mat
             integer*4,  dimension(0:cs_nnz),        intent(in)  :: cs
+            real*8,     dimension(2*nnt),           intent(in)  :: v1
             integer*4,  dimension(:),  allocatable, intent(out) :: update_index_el_az
             integer*4,  dimension(:),  allocatable, intent(out) :: nodal_counter
-            real*8,     dimension(2*nnt),           intent(in)  :: v1
             real*8,     dimension(:),  allocatable, intent(out) :: u1,u2,fk,fe,fd,sism
             real*8,     dimension(:),  allocatable, intent(out) :: stress_all,xkin_all
             real*8,     dimension(:),  allocatable, intent(out) :: epl_all,riso_all
@@ -274,11 +274,14 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne, &
             integer*4                                           :: iaz,ie,in,is,i,j
         end subroutine ALLOCATE_INITIAL_ALL
 
-        subroutine ALLOCATE_NL(nn,ct,ww,dd,dxdx_el,dxdy_el,dydx_el,dydy_el,det_j,   &
-            ux_el,uy_el,duxdx_el,duxdy_el,duydx_el,duydy_el,sxx_el,syy_el,sxy_el,   &
-            szz_el,lambda_el,mu_el,syld_el,Ckin_el,kkin_el,Riso_el,Rinf_el,biso_el, &
-            Xkin_el,dEpl_el,fx_el,fy_el,nl_sism,fxs_el,fys_el,sxxs_el,syys_el,      &
-            sxys_el,szzs_el)
+        subroutine ALLOCATE_NL(nn,ct,ww,dd,ux_el,uy_el,      &
+                 dxdx_el, dxdy_el, dydx_el, dydy_el,det_j,   &
+                duxdx_el,duxdy_el,duydx_el,duydy_el,         &
+                  sxx_el,  sxy_el,  syy_el,szz_el,           &
+               lambda_el,   mu_el, syld_el, Ckin_el, kkin_el,&
+                 Rinf_el, biso_el, Riso_el, Xkin_el, dEpl_el,&
+                   fx_el,   fy_el,  fxs_el,  fys_el, nl_sism,&
+                 sxxs_el, sxys_el, syys_el,szzs_el)
             
             integer*4,                              intent(in ) :: nn,nl_sism
             real*8,     dimension(:),  allocatable, intent(out) :: ct,ww
@@ -286,9 +289,9 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne, &
             real*8,     dimension(:),  allocatable, intent(out) :: dxdy_el,dydx_el
             real*8,     dimension(:,:),allocatable, intent(out) :: dd,det_j,fx_el,fy_el
             real*8,     dimension(:,:),allocatable, intent(out) :: fxs_el,fys_el
-            real*8,     dimension(:,:),allocatable, intent(out) :: Ux_el,Uy_el
-            real*8,     dimension(:,:),allocatable, intent(out) :: dUxdx_el,dUydy_el
-            real*8,     dimension(:,:),allocatable, intent(out) :: dUxdy_el,dUydx_el
+            real*8,     dimension(:,:),allocatable, intent(out) :: ux_el,uy_el
+            real*8,     dimension(:,:),allocatable, intent(out) :: duxdx_el,duydy_el
+            real*8,     dimension(:,:),allocatable, intent(out) :: duxdy_el,duydx_el
             real*8,     dimension(:,:),allocatable, intent(out) :: sxx_el,syy_el,sxy_el,szz_el
             real*8,     dimension(:,:),allocatable, intent(out) :: sxxs_el,syys_el,sxys_el,szzs_el
             real*8,     dimension(:,:),allocatable, intent(out) :: lambda_el,mu_el,syld_el
