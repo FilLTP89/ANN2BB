@@ -688,7 +688,7 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,&                                   
         write(*,*) "============ DEBUG =============" 
         write(*,*) "fk",fk(50:60)
         write(*,*) ""
-        write(*,*) "fd",fd(50:60)
+        write(*,*) "mvec",mvec(50:60)
         write(*,*) ""
         write(*,*) "fe",fe(50:60)
         read(*,*)

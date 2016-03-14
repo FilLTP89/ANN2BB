@@ -48,8 +48,6 @@ subroutine MAKE_INTERNAL_FORCE_EL(nn,ct,ww,dd,&
     integer*4 :: ip,iq,il,im,i
     real*8 :: det_j,t1ux,t1uy,t2ux,t2uy,t1fx,t1fy,t2fx,t2fy
 
-
-
     ! FORCE CALCULATION
 
     do iq = 1,nn

@@ -677,7 +677,16 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne, &
                 sxx_el,syy_el,szz_el,sxy_el,Xkin_el,Riso_el,mu_el,lambda_el,syld_el,        &
                 Ckin_el,kkin_el,Rinf_el,biso_el,dEpl_el,dxdx_el,dxdy_el,dydx_el,dydy_el,    &
                 fx_el,fy_el)
-                        
+            if (ie.gt.50) then
+                write(*,*) "fx_el",fx_el    
+                write(*,*) "fy_el",fy_el
+                call MAKE_INTERNAL_FORCE_EL(nn,ct,ww,dd,&
+                        dxdx_el,dxdy_el,dydx_el,dydy_el,&
+                        sxx_el,syy_el,szz_el,sxy_el,fx_el,fy_el)
+                write(*,*) "fx_el",fx_el    
+                write(*,*) "fy_el",fy_el
+                read(*,*) 
+            endif
             if (nl_sism.gt.0) then
                 fe = 0.0d0
                 call MAKE_SEISMIC_MOMENT_NEW(nn,sxxs_el,syys_el,szzs_el,sxys_el,&
@@ -739,13 +748,6 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne, &
         call MATMUL_SPARSE(N_TOT, NNZ_N, JN_TOT, IN_TOT, fd, 2*nnt, v1, 2*nnt, error)
         call system_clock(COUNT=clock_finish)
         time_fd = float(clock_finish - clock_start) / float(clock(2))
-        write(*,*) "============ DEBUG =============" 
-        write(*,*) "fk",fk(50:60)
-        write(*,*) ""
-        write(*,*) "fd",fd(50:60)
-        write(*,*) ""
-        write(*,*) "fe",fe(50:60)
-        read(*,*)
         call system_clock(COUNT=clock_start,COUNT_RATE=clock(2)) 
         u2 = 2.0d0 * u1 - u0 + dt2*(fe - fk - fd)
         call system_clock(COUNT=clock_finish)
