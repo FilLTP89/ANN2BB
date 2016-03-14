@@ -39,21 +39,19 @@
 !> @param[inout] fx_el internal forces along x-direction on element LGL
 !> @param[inout] fy_el internal forces along y-direction on element LGL
 
-subroutine INITIAL_NL(cs_nnz,cs,nm,ct,ww,dd,nn,nnt,im,ie,prop_mat, &
-    displ,ux_el,uy_el,sxx_el,syy_el,szz_el,sxy_el,                 &
-    lambda_el,mu_el,syld_el,Ckin_el,kkin_el,Rinf_el,biso_el,       &
-    Riso_el,Xkin_el,                                               &
-    stress_all,Xkin_all,Riso_all,                                  &
-    fx_el,fy_el,                                                   &
-    nl_sism,fxs_el,fys_el,sxxs_el,syys_el,sxys_el,Szzs_el)
+subroutine INITIAL_NL_EL(cs_nnz,cs,nm,ct,ww,dd,nn,nnt,im,ie,prop_mat, &
+    displ,sxx,syy,szz,sxy,ux_el,uy_el,sxx_el,syy_el,szz_el,sxy_el,    &
+    fx_el,fy_el,nl_sism,fxs_el,fys_el,sxxs_el,syys_el,szzs_el,sxys_el,&
+    lambda_el,mu_el,syld_el,Ckin_el,kkin_el,Rinf_el,biso_el,          &
+    riso_all,riso_el,Xkin_all,Xkin_el)
     
     implicit none
     integer*4, intent(in)                       :: nl_sism,im,nnt,nn,cs_nnz,nm,ie
     integer*4, intent(in),  dimension(0:cs_nnz) :: cs
     real*8, intent(in),     dimension(nm,9)     :: prop_mat
-    real*8, intent(in),     dimension(nnt)      :: Riso_all
+    real*8, intent(in),     dimension(nnt)      :: sxx,syy,szz,sxy,Riso_all
     real*8, intent(in),     dimension(2*nnt)    :: displ
-    real*8, intent(in),     dimension(4*nnt)    :: stress_all,Xkin_all
+    real*8, intent(in),     dimension(4*nnt)    :: Xkin_all
     real*8, intent(inout),  dimension(nn)       :: ct,ww,fx_el,fy_el,fxs_el,fys_el
     real*8, intent(inout),  dimension(nn,nn)    :: dd,ux_el,uy_el,lambda_el,mu_el
     real*8, intent(inout),  dimension(nn,nn)    :: sxx_el,Syy_el,Szz_el,Sxy_el
@@ -64,7 +62,6 @@ subroutine INITIAL_NL(cs_nnz,cs,nm,ct,ww,dd,nn,nnt,im,ie,prop_mat, &
     real*8, intent(inout),  dimension(4,nn,nn)  :: Xkin_el
     integer*4                                   :: i,j,is,in
 
-    ! COMPUTE LGL 
     call lgl(nn,ct,ww,dd)
     
     lambda_el = prop_mat(im,2)
@@ -86,10 +83,10 @@ subroutine INITIAL_NL(cs_nnz,cs,nm,ct,ww,dd,nn,nnt,im,ie,prop_mat, &
             ux_el(i,j)      = displ(in)
             uy_el(i,j)      = displ(in+nnt)
 
-            sxx_el(i,j)     = stress_all(in)
-            syy_el(i,j)     = stress_all(in+nnt)
-            szz_el(i,j)     = stress_all(in+2*nnt)
-            sxy_el(i,j)     = stress_all(in+3*nnt)
+            sxx_el(i,j)     = sxx(in)
+            syy_el(i,j)     = syy(in)
+            szz_el(i,j)     = szz(in)
+            sxy_el(i,j)     = szz(in)
             
             Riso_el(i,j)    = Riso_all(in)
             Xkin_el(1,i,j)  = Xkin_all(in)     
@@ -110,7 +107,7 @@ subroutine INITIAL_NL(cs_nnz,cs,nm,ct,ww,dd,nn,nnt,im,ie,prop_mat, &
     endif
     
     return
-end subroutine INITIAL_NL
+end subroutine INITIAL_NL_EL
 !! mode: f90
 !! show-trailing-whitespace: t
 !! End:

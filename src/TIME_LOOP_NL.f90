@@ -255,9 +255,9 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne, &
     integer*4, dimension(:), allocatable :: nodal_counter
 
     interface
-        subroutine ALLOCATE_INITIAL_ALL(ne,sdeg_mat,nm,nnt,cs_nnz,cs,u1,u2,fk,fe,fd,sism,vel,acc,v1,update_index_el_az,&
-            duxdx,duxdy,duydx,duydy,sxx,syy,szz,sxy,option_out_var,nodal_counter,stress_all,xkin_all,     &
-            riso_all,epl_all)  
+        subroutine ALLOINIT_NL_ALL(ne,sdeg_mat,nm,nnt,cs_nnz,cs,u1,u2,fk,fe,fd,sism,vel,&
+                acc,v1,update_index_el_az,duxdx,duxdy,duydx,duydy,sxx,syy,szz,sxy,&
+                xkin_all,riso_all,epl_all,option_out_var,nodal_counter)  
 
             integer*4,                              intent(in)  :: ne,nm,nnt,cs_nnz
             integer*4,  dimension(6),               intent(in)  :: option_out_var
@@ -267,14 +267,13 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne, &
             integer*4,  dimension(:),  allocatable, intent(out) :: update_index_el_az
             integer*4,  dimension(:),  allocatable, intent(out) :: nodal_counter
             real*8,     dimension(:),  allocatable, intent(out) :: u1,u2,fk,fe,fd,sism
-            real*8,     dimension(:),  allocatable, intent(out) :: stress_all,xkin_all
-            real*8,     dimension(:),  allocatable, intent(out) :: epl_all,riso_all
+            real*8,     dimension(:),  allocatable, intent(out) :: xkin_all, epl_all,riso_all
             real*8,     dimension(:),  allocatable, intent(out) :: duxdx,duydy,duydx,duxdy
             real*8,     dimension(:),  allocatable, intent(out) :: sxx,syy,szz,sxy,vel,acc
             integer*4                                           :: iaz,ie,in,is,i,j
-        end subroutine ALLOCATE_INITIAL_ALL
+        end subroutine ALLOINIT_NL_ALL
 
-        subroutine ALLOCATE_NL(nn,ct,ww,dd,ux_el,uy_el,      &
+        subroutine ALLOCATE_NL_EL(nn,ct,ww,dd,ux_el,uy_el,      &
                  dxdx_el, dxdy_el, dydx_el, dydy_el,det_j,   &
                 duxdx_el,duxdy_el,duydx_el,duydy_el,         &
                   sxx_el,  sxy_el,  syy_el,szz_el,           &
@@ -298,7 +297,7 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne, &
             real*8,     dimension(:,:),allocatable, intent(out) :: Riso_el,biso_el,Rinf_el
             real*8,     dimension(:,:),allocatable, intent(out) :: Ckin_el,kkin_el
             real*8,     dimension(:,:,:),allocatable, intent(out) :: Xkin_el,dEpl_el
-        end subroutine ALLOCATE_NL
+        end subroutine ALLOCATE_NL_EL
         
         subroutine MAKE_STRAIN(nn,dd,dxdx,dxdy,dydx,dydy,&
             ux,uy,duxdx,duxdy,duydx,duydy)
@@ -333,8 +332,6 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne, &
             real*8,     intent(inout), dimension(:,:,:), allocatable :: Xkin_el,dEpl_el
         end subroutine DEALLOCATE_NL
     end interface
-    
-    
     
     pi = 4.d0*datan(1.d0)
     
@@ -455,9 +452,9 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne, &
     ! INITIALIZATION
     !********************************************************************************************
     
-    call ALLOCATE_INITIAL_ALL(ne,sdeg_mat,nm,nnt,cs_nnz,cs,u1,u2,fk,fe,fd,sism,vel,acc,v1,update_index_el_az,&
-        duxdx,duxdy,duydx,duydy,sxx,syy,szz,sxy,option_out_var,nodal_counter,stress_all,xkin_all,   &
-        riso_all,epl_all)  
+    call ALLOINIT_NL_ALL(ne,sdeg_mat,nm,nnt,cs_nnz,cs,u1,u2,fk,fe,fd,sism,vel,&
+        acc,v1,update_index_el_az,duxdx,duxdy,duydx,duydy,sxx,syy,szz,sxy,&
+        xkin_all,riso_all,epl_all,option_out_var,nodal_counter)  
     dt2 = dt*dt
     number_of_threads = 1                                                !PARALLEL Kiana 06.10.2015
     call OMP_set_num_threads(number_of_threads)                          !PARALLEL Kiana 06.10.2015
@@ -542,7 +539,10 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne, &
 
     do its = 0,nts 
 
-        fk = 0.d0; fd = 0.d0; sism = 0.d0;
+        ! Initialize time step    
+        fk   = 0.d0 
+        fd   = 0.d0 
+        sism = 0.d0
 
         call system_clock(COUNT=start,COUNT_RATE=clock(2))
 
@@ -644,47 +644,42 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne, &
         write(*,'(A)') '----------COMPUTING NON LINEAR INTERNAL FORCES---------------'
 
         call system_clock(COUNT=clock_start,COUNT_RATE=clock(2))   
-
+        
+        ! Make internal forces (nonlinear)
         do ie=1,ne
             im = cs(cs(ie -1) +0)   
             nn = sdeg_mat(im) +1
             
-            ! ALLOCATE VARIABLES
-            call ALLOCATE_NL(nn,ct,ww,dd,dxdx_el,dxdy_el,dydx_el,dydy_el,det_j,   &
-                ux_el,uy_el,duxdx_el,duxdy_el,duydx_el,duydy_el,sxx_el,syy_el,    &
-                sxy_el,szz_el,lambda_el,mu_el,Syld_el,Ckin_el,kkin_el,Riso_el,    &
-                Rinf_el,biso_el,Xkin_el,dEpl_el,fx_el,fy_el,nl_sism,fxs_el,fys_el,&
-                sxxs_el,syys_el,sxys_el,szzs_el)
-            ! INITIALIZE VARIABLES
-            call INITIAL_NL(cs_nnz,cs,nm,ct,ww,dd,nn,nnt,im,ie,prop_mat, &
-                u1,ux_el,uy_el,sxx_el,syy_el,szz_el,sxy_el,              &
-                lambda_el,mu_el,syld_el,Ckin_el,kkin_el,Rinf_el,biso_el, &
-                Riso_el,Xkin_el,                                         &
-                stress_all,Xkin_all,Riso_all,                            &
-                fx_el,fy_el,                                             &
-                nl_sism,fxs_el,fys_el,sxxs_el,syys_el,sxys_el,szzs_el)
-            ! COMPUTE STRAIN INCREMENT
+            ! Allocate and initialize element variables
+            call ALLOCATE_NL_EL(nn,ct,ww,dd,ux_el,uy_el,      &
+                     dxdx_el, dxdy_el, dydx_el, dydy_el,det_j,   &
+                    duxdx_el,duxdy_el,duydx_el,duydy_el,         &
+                      sxx_el,  sxy_el,  syy_el,szz_el,           &
+                   lambda_el,   mu_el, syld_el, Ckin_el, kkin_el,&
+                     Rinf_el, biso_el, Riso_el, Xkin_el, dEpl_el,&
+                       fx_el,   fy_el,  fxs_el,  fys_el, nl_sism,&
+                     sxxs_el, sxys_el, syys_el,szzs_el)
+            ! Initialize element variables
+            call INITIAL_NL_EL(cs_nnz,cs,nm,ct,ww,dd,nn,nnt,im,ie,prop_mat, &
+                u1,sxx,syy,szz,sxy,ux_el,uy_el,sxx_el,syy_el,szz_el,sxy_el, &
+                fx_el,fy_el,nl_sism,fxs_el,fys_el,sxxs_el,syys_el,szzs_el,sxys_el,&
+                lambda_el,mu_el,syld_el,Ckin_el,kkin_el,Rinf_el,biso_el,          &
+                riso_all,riso_el,Xkin_all,Xkin_el)
+            
+            ! Make Derivatives 
             call MAKE_DERIVATIVES(nn,alfa1,alfa2,beta1,beta2,gamma1,gamma2,ct,&
                 dxdy_el,dydy_el,dxdx_el,dydx_el)
-
+            ! Make Strain
             call MAKE_STRAIN(nn,dd,dxdx_el,dxdy_el,dydx_el,dydy_el,ux_el,uy_el, &
                   duxdx_el,duxdy_el,duydx_el,duydy_el)
-            if (duxdx_el(1,1).ne.0d0.and.its>10) then
-                write(*,*) 'STRAIN'
-                write(*,*) 'xx',duxdx_el(1:nn,1:nn)
-                write(*,*) 'xy',duxdy_el(1:nn,1:nn)
-                write(*,*) 'yx',duydx_el(1:nn,1:nn)
-                write(*,*) 'yy',duydy_el(1:nn,1:nn)
-                read(*,*)
-            endif
-            ! COMPUTE NON LINEAR INTERNAL FORCES
+            ! Compute Nonlinear internal forces
             call MAKE_INTERNAL_FORCE_NL(nn,ct,ww,dd,duxdx_el,duxdy_el,duydx_el,duydy_el,    &
                 sxx_el,syy_el,szz_el,sxy_el,Xkin_el,Riso_el,mu_el,lambda_el,syld_el,        &
                 Ckin_el,kkin_el,Rinf_el,biso_el,dEpl_el,dxdx_el,dxdy_el,dydx_el,dydy_el,    &
                 fx_el,fy_el)
                         
             if (nl_sism.gt.0) then
-
+                fe = 0.0d0
                 call MAKE_SEISMIC_MOMENT_NEW(nn,sxxs_el,syys_el,szzs_el,sxys_el,&
                     check_node_sism,check_dist_node_sism,length_cns,ie,facsmom, &
                     nl_sism,func_type,func_indx,func_data,nf,tt1, &
@@ -700,10 +695,14 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne, &
                     in = cs(cs(ie -1) + is)
                     fk(in)               = fk(in)      + fx_el(i,j)
                     fk(in+nnt)           = fk(in+nnt)  + fy_el(i,j)
-                    stress_all(in)       = sxx_el(i,j)
-                    stress_all(in+nnt)   = syy_el(i,j)
-                    stress_all(in+2*nnt) = szz_el(i,j)
-                    stress_all(in+3*nnt) = sxy_el(i,j)
+                    sxx(in) = sxx_el(i,j)
+                    syy(in) = syy_el(i,j)
+                    szz(in) = szz_el(i,j)
+                    sxy(in) = sxy_el(i,j)
+                    duxdx(in) = duxdx_el(i,j)
+                    duydy(in) = duydy_el(i,j)
+                    duxdy(in) = duxdy_el(i,j)
+                    duydx(in) = duydx_el(i,j)
                     xkin_all(in)         = xkin_el(1,i,j)
                     xkin_all(in+nnt)     = xkin_el(2,i,j)
                     xkin_all(in+2*nnt)   = xkin_el(3,i,j)
@@ -713,7 +712,6 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne, &
                     epl_all(in+nnt)      = epl_all(in+nnt)   + depl_el(2,i,j)
                     epl_all(in+2*nnt)    = epl_all(in+2*nnt) + depl_el(3,i,j)
                     epl_all(in+3*nnt)    = epl_all(in+3*nnt) + depl_el(4,i,j)
-                        
                     if (nl_sism.gt.0) then
                         sism(in) = sism(in)         + fxs_el(i,j)
                         sism(in+nnt) = sism(in+nnt) + fys_el(i,j)
@@ -728,8 +726,9 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne, &
 
         end do
         
+        fe = fe + sism/mvec 
         fk=fk/mvec 
-        fe = fe + sism/mvec;  
+        
 
         call system_clock(COUNT=clock_finish)
         time_fk = float(clock_finish - clock_start) / float(clock(2))
@@ -740,7 +739,13 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne, &
         call MATMUL_SPARSE(N_TOT, NNZ_N, JN_TOT, IN_TOT, fd, 2*nnt, v1, 2*nnt, error)
         call system_clock(COUNT=clock_finish)
         time_fd = float(clock_finish - clock_start) / float(clock(2))
-        
+        write(*,*) "============ DEBUG =============" 
+        write(*,*) "fk",fk(50:60)
+        write(*,*) ""
+        write(*,*) "fd",fd(50:60)
+        write(*,*) ""
+        write(*,*) "fe",fe(50:60)
+        read(*,*)
         call system_clock(COUNT=clock_start,COUNT_RATE=clock(2)) 
         u2 = 2.0d0 * u1 - u0 + dt2*(fe - fk - fd)
         call system_clock(COUNT=clock_finish)

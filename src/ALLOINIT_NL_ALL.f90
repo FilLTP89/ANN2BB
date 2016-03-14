@@ -22,9 +22,9 @@
 !> @version 1.0
 !> @param[inout] sxx,syy,sxy,szz nodal values for the stress tensor (on element)
 
-subroutine ALLOCATE_INITIAL_ALL(ne,sdeg_mat,nm,nnt,cs_nnz,cs,u1,u2,fk,fe,fd,sism,vel,&
-        acc,v1,update_index_el_az,duxdx,duxdy,duydx,duydy,sxx,syy,szz,sxy,option_out_var,&
-        nodal_counter,stress_all,xkin_all,riso_all,epl_all)  
+subroutine ALLOINIT_NL_ALL(ne,sdeg_mat,nm,nnt,cs_nnz,cs,u1,u2,fk,fe,fd,sism,vel,&
+        acc,v1,update_index_el_az,duxdx,duxdy,duydx,duydy,sxx,syy,szz,sxy,&
+        xkin_all,riso_all,epl_all,option_out_var,nodal_counter)  
 
     integer*4,                              intent(in)  :: ne,nm,nnt,cs_nnz
     integer*4,  dimension(6),               intent(in)  :: option_out_var
@@ -34,8 +34,7 @@ subroutine ALLOCATE_INITIAL_ALL(ne,sdeg_mat,nm,nnt,cs_nnz,cs,u1,u2,fk,fe,fd,sism
     integer*4,  dimension(:),  allocatable, intent(out) :: update_index_el_az
     integer*4,  dimension(:),  allocatable, intent(out) :: nodal_counter
     real*8,     dimension(:),  allocatable, intent(out) :: u1,u2,fk,fe,fd,sism
-    real*8,     dimension(:),  allocatable, intent(out) :: stress_all,xkin_all
-    real*8,     dimension(:),  allocatable, intent(out) :: epl_all,riso_all
+    real*8,     dimension(:),  allocatable, intent(out) :: xkin_all,epl_all,riso_all
     real*8,     dimension(:),  allocatable, intent(out) :: duxdx,duydy,duydx,duxdy
     real*8,     dimension(:),  allocatable, intent(out) :: sxx,syy,szz,sxy,vel,acc
     integer*4                                           :: nn,im,iaz,ie,in,is,i,j
@@ -50,7 +49,6 @@ subroutine ALLOCATE_INITIAL_ALL(ne,sdeg_mat,nm,nnt,cs_nnz,cs,u1,u2,fk,fe,fd,sism
     allocate(acc(2*nnt))
     allocate(update_index_el_az(2*nnt))
     allocate(riso_all(nnt))
-    allocate(stress_all(4*nnt))
     allocate(xkin_all(4*nnt))
     allocate(epl_all(4*nnt))
 
@@ -58,26 +56,31 @@ subroutine ALLOCATE_INITIAL_ALL(ne,sdeg_mat,nm,nnt,cs_nnz,cs,u1,u2,fk,fe,fd,sism
         update_index_el_az(iaz) = iaz
     enddo
     
-    if(option_out_var(4).eq.1) then
-        allocate(sxx(nnt))
-        allocate(syy(nnt))
-        allocate(sxy(nnt))
-        allocate(szz(nnt))           
-        sxx = 0.d0
-        syy = 0.d0 
-        sxy = 0.d0
-        szz = 0.d0  
-    endif    
-    if(sum(option_out_var(5:6).ge.1)) then
-        allocate(duxdx(nnt))
-        allocate(duydy(nnt))
-        allocate(duxdy(nnt))
-        allocate(duydx(nnt)) 
-        duxdx = 0.d0
-        duydy = 0.d0
-        duxdy = 0.d0
-        duydx = 0.d0
-    endif
+    ! global stress state to be saved for nonlinear calculations
+    allocate(sxx(nnt))
+    allocate(syy(nnt))
+    allocate(sxy(nnt))
+    allocate(szz(nnt))           
+    sxx = 0.d0
+    syy = 0.d0 
+    sxy = 0.d0
+    szz = 0.d0  
+    ! global strain state to be saved for nonlinear calculations (verify)
+    allocate(duxdx(nnt))
+    allocate(duydy(nnt))
+    allocate(duxdy(nnt))
+    allocate(duydx(nnt)) 
+    duxdx = 0.d0
+    duydy = 0.d0
+    duxdy = 0.d0
+    duydx = 0.d0
+    u1          = 0.d0
+    u2          = 0.d0
+    vel         = v1
+    acc         = 0.0d0
+    xkin_all    = 0.0d0
+    epl_all     = 0.0d0
+    riso_all    = 0.0d0
 
     if(sum(option_out_var(4:6)).ge.1) then 
         allocate(nodal_counter(nnt)) 
@@ -94,21 +97,8 @@ subroutine ALLOCATE_INITIAL_ALL(ne,sdeg_mat,nm,nnt,cs_nnz,cs,u1,u2,fk,fe,fd,sism
             enddo
         enddo
     endif  
-
-    fe = 0.d0
-    u1 = 0.d0
-    u2 = 0.d0
-    fk = 0.d0 
-    fd = 0.d0
-    vel = v1
-    acc = 0.0d0
-    sism = 0.0d0
-    stress_all = 0.0d0
-    xkin_all = 0.0d0
-    epl_all = 0.0d0
-    riso_all = 0.0d0
     return
-end subroutine ALLOCATE_INITIAL_ALL
+end subroutine ALLOINIT_NL_ALL
 !! mode: f90
 !! show-trailing-whitespace: t
 !! End:

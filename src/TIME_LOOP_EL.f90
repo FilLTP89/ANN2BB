@@ -685,6 +685,13 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,&                                   
         time_fd = float(clock_finish - clock_start) / float(clock(2))
         call system_clock(COUNT=clock_start,COUNT_RATE=clock(2)) 
         fe = fe + sism/mvec
+        write(*,*) "============ DEBUG =============" 
+        write(*,*) "fk",fk(50:60)
+        write(*,*) ""
+        write(*,*) "fd",fd(50:60)
+        write(*,*) ""
+        write(*,*) "fe",fe(50:60)
+        read(*,*)
         
         u2 = 2.0d0 * u1 - u0 + dt2*(fe - fk - fd)
         call system_clock(COUNT=clock_finish)

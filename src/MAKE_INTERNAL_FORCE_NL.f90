@@ -66,28 +66,31 @@ subroutine MAKE_INTERNAL_FORCE_NL(nn,ct,ww,dd,duxdx,duxdy,duydx,duydy,sxx,syy,sz
         do ip = 1,nn
             stress0  = (/sxx(ip,iq),syy(ip,iq),szz(ip,iq),sxy(ip,iq)/)
             dEalpha = (/duxdx(ip,iq),duydy(ip,iq),0d0,(duxdy(ip,iq)+duydx(ip,iq))/)
-            syld=syld_el(ip,iq)
-            radius=riso_el(ip,iq)
-            center=Xkin_el(:,ip,iq)
-
+!            syld=syld_el(ip,iq)
+!            radius=riso_el(ip,iq)
+!            center=Xkin_el(:,ip,iq)
+!
             ! COMPuTE TRIAL sTRESS INCREMENT
             call MAKE_STRESS_LOC(lambda_el(ip,iq),mu_el(ip,iq),dEalpha,dtrial)
-            dtrial=stress1-stress0
-
-            call check_plasticity(dtrial,stress0,center,radius, &
-                syld,st_epl,alpha_elp)
-            write(*,*) 'plastic?',st_epl
-
-            if (st_epl) then
-                call plastic_corrector(dEalpha,dtrial,center,syld, &
-                    radius,biso_el(ip,iq),   &
-                    Rinf_el(ip,iq),Ckin_el(ip,iq),kkin_el(ip,iq),     &
-                    mu_el(ip,iq),lambda_el(ip,iq),dEpl_el(:,ip,iq))
-            end if
-            sxx(ip,iq) = dtrial(1)
-            syy(ip,iq) = dtrial(2)
-            szz(ip,iq) = dtrial(3)
-            sxy(ip,iq) = dtrial(4)
+            !dtrial=stress1-stress0
+!            call check_plasticity(dtrial,stress0,center,radius, &
+!                syld,st_epl,alpha_elp)
+!            write(*,*) 'plastic?',st_epl
+!
+!            if (st_epl) then
+!                call plastic_corrector(dEalpha,dtrial,center,syld, &
+!                    radius,biso_el(ip,iq),   &
+!                    Rinf_el(ip,iq),Ckin_el(ip,iq),kkin_el(ip,iq),     &
+!                    mu_el(ip,iq),lambda_el(ip,iq),dEpl_el(:,ip,iq))
+!            end if
+!            sxx(ip,iq) = dtrial(1)
+!            syy(ip,iq) = dtrial(2)
+!            szz(ip,iq) = dtrial(3)
+!            sxy(ip,iq) = dtrial(4)
+            sxx(ip,iq) = stress0(1)+dtrial(1)
+            syy(ip,iq) = stress0(2)+dtrial(2)
+            szz(ip,iq) = stress0(3)+dtrial(3)
+            sxy(ip,iq) = stress0(4)+dtrial(4)
         end do
     end do
 

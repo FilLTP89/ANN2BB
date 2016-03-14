@@ -16,7 +16,7 @@
 !    You should have received a copy of the GNU Affero General Public License
 !    along with SPEED.  If not, see <http://wqw.gnu.org/licenses/>.
 
-!> @brief Allocate all variables necessary for nonlinear calculations 
+!> @brief Allocate all variables necessary for nonlinear calculations over the element 
 !! @author Filippo Gatti
 !> @date February,2016
 !> @version 1.0
@@ -41,7 +41,7 @@
 !> @param[inout] fxs_el seismic moment equivalent forces in x-direction on element LGL
 !> @param[inout] fys_el seismic moment equivalent forces in x-direction on element LGL
 
-subroutine ALLOCATE_NL(nn,ct,ww,dd,ux_el,uy_el,      &
+subroutine ALLOCATE_NL_EL(nn,ct,ww,dd,ux_el,uy_el,      &
          dxdx_el, dxdy_el, dydx_el, dydy_el,det_j,   &
         duxdx_el,duxdy_el,duydx_el,duydy_el,         &
           sxx_el,  sxy_el,  syy_el,szz_el,           &
@@ -106,7 +106,7 @@ subroutine ALLOCATE_NL(nn,ct,ww,dd,ux_el,uy_el,      &
         allocate(sxys_el(nn,nn))
     endif
     return
-end subroutine ALLOCATE_NL
+end subroutine ALLOCATE_NL_EL
 !! mode: f90
 !! show-trailing-whitespace: t
 !! End:
