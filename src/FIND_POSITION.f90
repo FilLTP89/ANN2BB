@@ -29,7 +29,7 @@
 !> @param[in] ind_f index to be found
 !> @param[out] ind_j position of the index in the matrix
 
-     subroutine FIND_POSITION(Jsparse, dim1, ind_s, ind_e, ind_f, ind_j)
+subroutine FIND_POSITION(Jsparse, dim1, ind_s, ind_e, ind_f, ind_j)
 
       
       implicit none
@@ -51,4 +51,4 @@
       enddo
 
      return
-     end subroutine FIND_POSITION
+end subroutine FIND_POSITION

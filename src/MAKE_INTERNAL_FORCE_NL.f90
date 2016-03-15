@@ -98,27 +98,23 @@ subroutine MAKE_INTERNAL_FORCE_NL(nn,ct,ww,dd,duxdx,duxdy,duydx,duydy,sxx,syy,sz
     do iq = 1,nn
         do ip = 1,nn
 
-            t1fx = 0.0d0; t1fy = 0.0d0
-            t2fx = 0.0d0; t2fy = 0.0d0
+            t1fx = 0.0d0
+            t2fx = 0.0d0
+            t1fy = 0.0d0
+            t2fy = 0.0d0
 
-            do il = 1,nn
-               t1fx = t1fx + dd(il,ip) * ww(il)*ww(iq) &
-                    * (sxx(il,iq)*dydy(il) - sxy(il,iq)*dxdy(il))
-               t1fy = t1fy + dd(il,ip) * ww(il)*ww(iq) &
-                    * (sxy(il,iq)*dydy(il) - syy(il,iq)*dxdy(il))
+            ! derivatives with respect to eta ( there is a delta(iq,im) )
+            do il=1,nn
+                t1fx = t1fx+dd(il,ip)*ww(il)*ww(iq)*(sxx(il,iq)*dydy(il)-sxy(il,iq)*dxdy(il))
+                t1fy = t1fy+dd(il,ip)*ww(il)*ww(iq)*(sxy(il,iq)*dydy(il)-syy(il,iq)*dxdy(il))
             enddo
-
-            do im = 1,nn
-               t2fx = t2fx + dd(im,iq) * ww(ip)*ww(im) &
-                    * (sxx(ip,im)*dydx(im) - sxy(ip,im)*dxdx(im))
-               t2fy = t2fy + dd(im,iq) * ww(ip)*ww(im) &
-                    * (sxy(ip,im)*dydx(im) - syy(ip,im)*dxdx(im))
+            ! derivatives with respect to xi ( there is a delta(ip,il) )
+            do im=1,nn
+                t2fx=t2fx+dd(im,iq)*ww(ip)*ww(im)*(sxx(ip,im)*dydx(im)-sxy(ip,im)*dxdx(im))
+                t2fy=t2fy+dd(im,iq)*ww(ip)*ww(im)*(sxy(ip,im)*dydx(im)-syy(ip,im)*dxdx(im))
             enddo
-
-            det_j = dxdx(iq)*dydy(ip) - dxdy(ip)*dydx(iq)
-
-            fx(ip,iq) = t1fx - t2fx
-            fy(ip,iq) = t1fy - t2fy
+            fx(ip,iq) = t1fx-t2fx
+            fy(ip,iq) = t1fy-t2fy
         enddo
     enddo
     return
