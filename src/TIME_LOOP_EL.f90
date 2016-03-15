@@ -687,10 +687,6 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,&                                   
         fe = fe + sism/mvec
         write(*,*) "============ DEBUG =============" 
         write(*,*) "fk",fk(50:60)
-        write(*,*) ""
-        write(*,*) "mvec",mvec(50:60)
-        write(*,*) ""
-        write(*,*) "fe",fe(50:60)
         read(*,*)
         
         u2 = 2.0d0 * u1 - u0 + dt2*(fe - fk - fd)

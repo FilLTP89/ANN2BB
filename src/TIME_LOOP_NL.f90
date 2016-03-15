@@ -680,11 +680,6 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne, &
             if (ie.gt.50) then
                 write(*,*) "fx_el",fx_el    
                 write(*,*) "fy_el",fy_el
-                call MAKE_INTERNAL_FORCE_EL(nn,ct,ww,dd,&
-                        dxdx_el,dxdy_el,dydx_el,dydy_el,&
-                        sxx_el,syy_el,szz_el,sxy_el,fx_el,fy_el)
-                write(*,*) "fx_el",fx_el    
-                write(*,*) "fy_el",fy_el
                 read(*,*) 
             endif
             if (nl_sism.gt.0) then
