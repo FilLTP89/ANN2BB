@@ -234,6 +234,7 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne, &
     real*8, dimension(:), allocatable :: fk,fe,fd,sism
     real*8, dimension(:), allocatable :: sxx,syy,sxy,szz 
     real*8, dimension(:), allocatable :: duxdx,duydy,duxdy,duydx
+    real*8 :: sxx_out,syy_out,szz_out,sxy_out,duxdx_out,duxdy_out,duydx_out,duydy_out
     integer*4, dimension(:), allocatable :: update_index_el_az
 
     !********************************************************************************************
@@ -649,7 +650,7 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne, &
         do ie=1,ne
             im = cs(cs(ie -1) +0)   
             nn = sdeg_mat(im) +1
-            
+             
             ! Allocate and initialize element variables
             call ALLOCATE_NL_EL(nn,ct,ww,dd,ux_el,uy_el,      &
                      dxdx_el, dxdy_el, dydx_el, dydy_el,det_j,   &
@@ -677,11 +678,6 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne, &
                 sxx_el,syy_el,szz_el,sxy_el,Xkin_el,Riso_el,mu_el,lambda_el,syld_el,        &
                 Ckin_el,kkin_el,Rinf_el,biso_el,dEpl_el,dxdx_el,dxdy_el,dydx_el,dydy_el,    &
                 fx_el,fy_el)
-            if (ie.gt.50) then
-                write(*,*) "fx_el",fx_el    
-                write(*,*) "fy_el",fy_el
-                read(*,*) 
-            endif
             if (nl_sism.gt.0) then
                 fe = 0.0d0
                 call MAKE_SEISMIC_MOMENT_NEW(nn,sxxs_el,syys_el,szzs_el,sxys_el,&
@@ -699,6 +695,11 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne, &
                     in = cs(cs(ie -1) + is)
                     fk(in)               = fk(in)      + fx_el(i,j)
                     fk(in+nnt)           = fk(in+nnt)  + fy_el(i,j)
+                    if (in==11) then
+                        write(*,*) "====== DEBUG (TIME_LOOP_NL.F90) ======="
+                        write(*,*) sxx_el(i,j),syy_el(i,j),szz_el(i,j),sxy_el(i,j)
+                        read(*,*)
+                    endif
                     sxx(in) = sxx_el(i,j)
                     syy(in) = syy_el(i,j)
                     szz(in) = szz_el(i,j)
@@ -853,60 +854,60 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne, &
 
 
             if (option_out_var(4) .eq. 1) then
-                    sxx(in) = stress_all(1)/nodal_counter(in)
-                    syy(in) = stress_all(2)/nodal_counter(in)
-                    szz(in) = stress_all(3)/nodal_counter(in)
-                    sxy(in) = stress_all(4)/nodal_counter(in)
+                    sxx_out = sxx(in)/nodal_counter(in)
+                    syy_out = syy(in)/nodal_counter(in)
+                    szz_out = szz(in)/nodal_counter(in)
+                    sxy_out = sxy(in)/nodal_counter(in)
                     do i = 1,nmonit
                         unit_stress = 300000 + i
                         in = node_m(i)
-                        if (dabs(sxx(in)).lt.(1.0d-99)) sxx(in)=0.0
-                        if (dabs(syy(in)).lt.(1.0d-99)) syy(in)=0.0
-                        if (dabs(sxy(in)).lt.(1.0d-99)) sxy(in)=0.0
-                        if (dabs(szz(in)).lt.(1.0d-99)) szz(in)=0.0
+                        if (dabs(sxx(in)).lt.(1.0d-99)) sxx_out=0.0
+                        if (dabs(syy(in)).lt.(1.0d-99)) syy_out=0.0
+                        if (dabs(sxy(in)).lt.(1.0d-99)) sxy_out=0.0
+                        if (dabs(szz(in)).lt.(1.0d-99)) szz_out=0.0
 
-                        write(unit_stress,'(5E16.8)') tt1,sxx(in),syy(in),sxy(in),szz(in)
+                        write(unit_stress,'(5E16.8)') tt1,sxx_out,syy_out,sxy_out,szz_out
                     enddo
             endif
 
 
             if (option_out_var(5) .eq. 1) then  !Out Options Scandella 02.07.2007
                 do in = 1, nnt  
-                duxdx(in) = duxdx(in) / nodal_counter(in)
-                duydy(in) = duydy(in) / nodal_counter(in)
-                duxdy(in) = duxdy(in) / nodal_counter(in)
-                duydx(in) = duydx(in) / nodal_counter(in) 
+                    duxdx_out = duxdx(in) / nodal_counter(in)
+                    duydy_out = duydy(in) / nodal_counter(in)
+                    duxdy_out = duxdy(in) / nodal_counter(in)
+                    duydx_out = duydx(in) / nodal_counter(in) 
                 enddo 
 
                 do i = 1,nmonit
                 unit_strain = 400000 + i
                 in = node_m(i) 
-                if (dabs(duxdx(in)).lt.(1.0d-99)) duxdx(in)=0.0
-                if (dabs(duydy(in)).lt.(1.0d-99)) duydy(in)=0.0
-                if (dabs(duxdy(in)).lt.(1.0d-99)) duxdy(in)=0.0
-                if (dabs(duydx(in)).lt.(1.0d-99)) duydx(in)=0.0
+                if (dabs(duxdx(in)).lt.(1.0d-99)) duxdx_out=0.0
+                if (dabs(duydy(in)).lt.(1.0d-99)) duydy_out=0.0
+                if (dabs(duxdy(in)).lt.(1.0d-99)) duxdy_out=0.0
+                if (dabs(duydx(in)).lt.(1.0d-99)) duydx_out=0.0
 
-                write(unit_strain,'(4E16.8)') tt1,duxdx(in),duydy(in),0.5*(duxdy(in)+duydx(in)) 
+                write(unit_strain,'(4E16.8)') tt1,duxdx_out,duydy_out,0.5*(duxdy_out+duydx_out) 
                 enddo
             endif
 
             if (option_out_var(6) .eq. 1) then  !Out Options Scandella 02.07.2007
                 if (option_out_var(5) .ne. 1) then
                     do in = 1, nnt  
-                    duxdx(in) = duxdx(in) / nodal_counter(in)
-                    duydy(in) = duydy(in) / nodal_counter(in)
-                    duxdy(in) = duxdy(in) / nodal_counter(in)
-                    duydx(in) = duydx(in) / nodal_counter(in) 
+                    duxdx_out = duxdx(in) / nodal_counter(in)
+                    duydy_out = duydy(in) / nodal_counter(in)
+                    duxdy_out = duxdy(in) / nodal_counter(in)
+                    duydx_out = duydx(in) / nodal_counter(in) 
                     enddo 
                 endif
 
                 do i = 1,nmonit
                 unit_omega = 500000 + i
                 in = node_m(i) 
-                if (dabs(duxdy(in)).lt.(1.0d-99)) duxdy(in)=0.0
-                if (dabs(duydx(in)).lt.(1.0d-99)) duydx(in)=0.0
+                if (dabs(duxdy(in)).lt.(1.0d-99)) duxdy_out=0.0
+                if (dabs(duydx(in)).lt.(1.0d-99)) duydx_out=0.0
 
-                write(unit_omega,'(2E16.8)') tt1, 0.5*(duxdy(in)-duydx(in)) 
+                write(unit_omega,'(2E16.8)') tt1, 0.5*(duxdy_out-duydx) 
                 enddo
             endif
 
@@ -984,8 +985,8 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne, &
 
     deallocate(update_index_el_az)      
     deallocate(u1,u2,fk,fe,vel,acc,fd)
-    if(option_out_var(4) .eq. 1) deallocate(sxx,syy,sxy,szz)
-    if(option_out_var(5) .eq. 1) deallocate(duxdx,duydy,duxdy,duydx) 
+!    if(option_out_var(4) .eq. 1) deallocate(sxx,syy,sxy,szz)
+!    if(option_out_var(5) .eq. 1) deallocate(duxdx,duydy,duxdy,duydx) 
     if (nf.gt.0) deallocate(func_value) 
 
     if (nnode_dirX.gt.0) deallocate(inode_dirX)

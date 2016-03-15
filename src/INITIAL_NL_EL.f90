@@ -71,7 +71,7 @@ subroutine INITIAL_NL_EL(cs_nnz,cs,nm,ct,ww,dd,nn,nnt,im,ie,prop_mat, &
     kkin_el   = prop_mat(im,7)
     Rinf_el   = prop_mat(im,8)
     biso_el   = prop_mat(im,9)
-
+    
     fx_el      = 0.d0
     fy_el      = 0.d0
     
@@ -79,7 +79,6 @@ subroutine INITIAL_NL_EL(cs_nnz,cs,nm,ct,ww,dd,nn,nnt,im,ie,prop_mat, &
         do i = 1,nn
             is = nn*(j -1) +i
             in = cs(cs(ie -1) + is)
-           
             ux_el(i,j)      = displ(in)
             uy_el(i,j)      = displ(in+nnt)
 
@@ -87,6 +86,11 @@ subroutine INITIAL_NL_EL(cs_nnz,cs,nm,ct,ww,dd,nn,nnt,im,ie,prop_mat, &
             syy_el(i,j)     = syy(in)
             szz_el(i,j)     = szz(in)
             sxy_el(i,j)     = szz(in)
+                    if (in==11) then
+                        write(*,*) "====== DEBUG (INITIAL_NL_EL.F90) ======="
+                        write(*,*) sxx_el(i,j),syy_el(i,j),szz_el(i,j),sxy_el(i,j)
+                        read(*,*)
+                    endif
             
             Riso_el(i,j)    = Riso_all(in)
             Xkin_el(1,i,j)  = Xkin_all(in)     
