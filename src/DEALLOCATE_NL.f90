@@ -45,7 +45,7 @@ subroutine DEALLOCATE_NL(nn,ct,ww,dd,dxdx_el,dxdy_el,dydx_el,dydy_el,det_j,   &
     lambda_el,mu_el,Syld_el,Ckin_el,kkin_el,Riso_el,Rinf_el,biso_el,        &
     Xkin_el,dEpl_el,fx_el,fy_el,nl_sism,fxs_el,fys_el,Sxxs_el,Syys_el,      &
     Sxys_el,Szzs_el,ux_el,uy_el)
-    
+    implicit none    
     integer*4,  intent(in)                             :: nn,nl_sism
     real*8,     intent(inout), dimension(:),    allocatable     :: ct,ww
     real*8,     intent(inout), dimension(:),    allocatable     :: dxdx_el,dydy_el

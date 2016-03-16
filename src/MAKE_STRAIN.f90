@@ -33,6 +33,8 @@
 
 subroutine MAKE_STRAIN(nn,dd,dxdx,dxdy,dydx,dydy,&
     ux,uy,duxdx,duxdy,duydx,duydy)
+    
+    implicit none
     real*8                                  :: t1ux,t1uy,t2ux,t2uy
     real*8                                  :: t1fx,t1fy,t2fx,t2fy,det_j
     integer*4                               :: ip,iq,il,im

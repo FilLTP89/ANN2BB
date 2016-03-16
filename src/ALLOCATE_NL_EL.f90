@@ -49,7 +49,7 @@ subroutine ALLOCATE_NL_EL(nn,ct,ww,dd,ux_el,uy_el,      &
          Rinf_el, biso_el, Riso_el, Xkin_el, dEpl_el,&
            fx_el,   fy_el,  fxs_el,  fys_el, nl_sism,&
          sxxs_el, sxys_el, syys_el,szzs_el)
-    
+    implicit none    
     integer*4,                              intent(in ) :: nn, nl_sism
     real*8,     dimension(:),  allocatable, intent(out) :: ct,ww
     real*8,     dimension(:),  allocatable, intent(out) :: dxdx_el,dydy_el

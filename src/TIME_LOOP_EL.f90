@@ -88,30 +88,17 @@
 !> @param[in] glob_drm_x
 !> @param[in] glob_drm_y
 
-subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,&                                                                          ! 5
-    nm,tag_mat,sdeg_mat,prop_mat,&                                                                  ! 4
-    ne,alfa1,beta1,gamma1,alfa2,beta2,gamma2,delta1,delta2,&                                        ! 9
-    cs_nnz_bc,cs_bc,&                                                                               ! 2
-    nl_dirX,tag_dirX,nl_dirY,tag_dirY,&                                                             ! 4
-    nl_abc,tag_abc,&                                                                                ! 2
-    nelem_abc,nedge_abc,ielem_abc,iedge_abc,&                                                       ! 4
-    nf,func_type,func_indx,nfunc_data,func_data,tag_func,&                                          ! 6
-    nf_drm,func_type_drm,func_indx_drm,nfunc_data_drm,func_data_drm,&  !DRM Scandella 11.04.2006    ! 5
-    ndt_monitor,&                                                      !DRM Scandella 24.01.2006    ! 1
-    K_TOT, IK_TOT, JK_TOT, NNZ_K,&                                                                  ! 4
-    N_TOT, IN_TOT, JN_TOT, NNZ_N, mvec,&                                                            ! 5
-    Fmat,u0,v1,&                                                                                    ! 3
-    nts,dt,nmonit,node_m,nsnap,itersnap,&                                                           ! 6
-    check_node_sism,check_dist_node_sism,&                                                          ! 2  
-    length_cns,facsmom,nl_sism,&                                                                    ! 3
-    make_damping_yes_or_not,&                                                                       ! 1
-    nnode_TOT,node_TOT,tagstep,&                                          !DRM Scandella 17.10.2005 ! 3
-    ns,n_el_DRM,el_DRM,K_DRM,nnode_BD,&                                   !DRM Scandella 21.10.2005 ! 5
-    nMDRM,tag_MDRM,val_PDRM,&                                             !DRM Scandella 25.10.2005 ! 3
-    fun_ord,node_PDRM,&                                                   !DRM Scandella 16.11.2005 ! 2
-    glob_x,glob_y,&                                                       !DRM Scandella 11.04.2006 ! 2
-    option_out_var,test,nelem_dg,&                                                                  ! 3
-    IDG_only_uv, JDG_only_uv, MDG_only_uv, nnz_dg_only_uv)    
+subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    &
+    alfa1,beta1,gamma1,alfa2,beta2,gamma2,delta1,delta2,cs_nnz_bc,cs_bc,        &
+    nl_dirX,tag_dirX,nl_dirY,tag_dirY,nl_abc,tag_abc,nelem_abc,nedge_abc,       &
+    ielem_abc,iedge_abc,nf,func_type,func_indx,nfunc_data,func_data,tag_func,   &
+    nf_drm,func_type_drm,func_indx_drm,nfunc_data_drm,func_data_drm,ndt_monitor,&
+    K_TOT,IK_TOT,JK_TOT,NNZ_K,                                                  &
+    N_TOT,IN_TOT,JN_TOT,NNZ_N,mvec,Fmat,u0,v1,nts,dt,nmonit,node_m,nsnap,       &
+    itersnap,check_node_sism,check_dist_node_sism,length_cns,facsmom,nl_sism,   &
+    make_damping_yes_or_not,nnode_TOT,node_TOT,tagstep,ns,n_el_DRM,el_DRM,K_DRM,&
+    nnode_BD,nMDRM,tag_MDRM,val_PDRM,fun_ord,node_PDRM,glob_x,glob_y,           &
+    option_out_var,test,nelem_dg,IDG_only_uv,JDG_only_uv,MDG_only_uv,nnz_dg_only_uv)    
 
     implicit none
 

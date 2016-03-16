@@ -25,7 +25,7 @@
 subroutine ALLOINIT_NL_ALL(ne,sdeg_mat,nm,nnt,cs_nnz,cs,u1,u2,fk,fe,fd,sism,vel,&
         acc,v1,update_index_el_az,duxdx,duxdy,duydx,duydy,sxx,syy,szz,sxy,&
         xkin_all,riso_all,epl_all,option_out_var,nodal_counter)  
-
+    implicit none
     integer*4,                              intent(in)  :: ne,nm,nnt,cs_nnz
     integer*4,  dimension(6),               intent(in)  :: option_out_var
     integer*4,  dimension(nm),              intent(in)  :: sdeg_mat
