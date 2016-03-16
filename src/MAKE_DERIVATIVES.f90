@@ -29,7 +29,7 @@ subroutine MAKE_DERIVATIVES(nn,alfa1,alfa2,beta1,beta2,gamma1,gamma2,ct,&
     dxdy_el,dydy_el,dxdx_el,dydx_el)
                 
     implicit none
-    integer*4, intent(in)                  :: nn
+    integer*4, intent(in)               :: nn
     real*8, intent(in)                  :: alfa1,alfa2
     real*8, intent(in)                  :: beta1,beta2
     real*8, intent(in)                  :: gamma1,gamma2

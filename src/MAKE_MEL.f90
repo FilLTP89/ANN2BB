@@ -78,7 +78,7 @@
               dxdx(j) = alfa1(ie) + gamma1(ie) * ct(j)
               dydx(j) = alfa2(ie) + gamma2(ie) * ct(j)
          enddo
-               
+              
          do j = 1,nn
             do i = 1,nn
                det_j(i,j) = dxdx(j)*dydy(i) - dxdy(i)*dydx(j)

@@ -1449,7 +1449,7 @@ program SPEED2D
 
     !Computing the nonzero elements for the mul      
     call amubdg ( 2*nnod, 2*nnod, 2*nnod, J_MASS, I_MASS, JE_SUM, IE_SUM, NDEGR, NNZ_AB, IW )
-
+    
     allocate(IK_TOT(0:2*nnod), JK_TOT(NNZ_AB), K_TOT(NNZ_AB))
 
     !Multiplying K = M^-1*(A+B+D-R)

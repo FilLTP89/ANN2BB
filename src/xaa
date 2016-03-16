@@ -45,14 +45,20 @@ subroutine MAKE_STRESS(lambda_el,mu_el,nn,&
     integer*4 :: ip,iq
     real*8 :: lambda,mu
 
+
     do iq = 1,nn   
         do ip = 1,nn
-            mu     = mu_el(ip,iq)
-            lambda = lambda_el(ip,iq)
-            sxx(ip,iq) = (lambda +2.0d0*mu)*duxdx(ip,iq) + lambda*duydy(ip,iq)
-            syy(ip,iq) = (lambda +2.0d0*mu)*duydy(ip,iq) + lambda*duxdx(ip,iq)
-            sxy(ip,iq) = mu*(duxdy(ip,iq) + duydx(ip,iq))
-            szz(ip,iq) = lambda*duxdx(ip,iq) + lambda*duydy(ip,iq)
+
+            mu      =   mu_el(ip,iq)
+            lambda  =   lambda_el(ip,iq)
+
+            sxx(ip,iq) = (lambda +2.0d0*mu) * duxdx(ip,iq) &
+            + lambda * duydy(ip,iq)
+            syy(ip,iq) = (lambda +2.0d0*mu) * duydy(ip,iq) &
+            + lambda * duxdx(ip,iq)
+            sxy(ip,iq) = mu * (duxdy(ip,iq) + duydx(ip,iq))
+            szz(ip,iq) = lambda * duxdx(ip,iq) + lambda * duydy(ip,iq)
+
         enddo
     enddo
 

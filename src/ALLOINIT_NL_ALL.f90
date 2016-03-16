@@ -81,7 +81,7 @@ subroutine ALLOINIT_NL_ALL(ne,sdeg_mat,nm,nnt,cs_nnz,cs,u1,u2,fk,fe,fd,sism,vel,
     xkin_all    = 0.0d0
     epl_all     = 0.0d0
     riso_all    = 0.0d0
-
+    fe          = 0.0d0
     if(sum(option_out_var(4:6)).ge.1) then 
         allocate(nodal_counter(nnt)) 
         nodal_counter = 0

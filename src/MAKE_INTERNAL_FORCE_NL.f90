@@ -48,24 +48,24 @@ subroutine MAKE_INTERNAL_FORCE_NL(nn,ct,ww,dd,duxdx,duxdy,duydx,duydy,sxx,syy,sz
     real*8                                    :: t1fx,t1fy,t2fx,t2fy
     real*8                                    :: det_j,t1ux,t1uy,t2ux,t2uy
     
-    integer*4,                  intent(in)    :: nn
-    logical                                   :: st_epl
-    real*8                                    :: alpha_elp
-    real*8, dimension(4)                      :: dEalpha,stress0,stress1,dtrial
-    real*8, dimension(nn),      intent(inout) :: ct,ww,dxdx,dxdy,dydx,dydy
-    real*8, dimension(nn,nn),   intent(inout) :: Ckin_el,kkin_el
-    real*8, dimension(nn,nn),   intent(inout) :: Rinf_el,biso_el,Riso_el
-    real*8, dimension(nn,nn),   intent(inout) :: duxdx,duxdy,duydx,duydy  
-    real*8, dimension(nn,nn),   intent(inout) :: dd,lambda_el,mu_el,syld_el
-    real*8, dimension(nn,nn),   intent(inout) :: sxx,syy,sxy,szz,fx,fy
-    real*8, dimension(4,nn,nn), intent(inout) :: Xkin_el,dEpl_el
-    real*8 :: syld,radius
-    real*8, dimension(4) :: center
+    integer*4,                  intent(in)      :: nn
+    logical                                     :: st_epl
+    real*8                                      :: alpha_elp
+    real*8, dimension(4)                        :: dEalpha,stress0,stress1,dtrial
+    real*8, dimension(nn),      intent(inout)   :: ct,ww,dxdx,dxdy,dydx,dydy
+    real*8, dimension(nn,nn),   intent(inout)   :: Ckin_el,kkin_el
+    real*8, dimension(nn,nn),   intent(inout)   :: Rinf_el,biso_el,Riso_el
+    real*8, dimension(nn,nn),   intent(inout)   :: duxdx,duxdy,duydx,duydy  
+    real*8, dimension(nn,nn),   intent(inout)   :: dd,lambda_el,mu_el,syld_el
+    real*8, dimension(nn,nn),   intent(inout)   :: sxx,syy,sxy,szz,fx,fy
+    real*8, dimension(4,nn,nn), intent(inout)   :: Xkin_el,dEpl_el
+    real*8                                      :: syld,radius
+    real*8, dimension(4)                        :: center
 
     do iq = 1,nn
         do ip = 1,nn
-            stress0  = (/sxx(ip,iq),syy(ip,iq),szz(ip,iq),sxy(ip,iq)/)
-            dEalpha = (/duxdx(ip,iq),duydy(ip,iq),0d0,(duxdy(ip,iq)+duydx(ip,iq))/)
+            stress0 = (/sxx(ip,iq)  ,syy(ip,iq),  szz(ip,iq),sxy(ip,iq)/)
+            dEalpha = (/duxdx(ip,iq),duydy(ip,iq),0.0d0,(duxdy(ip,iq)+duydx(ip,iq))/)
 !            syld=syld_el(ip,iq)
 !            radius=riso_el(ip,iq)
 !            center=Xkin_el(:,ip,iq)

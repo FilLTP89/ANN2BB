@@ -419,7 +419,6 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
     !********************************************************************************************
     !     FIRST STEP
     !********************************************************************************************	 
-    
     if (tagstep.eq.2) then !DRM Scandella 28-10-05   
 
         !-----DRM----------------------------------------------------------------------------------
@@ -479,11 +478,6 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         endif
 
     endif
-
-!    do i = 1, nnt
-!        u1(i) = -dsin(dsqrt(2.d0)*pi*dt) * (dsin(pi*xs(i)))**2 * dsin(2.d0*pi*ys(i))
-!        u1(i+nnt) =  dsin(dsqrt(2.d0)*pi*dt) * dsin(2.d0*pi*xs(i)) * (dsin(pi*ys(i)))**2
-!    enddo
 
     if (tagstep.eq.2) then 
         call get_disp_valueDRM(nf_drm,func_type_drm,func_indx_drm,nfunc_data_drm,func_data_drm, &     !DRM Scandella 12.04.2006  
@@ -588,13 +582,15 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
                 enddo
             endif
         endif
-
         !********************************************************************************************
         ! SEISMIC MOMENT LOAD       
         !********************************************************************************************
+        write(*,'(A)')
+        write(*,'(A)') '*************************************************************'
+        write(*,'(A)') '----------COMPUTING LINEAR INTERNAL FORCES---------------'
         if (nl_sism.gt.0) then
             do ie = 1,ne
-                im = cs(cs(ie -1) +0);   
+                im = cs(cs(ie -1) +0)   
                 rho = prop_mat(im,1)
                 lambda = prop_mat(im,2)
                 mu = prop_mat(im,3)
@@ -672,8 +668,14 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         time_fd = float(clock_finish - clock_start) / float(clock(2))
         call system_clock(COUNT=clock_start,COUNT_RATE=clock(2)) 
         fe = fe + sism/mvec
-        write(*,*) "============ DEBUG =============" 
-        write(*,*) "fk",fk(50:60)
+        write(*,*) "=== DEBUG FE-EL (10) ==="
+        write(*,*) "fe"
+        write(*,*) fe(50:100)
+        read(*,*)
+        write(*,*) ""
+        write(*,*) "=== DEBUG FK-EL (10) ==="
+        write(*,*) "fk"
+        write(*,*) fk(50:100)
         read(*,*)
         
         u2 = 2.0d0 * u1 - u0 + dt2*(fe - fk - fd)
@@ -717,17 +719,6 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
                 u2(in) = 0.0d0; u1(in) = 0.d0; v1(in) = 0.d0;
             enddo
         endif
-
-        !do i = 1, nnt
-        !   write(*,*) xs(i),ys(i)
-        !   write(*,*) u2(i), u2(i+nnt)
-        !   write(*,*) u1(i), u1(i+nnt)
-        !
-        !   write(*,*) -dsin(sqrt(2.d0)*pi*tt2) * (dsin(pi*xs(i)))**2 * dsin(2.d0*pi*ys(i)),& 
-        !               dsin(sqrt(2.d0)*pi*tt2) * dsin(2.d0*pi*xs(i)) * (dsin(pi*ys(i)))**2
-        !   write(*,*) '******************************************'
-        !   read(*,*)           
-        !enddo
 
         call system_clock(COUNT=finish)
 

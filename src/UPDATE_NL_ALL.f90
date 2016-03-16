@@ -35,7 +35,7 @@
 !> @param[]             
 !> @param[]             
 !> @param[]             
-subroutine UPDATE_NL_ALL(ie,nnt,nn,cs_nnz,cs,fk,sxx,syy,szz,sxy,&
+subroutine UPDATE_NL_ALL(ie,nnt,nn,cs_nnz,cs,fk,mvec,sxx,syy,szz,sxy,&
     duxdx,duxdy,duydx,duydy,xkin_all,epl_all,riso_all,fx_el,fy_el,&
     sxx_el,syy_el,szz_el,sxy_el,duxdx_el,duxdy_el,duydx_el,duydy_el,xkin_el,&
     riso_el,depl_el,fxs_el,fys_el,sism)
@@ -47,6 +47,7 @@ subroutine UPDATE_NL_ALL(ie,nnt,nn,cs_nnz,cs,fk,sxx,syy,szz,sxy,&
     real*8, dimension(nn,nn), intent(in)                :: duxdx_el,duxdy_el,duydx_el,duydy_el
     real*8, dimension(nn,nn), intent(in)                :: sxx_el,syy_el,szz_el,sxy_el,riso_el
     real*8, dimension(4,nn,nn), intent(in)              :: xkin_el,depl_el
+    real*8, dimension(2*nnt),   intent(in)                :: mvec
     real*8, dimension(nnt),   intent(inout)             :: sxx,syy,szz,sxy
     real*8, dimension(nnt),   intent(inout)             :: duxdx,duxdy,duydx,duydy
     real*8, dimension(nnt),   intent(inout)             :: riso_all
@@ -60,13 +61,8 @@ subroutine UPDATE_NL_ALL(ie,nnt,nn,cs_nnz,cs,fk,sxx,syy,szz,sxy,&
         do i = 1,nn
             is = nn*(j -1) +i
             in = cs(cs(ie -1) + is)
-            fk(in)               = fk(in)      + fx_el(i,j)
-            fk(in+nnt)           = fk(in+nnt)  + fy_el(i,j)
-            if (in==11) then
-                write(*,*) "====== DEBUG (TIME_LOOP_NL.F90) ======="
-                write(*,*) sxx_el(i,j),syy_el(i,j),szz_el(i,j),sxy_el(i,j)
-                read(*,*)
-            endif
+            fk(in)               = fk(in)      + fx_el(i,j)/mvec(in+nnt)
+            fk(in+nnt)           = fk(in+nnt)  + fy_el(i,j)/mvec(in+nnt)
             sxx(in) = sxx_el(i,j)
             syy(in) = syy_el(i,j)
             szz(in) = szz_el(i,j)

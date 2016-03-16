@@ -29,7 +29,7 @@
 !> @param[in] tag_mat label for materials
 !> @param[in] sdeg_mat pol. degrees
 !> @param[in] prop_mat material properties
-!> @param[in] alfa,beta,gamma constatn for bilinear map
+!> @param[in] alfa_el,beta_el,gamma_el constatn for bilinear map
 !> @param[in] cs_nnz_bc length of cs_bc
 !> @param[in] cs_bc spectral connectivity vector for boundary
 !> @param[in] nl_dirX   number of Dirichlet b.c. (x-dir)
@@ -87,8 +87,8 @@
 !> @param[in] glob_drm_y
 
 subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    &
-    alfa1,beta1,gamma1,alfa2,beta2,gamma2,delta1,delta2,cs_nnz_bc,cs_bc,        &
-    nl_dirX,tag_dirX,nl_dirY,tag_dirY,nl_abc,tag_abc,nelem_abc,nedge_abc,       &
+    alfa1,beta1,gamma1,alfa2,beta2,gamma2,delta1,delta2,&
+    cs_nnz_bc,cs_bc,nl_dirX,tag_dirX,nl_dirY,tag_dirY,nl_abc,tag_abc,nelem_abc,nedge_abc,       &
     ielem_abc,iedge_abc,nf,func_type,func_indx,nfunc_data,func_data,tag_func,   &
     nf_drm,func_type_drm,func_indx_drm,nfunc_data_drm,func_data_drm,ndt_monitor,&
     N_TOT,IN_TOT,JN_TOT,NNZ_N,mvec,Fmat,u0,v1,nts,dt,nmonit,node_m,nsnap,       &
@@ -133,7 +133,7 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
     real*8 :: total_fe,time_force_DRM,total_force_DRM
     
     real*8, dimension(ne)                   :: alfa1,beta1,gamma1,delta1
-    real*8, dimension(ne)                   :: alfa2,beta2,gamma2,delta2
+    real*8, dimension(ne)                   :: alfa2,beta2,gamma2,delta2 
     real*8, dimension(nnt)                  :: xs,ys
     real*8, dimension(nm,8)                 :: prop_mat
     real*8, dimension(2*nnt)                :: mvec,u0,v1
@@ -207,7 +207,7 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
     !              ELEMENT BY ELEMENT
     !********************************************************************************************
 
-    real*8 :: lambda,mu,rho,gamma
+    real*8                              :: gamma
     real*8, dimension(:),   allocatable :: ct,ww,dxdx_el,dxdy_el,dydx_el,dydy_el
     real*8, dimension(:,:), allocatable :: dd,ux_el,uy_el,vx_el,vy_el
     real*8, dimension(:,:), allocatable :: duxdx_el,duxdy_el,duydx_el,duydy_el
@@ -219,7 +219,7 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
     !********************************************************************************************
     !              NONLINEAR
     !********************************************************************************************
-    real*8, dimension(:),     allocatable   :: epl_all,stress_all
+    real*8, dimension(:),     allocatable   :: epl_all
     real*8, dimension(:),     allocatable   :: Xkin_all,Riso_all
     real*8, dimension(:,:),   allocatable   :: syld_el,Riso_el
     real*8, dimension(:,:),   allocatable   :: Rinf_el,biso_el
@@ -304,6 +304,7 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         
         subroutine MAKE_STRAIN(nn,dd,dxdx,dxdy,dydx,dydy,&
             ux,uy,duxdx,duxdy,duydx,duydy)
+            
             implicit none
             real*8                                  :: t1ux,t1uy,t2ux,t2uy
             real*8                                  :: t1fx,t1fy,t2fx,t2fy,det_j
@@ -311,9 +312,10 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
             integer*4,               intent(in)     :: nn
             real*8, dimension(nn),   intent(in)     :: dxdx,dxdy,dydx,dydy
             real*8, dimension(nn,nn),intent(in)     :: dd,ux,uy
-            real*8, dimension(nn,nn),intent(in)  :: duxdx,duxdy,duydx,duydy
+            real*8, dimension(nn,nn),intent(inout)  :: duxdx,duxdy,duydx,duydy
         end subroutine MAKE_STRAIN    
-        subroutine UPDATE_NL_ALL(ie,nnt,nn,cs_nnz,cs,fk,sxx,syy,szz,sxy,&
+
+        subroutine UPDATE_NL_ALL(ie,nnt,nn,cs_nnz,cs,fk,mvec,sxx,syy,szz,sxy,&
             duxdx,duxdy,duydx,duydy,xkin_all,epl_all,riso_all,fx_el,fy_el,&
             sxx_el,syy_el,szz_el,sxy_el,duxdx_el,duxdy_el,duydx_el,duydy_el,xkin_el,&
             riso_el,depl_el,fxs_el,fys_el,sism)
@@ -324,6 +326,7 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
             real*8, dimension(nn,nn), intent(in)                :: duxdx_el,duxdy_el,duydx_el,duydy_el
             real*8, dimension(nn,nn), intent(in)                :: sxx_el,syy_el,szz_el,sxy_el,riso_el
             real*8, dimension(4,nn,nn), intent(in)              :: xkin_el,depl_el
+            real*8, dimension(2*nnt), intent(in)                :: mvec
             real*8, dimension(nnt),   intent(inout)             :: sxx,syy,szz,sxy
             real*8, dimension(nnt),   intent(inout)             :: duxdx,duxdy,duydx,duydy
             real*8, dimension(nnt),   intent(inout)             :: riso_all
@@ -333,6 +336,7 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
             real*8, dimension(2*nnt), intent(inout), optional   :: sism
             integer*4                                           :: in,is,i,j 
         end subroutine UPDATE_NL_ALL
+       
         subroutine DEALLOCATE_NL(nn,ct,ww,dd,dxdx_el,dxdy_el,dydx_el,dydy_el,det_j,   &
             dUxdx_el,dUxdy_el,dUydx_el,dUydy_el,Sxx_el,Syy_el,Sxy_el,Szz_el,        &
             lambda_el,mu_el,Syld_el,Ckin_el,kkin_el,Riso_el,Rinf_el,biso_el,        &
@@ -544,7 +548,6 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
                 enddo
             enddo
         endif
-
     endif
 
     if (tagstep.eq.2) then 
@@ -643,7 +646,7 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
                     enddo
                 enddo
             endif
-
+!
             if (nnode_neuY.gt.0) then
                 do i = 1,nnode_neuY
                     in = inode_neuY(i) + nnt
@@ -691,11 +694,11 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
                 riso_all,riso_el,Xkin_all,Xkin_el)
             
             ! Make Derivatives 
-            call MAKE_DERIVATIVES(nn,alfa1,alfa2,beta1,beta2,gamma1,gamma2,ct,&
+            call MAKE_DERIVATIVES(nn,alfa1(ie),alfa2(ie),beta1(ie),beta2(ie),gamma1(ie),gamma2(ie),ct,&
                 dxdy_el,dydy_el,dxdx_el,dydx_el)
             ! Make Strain
             call MAKE_STRAIN(nn,dd,dxdx_el,dxdy_el,dydx_el,dydy_el,ux_el,uy_el, &
-                  duxdx_el,duxdy_el,duydx_el,duydy_el)
+                duxdx_el,duxdy_el,duydx_el,duydy_el)
             ! Compute Nonlinear internal forces
             call MAKE_INTERNAL_FORCE_NL(nn,ct,ww,dd,duxdx_el,duxdy_el,duydx_el,duydy_el,    &
                 sxx_el,syy_el,szz_el,sxy_el,Xkin_el,Riso_el,mu_el,lambda_el,syld_el,        &
@@ -713,12 +716,12 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
                     sxxs_el,syys_el,szzs_el,sxys_el,fxs_el,fys_el)
             endif
             if (nl_sism.gt.0) then
-                call UPDATE_NL_ALL(ie,nnt,nn,cs_nnz,cs,fk,sxx,syy,szz,sxy,&
+                call UPDATE_NL_ALL(ie,nnt,nn,cs_nnz,cs,fk,mvec,sxx,syy,szz,sxy,&
                     duxdx,duxdy,duydx,duydy,xkin_all,epl_all,riso_all,fx_el,fy_el,&
                     sxx_el,syy_el,szz_el,sxy_el,duxdx_el,duxdy_el,duydx_el,duydy_el,xkin_el,&
                     riso_el,depl_el,fxs_el,fys_el,sism)
             else
-                call UPDATE_NL_ALL(ie,nnt,nn,cs_nnz,cs,fk,sxx,syy,szz,sxy,&
+                call UPDATE_NL_ALL(ie,nnt,nn,cs_nnz,cs,fk,mvec,sxx,syy,szz,sxy,&
                     duxdx,duxdy,duydx,duydy,xkin_all,epl_all,riso_all,fx_el,fy_el,&
                     sxx_el,syy_el,szz_el,sxy_el,duxdx_el,duxdy_el,duydx_el,duydy_el,xkin_el,&
                     riso_el,depl_el)
@@ -728,12 +731,18 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
                 lambda_el,mu_el,Syld_el,Ckin_el,kkin_el,Riso_el,Rinf_el,biso_el, &
                 Xkin_el,dEpl_el,fx_el,fy_el,nl_sism,fxs_el,fys_el,sxxs_el,syys_el,&
                 sxys_el,szzs_el,ux_el,uy_el)
-
         end do
         
         fe = fe + sism/mvec 
-        fk=fk/mvec 
-        
+        write(*,*) "=== DEBUG FE-NL (10) ==="
+        write(*,*) "fe"
+        write(*,*) fe(50:100)
+        read(*,*)
+        write(*,*) ""
+        write(*,*) "=== DEBUG FK-EL (10) ==="
+        write(*,*) "fk"
+        write(*,*) fk(50:100)
+        read(*,*)
 
         call system_clock(COUNT=clock_finish)
         time_fk = float(clock_finish - clock_start) / float(clock(2))
@@ -778,15 +787,15 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
 
         if (nnode_dirX.gt.0) then
             do i = 1,nnode_dirX
-            in = inode_dirX(i)
-            u2(in) = 0.0d0; u1(in) = 0.d0; v1(in) = 0.d0;
+                in = inode_dirX(i)
+                u2(in) = 0.0d0; u1(in) = 0.d0; v1(in) = 0.d0;
             enddo
         endif
 
         if (nnode_dirY.gt.0) then
             do i = 1,nnode_dirY
-            in = inode_dirY(i) + nnt
-            u2(in) = 0.0d0; u1(in) = 0.d0; v1(in) = 0.d0;
+                in = inode_dirY(i) + nnt
+                u2(in) = 0.0d0; u1(in) = 0.d0; v1(in) = 0.d0;
             enddo
         endif
 
