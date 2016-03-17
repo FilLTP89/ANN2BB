@@ -31,12 +31,12 @@ subroutine ALLOINIT_NL_ALL(ne,sdeg_mat,nm,nnt,cs_nnz,cs,u1,u2,fk,fe,fd,sism,vel,
     integer*4,  dimension(nm),              intent(in)  :: sdeg_mat
     integer*4,  dimension(0:cs_nnz),        intent(in)  :: cs
     real*8,     dimension(2*nnt),           intent(in)  :: v1
-    integer*4,  dimension(:),  allocatable, intent(out) :: update_index_el_az
-    integer*4,  dimension(:),  allocatable, intent(out) :: nodal_counter
-    real*8,     dimension(:),  allocatable, intent(out) :: u1,u2,fk,fe,fd,sism
-    real*8,     dimension(:),  allocatable, intent(out) :: xkin_all,epl_all,riso_all
-    real*8,     dimension(:),  allocatable, intent(out) :: duxdx,duydy,duydx,duxdy
-    real*8,     dimension(:),  allocatable, intent(out) :: sxx,syy,szz,sxy,vel,acc
+    integer*4,  dimension(:),  allocatable, intent(inout) :: update_index_el_az
+    integer*4,  dimension(:),  allocatable, intent(inout) :: nodal_counter
+    real*8,     dimension(:),  allocatable, intent(inout) :: u1,u2,fk,fe,fd,sism
+    real*8,     dimension(:),  allocatable, intent(inout) :: xkin_all,epl_all,riso_all
+    real*8,     dimension(:),  allocatable, intent(inout) :: duxdx,duydy,duydx,duxdy
+    real*8,     dimension(:),  allocatable, intent(inout) :: sxx,syy,szz,sxy,vel,acc
     integer*4                                           :: nn,im,iaz,ie,in,is,i,j
 
     allocate(u1(2*nnt))
