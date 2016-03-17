@@ -25,37 +25,45 @@
 !> @param[in] nmonit number of monitors
 !> @param[in] unit_dips/vel/acc/stress/strain/omega logical units for files
 
-      subroutine CLOSE_OUTPUT_FILES(option_out_var, nmonit, &
-                                    unit_disp, unit_vel, unit_acc,&
-                                    unit_stress, unit_strain, unit_omega)
+subroutine CLOSE_OUTPUT_FILES(option_out_var, nmonit, &
+    unit_disp, unit_vel, unit_acc,unit_stress, unit_strain, unit_omega)
 
-      implicit none
-      
-      integer*4 :: i,nmonit
-      integer*4 :: unit_disp, unit_vel, unit_acc, unit_stress, unit_strain, unit_omega
-      integer*4, dimension (6) :: option_out_var           
-      
-      do i = 1,nmonit  
-         if (option_out_var(1) .eq. 1)  then                   
-             unit_disp = 40 + i; close(unit_disp)
-         endif
-         if (option_out_var(2) .eq. 1)  then                     
-             unit_vel = 100000 + i; close(unit_vel)
-         endif
-         if (option_out_var(3).eq.1)  then                     
-             unit_acc = 200000 + i; close(unit_acc)
-         endif
-         if (option_out_var(4).eq.1)  then                     
-             unit_stress = 300000 + i; close(unit_stress)
-         endif
-         if (option_out_var(5).eq.1)  then                     
-             unit_strain = 400000 + i; close(unit_strain)
-         endif
-         if (option_out_var(6).eq.1)  then                     
-             unit_omega = 500000 + i; close(unit_omega)
-         endif
+    implicit none
 
+    integer*4 :: i,nmonit
 
-      enddo
+    integer*4, dimension (6)    , intent(in)    :: option_out_var           
+    integer*4, dimension(nmonit), intent(inout) :: unit_disp
+    integer*4, dimension(nmonit), intent(inout) :: unit_vel
+    integer*4, dimension(nmonit), intent(inout) :: unit_acc
+    integer*4, dimension(nmonit), intent(inout) :: unit_stress
+    integer*4, dimension(nmonit), intent(inout) :: unit_strain
+    integer*4, dimension(nmonit), intent(inout) :: unit_omega
 
-      end subroutine CLOSE_OUTPUT_FILES
+    do i = 1,nmonit  
+        if (option_out_var(1).eq.1)  then                   
+            close(unit_disp(i))
+        endif
+        if (option_out_var(2).eq.1)  then                     
+            close(unit_vel(i))
+        endif
+        if (option_out_var(3).eq.1)  then                     
+            close(unit_acc(i))
+        endif
+        if (option_out_var(4).eq.1)  then                     
+            close(unit_stress(i))
+        endif
+        if (option_out_var(5).eq.1)  then                     
+            close(unit_strain(i))
+        endif
+        if (option_out_var(6).eq.1)  then                     
+            close(unit_omega(i))
+        endif
+    enddo
+    return
+end subroutine CLOSE_OUTPUT_FILES
+!! mode: f90
+!! show-trailing-whitespace: t
+!! End:
+!! vim: set sw=4 ts=8 et tw=80 smartindent : !!
+

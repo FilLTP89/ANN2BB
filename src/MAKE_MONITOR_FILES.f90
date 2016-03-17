@@ -25,21 +25,33 @@
 !> @param[in] nnode_TOT nodes of total DRM domain without duplicate
 !> @param[in] tagstep label of the step of DRM Analysis
 
-subroutine MAKE_MONITOR_FILES(nnt,nmonit,option_out_var,nnode_TOT,tagstep)
+subroutine MAKE_MONITOR_FILES(nnt,nmonit,option_out_var,nnode_TOT,tagstep,&
+        unit_disp,unit_vel,unit_acc,unit_stress,unit_strain,unit_omega,unit_uDRM)
 
     implicit none
 
-    character*70 :: file_disp, file_vel, file_acc, file_stress, file_strain, file_omega, file_uDRM
-    integer*4 :: unit_disp, unit_vel, unit_acc, unit_stress, unit_strain, unit_omega, unit_uDRM
-    integer*4, dimension (6) :: option_out_var    
-    integer*4 :: nnt, nmonit, i, in	  
-    integer*4 :: nnode_TOT, tagstep
-    
+    integer*4 ,                   intent(in)    :: nnt,nmonit,nnode_TOT,tagstep
+    integer*4, dimension(nmonit), intent(inout) :: unit_disp
+    integer*4, dimension(nmonit), intent(inout) :: unit_vel
+    integer*4, dimension(nmonit), intent(inout) :: unit_acc
+    integer*4, dimension(nmonit), intent(inout) :: unit_stress
+    integer*4, dimension(nmonit), intent(inout) :: unit_strain
+    integer*4, dimension(nmonit), intent(inout) :: unit_omega
+    integer*4, dimension(nnode_TOT), intent(inout) :: unit_uDRM
+    integer*4, dimension(6)     , intent(in)    :: option_out_var    
+    character*70                                :: file_disp
+    character*70                                :: file_vel
+    character*70                                :: file_acc
+    character*70                                :: file_stress 
+    character*70                                :: file_strain 
+    character*70                                :: file_omega 
+    character*70                                :: file_uDRM
+    integer*4                                   :: i 
     if (nmonit.ge.1) then
         if (option_out_var(1).eq.1) then  
             file_disp = 'monitorXXXXX.d'  
             do i = 1,nmonit
-                unit_disp = 40 + i
+                unit_disp(i)=40+i
                 if (i.lt.10) then
                     write(file_disp(8:11),'(a4)')'0000'
                     write(file_disp(12:12),'(i1)')i
@@ -55,15 +67,14 @@ subroutine MAKE_MONITOR_FILES(nnt,nmonit,option_out_var,nnode_TOT,tagstep)
                 else if (i.le.99999) then
                     write(file_disp(8:12),'(i5)')'i'     
                 endif
-                open(unit_disp,file=file_disp)
+                open(unit_disp(i),file=file_disp)
             enddo
         endif
 
         if (option_out_var(2).eq.1) then  
             file_vel = 'monitorXXXXX.v' 
             do i = 1,nmonit
-                unit_vel = 100000 + i
-
+                unit_vel(i)=100000+i
                 if (i.lt.10) then
                     write(file_vel(8:11),'(a4)')'0000'
                     write(file_vel(12:12),'(i1)')i
@@ -79,7 +90,7 @@ subroutine MAKE_MONITOR_FILES(nnt,nmonit,option_out_var,nnode_TOT,tagstep)
                 else if (i.le.99999) then
                     write(file_vel(8:12),'(i5)')'i'     
                 endif
-                open(unit_vel,file=file_vel)
+                open(unit_vel(i),file=file_vel)
             enddo
         endif
 
@@ -88,8 +99,7 @@ subroutine MAKE_MONITOR_FILES(nnt,nmonit,option_out_var,nnode_TOT,tagstep)
 
             file_acc = 'monitorXXXXX.a' 
             do i = 1,nmonit
-                unit_acc = 200000 + i
-
+                unit_acc(i)=200000+i
                 if (i.lt.10) then
                     write(file_acc(8:11),'(a4)')'0000'
                     write(file_acc(12:12),'(i1)')i
@@ -105,14 +115,14 @@ subroutine MAKE_MONITOR_FILES(nnt,nmonit,option_out_var,nnode_TOT,tagstep)
                 else if (i.le.99999) then
                     write(file_acc(8:12),'(i5)')'i'     
                 endif
-                open(unit_acc,file=file_acc)
+                open(unit_acc(i),file=file_acc)
             enddo 
         endif
 
         if (option_out_var(4).eq.1) then
             file_stress = 'monitorXXXXX.s'
             do i = 1,nmonit
-                unit_stress = 300000 + i
+                unit_stress(i)=300000+i
                 if (i.lt.10) then
                     write(file_stress(8:11),'(a4)')'0000'
                     write(file_stress(12:12),'(i1)')i
@@ -128,14 +138,14 @@ subroutine MAKE_MONITOR_FILES(nnt,nmonit,option_out_var,nnode_TOT,tagstep)
                 else if (i.le.99999) then
                     write(file_stress(8:12),'(i5)')'i'     
                 endif         
-                open(unit_stress,file=file_stress)
+                open(unit_stress(i),file=file_stress)
             enddo
         endif
 
         if (option_out_var(5).eq.1) then  
             file_strain = 'monitorXXXXX.e'
             do i = 1,nmonit
-                unit_strain = 400000 + i
+                unit_strain(i)=400000+i
                 if (i.lt.10) then
                     write(file_strain(8:11),'(a4)')'0000'
                     write(file_strain(12:12),'(i1)')i
@@ -151,7 +161,7 @@ subroutine MAKE_MONITOR_FILES(nnt,nmonit,option_out_var,nnode_TOT,tagstep)
                 else if (i.le.99999) then
                     write(file_strain(8:12),'(i5)')'i'     
                 endif                   
-                open(unit_strain,file=file_strain)
+                open(unit_strain(i),file=file_strain)
             enddo
         endif
 
@@ -159,7 +169,7 @@ subroutine MAKE_MONITOR_FILES(nnt,nmonit,option_out_var,nnode_TOT,tagstep)
         if (option_out_var(6).eq.1) then  
             file_omega = 'monitorXXXXX.w'
             do i = 1,nmonit
-                unit_omega = 500000 + i
+                unit_omega(i)=500000+i
                 if (i.lt.10) then
                     write(file_omega(8:11),'(a4)')'0000'
                     write(file_omega(12:12),'(i1)')i
@@ -175,7 +185,7 @@ subroutine MAKE_MONITOR_FILES(nnt,nmonit,option_out_var,nnode_TOT,tagstep)
                 else if (i.le.99999) then
                     write(file_omega(8:12),'(i5)')'i'     
                 endif                   
-                open(unit_omega,file=file_omega)
+                open(unit_omega(i),file=file_omega)
             enddo
         endif
 
@@ -187,7 +197,7 @@ subroutine MAKE_MONITOR_FILES(nnt,nmonit,option_out_var,nnode_TOT,tagstep)
     if ((nnode_TOT.ne.0).and.(tagstep.eq.1)) then   !DRM Scandella 25.11.2005 
         file_uDRM = 'monDRMXXXXX.d'                  !DRM Scandella 25.11.2005 
         do i = 1,nnode_TOT                           !DRM Scandella 25.11.2005 
-            unit_uDRM = 600000 + i                    !DRM Scandella 25.11.2005
+            unit_uDRM(i)=600000+i                    !DRM Scandella 25.11.2005
             if (i.lt.10) then                      !DRM Scandella 25.11.2005 
                 write(file_uDRM(7:10),'(a4)')'0000'     !DRM Scandella 25.11.2005
                 write(file_uDRM(11:11),'(i1)')i     !DRM Scandella 25.11.2005
@@ -203,11 +213,11 @@ subroutine MAKE_MONITOR_FILES(nnt,nmonit,option_out_var,nnode_TOT,tagstep)
             else if (i.le.99999) then              !DRM Scandella 25.11.2005
                 write(file_uDRM(7:11),'(i5)')i      !DRM Scandella 25.11.2005  
             endif                                  !DRM Scandella 25.11.2005              
-            open(unit_uDRM,file=file_uDRM)         !DRM Scandella 25.11.2005
+            open(unit_uDRM(i),file=file_uDRM)         !DRM Scandella 25.11.2005
             !close(unit_uDRM)                      !DRM Scandella 13.12.2005 			       
         enddo                                        !DRM Scandella 25.11.2005
     endif                                           !DRM Scandella 25.11.2005
-
+    return
 end  subroutine MAKE_MONITOR_FILES
 !! mode: f90
 !! show-trailing-whitespace: t

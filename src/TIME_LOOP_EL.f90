@@ -99,6 +99,8 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
     make_damping_yes_or_not,nnode_TOT,node_TOT,tagstep,ns,n_el_DRM,el_DRM,K_DRM,&
     nnode_BD,nMDRM,tag_MDRM,val_PDRM,fun_ord,node_PDRM,glob_x,glob_y,           &
     option_out_var,test,nelem_dg,IDG_only_uv,JDG_only_uv,MDG_only_uv,nnz_dg_only_uv)    
+    
+    use write_output
 
     implicit none
 
@@ -184,10 +186,14 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
     !             OUTPUT VARIABLES
     !********************************************************************************************
 
-    character*70 :: file_disp, file_vel, file_acc, file_stress, file_strain, file_omega
-    integer*4 :: unit_disp, unit_vel, unit_acc, unit_stress, unit_strain, unit_omega
-    integer*4 :: unit_uDRM                                  !DRM Scandella 16.11.2005
-    integer*4, dimension (6) :: option_out_var           
+    integer*4, dimension(nmonit)    :: unit_disp
+    integer*4, dimension(nmonit)    :: unit_vel
+    integer*4, dimension(nmonit)    :: unit_acc
+    integer*4, dimension(nmonit)    :: unit_stress
+    integer*4, dimension(nmonit)    :: unit_strain
+    integer*4, dimension(nmonit)    :: unit_omega
+    integer*4, dimension(nnode_TOT) :: unit_uDRM 
+    integer*4, dimension (6)        :: option_out_var           
 
 
     !********************************************************************************************
@@ -368,7 +374,8 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
     ! SET MONITOR FILES FOR OUTPUT
     !********************************************************************************************
 
-    call MAKE_MONITOR_FILES(nnt,nmonit,option_out_var,nnode_TOT,tagstep)
+    call MAKE_MONITOR_FILES(nnt,nmonit,option_out_var,nnode_TOT,tagstep, & 
+        unit_disp,unit_vel,unit_acc,unit_stress,unit_strain,unit_omega,unit_uDRM)
 
     !********************************************************************************************
     ! INITIALIZATION
@@ -668,15 +675,6 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         time_fd = float(clock_finish - clock_start) / float(clock(2))
         call system_clock(COUNT=clock_start,COUNT_RATE=clock(2)) 
         fe = fe + sism/mvec
-        write(*,*) "=== DEBUG FE-EL (10) ==="
-        write(*,*) "fe"
-        write(*,*) fe(50:100)
-        read(*,*)
-        write(*,*) ""
-        write(*,*) "=== DEBUG FK-EL (10) ==="
-        write(*,*) "fk"
-        write(*,*) fk(50:100)
-        read(*,*)
         
         u2 = 2.0d0 * u1 - u0 + dt2*(fe - fk - fd)
         call system_clock(COUNT=clock_finish)
@@ -735,104 +733,9 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         !********************************************************************************************
         !     WRITE OUTPUT FILE
         !********************************************************************************************
-
-        if (nmonit.ge.1 .and. int(real(its)/ndt_monitor).eq.(real(its)/ndt_monitor))  then
-
-            if (option_out_var(1) .eq. 1) then   
-                do i = 1,nmonit
-                    unit_disp = 40 + i
-                    in = node_m(i)
-
-                    if (dabs(u1(in)).lt.(1.0d-99))     u1(in)= 0.d0
-                    if (dabs(u1(in+nnt)).lt.(1.0d-99)) u1(in+nnt)=0.d0
-                    write(unit_disp,'(F6.4,ES16.6,ES16.6)') tt1,u1(in),u1(in+nnt)
-                enddo
-            endif
-
-            if (option_out_var(2) .eq. 1) then   
-                do i = 1,nmonit
-                    unit_vel = 40 + i
-                    in = node_m(i)
-
-                    if (dabs(vel(in)).lt.(1.0d-99))     vel(in)= 0.d0
-                    if (dabs(vel(in+nnt)).lt.(1.0d-99)) vel(in+nnt)=0.d0
-                    write(unit_vel,'(F6.2,ES16.6,ES16.6)') tt1,vel(in),vel(in+nnt)
-                enddo
-            endif
-
-            if (option_out_var(3) .eq. 1) then   
-                do i = 1,nmonit
-                    unit_acc = 40 + i
-                    in = node_m(i)
-
-                    if (dabs(acc(in)).lt.(1.0d-99))     acc(in)= 0.d0
-                    if (dabs(acc(in+nnt)).lt.(1.0d-99)) acc(in+nnt)=0.d0
-                    write(unit_acc,'(F6.2,ES16.6,ES16.6)') tt1,acc(in),acc(in+nnt)
-                enddo
-            endif
-
-
-            if (option_out_var(4) .eq. 1) then
-                do in = 1, nnt  
-                    sxx(in) = sxx(in) / nodal_counter(in)
-                    syy(in) = syy(in) / nodal_counter(in)
-                    sxy(in) = sxy(in) / nodal_counter(in)
-                    szz(in) = szz(in) / nodal_counter(in)
-                enddo
-                do i = 1,nmonit
-                    unit_stress = 300000 + i
-                    in = node_m(i)
-                    if (dabs(sxx(in)).lt.(1.0d-99)) sxx(in)=0.0
-                    if (dabs(syy(in)).lt.(1.0d-99)) syy(in)=0.0
-                    if (dabs(sxy(in)).lt.(1.0d-99)) sxy(in)=0.0
-                    if (dabs(szz(in)).lt.(1.0d-99)) szz(in)=0.0
-
-                    write(unit_stress,'(5E16.8)') tt1,sxx(in),syy(in),sxy(in),szz(in)
-                enddo
-            endif
-
-
-            if (option_out_var(5) .eq. 1) then  !Out Options Scandella 02.07.2007
-                do in = 1, nnt  
-                    duxdx(in) = duxdx(in) / nodal_counter(in)
-                    duydy(in) = duydy(in) / nodal_counter(in)
-                    duxdy(in) = duxdy(in) / nodal_counter(in)
-                    duydx(in) = duydx(in) / nodal_counter(in) 
-                enddo 
-
-                do i = 1,nmonit 
-                    unit_strain = 400000 + i
-                    in = node_m(i) 
-                    if (dabs(duxdx(in)).lt.(1.0d-99)) duxdx(in)=0.0
-                    if (dabs(duydy(in)).lt.(1.0d-99)) duydy(in)=0.0
-                    if (dabs(duxdy(in)).lt.(1.0d-99)) duxdy(in)=0.0
-                    if (dabs(duydx(in)).lt.(1.0d-99)) duydx(in)=0.0
-
-                    write(unit_strain,'(4E16.8)') tt1,duxdx(in),duydy(in),0.5*(duxdy(in)+duydx(in)) 
-                enddo
-            endif
-
-            if (option_out_var(6) .eq. 1) then  !Out Options Scandella 02.07.2007
-                if (option_out_var(5) .ne. 1) then
-                    do in = 1, nnt  
-                        duxdx(in) = duxdx(in) / nodal_counter(in)
-                        duydy(in) = duydy(in) / nodal_counter(in)
-                        duxdy(in) = duxdy(in) / nodal_counter(in)
-                        duydx(in) = duydx(in) / nodal_counter(in) 
-                    enddo 
-                endif
-
-                do i = 1,nmonit 
-                unit_omega = 500000 + i
-                in = node_m(i) 
-                if (dabs(duxdy(in)).lt.(1.0d-99)) duxdy(in)=0.0
-                if (dabs(duydx(in)).lt.(1.0d-99)) duydx(in)=0.0
-
-                write(unit_omega,'(2E16.8)') tt1, 0.5*(duxdy(in)-duydx(in)) 
-                enddo
-            endif
-
-        endif   
+        call WRITE_MONITOR_EL(cs_nnz,cs,ne,nm,sdeg_mat,prop_mat,nmonit,its,ndt_monitor,option_out_var, &
+                unit_disp,unit_vel,unit_acc,unit_strain,unit_stress,unit_omega,node_m,nnt,         &
+                tt1,u1,vel,acc,nodal_counter,alfa1,alfa2,beta1,beta2,gamma1,gamma2)
 
         !-----DRM---------------------------------------------------------------------------------------------------
         !Write out displacement in DRM nodes for I step
@@ -840,7 +743,6 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         if ((nnode_TOT.ne.0).and.(tagstep.eq.1)) then  !DRM Scandella 16.11.2005
             if (int(real(its)/ndt_monitor).eq.(real(its)/ndt_monitor)) then  !DRM Scandella 24.01.2006
                 do i = 1,nnode_TOT                          !DRM Scandella 16.11.2005
-                    unit_uDRM = 600000 + i                    !DRM Scandella 16.11.2005
                     in = node_TOT(i)                          !DRM Scandella 16.11.2005
 
                     if (dabs(u1(in)).lt.(1.0d-99)) then
@@ -850,7 +752,7 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
                         u1(in+nnt)=0.0
                     endif
                     !open(unit_uDRM,file=file_uDRM,position='append')
-                    write(unit_uDRM,'(3E16.8)') &          !DRM Scandella 16.11.2005
+                    write(unit_uDRM(i),'(3E16.8)') &          !DRM Scandella 16.11.2005
                         tt1,u1(in),u1(in+nnt)             !DRM Scandella 16.11.2005
                     !close(unit_uDRM)
                 enddo 
@@ -872,21 +774,18 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
 
     enddo
 
-    !write(*,*) size(fe)
-
-    if (nmonit.ge.1) call CLOSE_OUTPUT_FILES(option_out_var, nmonit, &
-        unit_disp, unit_vel, unit_acc,&
-        unit_stress, unit_strain, unit_omega)
-
+    if (nmonit.ge.1) then
+        call CLOSE_OUTPUT_FILES(option_out_var, nmonit, &
+            unit_disp, unit_vel, unit_acc,&
+            unit_stress, unit_strain, unit_omega)
+    endif
     !-----DRM---------------------------------------------------------------------------------------------------
     !DRM out files of I step closed
 
     if ((nnode_TOT.ne.0).and.(tagstep.eq.1)) then  !DRM Scandella 16.11.2005 
         if (nnode_TOT.ne.0) then                    !DRM Scandella 16.11.2005
             do i = 1,nnode_TOT                       !DRM Scandella 16.11.2005
-            unit_uDRM = 600000 + i                !DRM Scandella 16.11.2005
-            in = node_TOT(i)                      !DRM Scandella 16.11.2005
-            close(unit_uDRM)                   !DRM Scandella 16.11.2005
+                close(unit_uDRM(i))                   !DRM Scandella 16.11.2005
             enddo                                    !DRM Scandella 16.11.2005
         endif                                      !DRM Scandella 16.11.2005
     endif                                          !DRM Scandella 16.11.2005
