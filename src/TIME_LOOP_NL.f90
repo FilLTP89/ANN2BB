@@ -96,6 +96,8 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
     make_damping_yes_or_not,nnode_TOT,node_TOT,tagstep,ns,n_el_DRM,el_DRM,K_DRM,&
     nnode_BD,nMDRM,tag_MDRM,val_PDRM,fun_ord,node_PDRM,glob_x,glob_y,           &
     option_out_var,test,nelem_dg,IDG_only_uv,JDG_only_uv,MDG_only_uv,nnz_dg_only_uv)    
+    
+    use write_output
 
     implicit none
 
@@ -574,7 +576,9 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         ! Initialize time step    
         fk   = 0.d0 
         fd   = 0.d0 
-        sism = 0.d0
+        if (nl_sism.gt.0) then
+            sism=0.d0
+        endif
 
         call system_clock(COUNT=start,COUNT_RATE=clock(2))
 
@@ -701,14 +705,14 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
             ! Make Derivatives 
             call MAKE_DERIVATIVES(nn,alfa1(ie),alfa2(ie),beta1(ie),beta2(ie),gamma1(ie),gamma2(ie),ct,&
                 dxdy_el,dydy_el,dxdx_el,dydx_el)
-            ! Make Strain
+            ! Make Strain increment
             call MAKE_STRAIN(nn,dd,dxdx_el,dxdy_el,dydx_el,dydy_el,ux_el,uy_el, &
                 duxdx_el,duxdy_el,duydx_el,duydy_el)
             ! Compute Nonlinear internal forces
-            call MAKE_INTERNAL_FORCE_NL(nn,ct,ww,dd,duxdx_el,duxdy_el,duydx_el,duydy_el,    &
+            call MAKE_INTERNAL_FORCE_NL(nn,ct,ww,dd,duxdx_el,duxdy_el,duydx_el,duydy_el, &
                 sxx_el,syy_el,szz_el,sxy_el,Xkin_el,Riso_el,mu_el,lambda_el,syld_el,        &
                 Ckin_el,kkin_el,Rinf_el,biso_el,dEpl_el,dxdx_el,dxdy_el,dydx_el,dydy_el,    &
-                fx_el,fy_el)
+                fx_el,fy_el,ie)
             if (nl_sism.gt.0) then
                 fe = 0.0d0
                 call MAKE_SEISMIC_MOMENT_NEW(nn,sxxs_el,syys_el,szzs_el,sxys_el,&
@@ -735,18 +739,8 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
                 Xkin_el,dEpl_el,fx_el,fy_el,nl_sism,fxs_el,fys_el,sxxs_el,syys_el,&
                 sxys_el,szzs_el,ux_el,uy_el)
         end do
+        if (nl_sism.gt.0) fe = fe + sism/mvec 
         
-        fe = fe + sism/mvec 
-!        write(*,*) "=== DEBUG FE-NL (10) ==="
-!        write(*,*) "fe"
-!        write(*,*) fe(50:100)
-!        read(*,*)
-!        write(*,*) ""
-!        write(*,*) "=== DEBUG FK-EL (10) ==="
-!        write(*,*) "fk"
-!        write(*,*) fk(50:100)
-!        read(*,*)
-
         call system_clock(COUNT=clock_finish)
         time_fk = float(clock_finish - clock_start) / float(clock(2))
         write(*,'(A)') 'Non Linear Internal Forces: OK'
@@ -760,7 +754,8 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         u2 = 2.0d0 * u1 - u0 + dt2*(fe - fk - fd)
         call system_clock(COUNT=clock_finish)
         time_u = float(clock_finish - clock_start) / float(clock(2))
-
+        
+        
         !-----DRM---------------------------------------------------------------------------------------------------        
         if (tagstep.eq.2) then                                                                      !DRM Scandella 28.10.2005 
             ! Calculation of displacements at all DRM points at a fixed time step                               !DRM Scandella 12.04.2006  
@@ -802,17 +797,6 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
             enddo
         endif
 
-        !do i = 1, nnt
-        !   write(*,*) xs(i),ys(i)
-        !   write(*,*) u2(i), u2(i+nnt)
-        !   write(*,*) u1(i), u1(i+nnt)
-        !
-        !   write(*,*) -dsin(sqrt(2.d0)*pi*tt2) * (dsin(pi*xs(i)))**2 * dsin(2.d0*pi*ys(i)),& 
-        !               dsin(sqrt(2.d0)*pi*tt2) * dsin(2.d0*pi*xs(i)) * (dsin(pi*ys(i)))**2
-        !   write(*,*) '******************************************'
-        !   read(*,*)           
-        !enddo
-
         call system_clock(COUNT=finish)
 
         time_in_seconds = float(finish - start) / float(clock(2))
@@ -828,88 +812,10 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         !********************************************************************************************
         !     WRITE OUTPUT FILE
         !********************************************************************************************
-
-        if (nmonit.ge.1 .and. int(real(its)/ndt_monitor).eq.(real(its)/ndt_monitor))  then
-
-            if (option_out_var(1) .eq. 1) then   
-                do i = 1,nmonit
-                    in = node_m(i)
-                    if (dabs(u1(in)).lt.(1.0d-99))     u1(in)= 0.d0
-                    if (dabs(u1(in+nnt)).lt.(1.0d-99)) u1(in+nnt)=0.d0
-                    write(unit_disp(i),'(F6.6,ES16.6,ES16.6)') tt1,u1(in),u1(in+nnt)
-                enddo
-            endif
-
-            if (option_out_var(2) .eq. 1) then   
-                do i = 1,nmonit
-                    in = node_m(i)
-                    if (dabs(vel(in)).lt.(1.0d-99))     vel(in)= 0.d0
-                    if (dabs(vel(in+nnt)).lt.(1.0d-99)) vel(in+nnt)=0.d0
-                    write(unit_vel(i),'(F6.6,ES16.6,ES16.6)') tt1,vel(in),vel(in+nnt)
-                enddo
-            endif
-
-            if (option_out_var(3) .eq. 1) then   
-                do i = 1,nmonit
-                    in = node_m(i)
-                    if (dabs(acc(in)).lt.(1.0d-99))     acc(in)= 0.d0
-                    if (dabs(acc(in+nnt)).lt.(1.0d-99)) acc(in+nnt)=0.d0
-                    write(unit_acc(i),'(F6.6,ES16.6,ES16.6)') tt1,acc(in),acc(in+nnt)
-                enddo
-            endif
-
-
-            if (option_out_var(4) .eq. 1) then
-                sxx_out = sxx(in)/nodal_counter(in)
-                syy_out = syy(in)/nodal_counter(in)
-                szz_out = szz(in)/nodal_counter(in)
-                sxy_out = sxy(in)/nodal_counter(in)
-                do i = 1,nmonit
-                    in = node_m(i)
-                    if (dabs(sxx(in)).lt.(1.0d-99)) sxx_out=0.0
-                    if (dabs(syy(in)).lt.(1.0d-99)) syy_out=0.0
-                    if (dabs(sxy(in)).lt.(1.0d-99)) sxy_out=0.0
-                    if (dabs(szz(in)).lt.(1.0d-99)) szz_out=0.0
-                    write(unit_stress(i),'(5E16.8)') tt1,sxx_out,syy_out,sxy_out,szz_out
-                enddo
-            endif
-
-            if (option_out_var(5) .eq. 1) then  !Out Options Scandella 02.07.2007
-                do in = 1, nnt  
-                    duxdx_out = duxdx(in) / nodal_counter(in)
-                    duydy_out = duydy(in) / nodal_counter(in)
-                    duxdy_out = duxdy(in) / nodal_counter(in)
-                    duydx_out = duydx(in) / nodal_counter(in) 
-                enddo 
-                do i = 1,nmonit
-                    in = node_m(i) 
-                    if (dabs(duxdx(in)).lt.(1.0d-99)) duxdx_out=0.0
-                    if (dabs(duydy(in)).lt.(1.0d-99)) duydy_out=0.0
-                    if (dabs(duxdy(in)).lt.(1.0d-99)) duxdy_out=0.0
-                    if (dabs(duydx(in)).lt.(1.0d-99)) duydx_out=0.0
-                    write(unit_strain(i),'(4E16.8)') tt1,duxdx_out,duydy_out,0.5*(duxdy_out+duydx_out) 
-                enddo
-            endif
-
-            if (option_out_var(6) .eq. 1) then  !Out Options Scandella 02.07.2007
-                if (option_out_var(5) .ne. 1) then
-                    do in = 1, nnt  
-                        duxdx_out = duxdx(in) / nodal_counter(in)
-                        duydy_out = duydy(in) / nodal_counter(in)
-                        duxdy_out = duxdy(in) / nodal_counter(in)
-                        duydx_out = duydx(in) / nodal_counter(in) 
-                    enddo 
-                endif
-
-                do i = 1,nmonit
-                    in = node_m(i) 
-                    if (dabs(duxdy(in)).lt.(1.0d-99)) duxdy_out=0.0
-                    if (dabs(duydx(in)).lt.(1.0d-99)) duydx_out=0.0
-                    write(unit_omega(i),'(2E16.8)') tt1, 0.5*(duxdy_out-duydx) 
-                enddo
-            endif
-        endif   
-
+        call WRITE_MONITOR_NL(unit_disp,unit_vel,unit_acc,unit_strain,unit_stress,unit_omega,option_out_var,&
+            nmonit,ndt_monitor,node_m,nnt,its,tt1,u1,vel,acc,nodal_counter,duxdx,duxdy,duydx,duydy,&
+            sxx,syy,szz,sxy)
+        
         !-----DRM---------------------------------------------------------------------------------------------------
         !Write out displacement in DRM nodes for I step
 
@@ -949,8 +855,8 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
 
 
     if (nmonit.ge.1) then
-        call CLOSE_OUTPUT_FILES(option_out_var, nmonit, &
-            unit_disp, unit_vel, unit_acc,unit_stress, unit_strain, unit_omega)
+        call CLOSE_OUTPUT_FILES(option_out_var,nmonit,&
+            unit_disp,unit_vel,unit_acc,unit_stress,unit_strain,unit_omega)
     endif
     !-----DRM---------------------------------------------------------------------------------------------------
     !DRM out files of I step closed

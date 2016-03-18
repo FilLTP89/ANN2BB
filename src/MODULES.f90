@@ -874,6 +874,11 @@ module write_output
                             do ii=1,nn
                                 is = nn*(jj -1) + ii
                                 in = cs(cs(ie -1) + is)
+                                if (ie==10) then
+                                    write(*,*) "strain",duxdx_el(ii,jj),duxdy_el(ii,jj),duydx_el(ii,jj),duydy_el(ii,jj)
+                                    read(*,*)
+                                endif
+                                     
                                 
                                 duxdx(in) = duxdx(in) + duxdx_el(ii,jj)
                                 duydy(in) = duydy(in) + duydy_el(ii,jj)
@@ -900,11 +905,10 @@ module write_output
                                 do ii=1,nn
                                     is = nn*(jj -1) + ii
                                     in = cs(cs(ie -1) + is)
-                                    
-                                     sxx(in) = sxx(in) + sxx_el(ii,jj)
-                                     syy(in) = syy(in) + syy_el(ii,jj)
-                                     szz(in) = szz(in) + szz_el(ii,jj)
-                                     sxy(in) = sxy(in) + sxy_el(ii,jj)
+                                    sxx(in) = sxx(in) + sxx_el(ii,jj)
+                                    syy(in) = syy(in) + syy_el(ii,jj)
+                                    szz(in) = szz(in) + szz_el(ii,jj)
+                                    sxy(in) = sxy(in) + sxy_el(ii,jj)
                                 enddo
                             enddo
                             
@@ -994,6 +998,111 @@ module write_output
 
             return
         end subroutine WRITE_MONITOR_EL
+        
+        ! nonlinear
+        subroutine WRITE_MONITOR_NL(unit_disp,unit_vel,unit_acc,unit_strain,unit_stress,unit_omega,option_out_var,&
+            nmonit,ndt_monitor,node_m,nnt,its,tt1,dis,vel,acc,nodal_counter,duxdx,duxdy,duydx,duydy,&
+            sxx,syy,szz,sxy)
+            
+            implicit none
+            real*8,                         intent(in) :: tt1,ndt_monitor
+            integer*4,                      intent(in) :: nmonit,its,nnt
+            real*8,     dimension(2*nnt) ,  intent(inout) :: dis,vel,acc
+            real*8,     dimension(nnt)   ,  intent(inout) :: duxdx,duydy,duxdy,duydx
+            real*8,     dimension(nnt)   ,  intent(inout) :: sxx,syy,szz,sxy
+            integer*4,  dimension(6),       intent(in) :: option_out_var
+            integer*4,  dimension(nnt),     intent(in) :: nodal_counter
+            integer*4,  dimension(nmonit),  intent(in) :: node_m
+            integer*4,  dimension(nmonit),  intent(inout) ::  unit_disp
+            integer*4,  dimension(nmonit),  intent(inout) ::  unit_vel
+            integer*4,  dimension(nmonit),  intent(inout) ::  unit_acc
+            integer*4,  dimension(nmonit),  intent(inout) ::  unit_stress
+            integer*4,  dimension(nmonit),  intent(inout) ::  unit_strain
+            integer*4,  dimension(nmonit),  intent(inout) ::  unit_omega
+            integer*4                                     ::  in,i
+
+            logical                                       :: condition
+            
+            real*8                                        :: sxx_out,syy_out,szz_out,sxy_out
+            real*8                                        :: duxdx_out,duxdy_out,duydx_out,duydy_out
+            
+            condition = (nmonit.ge.1).and.(int(real(its)/ndt_monitor).eq.(real(its)/ndt_monitor))
+
+            if (condition) then
+                if (option_out_var(1).eq.1) then   
+                    do i = 1,nmonit
+                        in = node_m(i)
+                        if (dabs(dis(in)).lt.(1.0d-99))     dis(in)= 0.d0
+                        if (dabs(dis(in+nnt)).lt.(1.0d-99)) dis(in+nnt)=0.d0
+                        write(unit_disp(i),'(3ES16.6)') tt1,dis(in),dis(in+nnt)
+                    enddo
+                endif
+
+                if (option_out_var(2).eq.1) then   
+                    do i = 1,nmonit
+                        in = node_m(i)
+                        if (dabs(vel(in)).lt.(1.0d-99))     vel(in)= 0.d0
+                        if (dabs(vel(in+nnt)).lt.(1.0d-99)) vel(in+nnt)=0.d0
+                        write(unit_vel(i),'(3ES16.6)') tt1,vel(in),vel(in+nnt)
+                    enddo
+                endif
+
+                if (option_out_var(3).eq.1) then   
+                    do i = 1,nmonit
+                        in = node_m(i)
+                        if (dabs(acc(in)).lt.(1.0d-99))     acc(in)= 0.d0
+                        if (dabs(acc(in+nnt)).lt.(1.0d-99)) acc(in+nnt)=0.d0
+                        write(unit_acc(i),'(3ES16.6)') tt1,acc(in),acc(in+nnt)
+                    enddo
+                endif
+
+                if (option_out_var(4).eq.1) then
+                    do i = 1,nmonit
+                        in = node_m(i)
+                        sxx_out = sxx(in)/nodal_counter(in)
+                        syy_out = syy(in)/nodal_counter(in)
+                        szz_out = szz(in)/nodal_counter(in)
+                        sxy_out = sxy(in)/nodal_counter(in)
+                        if (dabs(sxx(in)).lt.(1.0d-99)) sxx_out=0.0
+                        if (dabs(syy(in)).lt.(1.0d-99)) syy_out=0.0
+                        if (dabs(sxy(in)).lt.(1.0d-99)) sxy_out=0.0
+                        if (dabs(szz(in)).lt.(1.0d-99)) szz_out=0.0
+                        write(unit_stress(i),'(5E16.8)') tt1,sxx_out,syy_out,sxy_out,szz_out
+                    enddo
+                endif
+
+                if (option_out_var(5).eq.1) then
+                    do i = 1,nmonit
+                        in = node_m(i) 
+                        duxdx_out = duxdx(in) / nodal_counter(in)
+                        duydy_out = duydy(in) / nodal_counter(in)
+                        duxdy_out = duxdy(in) / nodal_counter(in)
+                        duydx_out = duydx(in) / nodal_counter(in) 
+                        if (dabs(duxdx(in)).lt.(1.0d-99)) duxdx_out=0.0
+                        if (dabs(duydy(in)).lt.(1.0d-99)) duydy_out=0.0
+                        if (dabs(duxdy(in)).lt.(1.0d-99)) duxdy_out=0.0
+                        if (dabs(duydx(in)).lt.(1.0d-99)) duydx_out=0.0
+                        write(unit_strain(i),'(4E16.8)') tt1,duxdx_out,duydy_out,0.5*(duxdy_out+duydx_out) 
+                    enddo
+                endif
+
+                if (option_out_var(6) .eq. 1) then  
+                    do i = 1,nmonit
+                        in = node_m(i) 
+                        duxdx_out = duxdx(in) / nodal_counter(in)
+                        duydy_out = duydy(in) / nodal_counter(in)
+                        duxdy_out = duxdy(in) / nodal_counter(in)
+                        duydx_out = duydx(in) / nodal_counter(in) 
+                        if (dabs(duxdy(in)).lt.(1.0d-99)) duxdy_out=0.0
+                        if (dabs(duydx(in)).lt.(1.0d-99)) duydx_out=0.0
+                        write(unit_omega(i),'(2E16.8)') tt1, 0.5*(duxdy_out-duydx_out) 
+                    enddo
+                endif
+
+            endif
+
+            return
+        end subroutine WRITE_MONITOR_NL
 end module write_output
 !! mode: f90
 !! show-trailing-whitespace: t

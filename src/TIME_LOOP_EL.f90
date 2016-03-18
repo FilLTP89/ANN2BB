@@ -763,7 +763,6 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         !********************************************************************************************
         ! UPDATE
         !********************************************************************************************
-
         if(its .gt. 0) then
             vel = (u2 - u0) / (2*dt) 
             acc = (u2 - 2*u1 + u0) / (dt*dt)
@@ -775,9 +774,8 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
     enddo
 
     if (nmonit.ge.1) then
-        call CLOSE_OUTPUT_FILES(option_out_var, nmonit, &
-            unit_disp, unit_vel, unit_acc,&
-            unit_stress, unit_strain, unit_omega)
+        call CLOSE_OUTPUT_FILES(option_out_var,nmonit,&
+            unit_disp,unit_vel,unit_acc,unit_stress,unit_strain,unit_omega)
     endif
     !-----DRM---------------------------------------------------------------------------------------------------
     !DRM out files of I step closed

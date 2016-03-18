@@ -38,7 +38,7 @@
 
 subroutine MAKE_INTERNAL_FORCE_NL(nn,ct,ww,dd,duxdx,duxdy,duydx,duydy,sxx,syy,szz,sxy, &
     Xkin_el,Riso_el,mu_el,lambda_el,syld_el,Ckin_el,kkin_el,Rinf_el,biso_el,dEpl_el,   &
-    dxdx,dxdy,dydx,dydy,fx,fy)                               
+    dxdx,dxdy,dydx,dydy,fx,fy,ne)                               
     
     use nonlinear2d
     
@@ -48,7 +48,7 @@ subroutine MAKE_INTERNAL_FORCE_NL(nn,ct,ww,dd,duxdx,duxdy,duydx,duydy,sxx,syy,sz
     real*8                                    :: t1fx,t1fy,t2fx,t2fy
     real*8                                    :: det_j,t1ux,t1uy,t2ux,t2uy
     
-    integer*4,                  intent(in)      :: nn
+    integer*4,                  intent(in)      :: nn,ne
     logical                                     :: st_epl
     real*8                                      :: alpha_elp
     real*8, dimension(4)                        :: dEalpha,stress0,stress1,dtrial
@@ -70,7 +70,7 @@ subroutine MAKE_INTERNAL_FORCE_NL(nn,ct,ww,dd,duxdx,duxdy,duydx,duydy,sxx,syy,sz
 !            radius=riso_el(ip,iq)
 !            center=Xkin_el(:,ip,iq)
 !
-            ! COMPuTE TRIAL sTRESS INCREMENT
+            ! COMPuTE TRIAL STRESS INCREMENT
             call MAKE_STRESS_LOC(lambda_el(ip,iq),mu_el(ip,iq),dEalpha,dtrial)
             !dtrial=stress1-stress0
 !            call check_plasticity(dtrial,stress0,center,radius, &
@@ -87,10 +87,15 @@ subroutine MAKE_INTERNAL_FORCE_NL(nn,ct,ww,dd,duxdx,duxdy,duydx,duydy,sxx,syy,sz
 !            syy(ip,iq) = dtrial(2)
 !            szz(ip,iq) = dtrial(3)
 !            sxy(ip,iq) = dtrial(4)
-            sxx(ip,iq) = stress0(1)+dtrial(1)
-            syy(ip,iq) = stress0(2)+dtrial(2)
-            szz(ip,iq) = stress0(3)+dtrial(3)
-            sxy(ip,iq) = stress0(4)+dtrial(4)
+            if (ne==10) then 
+                write(*,*) "strain",duxdx(ip,iq),duxdy(ip,iq),duydx(ip,iq),duydy(ip,iq)
+                read(*,*)
+            endif
+            sxx(ip,iq) = sxx(ip,iq)+dtrial(1)
+            syy(ip,iq) = syy(ip,iq)+dtrial(2)
+            szz(ip,iq) = szz(ip,iq)+dtrial(3)
+            sxy(ip,iq) = sxy(ip,iq)+dtrial(4)
+
         end do
     end do
 
