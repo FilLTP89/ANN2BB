@@ -29,7 +29,7 @@ subroutine MAKE_STRESS_LOC(lambda,mu,dE,dS)
     implicit none
     
     real*8, intent(in)                  :: lambda,mu
-    real*8, intent(in), dimension(3)    :: dE
+    real*8, intent(in), dimension(4)    :: dE
     real*8, intent(inout), dimension(4) :: dS
 
     dS(1)=(lambda+2.0d0*mu)*dE(1)+lambda*(dE(2)+dE(3))

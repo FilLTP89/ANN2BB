@@ -87,10 +87,10 @@ subroutine MAKE_INTERNAL_FORCE_NL(nn,ct,ww,dd,duxdx,duxdy,duydx,duydy,sxx,syy,sz
 !            syy(ip,iq) = dtrial(2)
 !            szz(ip,iq) = dtrial(3)
 !            sxy(ip,iq) = dtrial(4)
-            if (ne==10) then 
-                write(*,*) "strain",duxdx(ip,iq),duxdy(ip,iq),duydx(ip,iq),duydy(ip,iq)
-                read(*,*)
-            endif
+!            if (ne==10) then 
+!                write(*,*) "strain",duxdx(ip,iq),duxdy(ip,iq),duydx(ip,iq),duydy(ip,iq)
+!                read(*,*)
+!            endif
             sxx(ip,iq) = sxx(ip,iq)+dtrial(1)
             syy(ip,iq) = syy(ip,iq)+dtrial(2)
             szz(ip,iq) = szz(ip,iq)+dtrial(3)

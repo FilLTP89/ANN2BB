@@ -22,69 +22,64 @@
 !> @version 1.0
 !> @param[inout] sxx,syy,sxy,szz nodal values for the stress tensor (on element)
 
-subroutine ALLOINIT_NL_ALL(ne,sdeg_mat,nm,nnt,cs_nnz,cs,u1,u2,fk,fe,fd,sism,vel,&
-        acc,v1,update_index_el_az,duxdx,duxdy,duydx,duydy,sxx,syy,szz,sxy,&
-        xkin_all,riso_all,epl_all,option_out_var,nl_sism,nodal_counter)  
+subroutine ALLOINIT_NL_ALL(ne,sdeg_mat,nm,nnt,cs_nnz,cs,u1,u2,vel,acc,v1,fk,fe,fd,&
+    duxdx,duxdy,duydx,duydy,sxx,syy,szz,sxy,dsxx,dsyy,dszz,dsxy,&
+    xkin_all,riso_all,epl_all,option_out_var,nl_sism,sism,update_index_el_az,nodal_counter)  
+    
     implicit none
     integer*4,                              intent(in)      :: ne,nm,nnt,cs_nnz
     integer*4,  dimension(6),               intent(in)      :: option_out_var
     integer*4,  dimension(nm),              intent(in)      :: sdeg_mat
     integer*4,  dimension(0:cs_nnz),        intent(in)      :: cs
     real*8,     dimension(2*nnt),           intent(in)      :: v1
-    integer*4,  dimension(:),  allocatable, intent(inout)   :: update_index_el_az
-    integer*4,  dimension(:),  allocatable, intent(inout)   :: nodal_counter
-    real*8,     dimension(:),  allocatable, intent(inout)   :: u1,u2,fk,fe,fd,sism
-    real*8,     dimension(:),  allocatable, intent(inout)   :: xkin_all,epl_all,riso_all
-    real*8,     dimension(:),  allocatable, intent(inout)   :: duxdx,duydy,duydx,duxdy
-    real*8,     dimension(:),  allocatable, intent(inout)   :: sxx,syy,szz,sxy,vel,acc
+    real*8,     dimension(:), allocatable,  intent(inout)   :: u1,u2,vel,acc,fk,fe,fd
+    real*8,     dimension(:), allocatable,  intent(inout)   :: sism
+    real*8,     dimension(:), allocatable,  intent(inout)   :: xkin_all,epl_all,riso_all
+    real*8,     dimension(:), allocatable,  intent(inout)   :: duxdx,duydy,duydx,duxdy
+    real*8,     dimension(:), allocatable,  intent(inout)   :: sxx,syy,szz,sxy
+    real*8,     dimension(:), allocatable,  intent(inout)   :: dsxx,dsyy,dszz,dsxy
+    integer*4,  dimension(:), allocatable,  intent(inout)   :: update_index_el_az
+    integer*4,  dimension(:), allocatable,  intent(inout)   :: nodal_counter
     integer*4, intent(in)                                   :: nl_sism
     integer*4                                               :: nn,im,iaz,ie,in,is,i,j
 
-    allocate(u1(2*nnt))
-    allocate(u2(2*nnt))
-    allocate(fk(2*nnt))
-    allocate(fe(2*nnt))
-    allocate(fd(2*nnt))
-    allocate(vel(2*nnt))
-    allocate(acc(2*nnt))
+    ! global stress state to be saved for nonlinear calculations
+    allocate(sxx(nnt)); sxx = 0.d0
+    allocate(syy(nnt)); syy = 0.d0 
+    allocate(sxy(nnt)); sxy = 0.d0
+    allocate(szz(nnt)); szz = 0.d0  
+    allocate(dsxx(nnt)); dsxx = 0.d0
+    allocate(dsyy(nnt)); dsyy = 0.d0 
+    allocate(dsxy(nnt)); dsxy = 0.d0
+    allocate(dszz(nnt)); dszz = 0.d0  
+    ! global strain state to be saved for nonlinear calculations (verify)
+    allocate(duxdx(nnt)); duxdx = 0.d0
+    allocate(duydy(nnt)); duydy = 0.d0
+    allocate(duxdy(nnt)); duxdy = 0.d0
+    allocate(duydx(nnt)); duydx = 0.d0
+    ! global displacement/velocity/acceleration vector
+    allocate(u1(2*nnt)); u1 = 0.d0
+    allocate(u2(2*nnt)); u2 = 0.d0
+    allocate(vel(2*nnt)); vel = v1 
+    allocate(acc(2*nnt)); acc = 0.d0
+    ! global non linear variables
+    allocate(xkin_all(4*nnt)); xkin_all = 0.0d0
+    allocate(epl_all(4*nnt));  epl_all  = 0.0d0
+    allocate(riso_all(nnt));   riso_all = 0.0d0
+    ! global forces
+    allocate(fk(2*nnt)); fk = 0.0d0
+    allocate(fd(2*nnt)); fd = 0.0d0
+    allocate(fe(2*nnt)); fe = 0.0d0
+    
+    if(nl_sism.gt.0) then
+        allocate(sism(2*nnt))
+    endif
+    
     allocate(update_index_el_az(2*nnt))
-    allocate(riso_all(nnt))
-    allocate(xkin_all(4*nnt))
-    allocate(epl_all(4*nnt))
-
     do iaz = 1,2*nnt
         update_index_el_az(iaz) = iaz
     enddo
     
-    ! global stress state to be saved for nonlinear calculations
-    allocate(sxx(nnt))
-    allocate(syy(nnt))
-    allocate(sxy(nnt))
-    allocate(szz(nnt))           
-    sxx = 0.d0
-    syy = 0.d0 
-    sxy = 0.d0
-    szz = 0.d0  
-    ! global strain state to be saved for nonlinear calculations (verify)
-    allocate(duxdx(nnt))
-    allocate(duydy(nnt))
-    allocate(duxdy(nnt))
-    allocate(duydx(nnt)) 
-    duxdx = 0.d0
-    duydy = 0.d0
-    duxdy = 0.d0
-    duydx = 0.d0
-    u1          = 0.d0
-    u2          = 0.d0
-    vel         = v1
-    acc         = 0.0d0
-    xkin_all    = 0.0d0
-    epl_all     = 0.0d0
-    riso_all    = 0.0d0
-    fe          = 0.0d0
-    if(nl_sism.gt.0) then
-        allocate(sism(2*nnt))
-    endif
     if(sum(option_out_var(4:6)).ge.1) then 
         allocate(nodal_counter(nnt)) 
         nodal_counter = 0

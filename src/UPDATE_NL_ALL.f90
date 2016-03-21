@@ -47,7 +47,7 @@ subroutine UPDATE_NL_ALL(ie,nnt,nn,cs_nnz,cs,fk,mvec,sxx,syy,szz,sxy,&
     real*8, dimension(nn,nn), intent(in)                :: duxdx_el,duxdy_el,duydx_el,duydy_el
     real*8, dimension(nn,nn), intent(in)                :: sxx_el,syy_el,szz_el,sxy_el,riso_el
     real*8, dimension(4,nn,nn), intent(in)              :: xkin_el,depl_el
-    real*8, dimension(2*nnt),   intent(in)                :: mvec
+    real*8, dimension(2*nnt),   intent(in)              :: mvec
     real*8, dimension(nnt),   intent(inout)             :: sxx,syy,szz,sxy
     real*8, dimension(nnt),   intent(inout)             :: duxdx,duxdy,duydx,duydy
     real*8, dimension(nnt),   intent(inout)             :: riso_all
