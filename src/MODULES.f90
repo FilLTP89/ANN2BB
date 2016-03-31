@@ -875,8 +875,8 @@ module write_output
                                 is = nn*(jj -1) + ii
                                 in = cs(cs(ie -1) + is)
                                 if (ie==10) then
-                                    write(*,*) "strain",duxdx_el(ii,jj),duxdy_el(ii,jj),duydx_el(ii,jj),duydy_el(ii,jj)
-                                    read(*,*)
+!                                    write(*,*) "strain",duxdx_el(ii,jj),duxdy_el(ii,jj),duydx_el(ii,jj),duydy_el(ii,jj)
+!                                    read(*,*)
                                 endif
                                      
                                 
