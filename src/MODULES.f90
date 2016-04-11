@@ -253,8 +253,8 @@ end module qsort_c_module
 !> @brief  Module for non linear calculation in 2D
 
 module nonlinear2d
-       real*8, parameter :: FTOL = 1.0000000000D0
-       real*8, parameter :: LTOL = 0.010000000000D0
+       real*8, parameter :: FTOL = 0.00100000000D0
+       real*8, parameter :: LTOL = 0.0010000000000D0
        real*8, parameter :: STOL = 0.0010000000000000D0
 
     contains
@@ -339,7 +339,7 @@ module nonlinear2d
             
         ! CHECK PLASTIC CONSISTENCY (KKT CONDITIONS)
         subroutine check_plasticity (dtrial, stress0, center, radius, syld, &
-            st_elp, alpha_elp)
+            st_elp, alpha_elp,nel)
             
             implicit none
             
@@ -351,8 +351,8 @@ module nonlinear2d
             real*8,                 intent(out)     :: alpha_elp
             logical,                intent(out)     :: st_elp
             real*8, dimension(4),   intent(inout)   :: dtrial
-            
-            stress1=stress0+dtrial
+            integer*4, intent(in)                   :: nel 
+            stress1= dtrial+stress0
             call mises_yld_locus(stress0,center,radius,syld,FS,gradFS)
             call mises_yld_locus(stress1,center,radius,syld,FT,gradFT)
             checkload=sum(gradFS*dtrial)/sum(gradFS**2)/sum(dtrial**2)
@@ -375,6 +375,7 @@ module nonlinear2d
                     alpha_elp = 1d0
                     st_elp    = .false.
                 else
+                    write(*,*)"INVERT"
                     call gotoFpegasus(stress0,dtrial,center,radius,syld,1,alpha_elp)
                     st_elp    = .true.
                 end if
@@ -382,16 +383,22 @@ module nonlinear2d
                 write(*,*) 'ERROR: FS: ',FS,'>',FTOL,'!!!!'
                 alpha_elp  = 0d0
                 st_elp = .true.
+                write(*,*) "NEL",nel
+                write(*,*) "STRESS0",stress0
+                write(*,*) "DTRIAL",dtrial
+                write(*,*) "SYLD",syld
+                write(*,*) "CENTER",center
+                read(*,*)
             end if
             dtrial=stress0+dtrial*alpha_elp
             call mises_yld_locus(dtrial,center,radius,syld,FS,gradFS)
-            write(*,*) 'F:',FS
         end subroutine check_plasticity
         
         subroutine plastic_corrector(dEps_alpha,stress,center,syld, &
-            radius,biso,Rinf,Ckin,kkin,mu,lambda,dEpl)
+            radius,biso,Rinf,Ckin,kkin,mu,lambda,dEpl,nel)
 
             implicit none
+            integer*4, intent(in) :: nel
             real*8, dimension(4), intent(inout) :: dEps_alpha,stress,center,dEpl 
             real*8,               intent(inout) :: radius 
             real*8,               intent(in)    :: syld,biso,Rinf,Ckin,kkin,mu,lambda
@@ -436,7 +443,11 @@ module nonlinear2d
                 X1 = center + 0.5d0*(dX1+dX2)
                 R1 = radius + 0.5d0*(dR1+dR2)
                 dEpl1 = 0.5d0*(dEpl1+dEpl2)
-
+                if (nel==73) then
+                    write(*,*) "correction"
+                    write(*,*) center
+                    write(*,*) X1
+                endif
                 ! ERROR
                 call tau_mises(dS2-dS1,err0)
                 call tau_mises(S1,err1)

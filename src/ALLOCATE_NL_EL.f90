@@ -41,16 +41,15 @@
 !> @param[inout] fxs_el seismic moment equivalent forces in x-direction on element LGL
 !> @param[inout] fys_el seismic moment equivalent forces in x-direction on element LGL
 
-subroutine ALLOCATE_NL_EL(nn,ct,ww,dd,ux_el,uy_el,      &
-         dxdx_el, dxdy_el, dydx_el, dydy_el,det_j,   &
-        duxdx_el,duxdy_el,duydx_el,duydy_el,         &
-          sxx_el,  sxy_el,  syy_el,szz_el,           &
-       lambda_el,   mu_el, syld_el, Ckin_el, kkin_el,&
-         Rinf_el, biso_el, Riso_el, Xkin_el, dEpl_el,&
-           fx_el,   fy_el,  fxs_el,  fys_el, nl_sism,&
-         sxxs_el, sxys_el, syys_el,szzs_el)
+subroutine ALLOCATE_NL_EL(nn,ct,ww,dd,ux_el,uy_el,dxdx_el,dxdy_el,dydx_el,dydy_el,det_j,    &
+    duxdx_el,duxdy_el,duydx_el,duydy_el,sxx_el,sxy_el,syy_el,szz_el,lambda_el,mu_el,syld_el,&
+    Ckin_el,kkin_el,Rinf_el, biso_el,Riso_el,Xkin_el,dEpl_el,fx_el,fy_el,fxs_el,fys_el, nl_sism,&
+    sxxs_el,sxys_el,syys_el,szzs_el)
+   
     implicit none    
-    integer*4,                              intent(in ) :: nn, nl_sism
+    ! intent IN
+    integer*4,                              intent(in ) :: nn,nl_sism
+    ! intent OUT 
     real*8,     dimension(:),  allocatable, intent(out) :: ct,ww
     real*8,     dimension(:),  allocatable, intent(out) :: dxdx_el,dydy_el
     real*8,     dimension(:),  allocatable, intent(out) :: dxdy_el,dydx_el
@@ -111,4 +110,3 @@ end subroutine ALLOCATE_NL_EL
 !! show-trailing-whitespace: t
 !! End:
 !! vim: set sw=4 ts=8 et tw=80 smartindent : !!
-

@@ -8,7 +8,7 @@ EXEC=SPEED2D
 # The compiler
 FC_PC=gfortran
 # flags for debugging or for maximum performance, comment as necessary
-LD_PC_FLAGS=-O3 -fopenmp -lgomp 
+LD_PC_FLAGS=-O3 -fopenmp -lgomp
 FC_PC_FLAGS=-O3 -g -c  -ffree-form -ffree-line-length-none -fopenmp -fbounds-check -J build 
 # Make all instructions
 .PHONY: all

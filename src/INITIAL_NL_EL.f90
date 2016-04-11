@@ -43,19 +43,19 @@ subroutine INITIAL_NL_EL(cs_nnz,cs,nm,ct,ww,dd,nn,nnt,im,ie,prop_mat, &
     displ,sxx,syy,szz,sxy,ux_el,uy_el,sxx_el,syy_el,szz_el,sxy_el,    &
     fx_el,fy_el,nl_sism,fxs_el,fys_el,sxxs_el,syys_el,szzs_el,sxys_el,&
     lambda_el,mu_el,syld_el,Ckin_el,kkin_el,Rinf_el,biso_el,          &
-    riso_all,riso_el,Xkin_all,Xkin_el)
+    riso_all,riso_el,xkin_all,xkin_el)
     
     implicit none
     integer*4, intent(in)                       :: nl_sism,im,nnt,nn,cs_nnz,nm,ie
     integer*4, intent(in),  dimension(0:cs_nnz) :: cs
     real*8, intent(in),     dimension(nm,9)     :: prop_mat
-    real*8, intent(in),     dimension(nnt)      :: sxx,syy,szz,sxy,Riso_all
+    real*8, intent(in),     dimension(nnt)      :: sxx,syy,szz,sxy,riso_all
     real*8, intent(in),     dimension(2*nnt)    :: displ
-    real*8, intent(in),     dimension(4*nnt)    :: Xkin_all
+    real*8, intent(in),     dimension(4*nnt)    :: xkin_all
     real*8, intent(inout),  dimension(nn)       :: ct,ww,fx_el,fy_el,fxs_el,fys_el
     real*8, intent(inout),  dimension(nn,nn)    :: dd,ux_el,uy_el,lambda_el,mu_el
-    real*8, intent(inout),  dimension(nn,nn)    :: sxx_el,Syy_el,Szz_el,Sxy_el
-    real*8, intent(inout),  dimension(nn,nn)    :: sxxs_el,Syys_el,Szzs_el,Sxys_el
+    real*8, intent(inout),  dimension(nn,nn)    :: sxx_el,syy_el,szz_el,sxy_el
+    real*8, intent(inout),  dimension(nn,nn)    :: sxxs_el,syys_el,szzs_el,sxys_el
     real*8, intent(inout),  dimension(nn,nn)    :: syld_el,Riso_el
     real*8, intent(inout),  dimension(nn,nn)    :: Ckin_el,kkin_el
     real*8, intent(inout),  dimension(nn,nn)    :: Rinf_el,biso_el
@@ -85,12 +85,12 @@ subroutine INITIAL_NL_EL(cs_nnz,cs,nm,ct,ww,dd,nn,nnt,im,ie,prop_mat, &
             syy_el(i,j)     = syy(in)
             szz_el(i,j)     = szz(in)
             sxy_el(i,j)     = szz(in)
+     
             Riso_el(i,j)    = Riso_all(in)
             Xkin_el(1,i,j)  = Xkin_all(in)     
             Xkin_el(2,i,j)  = Xkin_all(in+nnt)     
             Xkin_el(3,i,j)  = Xkin_all(in+2*nnt)     
             Xkin_el(4,i,j)  = Xkin_all(in+3*nnt)
-
         enddo
     enddo
     

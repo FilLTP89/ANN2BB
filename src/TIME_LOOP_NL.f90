@@ -222,8 +222,9 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
     !********************************************************************************************
     !              NONLINEAR
     !********************************************************************************************
-    real*8, dimension(:),     allocatable   :: epl_all,xkin_all
-    real*8, dimension(:),     allocatable   :: Riso_all
+    real*8, dimension(:),     allocatable   :: epl_all,depl_all
+    real*8, dimension(:),     allocatable   :: xkin_all,dxkin_all
+    real*8, dimension(:),     allocatable   :: Riso_all,dRiso_all
     real*8, dimension(:,:),   allocatable   :: syld_el,Riso_el
     real*8, dimension(:,:),   allocatable   :: Rinf_el,biso_el
     real*8, dimension(:,:),   allocatable   :: Ckin_el,kkin_el
@@ -236,6 +237,7 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
     real*8, dimension(:), allocatable       :: sxx,syy,sxy,szz 
     real*8, dimension(:), allocatable       :: dsxx,dsyy,dsxy,dszz 
     real*8, dimension(:), allocatable       :: duxdx,duydy,duxdy,duydx
+    real*8, dimension(:), allocatable       :: dduxdx,dduydy,dduxdy,dduydx
     real*8, dimension(:), allocatable       :: fk,fe,fd
     real*8, dimension(:), allocatable       :: sism
     real*8, dimension(2*nnt), intent(in)    :: mvec
@@ -261,38 +263,41 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
     integer*4, dimension(:), allocatable :: nodal_counter
 
     interface
+        ! allocation/initialization all node variables ==> to be updated at each time step
+
         subroutine ALLOINIT_NL_ALL(ne,sdeg_mat,nm,nnt,cs_nnz,cs,u1,u2,vel,acc,v1,fk,fe,fd,&
-            duxdx,duxdy,duydx,duydy,sxx,syy,szz,sxy,dsxx,dsyy,dszz,dsxy,&
-            xkin_all,riso_all,epl_all,option_out_var,nl_sism,sism,update_index_el_az,nodal_counter)  
+            duxdx,duxdy,duydx,duydy,dduxdx,dduxdy,dduydx,dduydy,sxx,syy,szz,sxy,dsxx,dsyy,dszz,dsxy,&
+            xkin_all,dxkin_all,riso_all,driso_all,epl_all,depl_all,option_out_var,nl_sism,sism,&
+            update_index_el_az,nodal_counter)  
+
             implicit none
-            integer*4,                              intent(in)      :: ne,nm,nnt,cs_nnz
+            ! intent IN
+            integer*4,                              intent(in)      :: ne,nm,nnt,cs_nnz,nl_sism
             integer*4,  dimension(6),               intent(in)      :: option_out_var
             integer*4,  dimension(nm),              intent(in)      :: sdeg_mat
             integer*4,  dimension(0:cs_nnz),        intent(in)      :: cs
             real*8,     dimension(2*nnt),           intent(in)      :: v1
-            real*8,     dimension(:), allocatable,  intent(inout)   :: u1,u2,vel,acc,fk,fe,fd
-            real*8,     dimension(:), allocatable,  intent(inout)   :: sism
+            ! intent INOUT
+            real*8,     dimension(:), allocatable,  intent(inout)   :: u1,u2,vel,acc,fk,fe,fd,sism
             real*8,     dimension(:), allocatable,  intent(inout)   :: xkin_all,epl_all,riso_all
+            real*8,     dimension(:), allocatable,  intent(inout)   :: dxkin_all,depl_all,driso_all
             real*8,     dimension(:), allocatable,  intent(inout)   :: duxdx,duydy,duydx,duxdy
-            real*8,     dimension(:), allocatable,  intent(inout)   :: sxx,syy,szz,sxy
-            real*8,     dimension(:), allocatable,  intent(inout)   :: dsxx,dsyy,dszz,dsxy
-            integer*4,  dimension(:), allocatable,  intent(inout)   :: update_index_el_az
-            integer*4,  dimension(:), allocatable,  intent(inout)   :: nodal_counter
-            integer*4, intent(in)                                   :: nl_sism
+            real*8,     dimension(:), allocatable,  intent(inout)   :: dduxdx,dduydy,dduydx,dduxdy
+            real*8,     dimension(:), allocatable,  intent(inout)   :: sxx,syy,szz,sxy,dsxx,dsyy,dszz,dsxy
+            integer*4,  dimension(:), allocatable,  intent(inout)   :: update_index_el_az,nodal_counter
+            ! counters
             integer*4                                               :: nn,im,iaz,ie,in,is,i,j
-        end subroutine ALLOINIT_NL_ALL
-
-        subroutine ALLOCATE_NL_EL(nn,ct,ww,dd,ux_el,uy_el,      &
-                 dxdx_el, dxdy_el, dydx_el, dydy_el,det_j,   &
-                duxdx_el,duxdy_el,duydx_el,duydy_el,         &
-                  sxx_el,  sxy_el,  syy_el,szz_el,           &
-               lambda_el,   mu_el, syld_el, Ckin_el, kkin_el,&
-                 Rinf_el, biso_el, Riso_el, Xkin_el, dEpl_el,&
-                   fx_el,   fy_el,  fxs_el,  fys_el, nl_sism,&
-                 sxxs_el, sxys_el, syys_el,szzs_el)
-            
-            implicit none
+        end subroutine ALLOINIT_NL_ALL 
+        ! allocation element-wise variables (to be updated at each time-step)
+        subroutine ALLOCATE_NL_EL(nn,ct,ww,dd,ux_el,uy_el,dxdx_el,dxdy_el,dydx_el,dydy_el,det_j,    &
+            duxdx_el,duxdy_el,duydx_el,duydy_el,sxx_el,sxy_el,syy_el,szz_el,lambda_el,mu_el,syld_el,&
+            Ckin_el,kkin_el,Rinf_el, biso_el,Riso_el,Xkin_el,dEpl_el,fx_el,fy_el,fxs_el,fys_el, nl_sism,&
+            sxxs_el,sxys_el,syys_el,szzs_el)
+           
+            implicit none    
+            ! intent IN
             integer*4,                              intent(in ) :: nn,nl_sism
+            ! intent OUT 
             real*8,     dimension(:),  allocatable, intent(out) :: ct,ww
             real*8,     dimension(:),  allocatable, intent(out) :: dxdx_el,dydy_el
             real*8,     dimension(:),  allocatable, intent(out) :: dxdy_el,dydx_el
@@ -308,50 +313,56 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
             real*8,     dimension(:,:),allocatable, intent(out) :: Ckin_el,kkin_el
             real*8,     dimension(:,:,:),allocatable, intent(out) :: Xkin_el,dEpl_el
         end subroutine ALLOCATE_NL_EL
-        
-        subroutine MAKE_STRAIN(nn,dd,dxdx,dxdy,dydx,dydy,&
-            ux,uy,duxdx,duxdy,duydx,duydy)
+        ! compute strains  
+        subroutine MAKE_STRAIN(nn,dd,dxdx,dxdy,dydx,dydy,ux,uy,duxdx,duxdy,duydx,duydy,dt)
             
             implicit none
             real*8                                  :: t1ux,t1uy,t2ux,t2uy
             real*8                                  :: t1fx,t1fy,t2fx,t2fy,det_j
             integer*4                               :: ip,iq,il,im
+            real*8,                  intent(in)     :: dt
             integer*4,               intent(in)     :: nn
             real*8, dimension(nn),   intent(in)     :: dxdx,dxdy,dydx,dydy
             real*8, dimension(nn,nn),intent(in)     :: dd,ux,uy
             real*8, dimension(nn,nn),intent(inout)  :: duxdx,duxdy,duydx,duydy
-        end subroutine MAKE_STRAIN    
 
-        subroutine UPDATE_NL_ALL(ie,nnt,nn,cs_nnz,cs,fk,mvec,sxx,syy,szz,sxy,&
-            duxdx,duxdy,duydx,duydy,xkin_all,epl_all,riso_all,fx_el,fy_el,&
+        end subroutine MAKE_STRAIN    
+        ! update increments at each time-step
+        subroutine UPDATE_ALL_INCREMENTS(ie,nnt,nn,cs_nnz,cs,fk,mvec,dsxx,dsyy,dszz,dsxy,&
+            dduxdx,dduxdy,dduydx,dduydy,dxkin_all,depl_all,driso_all,fx_el,fy_el,&
             sxx_el,syy_el,szz_el,sxy_el,duxdx_el,duxdy_el,duydx_el,duydy_el,xkin_el,&
             riso_el,depl_el,fxs_el,fys_el,sism)
+            
             implicit none
-            integer*4, intent(in)                               :: nnt,nn,cs_nnz,ie
-            integer*4, dimension(0:cs_nnz), intent(in)          :: cs
-            real*8, dimension(nn,nn), intent(in)                :: fx_el,fy_el
-            real*8, dimension(nn,nn), intent(in)                :: duxdx_el,duxdy_el,duydx_el,duydy_el
-            real*8, dimension(nn,nn), intent(in)                :: sxx_el,syy_el,szz_el,sxy_el,riso_el
-            real*8, dimension(4,nn,nn), intent(in)              :: xkin_el,depl_el
-            real*8, dimension(2*nnt), intent(in)                :: mvec
-            real*8, dimension(nnt),   intent(inout)             :: sxx,syy,szz,sxy
-            real*8, dimension(nnt),   intent(inout)             :: duxdx,duxdy,duydx,duydy
-            real*8, dimension(nnt),   intent(inout)             :: riso_all
-            real*8, dimension(2*nnt), intent(inout)             :: fk
-            real*8, dimension(4*nnt), intent(inout)             :: xkin_all,epl_all
-            real*8, dimension(nn,nn), intent(in),    optional   :: fxs_el,fys_el
-            real*8, dimension(2*nnt), intent(inout), optional   :: sism
-            integer*4                                           :: in,is,i,j 
-        end subroutine UPDATE_NL_ALL
-       
-        subroutine DEALLOCATE_NL(nn,ct,ww,dd,dxdx_el,dxdy_el,dydx_el,dydy_el,det_j,   &
-            dUxdx_el,dUxdy_el,dUydx_el,dUydy_el,Sxx_el,Syy_el,Sxy_el,Szz_el,        &
-            lambda_el,mu_el,Syld_el,Ckin_el,kkin_el,Riso_el,Rinf_el,biso_el,        &
-            Xkin_el,dEpl_el,fx_el,fy_el,nl_sism,fxs_el,fys_el,Sxxs_el,Syys_el,      &
-            Sxys_el,Szzs_el,ux_el,uy_el)
+            ! intent IN 
+            integer*4,                          intent(in)          :: nnt,nn,cs_nnz,ie
+            integer*4,  dimension(0:cs_nnz),    intent(in)          :: cs
+            real*8,     dimension(nn,nn),       intent(in)          :: fx_el,fy_el
+            real*8,     dimension(nn,nn),       intent(in)          :: duxdx_el,duxdy_el,duydx_el,duydy_el
+            real*8,     dimension(nn,nn),       intent(in)          :: sxx_el,syy_el,szz_el,sxy_el,riso_el
+            real*8,     dimension(4,nn,nn),     intent(in)          :: xkin_el,depl_el
+            real*8,     dimension(2*nnt),       intent(in)          :: mvec
+            ! intent INOUT
+            real*8,     dimension(nnt),         intent(inout)       :: dsxx,dsyy,dszz,dsxy
+            real*8,     dimension(nnt),         intent(inout)       :: dduxdx,dduxdy,dduydx,dduydy
+            real*8,     dimension(nnt),         intent(inout)       :: driso_all
+            real*8,     dimension(2*nnt),       intent(inout)       :: fk
+            real*8,     dimension(4*nnt),       intent(inout)       :: dxkin_all,depl_all
+            real*8,     dimension(nn,nn),       intent(in),    optional   :: fxs_el,fys_el
+            real*8,     dimension(2*nnt),       intent(inout), optional   :: sism
+            integer*4                                               :: in,is,i,j 
+        end subroutine UPDATE_ALL_INCREMENTS
+        ! deallocate element-wise variables (nonlinear internal forces) 
+        subroutine DEALLOCATE_NL_EL(ct,ww,dd,dxdx_el,dxdy_el,dydx_el,dydy_el,det_j, &
+            duxdx_el,duxdy_el,duydx_el,duydy_el,sxx_el,syy_el,sxy_el,szz_el,     &
+            lambda_el,mu_el,syld_el,Ckin_el,kkin_el,Riso_el,Rinf_el,biso_el,     &
+            Xkin_el,dEpl_el,fx_el,fy_el,nl_sism,fxs_el,fys_el,sxxs_el,syys_el,   &
+            sxys_el,szzs_el,ux_el,uy_el)
+            
             implicit none 
-            integer*4,  intent(in)                             :: nn,nl_sism
-            real*8,     intent(inout), dimension(:)     :: ct,ww
+            
+            integer*4,  intent(in)                                   :: nl_sism
+            real*8,     intent(inout), dimension(:), allocatable     :: ct,ww
             real*8,     intent(inout), dimension(:), allocatable     :: dxdx_el,dydy_el
             real*8,     intent(inout), dimension(:), allocatable     :: dxdy_el,dydx_el
             real*8,     intent(inout), dimension(:,:), allocatable   :: dd,det_j,fx_el,fy_el
@@ -365,7 +376,24 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
             real*8,     intent(inout), dimension(:,:), allocatable   :: Ckin_el,kkin_el
             real*8,     intent(inout), dimension(:,:), allocatable   :: ux_el,uy_el 
             real*8,     intent(inout), dimension(:,:,:), allocatable :: Xkin_el,dEpl_el
-        end subroutine DEALLOCATE_NL
+        end subroutine DEALLOCATE_NL_EL
+        ! update stress and hardening variables at each time-step
+        subroutine UPDATE_ALL(nnt,sxx,syy,szz,sxy,dsxx,dsyy,dszz,dsxy,&
+            duxdx,duxdy,duydx,duydy,dduxdx,dduxdy,dduydx,dduydy,xkin_all,dxkin_all,&
+            riso_all,driso_all,epl_all,depl_all,nodal_counter)
+            
+            implicit none
+            integer*4, intent(in) :: nnt
+            integer*4, dimension(nnt), intent(in)               :: nodal_counter
+            real*8, dimension(nnt),   intent(inout)             :: sxx,syy,szz,sxy
+            real*8, dimension(nnt),   intent(inout)             :: dsxx,dsyy,dszz,dsxy
+            real*8, dimension(nnt),   intent(inout)             :: duxdx,duydy,duxdy,duydx
+            real*8, dimension(nnt),   intent(inout)             :: dduxdx,dduydy,dduxdy,dduydx
+            real*8, dimension(nnt),   intent(inout)             :: riso_all,driso_all
+            real*8, dimension(4*nnt), intent(inout)             :: xkin_all,dxkin_all
+            real*8, dimension(4*nnt), intent(inout)             :: epl_all,depl_all
+        end subroutine UPDATE_ALL 
+    
     end interface
     
     pi = 4.d0*datan(1.d0)
@@ -488,8 +516,8 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
     ! INITIALIZATION
     !********************************************************************************************
     call ALLOINIT_NL_ALL(ne,sdeg_mat,nm,nnt,cs_nnz,cs,u1,u2,vel,acc,v1,fk,fe,fd,&
-        duxdx,duxdy,duydx,duydy,sxx,syy,szz,sxy,dsxx,dsyy,dszz,dsxy,&
-        xkin_all,riso_all,epl_all,option_out_var,nl_sism,sism,update_index_el_az,nodal_counter)  
+        duxdx,duxdy,duydx,duydy,dduxdx,dduxdy,dduydx,dduydy,sxx,syy,szz,sxy,dsxx,dsyy,dszz,dsxy,xkin_all,dxkin_all,&
+        riso_all,driso_all,epl_all,depl_all,option_out_var,nl_sism,sism,update_index_el_az,nodal_counter)  
     
     dt2 = dt*dt
     number_of_threads = 1                                                !PARALLEL Kiana 06.10.2015
@@ -684,7 +712,6 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         do ie=1,ne
             im = cs(cs(ie -1) +0)   
             nn = sdeg_mat(im) +1
-             
             ! Allocate and initialize element variables
             call ALLOCATE_NL_EL(nn,ct,ww,dd,ux_el,uy_el,      &
                      dxdx_el, dxdy_el, dydx_el, dydy_el,det_j,   &
@@ -699,16 +726,15 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
                 vel,sxx,syy,szz,sxy,ux_el,uy_el,sxx_el,syy_el,szz_el,sxy_el, &
                 fx_el,fy_el,nl_sism,fxs_el,fys_el,sxxs_el,syys_el,szzs_el,sxys_el,&
                 lambda_el,mu_el,syld_el,Ckin_el,kkin_el,Rinf_el,biso_el,          &
-                riso_all,riso_el,Xkin_all,Xkin_el)
-            
+                riso_all,riso_el,xkin_all,xkin_el)
             ! Make Derivatives 
             call MAKE_DERIVATIVES(nn,alfa1(ie),alfa2(ie),beta1(ie),beta2(ie),gamma1(ie),gamma2(ie),ct,&
                 dxdy_el,dydy_el,dxdx_el,dydx_el)
             ! Make Strain increment
             call MAKE_STRAIN(nn,dd,dxdx_el,dxdy_el,dydx_el,dydy_el,ux_el,uy_el, &
-                duxdx_el,duxdy_el,duydx_el,duydy_el)
+                duxdx_el,duxdy_el,duydx_el,duydy_el,dt)
             ! Compute Nonlinear internal forces
-            call MAKE_INTERNAL_FORCE_NL(nn,ct,ww,dd,duxdx_el*dt,duxdy_el*dt,duydx_el*dt,duydy_el*dt, &
+            call MAKE_INTERNAL_FORCE_NL(nn,ct,ww,dd,duxdx_el,duxdy_el,duydx_el,duydy_el, &
                 sxx_el,syy_el,szz_el,sxy_el,Xkin_el,Riso_el,mu_el,lambda_el,syld_el,        &
                 Ckin_el,kkin_el,Rinf_el,biso_el,dEpl_el,dxdx_el,dxdy_el,dydx_el,dydy_el,    &
                 fx_el,fy_el,ie)
@@ -718,26 +744,28 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
                     check_node_sism,check_dist_node_sism,length_cns,ie,facsmom, &
                     nl_sism,func_type,func_indx,func_data,nf,tt1, &
                     nfunc_data,tag_func)
-
                 call MAKE_INTERNAL_FORCE_EL(nn,ct,ww,dd,&
                     dxdx_el,dxdy_el,dydx_el,dydy_el,&
                     sxxs_el,syys_el,szzs_el,sxys_el,fxs_el,fys_el)
-                call UPDATE_NL_ALL(ie,nnt,nn,cs_nnz,cs,fk,mvec,sxx,syy,szz,sxy,&
-                    duxdx,duxdy,duydx,duydy,xkin_all,epl_all,riso_all,fx_el,fy_el,&
+                call UPDATE_ALL_INCREMENTS(ie,nnt,nn,cs_nnz,cs,fk,mvec,dsxx,dsyy,dszz,dsxy,&
+                    dduxdx,dduxdy,dduydx,dduydy,dxkin_all,depl_all,driso_all,fx_el,fy_el,&
                     sxx_el,syy_el,szz_el,sxy_el,duxdx_el,duxdy_el,duydx_el,duydy_el,xkin_el,&
                     riso_el,depl_el,fxs_el,fys_el,sism)
             else
-                call UPDATE_NL_ALL(ie,nnt,nn,cs_nnz,cs,fk,mvec,sxx,syy,szz,sxy,&
-                    duxdx,duxdy,duydx,duydy,xkin_all,epl_all,riso_all,fx_el,fy_el,&
+                call UPDATE_ALL_INCREMENTS(ie,nnt,nn,cs_nnz,cs,fk,mvec,dsxx,dsyy,dszz,dsxy,&
+                    dduxdx,dduxdy,dduydx,dduydy,dxkin_all,depl_all,driso_all,fx_el,fy_el,&
                     sxx_el,syy_el,szz_el,sxy_el,duxdx_el,duxdy_el,duydx_el,duydy_el,xkin_el,&
                     riso_el,depl_el)
             endif
-            call DEALLOCATE_NL(nn,ct,ww,dd,dxdx_el,dxdy_el,dydx_el,dydy_el,det_j,  &
+            call DEALLOCATE_NL_EL(ct,ww,dd,dxdx_el,dxdy_el,dydx_el,dydy_el,det_j,  &
                 duxdx_el,duxdy_el,duydx_el,duydy_el,sxx_el,syy_el,sxy_el,szz_el, &
-                lambda_el,mu_el,Syld_el,Ckin_el,kkin_el,Riso_el,Rinf_el,biso_el, &
+                lambda_el,mu_el,syld_el,Ckin_el,kkin_el,Riso_el,Rinf_el,biso_el, &
                 Xkin_el,dEpl_el,fx_el,fy_el,nl_sism,fxs_el,fys_el,sxxs_el,syys_el,&
                 sxys_el,szzs_el,ux_el,uy_el)
         end do
+        call UPDATE_ALL(nnt,sxx,syy,szz,sxy,dsxx,dsyy,dszz,dsxy,&
+            duxdx,duxdy,duydx,duydy,dduxdx,dduxdy,dduydx,dduydy,xkin_all,dxkin_all,&
+            riso_all,driso_all,epl_all,depl_all,nodal_counter)
         if (nl_sism.gt.0) fe = fe + sism/mvec 
         
         call system_clock(COUNT=clock_finish)
