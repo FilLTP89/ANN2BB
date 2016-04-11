@@ -360,8 +360,9 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
             sxys_el,szzs_el,ux_el,uy_el)
             
             implicit none 
-            
+            ! intent IN 
             integer*4,  intent(in)                                   :: nl_sism
+            ! intent INOUT
             real*8,     intent(inout), dimension(:), allocatable     :: ct,ww
             real*8,     intent(inout), dimension(:), allocatable     :: dxdx_el,dydy_el
             real*8,     intent(inout), dimension(:), allocatable     :: dxdy_el,dydx_el
@@ -383,8 +384,10 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
             riso_all,driso_all,epl_all,depl_all,nodal_counter)
             
             implicit none
-            integer*4, intent(in) :: nnt
-            integer*4, dimension(nnt), intent(in)               :: nodal_counter
+            ! intent IN
+            integer*4,                intent(in)                :: nnt
+            integer*4, dimension(nnt),intent(in)                :: nodal_counter
+            ! intent INOUT
             real*8, dimension(nnt),   intent(inout)             :: sxx,syy,szz,sxy
             real*8, dimension(nnt),   intent(inout)             :: dsxx,dsyy,dszz,dsxy
             real*8, dimension(nnt),   intent(inout)             :: duxdx,duydy,duxdy,duydx
@@ -599,11 +602,11 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
     !********************************************************************************************
     !     ALL STEPS
     !********************************************************************************************	
+    fk   = 0.d0 
 
     do its = 0,nts 
 
         ! Initialize time step    
-        fk   = 0.d0 
         fd   = 0.d0 
         if (nl_sism.gt.0) sism=0.0d0
 

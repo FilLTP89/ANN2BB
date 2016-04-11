@@ -36,26 +36,26 @@
 !> @param[out] fy y-componnent for internal forces
 
 
-subroutine MAKE_INTERNAL_FORCE_NL(nn,ct,ww,dd,duxdx,duxdy,duydx,duydy,sxx,syy,szz,sxy, &
-    Xkin_el,Riso_el,mu_el,lambda_el,syld_el,Ckin_el,kkin_el,Rinf_el,biso_el,dEpl_el,   &
-    dxdx,dxdy,dydx,dydy,fx,fy,nel)                               
+subroutine MAKE_INTERNAL_FORCE_NL(nn,ct,ww,dd,duxdx,duxdy,duydx,duydy, &
+    sxx,syy,szz,sxy,xkin_el,riso_el,mu_el,lambda_el,syld_el,Ckin_el,kkin_el,&
+    rinf_el,biso_el,depl_el,dxdx,dxdy,dydx,dydy,fx,fy,nel)                               
     
     use nonlinear2d
     
     implicit none
 
-    integer*4                                 :: ip,iq,il,im,i
-    real*8                                    :: t1fx,t1fy,t2fx,t2fy
-    real*8                                    :: det_j,t1ux,t1uy,t2ux,t2uy
+    integer*4                                   :: ip,iq,il,im,i
+    real*8                                      :: t1fx,t1fy,t2fx,t2fy
+    real*8                                      :: det_j,t1ux,t1uy,t2ux,t2uy
     
     integer*4,                  intent(in)      :: nn,nel
     logical                                     :: st_epl
     real*8                                      :: alpha_elp
     real*8, dimension(4)                        :: dEalpha,stress0,stress1,dtrial
-    real*8, dimension(nn),      intent(in)   :: ct,ww,dxdx,dxdy,dydx,dydy
-    real*8, dimension(nn,nn),   intent(in)   :: Ckin_el,kkin_el
-    real*8, dimension(nn,nn),   intent(in)   :: Rinf_el,biso_el,Riso_el
-    real*8, dimension(nn,nn),   intent(in)   :: duxdx,duxdy,duydx,duydy  
+    real*8, dimension(nn),      intent(in)      :: ct,ww,dxdx,dxdy,dydx,dydy
+    real*8, dimension(nn,nn),   intent(in)      :: Ckin_el,kkin_el
+    real*8, dimension(nn,nn),   intent(in)      :: Rinf_el,biso_el,Riso_el
+    real*8, dimension(nn,nn),   intent(in)      :: duxdx,duxdy,duydx,duydy  
     real*8, dimension(nn,nn),   intent(in)      :: dd,lambda_el,mu_el,syld_el
     real*8, dimension(nn,nn),   intent(inout)   :: sxx,syy,sxy,szz,fx,fy
     real*8, dimension(4,nn,nn), intent(inout)   :: Xkin_el,dEpl_el
@@ -64,30 +64,29 @@ subroutine MAKE_INTERNAL_FORCE_NL(nn,ct,ww,dd,duxdx,duxdy,duydx,duydy,sxx,syy,sz
 
     do iq = 1,nn
         do ip = 1,nn
-            stress0 = (/sxx(ip,iq)  ,syy(ip,iq),  szz(ip,iq),sxy(ip,iq)/)
-            dEalpha = (/duxdx(ip,iq),duydy(ip,iq),0.0d0,(duxdy(ip,iq)+duydx(ip,iq))/)
-            syld=syld_el(ip,iq)
-            radius=riso_el(ip,iq)
-            center=Xkin_el(:,ip,iq)
+            stress0 =   (/sxx(ip,iq),syy(ip,iq),szz(ip,iq),sxy(ip,iq)/)
+            dEalpha =   (/duxdx(ip,iq),duydy(ip,iq),0.0d0,(duxdy(ip,iq)+duydx(ip,iq))/)
+            syld    =   syld_el(ip,iq)
+            radius  =   riso_el(ip,iq)
+            center  =   xkin_el(:,ip,iq)
+            dtrial(:) = 0.d0
 !
-            ! COMPuTE TRIAL STRESS INCREMENT
+            ! COMPUTE TRIAL STRESS INCREMENT
             call MAKE_STRESS_LOC(lambda_el(ip,iq),mu_el(ip,iq),dEalpha,dtrial)
-            stress1 = stress0+dtrial
-            call check_plasticity(stress1,stress0,center,radius, &
-                syld,st_epl,alpha_elp,nel)
-            dtrial = stress1
-            !
+            call check_plasticity(dtrial,stress0,center,radius,syld,st_epl,alpha_elp,nel)
+            ! PLASTIC CORRECTION 
             if (st_epl) then
                 write(*,*) "PLASTIC"
                 call plastic_corrector(dEalpha,dtrial,center,syld, &
                     radius,biso_el(ip,iq),Rinf_el(ip,iq),Ckin_el(ip,iq),kkin_el(ip,iq),     &
                     mu_el(ip,iq),lambda_el(ip,iq),dEpl_el(:,ip,iq),nel)
             end if
-            sxx(ip,iq) = dtrial(1)-stress0(1)
-            syy(ip,iq) = dtrial(2)-stress0(2)
-            szz(ip,iq) = dtrial(3)-stress0(3)
-            sxy(ip,iq) = dtrial(4)-stress0(4)
-            Xkin_el(:,ip,iq) = Xkin_el(:,ip,iq)-center
+            sxx(ip,iq)  = dtrial(1)-stress0(1)
+            syy(ip,iq)  = dtrial(2)-stress0(2)
+            szz(ip,iq)  = dtrial(3)-stress0(3)
+            sxy(ip,iq)  = dtrial(4)-stress0(4)
+            
+            xkin_el(:,ip,iq)    = center-Xkin_el(:,ip,iq)
 
         end do
     end do
