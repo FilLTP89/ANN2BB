@@ -222,9 +222,9 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
     !********************************************************************************************
     !              NONLINEAR
     !********************************************************************************************
-    real*8, dimension(:),     allocatable   :: epl_all,depl_all
-    real*8, dimension(:),     allocatable   :: xkin_all,dxkin_all
-    real*8, dimension(:),     allocatable   :: Riso_all,dRiso_all
+    real*8, dimension(:,:,:,:), allocatable   :: epl_all,depl_all
+    real*8, dimension(:,:,:,:), allocatable   :: xkin_all,dxkin_all
+    real*8, dimension(:,:,:,:), allocatable   :: Riso_all,dRiso_all
     real*8, dimension(:,:),   allocatable   :: syld_el,Riso_el
     real*8, dimension(:,:),   allocatable   :: Rinf_el,biso_el
     real*8, dimension(:,:),   allocatable   :: Ckin_el,kkin_el
