@@ -101,16 +101,16 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
 
     implicit none
 
-    integer*4 :: NNZ_K,NNZ_N,error,test,nelem_dg,nnz_dg_only_uv
-    integer*4 :: i,is,in,id1,id2,idt,j,jn,k,kn,iaz,jaz,kaz
-    integer*4 :: clock_start,clock_finish,start,finish
-    integer*4 :: nnt,cs_nnz,nm,ne,cs_nnz_bc,nf
-    integer*4 :: isnap,its,fn,ie,nn,ip,im
-    integer*4 :: nl_dirX,nl_dirY,nl_abc
-    integer*4 :: nnd,nts,nmonit,nsnap
-    integer*4 :: number_of_threads                        !PARALLEL Kiana 06.10.2015
-    integer*4 :: nfunc_data
-    integer*4 :: i4t
+    integer*4                               :: NNZ_K,NNZ_N,error,test,nelem_dg,nnz_dg_only_uv
+    integer*4                               :: i,is,in,id1,id2,idt,j,jn,k,kn,iaz,jaz,kaz
+    integer*4                               :: clock_start,clock_finish,start,finish
+    integer*4                               :: nnt,cs_nnz,nm,ne,cs_nnz_bc,nf
+    integer*4                               :: isnap,its,fn,ie,nn,ip,im
+    integer*4                               :: nl_dirX,nl_dirY,nl_abc
+    integer*4                               :: nnd,nts,nmonit,nsnap
+    integer*4                               :: number_of_threads 
+    integer*4                               :: nfunc_data
+    integer*4                               :: i4t
     
     integer*4, dimension(3)                 :: clock
     integer*4, dimension(nm)                :: tag_mat,sdeg_mat
@@ -127,12 +127,12 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
     integer*4, dimension(0:cs_nnz_bc)       :: cs_bc
     integer*4, dimension(nnz_dg_only_uv)    :: JDG_only_uv
     
-    real*8 :: dt,r8t,eps,pi
-    real*8 :: time_disp_DRM,total_disp_DRM
-    real*8 :: get_func_value, tt0,tt1,tt2,dt2
-    real*8 :: time_in_seconds,time_total,time_u,total_u
-    real*8 :: time_fk,total_fk,time_fd,total_fd,time_fe
-    real*8 :: total_fe,time_force_DRM,total_force_DRM
+    real*8                                  :: dt,r8t,eps,pi
+    real*8                                  :: time_disp_DRM,total_disp_DRM
+    real*8                                  :: get_func_value, tt0,tt1,tt2,dt2
+    real*8                                  :: time_in_seconds,time_total,time_u,total_u
+    real*8                                  :: time_fk,total_fk,time_fd,total_fd,time_fe
+    real*8                                  :: total_fe,time_force_DRM,total_force_DRM
     
     real*8, dimension(ne)                   :: alfa1,beta1,gamma1,delta1
     real*8, dimension(ne)                   :: alfa2,beta2,gamma2,delta2 
@@ -151,34 +151,30 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
     !
     !*************************************************
 
-    integer*4 :: ns
-    integer*4 :: tagstep
-    real*8, dimension(:,:), allocatable :: disp_PDRM_t      !DRM Scandella 21.10.2005
-    integer*4 :: n_el_DRM                                   !DRM Scandella 21.10.2005 
-    integer*4, dimension(n_el_DRM,5) ::el_DRM               !DRM Scandella 25-10-05
-    real*8, dimension(2*(ns+1)*(ns+1)*n_el_DRM,2*(ns+1)*(ns+1)) :: K_DRM  !DRM Scandella 21.10.2005
-    real*8, dimension(2*(ns+1)**2,2*(ns+1)**2) :: K_el      !DRM Scandella 25.10.2005
-    integer*4 ::nMDRM,imDRM                                 !DRM Scandella 25.10.2005
-    integer*4, dimension(nMDRM) :: tag_MDRM                 !DRM Scandella 25.10.2005
-    integer*4 :: nnode_TOT,nnode_BD                         !DRM Scandella 17.10.2005
-    integer*4, dimension(nnode_TOT) :: node_TOT             !DRM Scandella 17.10.2005
-    integer*4, dimension(nnode_TOT) :: node_PDRM            !DRM Scandella 16.11.2005 
-    real*8, dimension(nnode_TOT,3) :: val_PDRM              !DRM Scandella 21.10.2005
-    integer*4, dimension(nnode_TOT) ::fun_ord               !DRM Scandella 12.04.2006
-    real*8, dimension(nnode_TOT) :: px_t,py_t               !DRM Scandella 16.11.2005
-    integer*4 :: nf_drm                                     !DRM Scandella 11.04.2006
-    integer*4, dimension(nf_drm,2) ::glob_x                 !DRM Scandella 11.04.2006 
-    integer*4, dimension(nf_drm,2) ::glob_y                 !DRM Scandella 11.04.2006
-    integer*4 :: nfunc_data_drm                             !DRM Scandella 11.04.2006	    
-    integer*4, dimension(nf_drm) :: func_type_drm           !DRM Scandella 11.04.2006
-    integer*4, dimension(nf_drm +1) :: func_indx_drm        !DRM Scandella 11.04.2006
-    real*8, dimension(nfunc_data_drm) :: func_data_drm      !DRM Scandella 11.04.2006
-    integer*4 :: p                                          !DRM Scandella 12.04.2006 
+    integer*4                               :: p,ns,tagstep
+    integer*4                               :: nnode_TOT,nnode_BD
+    integer*4                               :: n_el_DRM,nf_drm 
+    integer*4                               :: nMDRM,imDRM
+    integer*4                               :: nfunc_data_drm
+    integer*4, dimension(n_el_DRM,5 )       :: el_DRM        
+    integer*4, dimension(nMDRM      )       :: tag_MDRM
+    integer*4, dimension(nnode_TOT  )       :: node_TOT,node_PDRM,fun_ord
+    integer*4, dimension(nf_drm     )       :: func_type_drm 
+    integer*4, dimension(nf_drm +1  )       :: func_indx_drm 
+    integer*4, dimension(nf_drm,2   )       :: glob_x,glob_y        
+    real*8, dimension(nnode_TOT,3)          :: val_PDRM           
+    real*8, dimension(nnode_TOT)            :: px_t,py_t         
+    real*8, dimension(nfunc_data_drm)       :: func_data_drm     
+    real*8, dimension(:,:), allocatable     :: disp_PDRM_t
+    real*8, dimension(2*(ns+1)*(ns+1)*n_el_DRM,2*(ns+1)*(ns+1)) :: K_DRM 
+    real*8, dimension(2*(ns+1)**2,2*(ns+1)**2)                  :: K_el 
 
 
-    !********************************************************************************************
+    !************************************************
+    !
     !             OUTPUT VARIABLES
-    !********************************************************************************************
+    !
+    !************************************************
 
     integer*4, dimension(nmonit) :: unit_disp
     integer*4, dimension(nmonit) :: unit_vel
@@ -189,104 +185,95 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
     integer*4, dimension(nmonit) :: unit_uDRM 
     integer*4, dimension (6)     :: option_out_var           
 
-    !********************************************************************************************
-    !             BOUNDARY CONDITIONS
-    !********************************************************************************************
+    !************************************************
+    !
+    !            BOUNDARY CONDITIONS
+    !
+    !************************************************
 
-    integer*4, dimension(:), allocatable :: i4count
-    integer*4, dimension(:), allocatable :: inode_dirX
-    integer*4, dimension(:), allocatable :: inode_dirY
-    integer*4, dimension(:), allocatable :: inode_neuX
-    integer*4, dimension(:), allocatable :: inode_neuY
-    integer*4, dimension(nelem_abc) :: ielem_abc
-    integer*4, dimension(nedge_abc) :: iedge_abc
-    integer*4 :: nnode_dirX,nnode_dirY,nnode_neuX,nnode_neuY
-    integer*4 :: nelem_abc,nedge_abc
-    integer*4 :: iedge,nedge,ied1,ied2,iel1,iel2,iel3,iel4
-    integer*4 :: edge_ia,edge_ja,edge_ib,edge_jb
-    real*8 :: edge_lx,edge_ly,edge_ll,edge_nx,edge_ny
+    integer*4                               :: nnode_dirX,nnode_dirY,nnode_neuX,nnode_neuY
+    integer*4                               :: nelem_abc,nedge_abc
+    integer*4                               :: iedge,nedge,ied1,ied2,iel1,iel2,iel3,iel4
+    integer*4                               :: edge_ia,edge_ja,edge_ib,edge_jb
+    integer*4, dimension(nelem_abc)         :: ielem_abc
+    integer*4, dimension(nedge_abc)         :: iedge_abc
+    integer*4, dimension(:), allocatable    :: i4count
+    integer*4, dimension(:), allocatable    :: inode_dirX
+    integer*4, dimension(:), allocatable    :: inode_dirY
+    integer*4, dimension(:), allocatable    :: inode_neuX
+    integer*4, dimension(:), allocatable    :: inode_neuY
+    real*8                                  :: edge_lx,edge_ly,edge_ll,edge_nx,edge_ny
 
-    !********************************************************************************************
-    !              ELEMENT BY ELEMENT
-    !********************************************************************************************
+    !************************************************
+    !
+    !           ELEMENT-WISE VECTORS 
+    !
+    !************************************************
 
-    real*8                              :: gamma
-    real*8, dimension(:),   allocatable :: ct,ww,dxdx_el,dxdy_el,dydx_el,dydy_el
-    real*8, dimension(:,:), allocatable :: dd,ux_el,uy_el,vx_el,vy_el
-    real*8, dimension(:,:), allocatable :: duxdx_el,duxdy_el,duydx_el,duydy_el
-    real*8, dimension(:,:), allocatable :: sxx_el,syy_el,szz_el,sxy_el
-    real*8, dimension(:,:), allocatable :: sxxs_el,syys_el,szzs_el,sxys_el
-    real*8, dimension(:,:), allocatable :: fx_el,fy_el,fxs_el,fys_el
-    real*8, dimension(:,:), allocatable :: det_j,mu_el,lambda_el 
+    real*8                                  :: gamma
+    real*8, dimension(:),   allocatable     :: ct,ww,dxdx_el,dxdy_el,dydx_el,dydy_el
+    real*8, dimension(:,:), allocatable     :: dd,ux_el,uy_el,vx_el,vy_el
+    real*8, dimension(:,:), allocatable     :: duxdx_el,duxdy_el,duydx_el,duydy_el
+    real*8, dimension(:,:), allocatable     :: sxx_el,syy_el,szz_el,sxy_el
+    real*8, dimension(:,:), allocatable     :: sxxs_el,syys_el,szzs_el,sxys_el
+    real*8, dimension(:,:), allocatable     :: fx_el,fy_el,fxs_el,fys_el
+    real*8, dimension(:,:), allocatable     :: det_j,mu_el,lambda_el 
+    ! NONLINEAR
+    real*8, dimension(:,:),     allocatable :: syld_el,Riso_el
+    real*8, dimension(:,:),     allocatable :: Rinf_el,biso_el
+    real*8, dimension(:,:),     allocatable :: Ckin_el,kkin_el
+    real*8, dimension(:,:,:),   allocatable :: Xkin_el,depl_el
+    real*8, dimension(:,:,:),   allocatable :: sxx,syy,szz,sxy,riso
+    real*8, dimension(:,:,:),   allocatable :: duxdx,duydy,duxdy,duydx
+    real*8, dimension(:,:,:,:), allocatable :: xkin,epl
 
-    !********************************************************************************************
-    !              NONLINEAR
-    !********************************************************************************************
-    real*8, dimension(:,:,:,:), allocatable   :: epl_all,depl_all
-    real*8, dimension(:,:,:,:), allocatable   :: xkin_all,dxkin_all
-    real*8, dimension(:,:,:,:), allocatable   :: Riso_all,dRiso_all
-    real*8, dimension(:,:),   allocatable   :: syld_el,Riso_el
-    real*8, dimension(:,:),   allocatable   :: Rinf_el,biso_el
-    real*8, dimension(:,:),   allocatable   :: Ckin_el,kkin_el
-    real*8, dimension(:,:,:), allocatable   :: Xkin_el,depl_el
-
-    !********************************************************************************************
-    !               GLOBAL VARIABLES
-    !********************************************************************************************
-    real*8, dimension(:), allocatable       :: u1,u2,vel,acc
-    real*8, dimension(:), allocatable       :: sxx,syy,sxy,szz 
-    real*8, dimension(:), allocatable       :: dsxx,dsyy,dsxy,dszz 
-    real*8, dimension(:), allocatable       :: duxdx,duydy,duxdy,duydx
-    real*8, dimension(:), allocatable       :: dduxdx,dduydy,dduxdy,dduydx
-    real*8, dimension(:), allocatable       :: fk,fe,fd
-    real*8, dimension(:), allocatable       :: sism
+    !************************************************
+    !
+    !           NODE-WISE VECTORS 
+    !
+    !************************************************
+    
+    integer*4,  dimension(:), allocatable   :: update_index_el_az
+    real*8,     dimension(:), allocatable   :: u1,u2,vel,acc
+    real*8,     dimension(:), allocatable   :: fk,fe,fd
+    real*8,     dimension(:), allocatable   :: sism
     real*8, dimension(2*nnt), intent(in)    :: mvec
     real*8, dimension(2*nnt), intent(inout) :: u0,v1
-    integer*4, dimension(:), allocatable    :: update_index_el_az
+    
+    !************************************************
+    !
+    !           SEISMIC MOMENT 
+    !
+    !************************************************
 
-    !********************************************************************************************
-    !                  SEISMIC MOMENT
-    !********************************************************************************************
+    integer*4                               :: nl_sism,length_cns
+    integer*4, dimension(length_cns,5)      :: check_node_sism
+    real*8, dimension(length_cns,1)         :: check_dist_node_sism
+    real*8, dimension(nl_sism,3)            :: facsmom       
 
-    integer*4 :: length_cns
-    integer*4, dimension(length_cns,5) :: check_node_sism
-    real*8, dimension(length_cns,1) :: check_dist_node_sism
-    integer*4 :: nl_sism 
-    real*8, dimension(nl_sism,3) :: facsmom       
+    !************************************************
+    !
+    !           DAMPING 
+    !
+    !************************************************
 
-    !********************************************************************************************
-    !                      DAMPING
-    !********************************************************************************************
+    integer*4                               :: make_damping_yes_or_not
+    real*8                                  :: ndt_monitor                                   
+    integer*4, dimension(:), allocatable    :: nodal_counter
 
-    integer*4 :: make_damping_yes_or_not
-    real*8 :: ndt_monitor                                   
-    integer*4, dimension(:), allocatable :: nodal_counter
-
+    !************************************************
+    !
+    !           NONLINEAR FUNCTIONS - INTERFACE 
+    !
+    !************************************************
+    
     interface
-        ! allocation/initialization all node variables ==> to be updated at each time step
 
         subroutine ALLOINIT_NL_ALL(ne,sdeg_mat,nm,nnt,cs_nnz,cs,u1,u2,vel,acc,v1,fk,fe,fd,&
             duxdx,duxdy,duydx,duydy,dduxdx,dduxdy,dduydx,dduydy,sxx,syy,szz,sxy,dsxx,dsyy,dszz,dsxy,&
             xkin_all,dxkin_all,riso_all,driso_all,epl_all,depl_all,option_out_var,nl_sism,sism,&
             update_index_el_az,nodal_counter)  
 
-            implicit none
-            ! intent IN
-            integer*4,                              intent(in)      :: ne,nm,nnt,cs_nnz,nl_sism
-            integer*4,  dimension(6),               intent(in)      :: option_out_var
-            integer*4,  dimension(nm),              intent(in)      :: sdeg_mat
-            integer*4,  dimension(0:cs_nnz),        intent(in)      :: cs
-            real*8,     dimension(2*nnt),           intent(in)      :: v1
-            ! intent INOUT
-            real*8,     dimension(:), allocatable,  intent(inout)   :: u1,u2,vel,acc,fk,fe,fd,sism
-            real*8,     dimension(:), allocatable,  intent(inout)   :: xkin_all,epl_all,riso_all
-            real*8,     dimension(:), allocatable,  intent(inout)   :: dxkin_all,depl_all,driso_all
-            real*8,     dimension(:), allocatable,  intent(inout)   :: duxdx,duydy,duydx,duxdy
-            real*8,     dimension(:), allocatable,  intent(inout)   :: dduxdx,dduydy,dduydx,dduxdy
-            real*8,     dimension(:), allocatable,  intent(inout)   :: sxx,syy,szz,sxy,dsxx,dsyy,dszz,dsxy
-            integer*4,  dimension(:), allocatable,  intent(inout)   :: update_index_el_az,nodal_counter
-            ! counters
-            integer*4                                               :: nn,im,iaz,ie,in,is,i,j
         end subroutine ALLOINIT_NL_ALL 
         ! allocation element-wise variables (to be updated at each time-step)
         subroutine ALLOCATE_NL_EL(nn,ct,ww,dd,ux_el,uy_el,dxdx_el,dxdy_el,dydx_el,dydy_el,det_j,    &
