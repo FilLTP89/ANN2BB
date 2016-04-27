@@ -253,11 +253,161 @@ end module qsort_c_module
 !> @brief  Module for non linear calculation in 2D
 
 module nonlinear2d
-       real*8, parameter :: FTOL = 0.00100000000D0
-       real*8, parameter :: LTOL = 0.0010000000000D0
-       real*8, parameter :: STOL = 0.0010000000000000D0
-
+        real*8, parameter :: FTOL = 0.00100000000D0
+        real*8, parameter :: LTOL = 0.0010000000000D0
+        real*8, parameter :: STOL = 0.0010000000000000D0
+        type nl_element   !< element structure for time loop (RAM saving)
+            ! nl stored variables
+            real*8, dimension(:,:),   allocatable    :: radius
+            real*8, dimension(:,:,:), allocatable    :: stress
+            real*8, dimension(:,:,:), allocatable    :: strain
+            real*8, dimension(:,:,:), allocatable    :: dstrain
+            real*8, dimension(:,:,:), allocatable    :: center
+            real*8, dimension(:,:,:), allocatable    :: plastic_strain
+            ! elastic parameters
+            real*8, dimension(:,:), allocatable      :: lambda,mu
+            ! nonlinear parameters
+            real*8, dimension(:,:),    allocatable   :: syld,rinf,biso
+            real*8, dimension(:,:),    allocatable   :: ckin,kkin
+        
+        end type 
     contains
+        ! MAKE INTERNAL FORCES
+
+        subroutine MAKE_INTERNAL_FORCES_NL(dt,u1,ne,cs_nnz,cs,ct,nm,sdeg_mat,ww,dd,nnt,snl,&
+            nl_sism,vel,alfa1,alfa2,beta1,beta2,gamma1,gamma2)
+
+            implicit none
+        
+            do ie = 1,ne ! LOOP OVER ELEMENT
+                im = cs(cs(ie-1) + 0)
+                nn = sdeg_mat(im)+1
+                ! [TODO] ALLOCATION 
+                allocate(ct(nn))
+                allocate(ww(nn))
+                allocate(dd(nn,nn))
+                allocate(dxdx_el(nn))
+                allocate(dxdy_el(nn))
+                allocate(dydx_el(nn))
+                allocate(dydy_el(nn))
+                allocate(ux_el(nn,nn))
+                allocate(uy_el(nn,nn))
+                allocate(duxdx_el(nn,nn))
+                allocate(duxdy_el(nn,nn))
+                allocate(duydx_el(nn,nn))
+                allocate(duydy_el(nn,nn))
+                allocate(sxx_el(nn,nn))
+                allocate(syy_el(nn,nn))
+                allocate(szz_el(nn,nn))
+                allocate(sxy_el(nn,nn))
+                allocate(fx_el(nn,nn))
+                allocate(fy_el(nn,nn))
+                allocate(det_j(nn,nn))
+                 
+                do iq = 1,nn
+                    do ip = 1,nn
+                        
+                        ! [TODO] COMPUTE STRAIN INCREMENTS
+                        dstrain(:) = 0.d0
+                        ! ....
+                        
+                        ! COMPUTE TRIAL STRESS INCREMENT
+                        dtrial(:) = 0.d0
+                        call MAKE_STRESS_LOC(snl(ie)%lambda(ip,iq),snl(ie)%mu(ip,iq),dstrain,dtrial)
+                        ! CHECK PLASTICITY
+                        call check_plasticity(dtrial,snl(ie)%stress(0:5,ip,iq),snl(ie)%center(0:5,ip,iq),&
+                            snl(ie)%radiu(ip,iq),snl(ie)%syld(ip,iq),st_epl,alpha_elp,ie)
+                        ! PLASTIC CORRECTION 
+                        if (st_epl) then
+                            write(*,*) "PLASTIC"
+                            call plastic_corrector(dstrain,dtrial,snl(ie)%center(0:5,ip,iq),  &
+                                snl(ie)%radius(ip,iq),snl(ie)%syld(ip,iq),snl(ie)%biso(ip,iq),&
+                                snl(ie)%rinf(ip,iq),snl(ie)%ckin(ip,iq),snl(ie)%kkin(ip,iq),  &
+                                mu(ip,iq),lambda(ip,iq),pl(:,ip,iq),ie)
+                        endif
+                        sxx = dtrial(0)
+                        syy = dtrial(1)
+                        szz = dtrial(2)
+                        sxy = dtrial(3)
+                    enddo
+                enddo
+
+                ! FORCE CALCULATION
+                do iq = 1,nn
+                    do ip = 1,nn
+
+                        t1fx = 0.0d0
+                        t2fx = 0.0d0
+                        t1fy = 0.0d0
+                        t2fy = 0.0d0
+
+                        ! derivatives with respect to eta ( there is a delta(iq,im) )
+                        do il=1,nn
+                            t1fx = t1fx+dd(il,ip)*ww(il)*ww(iq)*(sxx(il,iq)*dydy(il)-sxy(il,iq)*dxdy(il))
+                            t1fy = t1fy+dd(il,ip)*ww(il)*ww(iq)*(sxy(il,iq)*dydy(il)-syy(il,iq)*dxdy(il))
+                        enddo
+                        ! derivatives with respect to xi ( there is a delta(ip,il) )
+                        do im=1,nn
+                            t2fx=t2fx+dd(im,iq)*ww(ip)*ww(im)*(sxx(ip,im)*dydx(im)-sxy(ip,im)*dxdx(im))
+                            t2fy=t2fy+dd(im,iq)*ww(ip)*ww(im)*(sxy(ip,im)*dydx(im)-syy(ip,im)*dxdx(im))
+                        enddo
+                        snl(ie)%fx(ip,iq) = t1fx-t2fx
+                        snl(ie)%fy(ip,iq) = t1fy-t2fy
+                    enddo
+                enddo
+                
+            enddo ! LOOP OVER ELEMENT
+        end subroutine MAKE_INTERNAL_FORCES_NL
+        !
+        subroutine ALLOCATE_NL_EL(nn,ct,ww,dd,ux_el,uy_el,dxdx_el,dxdy_el,dydx_el,dydy_el,det_j, &
+            fx_el,fy_el,fxs_el,fys_el, nl_sism,sxxs_el,sxys_el,syys_el,szzs_el)
+           
+            implicit none    
+            ! intent IN
+            integer*4,                              intent(in ) :: nn,nl_sism
+            ! intent OUT 
+            real*8,     dimension(:),  allocatable, intent(out) :: ct,ww
+            real*8,     dimension(:),  allocatable, intent(out) :: dxdx_el,dydy_el
+            real*8,     dimension(:),  allocatable, intent(out) :: dxdy_el,dydx_el
+            real*8,     dimension(:,:),allocatable, intent(out) :: dd,det_j,fx_el,fy_el
+            real*8,     dimension(:,:),allocatable, intent(out) :: fxs_el,fys_el
+            real*8,     dimension(:,:),allocatable, intent(out) :: ux_el,uy_el
+            real*8,     dimension(:,:),allocatable, intent(out) :: duxdx_el,duydy_el
+            real*8,     dimension(:,:),allocatable, intent(out) :: duxdy_el,duydx_el
+            real*8,     dimension(:,:),allocatable, intent(out) :: sxx_el,syy_el,sxy_el,szz_el
+            real*8,     dimension(:,:),allocatable, intent(out) :: sxxs_el,syys_el,sxys_el,szzs_el
+            
+            allocate(ct(nn))
+            allocate(ww(nn))
+            allocate(dd(nn,nn))
+            allocate(dxdx_el(nn))
+            allocate(dxdy_el(nn))
+            allocate(dydx_el(nn))
+            allocate(dydy_el(nn))
+            allocate(ux_el(nn,nn))
+            allocate(uy_el(nn,nn))
+            allocate(duxdx_el(nn,nn))
+            allocate(duxdy_el(nn,nn))
+            allocate(duydx_el(nn,nn))
+            allocate(duydy_el(nn,nn))
+            allocate(sxx_el(nn,nn))
+            allocate(syy_el(nn,nn))
+            allocate(szz_el(nn,nn))
+            allocate(sxy_el(nn,nn))
+            allocate(Riso_el(nn,nn))
+            allocate(fx_el(nn,nn))
+            allocate(fy_el(nn,nn))
+            allocate(det_j(nn,nn))
+            if (nl_sism.gt.0) then
+                allocate(fxs_el(nn,nn))
+                allocate(fys_el(nn,nn))
+                allocate(sxxs_el(nn,nn))
+                allocate(syys_el(nn,nn))
+                allocate(szzs_el(nn,nn))
+                allocate(sxys_el(nn,nn))
+            endif
+            return
+        end subroutine ALLOCATE_NL_EL
         ! COMPUTE ELASTIC STIFFNESS MATRIX
         subroutine stiff_matrix(lambda,mu,DEL)
             

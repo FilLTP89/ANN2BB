@@ -20,14 +20,47 @@
 !! @author Ilario Mazzieri and Filippo Gatti
 !> @date February,2016
 !> @version 1.0
+!> @param[in] nn number of 1-D GLL nodes
+!> @param[in] ct LGL nodes
+!> @param[in] ww LGL weights
+!> @param[in] dd matrix of spectral derivatives
+!> @param[in] duxdx,dUxdy,dUydx,dUydy nodal values for strain tensor (on element)
+!> @param[inout] sxx,syy,sxy,szz nodal values for the stress tensor (on element)
+!> @param[inout] Xkin_el,Riso_el hardening variables on element LGL
+!> @param[in] lambda_el,mu_el Lamè parameters on element LGL
+!> @param[in] syld_el yield limit on element LGL
+!> @param[in] Ckin_el,kkin_el kinematic hardening parameters on element LGL
+!> @param[in] Rinf_el,biso_el isotropic hardening parameters on element LGL
+!> @param[inout] dEpl_el plastic strain increment on element LGL
+!> @param[out] fx x-componnent for internal forces
+!> @param[out] fy y-componnent for internal forces
 
-subroutine MAKE_INTERNAL_FORCES_NL(dt,u1,ne,cs_nnz,cs,ct,nm,ww,dd,nnt,snl,&
-    nl_sism,vel,alfa1,alfa2,beta1,beta2,gamma1,gamma2)
+
+subroutine MAKE_INTERNAL_FORCE_NL(nn,ct,ww,dd,duxdx,duxdy,duydx,duydy, &
+    sxx,syy,szz,sxy,xkin_el,riso_el,mu_el,lambda_el,syld_el,Ckin_el,kkin_el,&
+    rinf_el,biso_el,depl_el,dxdx,dxdy,dydx,dydy,fx,fy,nel)                               
     
     use nonlinear2d
     
     implicit none
 
+    integer*4                                   :: ip,iq,il,im,i
+    real*8                                      :: t1fx,t1fy,t2fx,t2fy
+    real*8                                      :: det_j,t1ux,t1uy,t2ux,t2uy
+    
+    integer*4,                  intent(in)      :: nn,nel
+    logical                                     :: st_epl
+    real*8                                      :: alpha_elp
+    real*8, dimension(4)                        :: dEalpha,stress0,stress1,dtrial
+    real*8, dimension(nn),      intent(in)      :: ct,ww,dxdx,dxdy,dydx,dydy
+    real*8, dimension(nn,nn),   intent(in)      :: Ckin_el,kkin_el
+    real*8, dimension(nn,nn),   intent(in)      :: Rinf_el,biso_el,Riso_el
+    real*8, dimension(nn,nn),   intent(in)      :: duxdx,duxdy,duydx,duydy  
+    real*8, dimension(nn,nn),   intent(in)      :: dd,lambda_el,mu_el,syld_el
+    real*8, dimension(nn,nn),   intent(inout)   :: sxx,syy,sxy,szz,fx,fy
+    real*8, dimension(4,nn,nn), intent(inout)   :: Xkin_el,dEpl_el
+    real*8                                      :: syld,radius
+    real*8, dimension(4)                        :: center
 
     do iq = 1,nn
         do ip = 1,nn
@@ -92,4 +125,5 @@ end subroutine MAKE_INTERNAL_FORCE_NL
 !! show-trailing-whitespace: t
 !! End:
 !! vim: set sw=4 ts=8 et tw=80 smartindent : !!
+
 
