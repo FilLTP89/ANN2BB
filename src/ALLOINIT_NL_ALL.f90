@@ -58,11 +58,10 @@ subroutine ALLOINIT_NL_ALL(ne,sdeg_mat,nm,nnt,cs_nnz,cs,prop_mat,u1,u2,vel,acc,v
         allocate(snl(ie)%biso(nn,nn))
         !
         allocate(snl(ie)%radius(nn,nn))
-        allocate(snl(ie)%stress(0:5,nn,nn))
-        allocate(snl(ie)%strain(0:5,nn,nn))
-        allocate(snl(ie)%dstrain(0:5,nn,nn))
-        allocate(snl(ie)%center(0:5,nn,nn))
-        allocate(snl(ie)%plastic_strain(0:5,nn,nn))
+        allocate(snl(ie)%stress(4,nn,nn))
+        allocate(snl(ie)%strain(3,nn,nn))
+        allocate(snl(ie)%center(4,nn,nn))
+        allocate(snl(ie)%plastic_strain(3,nn,nn))
         ! initialization
         snl(ie)%lambda = prop_mat(im,2)
         snl(ie)%mu     = prop_mat(im,3)

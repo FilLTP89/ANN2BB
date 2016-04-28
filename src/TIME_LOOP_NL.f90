@@ -99,7 +99,8 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
     
     use write_output
     use nonlinear2d
-
+    use seismic
+    !
     implicit none
 
     integer*4                               :: NNZ_K,NNZ_N,error,test,nelem_dg,nnz_dg_only_uv
@@ -680,88 +681,49 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
 
         !NO Damping
         !(u2 - 2*u1 + u0)/dt^2  = - Fint(u1) + Fel
+        ! COMPUTE NL INTERNAL FORCES fk(u)
         write(*,'(A)')
         write(*,'(A)') '*************************************************************'
         write(*,'(A)') '----------COMPUTING NON LINEAR INTERNAL FORCES---------------'
+        call system_clock(COUNT=clock_start,COUNT_RATE=clock(2))  
 
-        call system_clock(COUNT=clock_start,COUNT_RATE=clock(2))   
-        
         call MAKE_INTERNAL_FORCES_NL(dt,u1,ne,cs_nnz,cs,ct,nm,ww,dd,nnt,snl,&
-            nl_sism,vel,alfa1,alfa2,beta1,beta2,gamma1,gamma2)
-        ! Make internal forces (nonlinear)
-!        do ie=1,ne
-!            im = cs(cs(ie -1) +0)   
-!            nn = sdeg_mat(im) +1
-!            ! Allocate and initialize element variables
-!            call ALLOCATE_NL_EL(nn,ct,ww,dd,ux_el,uy_el,      &
-!                     dxdx_el, dxdy_el, dydx_el, dydy_el,det_j,   &
-!                    duxdx_el,duxdy_el,duydx_el,duydy_el,         &
-!                      sxx_el,  sxy_el,  syy_el,szz_el,           &
-!                   lambda_el,   mu_el, syld_el, Ckin_el, kkin_el,&
-!                     Rinf_el, biso_el, Riso_el, Xkin_el, dEpl_el,&
-!                       fx_el,   fy_el,  fxs_el,  fys_el, nl_sism,&
-!                     sxxs_el, sxys_el, syys_el,szzs_el)
-!            ! Initialize element variables
-!            call INITIAL_NL_EL(cs_nnz,cs,nm,ct,ww,dd,nn,nnt,im,ie,prop_mat, &
-!                vel,sxx,syy,szz,sxy,ux_el,uy_el,sxx_el,syy_el,szz_el,sxy_el, &
-!                fx_el,fy_el,nl_sism,fxs_el,fys_el,sxxs_el,syys_el,szzs_el,sxys_el,&
-!                lambda_el,mu_el,syld_el,Ckin_el,kkin_el,Rinf_el,biso_el,          &
-!                riso_all,riso_el,xkin_all,xkin_el)
-!            ! Make Derivatives 
-!            call MAKE_DERIVATIVES(nn,alfa1(ie),alfa2(ie),beta1(ie),beta2(ie),gamma1(ie),gamma2(ie),ct,&
-!                dxdy_el,dydy_el,dxdx_el,dydx_el)
-!            ! Make Strain increment
-!            call MAKE_STRAIN(nn,dd,dxdx_el,dxdy_el,dydx_el,dydy_el,ux_el,uy_el, &
-!                duxdx_el,duxdy_el,duydx_el,duydy_el,dt)
-!            ! Compute Nonlinear internal forces
-!            call MAKE_INTERNAL_FORCE_NL(nn,ct,ww,dd,duxdx_el,duxdy_el,duydx_el,duydy_el, &
-!                sxx_el,syy_el,szz_el,sxy_el,Xkin_el,Riso_el,mu_el,lambda_el,syld_el,        &
-!                Ckin_el,kkin_el,Rinf_el,biso_el,dEpl_el,dxdx_el,dxdy_el,dydx_el,dydy_el,    &
-!                fx_el,fy_el,ie)
-            if (nl_sism.gt.0) then
-                fe = 0.0d0
-                call MAKE_SEISMIC_MOMENT_NEW(nn,sxxs_el,syys_el,szzs_el,sxys_el,&
-                    check_node_sism,check_dist_node_sism,length_cns,ie,facsmom, &
-                    nl_sism,func_type,func_indx,func_data,nf,tt1, &
-                    nfunc_data,tag_func)
-                call MAKE_INTERNAL_FORCE_EL(nn,ct,ww,dd,&
-                    dxdx_el,dxdy_el,dydx_el,dydy_el,&
-                    sxxs_el,syys_el,szzs_el,sxys_el,fxs_el,fys_el)
-                call UPDATE_ALL_INCREMENTS(ie,nnt,nn,cs_nnz,cs,fk,mvec,dsxx,dsyy,dszz,dsxy,&
-                    dduxdx,dduxdy,dduydx,dduydy,dxkin_all,depl_all,driso_all,fx_el,fy_el,&
-                    sxx_el,syy_el,szz_el,sxy_el,duxdx_el,duxdy_el,duydx_el,duydy_el,xkin_el,&
-                    riso_el,depl_el,fxs_el,fys_el,sism)
-            else
-                call UPDATE_ALL_INCREMENTS(ie,nnt,nn,cs_nnz,cs,fk,mvec,dsxx,dsyy,dszz,dsxy,&
-                    dduxdx,dduxdy,dduydx,dduydy,dxkin_all,depl_all,driso_all,fx_el,fy_el,&
-                    sxx_el,syy_el,szz_el,sxy_el,duxdx_el,duxdy_el,duydx_el,duydy_el,xkin_el,&
-                    riso_el,depl_el)
-            endif
-            call DEALLOCATE_NL_EL(ct,ww,dd,dxdx_el,dxdy_el,dydx_el,dydy_el,det_j,  &
-                duxdx_el,duxdy_el,duydx_el,duydy_el,sxx_el,syy_el,sxy_el,szz_el, &
-                lambda_el,mu_el,syld_el,Ckin_el,kkin_el,Riso_el,Rinf_el,biso_el, &
-                Xkin_el,dEpl_el,fx_el,fy_el,nl_sism,fxs_el,fys_el,sxxs_el,syys_el,&
-                sxys_el,szzs_el,ux_el,uy_el)
-        end do
-        call UPDATE_ALL(nnt,sxx,syy,szz,sxy,dsxx,dsyy,dszz,dsxy,&
-            duxdx,duxdy,duydx,duydy,dduxdx,dduxdy,dduydx,dduydy,xkin_all,dxkin_all,&
-            riso_all,driso_all,epl_all,depl_all,nodal_counter)
-        if (nl_sism.gt.0) fe = fe + sism/mvec 
+            alfa1,alfa2,beta1,beta2,gamma1,gamma2,dt,u1,fk,mvec)
         
         call system_clock(COUNT=clock_finish)
         time_fk = float(clock_finish - clock_start) / float(clock(2))
         write(*,'(A)') 'Non Linear Internal Forces: OK'
+        ! COMPUTE EXTERNAL SEISMIC FORCES sism(fe) 
+        if (nl_sism.gt.0) 
+            write(*,'(A)')
+            write(*,'(A)') '*************************************************************'
+            write(*,'(A)') '----------COMPUTING SEISMIC EXTERNAL FORCES---------------'
+            call system_clock(COUNT=clock_start,COUNT_RATE=clock(2))   
 
-        !Compute fd = N_TOT*v1
+
+            fe = fe + sism/mvec 
+        
+            call system_clock(COUNT=clock_finish)
+            time_fe = time_fe+float(clock_finish - clock_start) / float(clock(2))
+            write(*,'(A)') 'Seismic External Forces: OK'
+        endif
+
+        call UPDATE_OUTPUT(nnt,snl,sxx,syy,szz,sxy,duxdx,duxdy,duydx,duydy,&
+            xkin,riso,epl,nodal_counter)
+        
+
+        
+        !COMPUTE VISCID FORCES fd = N_TOT*v1
         call system_clock(COUNT=clock_start,COUNT_RATE=clock(2)) 
         call MATMUL_SPARSE(N_TOT, NNZ_N, JN_TOT, IN_TOT, fd, 2*nnt, v1, 2*nnt, error)
         call system_clock(COUNT=clock_finish)
         time_fd = float(clock_finish - clock_start) / float(clock(2))
+        ! SOLVE SYSTEM
         call system_clock(COUNT=clock_start,COUNT_RATE=clock(2)) 
         u2 = 2.0d0 * u1 - u0 + dt2*(fe - fk - fd)
         call system_clock(COUNT=clock_finish)
         time_u = float(clock_finish - clock_start) / float(clock(2))
-        
+        ! 
         
         !-----DRM---------------------------------------------------------------------------------------------------        
         if (tagstep.eq.2) then                                                                      !DRM Scandella 28.10.2005 

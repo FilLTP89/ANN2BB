@@ -49,7 +49,6 @@ subroutine INITIAL_NL_EL(cs_nnz,cs,nm,ct,ww,dd,nn,nnt,im,ie,prop_mat, &
     integer*4, intent(in)                       :: nl_sism,im,nnt,nn,cs_nnz,nm,ie
     integer*4, intent(in),  dimension(0:cs_nnz) :: cs
     real*8, intent(in),     dimension(nnt)      :: sxx,syy,szz,sxy,riso_all
-    real*8, intent(in),     dimension(2*nnt)    :: displ
     real*8, intent(in),     dimension(4*nnt)    :: xkin_all
     real*8, intent(inout),  dimension(nn)       :: ct,ww,fx_el,fy_el,fxs_el,fys_el
     real*8, intent(inout),  dimension(nn,nn)    :: dd,ux_el,uy_el,lambda_el,mu_el
@@ -61,39 +60,6 @@ subroutine INITIAL_NL_EL(cs_nnz,cs,nm,ct,ww,dd,nn,nnt,im,ie,prop_mat, &
     real*8, intent(inout),  dimension(4,nn,nn)  :: Xkin_el
     integer*4                                   :: i,j,is,in
 
-    call lgl(nn,ct,ww,dd)
-    
-    fx_el      = 0.d0
-    fy_el      = 0.d0
-    
-    do j = 1,nn
-        do i = 1,nn
-            is = nn*(j -1) +i
-            in = cs(cs(ie -1) + is)
-            ux_el(i,j)      = displ(in)
-            uy_el(i,j)      = displ(in+nnt)
-
-            sxx_el(i,j)     = sxx(in)
-            syy_el(i,j)     = syy(in)
-            szz_el(i,j)     = szz(in)
-            sxy_el(i,j)     = szz(in)
-     
-            Riso_el(i,j)    = Riso_all(in)
-            Xkin_el(1,i,j)  = Xkin_all(in)     
-            Xkin_el(2,i,j)  = Xkin_all(in+nnt)     
-            Xkin_el(3,i,j)  = Xkin_all(in+2*nnt)     
-            Xkin_el(4,i,j)  = Xkin_all(in+3*nnt)
-        enddo
-    enddo
-    
-    if (nl_sism.gt.0) then
-        fxs_el=0d0
-        fys_el=0d0
-        sxxs_el=0d0
-        syys_el=0d0
-        sxys_el=0d0
-        szzs_el=0d0
-    endif
     
     return
 end subroutine INITIAL_NL_EL

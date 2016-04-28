@@ -20,43 +20,28 @@
 !! @author Filippo Gatti
 !> @date February,2016
 !> @version 1.0
-subroutine UPDATE_ALL(nnt,sxx,syy,szz,sxy,dsxx,dsyy,dszz,dsxy,&
-    duxdx,duxdy,duydx,duydy,dduxdx,dduxdy,dduydx,dduydy,xkin_all,dxkin_all,&
-    riso_all,driso_all,epl_all,depl_all,nodal_counter)
+subroutine UPDATE_ALL(nnt,sxx,syy,szz,sxy,duxdx,duxdy,duydx,duydy,xkin,riso,epl,nodal_counter)
     
     implicit none
-    integer*4, intent(in) :: nnt
+    integer*4, intent(in)                               :: nnt
     integer*4, dimension(nnt), intent(in)               :: nodal_counter
     real*8, dimension(nnt),   intent(inout)             :: sxx,syy,szz,sxy
-    real*8, dimension(nnt),   intent(inout)             :: dsxx,dsyy,dszz,dsxy
     real*8, dimension(nnt),   intent(inout)             :: duxdx,duydy,duxdy,duydx
-    real*8, dimension(nnt),   intent(inout)             :: dduxdx,dduydy,dduxdy,dduydx
-    real*8, dimension(nnt),   intent(inout)             :: riso_all,driso_all
-    real*8, dimension(4*nnt), intent(inout)             :: xkin_all,dxkin_all
-    real*8, dimension(4*nnt), intent(inout)             :: epl_all,depl_all
-    sxx         = sxx+dsxx
-    syy         = syy+dsyy
-    szz         = szz+dszz
-    sxy         = sxy+dsxy
-    duxdx       = duxdx + dduxdx
-    duxdy       = duxdy + dduxdy
-    duydx       = duydx + dduydx
-    duydy       = duydy + dduydy
-    xkin_all    = xkin_all+dxkin_all
-    riso_all    = riso_all+driso_all
-    epl_all     = epl_all +depl_all
+    real*8, dimension(nnt),   intent(inout)             :: riso
+    real*8, dimension(4*nnt), intent(inout)             :: xkin
+    real*8, dimension(4*nnt), intent(inout)             :: epl
+    sxx   = sxx
+    syy   = syy
+    szz   = szz
+    sxy   = sxy
+    duxdx = duxdx
+    duxdy = duxdy
+    duydx = duydx
+    duydy = duydy
+    xkin  = xkin
+    riso  = riso
+    epl   = epl
 
-    dsxx(:) = 0.d0
-    dsxy(:) = 0.d0
-    dsyy(:) = 0.d0
-    dszz(:) = 0.d0
-    dduxdx(:) = 0.d0
-    dduxdy(:) = 0.d0
-    dduydx(:) = 0.d0
-    dduydy(:) = 0.d0
-    dxkin_all(:) = 0.d0
-    driso_all(:) = 0.d0
-    depl_all(:)  = 0.d0
     return
 end subroutine UPDATE_ALL
 !! mode: f90

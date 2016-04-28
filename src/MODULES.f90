@@ -261,7 +261,6 @@ module nonlinear2d
             real*8, dimension(:,:),   allocatable    :: radius
             real*8, dimension(:,:,:), allocatable    :: stress
             real*8, dimension(:,:,:), allocatable    :: strain
-            real*8, dimension(:,:,:), allocatable    :: dstrain
             real*8, dimension(:,:,:), allocatable    :: center
             real*8, dimension(:,:,:), allocatable    :: plastic_strain
             ! elastic parameters
@@ -272,70 +271,74 @@ module nonlinear2d
         
         end type 
     contains
-        ! MAKE INTERNAL FORCES
-
-        subroutine MAKE_INTERNAL_FORCES_NL(dt,u1,ne,cs_nnz,cs,ct,nm,sdeg_mat,ww,dd,nnt,snl,&
-            nl_sism,vel,alfa1,alfa2,beta1,beta2,gamma1,gamma2)
+        
+        !****************************************************************************
+        ! MAKE NL INTERNAL FORCES
+        !****************************************************************************
+        
+        subroutine MAKE_INTERNAL_FORCES_NL(nnt,ne,cs_nnz,cs,sdeg_mat,snl,&
+            alfa1,alfa2,beta1,beta2,gamma1,gamma2,dt,displ,fk,mvec)
 
             implicit none
-        
-            do ie = 1,ne ! LOOP OVER ELEMENT
+            ! INTENT IN
+            integer*4, intent(in)                       :: nnt,ne,nm,cs_nnz
+            integer*4, intent(in), dimension(nm)        :: sdeg_mat
+            integer*4, intent(in), dimension(0:cs_nnz)  :: cs
+            real*8,    intent(in)                       :: dt
+            real*8,    intent(in), dimension(ne)        :: alfa1,beta1,gamma1,delta1
+            real*8,    intent(in), dimension(ne)        :: alfa2,beta2,gamma2,delta2 
+            real*8,    intent(in), dimension(2*nnt)     :: displ,mvec
+            ! INTENT INOUT
+            real*8,    intent(inout), dimension(2*nnt)  :: fk,fe
+            type(nl_element), intent(inout), dimension(ne) :: snl 
+            ! 
+            real*8,     dimension(:),  allocatable      :: ct,ww
+            real*8,     dimension(:),  allocatable      :: dxdx,dydy,dxdy,dydx
+            real*8,     dimension(:,:),allocatable      :: dd,det_j,fx,fy
+            real*8,     dimension(:,:,:), allocatable   :: dstrain
+            real*8,     dimension(4)                    :: dtrial
+            real*8                                      :: alpha_epl,t1ux,t1uy,t2ux,
+            real*8                                      :: t2uy,t1fx,t1fy,t2fx,t2fy
+            integer*4                                   :: ie,ip,iq,il,im,nn,is,in
+            logical                                     :: st_epl
+           !
+            do ie = 1,ne 
                 im = cs(cs(ie-1) + 0)
                 nn = sdeg_mat(im)+1
-                ! [TODO] ALLOCATION 
-                allocate(ct(nn))
-                allocate(ww(nn))
-                allocate(dd(nn,nn))
-                allocate(dxdx_el(nn))
-                allocate(dxdy_el(nn))
-                allocate(dydx_el(nn))
-                allocate(dydy_el(nn))
-                allocate(ux_el(nn,nn))
-                allocate(uy_el(nn,nn))
-                allocate(duxdx_el(nn,nn))
-                allocate(duxdy_el(nn,nn))
-                allocate(duydx_el(nn,nn))
-                allocate(duydy_el(nn,nn))
-                allocate(sxx_el(nn,nn))
-                allocate(syy_el(nn,nn))
-                allocate(szz_el(nn,nn))
-                allocate(sxy_el(nn,nn))
-                allocate(fx_el(nn,nn))
-                allocate(fy_el(nn,nn))
-                allocate(det_j(nn,nn))
-                 
+                
+                ! ALLOCATION/INITIALIZATION LOCAL VARIABLES 
+                call ALLOINIT_LOC(nnt,nn,ct,ww,dd,dxdx,dxdy,dydx,dydy,dstrain, &
+                    fx,fy,displ)
+                ! DISPLACEMENT VS VELOCITY FORMULATION
+                snl(ie)%strain(:,:) = snl(ie)%strain(:,:) + dstrain(:,:) 
                 do iq = 1,nn
                     do ip = 1,nn
-                        
-                        ! [TODO] COMPUTE STRAIN INCREMENTS
-                        dstrain(:) = 0.d0
-                        ! ....
-                        
                         ! COMPUTE TRIAL STRESS INCREMENT
                         dtrial(:) = 0.d0
-                        call MAKE_STRESS_LOC(snl(ie)%lambda(ip,iq),snl(ie)%mu(ip,iq),dstrain,dtrial)
+                        call MAKE_STRESS_LOC(snl(ie)%lambda(ip,iq),snl(ie)%mu(ip,iq),&
+                            dstrain(:,ip,iq),dtrial)
                         ! CHECK PLASTICITY
-                        call check_plasticity(dtrial,snl(ie)%stress(0:5,ip,iq),snl(ie)%center(0:5,ip,iq),&
-                            snl(ie)%radiu(ip,iq),snl(ie)%syld(ip,iq),st_epl,alpha_elp,ie)
+                        call check_plasticity(dtrial,snl(ie)%stress(:,ip,iq),snl(ie)%center(:,ip,iq),&
+                            snl(ie)%radius(ip,iq),snl(ie)%syld(ip,iq),st_epl,alpha_epl,ie)
                         ! PLASTIC CORRECTION 
                         if (st_epl) then
                             write(*,*) "PLASTIC"
-                            call plastic_corrector(dstrain,dtrial,snl(ie)%center(0:5,ip,iq),  &
+                            call plastic_corrector(dstrain,dtrial,snl(ie)%center(:,ip,iq),  &
                                 snl(ie)%radius(ip,iq),snl(ie)%syld(ip,iq),snl(ie)%biso(ip,iq),&
                                 snl(ie)%rinf(ip,iq),snl(ie)%ckin(ip,iq),snl(ie)%kkin(ip,iq),  &
-                                mu(ip,iq),lambda(ip,iq),pl(:,ip,iq),ie)
+                                mu(ip,iq),lambda(ip,iq),snl(ie)%plastic_strain(:,ip,iq),ie)
                         endif
-                        sxx = dtrial(0)
-                        syy = dtrial(1)
-                        szz = dtrial(2)
-                        sxy = dtrial(3)
+                        ! VELOCITY VS DISPLACEMENT FORMULATION
+                        snl(ie)%stress(:,ip,iq) = dtrial(:)
                     enddo
                 enddo
 
-                ! FORCE CALCULATION
+                ! COMPUTE INTERNAL FORCES
                 do iq = 1,nn
                     do ip = 1,nn
-
+                        is = nn*(iq-1)+ip
+                        in = cs(cs(ie-1)+is)
+                        
                         t1fx = 0.0d0
                         t2fx = 0.0d0
                         t1fy = 0.0d0
@@ -351,91 +354,221 @@ module nonlinear2d
                             t2fx=t2fx+dd(im,iq)*ww(ip)*ww(im)*(sxx(ip,im)*dydx(im)-sxy(ip,im)*dxdx(im))
                             t2fy=t2fy+dd(im,iq)*ww(ip)*ww(im)*(sxy(ip,im)*dydx(im)-syy(ip,im)*dxdx(im))
                         enddo
-                        snl(ie)%fx(ip,iq) = t1fx-t2fx
-                        snl(ie)%fy(ip,iq) = t1fy-t2fy
+                        ! ELEMENT-WISE FORCES
+                        fx(ip,iq) = t1fx-t2fx
+                        fy(ip,iq) = t1fy-t2fy
+                        ! GLOBAL NODAL FORCES
+                        fk(in)     = fk(in)     + fx_el(ip,iq)/mvec(in)
+                        fk(in+nnt) = fk(in+nnt) + fy_el(ip,iq)/mvec(in+nnt)
+
                     enddo
                 enddo
-                
-            enddo ! LOOP OVER ELEMENT
+                ! DEALLOCATE ELEMENT-WISE VARIABLES
+                call DEALLOCATE_LOC(ct,ww,dd,dxdx,dxdy,dydx,dydy,dstrain,fx,fy)
+            enddo
+            ! 
+            return
+            !
         end subroutine MAKE_INTERNAL_FORCES_NL
-        !
-        subroutine ALLOCATE_NL_EL(nn,ct,ww,dd,ux_el,uy_el,dxdx_el,dxdy_el,dydx_el,dydy_el,det_j, &
-            fx_el,fy_el,fxs_el,fys_el, nl_sism,sxxs_el,sxys_el,syys_el,szzs_el)
-           
+        
+        !****************************************************************************
+        ! ALLOCATE LOCAL VARIABLES
+        !****************************************************************************
+        
+        subroutine ALLOINIT_LOC(nnt,nn,ct,ww,dd,dxdx,dxdy,dydx,dydy,dstrain, &
+            fx,fy,displ)
+            !
             implicit none    
             ! intent IN
-            integer*4,                              intent(in ) :: nn,nl_sism
+            integer*4,                              intent(in ) :: nnt,nn
+            real*8, dimension(2*nnt),               intent(in ) :: displ
             ! intent OUT 
             real*8,     dimension(:),  allocatable, intent(out) :: ct,ww
-            real*8,     dimension(:),  allocatable, intent(out) :: dxdx_el,dydy_el
-            real*8,     dimension(:),  allocatable, intent(out) :: dxdy_el,dydx_el
-            real*8,     dimension(:,:),allocatable, intent(out) :: dd,det_j,fx_el,fy_el
-            real*8,     dimension(:,:),allocatable, intent(out) :: fxs_el,fys_el
-            real*8,     dimension(:,:),allocatable, intent(out) :: ux_el,uy_el
-            real*8,     dimension(:,:),allocatable, intent(out) :: duxdx_el,duydy_el
-            real*8,     dimension(:,:),allocatable, intent(out) :: duxdy_el,duydx_el
-            real*8,     dimension(:,:),allocatable, intent(out) :: sxx_el,syy_el,sxy_el,szz_el
-            real*8,     dimension(:,:),allocatable, intent(out) :: sxxs_el,syys_el,sxys_el,szzs_el
-            
+            real*8,     dimension(:),  allocatable, intent(out) :: dxdx,dydy,dxdy,dydx
+            real*8,     dimension(:,:),allocatable, intent(out) :: dd,fx,fy
+            real*8,     dimension(:,:,:), allocatable, intent(out) :: dstrain
+            real*8,     dimension(:,:),allocatable              :: ux,uy
+            integer*4                                           :: i,j,is,in
+            ! ALLOCATION
             allocate(ct(nn))
             allocate(ww(nn))
             allocate(dd(nn,nn))
-            allocate(dxdx_el(nn))
-            allocate(dxdy_el(nn))
-            allocate(dydx_el(nn))
-            allocate(dydy_el(nn))
-            allocate(ux_el(nn,nn))
-            allocate(uy_el(nn,nn))
-            allocate(duxdx_el(nn,nn))
-            allocate(duxdy_el(nn,nn))
-            allocate(duydx_el(nn,nn))
-            allocate(duydy_el(nn,nn))
-            allocate(sxx_el(nn,nn))
-            allocate(syy_el(nn,nn))
-            allocate(szz_el(nn,nn))
-            allocate(sxy_el(nn,nn))
-            allocate(Riso_el(nn,nn))
-            allocate(fx_el(nn,nn))
-            allocate(fy_el(nn,nn))
-            allocate(det_j(nn,nn))
-            if (nl_sism.gt.0) then
-                allocate(fxs_el(nn,nn))
-                allocate(fys_el(nn,nn))
-                allocate(sxxs_el(nn,nn))
-                allocate(syys_el(nn,nn))
-                allocate(szzs_el(nn,nn))
-                allocate(sxys_el(nn,nn))
-            endif
+            allocate(dxdx(nn))
+            allocate(dxdy(nn))
+            allocate(dydx(nn))
+            allocate(dydy(nn))
+            allocate(ux(nn,nn))
+            allocate(uy(nn,nn))
+            allocate(fx(nn,nn))
+            allocate(fy(nn,nn))
+            allocate(dstrain(3,nn,nn))
+            ! INITIALIZATION
+            call lgl(nn,ct,ww,dd)
+            ! LOOP OVER GLL
+            fx = 0.d0; fy = 0.d0
+            dxdx = 0.d0; dxdy = 0.d0; dydx = 0.d0; dydy = 0.d0; det_j = 0.d0
+            dstrain(:,:,:) = 0.d0
+            do j = 1,nn
+                do i = 1,nn
+                    is = nn*(j -1) +i
+                    in = cs(cs(ie -1) + is)
+                    ux(i,j) = displ(in)
+                    uy(i,j) = displ(in+nnt)
+                enddo
+            enddo
+            ! MAKE DERIVATIVES
+            call MAKE_DERIVATIVES_LOC(nn,alfa1,alfa2,beta1,beta2,gamma1,gamma2,ct,&
+                dxdy,dydy,dxdx,dydx)
+            ! MAKE STRAIN
+            call MAKE_STRAIN_LOC(nn,ux,uy,dxdx,dxdy,dydx,dydy,dstrain)
+            ! DEALLOCATE
+            deallocate(ux)
+            deallocate(uy)
+            ! 
             return
-        end subroutine ALLOCATE_NL_EL
-        ! COMPUTE ELASTIC STIFFNESS MATRIX
-        subroutine stiff_matrix(lambda,mu,DEL)
-            
+        end subroutine ALLOINIT_LOC
+        
+        !****************************************************************************
+        ! MAKE DERIVATIVES
+        !****************************************************************************
+        
+        subroutine MAKE_DERIVATIVES_LOC(nn,alfa1,alfa2,beta1,beta2,gamma1,gamma2,ct,&
+            dxdy,dydy,dxdx,dydx,det_j)
+            !           
             implicit none
-            
-            real*8, intent(in)                      :: lambda,mu
-            real*8, dimension(4,4), intent(inout)   :: DEL
+            ! intent IN
+            integer*4, intent(in)               :: nn
+            real*8, intent(in)                  :: alfa1,alfa2
+            real*8, intent(in)                  :: beta1,beta2
+            real*8, intent(in)                  :: gamma1,gamma2
+            real*8, intent(in)   , dimension(nn):: ct
+            ! intent INOUT
+            real*8, intent(inout), dimension(nn):: dxdx,dxdy
+            real*8, intent(inout), dimension(nn):: dydx,dydy
+            ! 
+            integer*4 :: i
+            ! COMPUTE SHAPE-FUNCTION DERIVATIVES
+            do i = 1,nn
+                dxdy(i) = beta1 + gamma1 * ct(i)
+                dydy(i) = beta2 + gamma2 * ct(i)
+                dxdx(i) = alfa1 + gamma1 * ct(i)
+                dydx(i) = alfa2 + gamma2 * ct(i)
+            enddo
+            ! 
+            return
+        end subroutine MAKE_DERIVATIVES_LOC
+        
+        !****************************************************************************
+        ! COMPUTE ELEMENT-WISE STRAIN TENSOR
+        !****************************************************************************
+        
+        subroutine MAKE_STRAIN_LOC(nn,ux,uy,dxdx,dxdy,dydx,dydy,dstrain)
+            ! 
+            implicit none
+            ! intent IN
+            integer*4, intent(in)                       :: nn
+            real*8, dimension(nn,nn), intent(in)        :: ux,uy
+            real*8, dimension(nn,nn), intent(in)        :: dxdx,dxdy,dydx,dydy
+            ! intent INOUT
+            real*8, dimension(1:3,nn,nn), intent(inout) :: dstrain
+            real*8                                      :: t1ux,t1uy,t2ux,t2uy
+            real*8                                      :: t1fx,t1fy,t2fx,t2fy,det_j
+            !
+            integer*4                                   :: ip,iq,il,im
+            ! COMPUTE STRAIN
+            do iq = 1,nn
+                do ip = 1,nn
+                    t1ux = 0.d0
+                    t1uy = 0.d0
+                    t2ux = 0.d0
+                    t2uy = 0.d0
+                    
+                    det_j = dxdx(iq)*dydy(ip)-dxdy(ip)*dydx(iq)
+                    
+                    do il = 1,nn
+                       t1ux = t1ux + ux(il,iq) * dd(ip,il)
+                       t1uy = t1uy + uy(il,iq) * dd(ip,il)
+                    enddo
 
+                    do im = 1,nn
+                       t2ux = t2ux + ux(ip,im) * dd(iq,im)
+                       t2uy = t2uy + uy(ip,im) * dd(iq,im)
+                    enddo
+                    dstrain(1,ip,iq) = ( 1.d0 / det_j) * ((dydy(ip) * t1ux) - (dydx(iq) * t2ux))
+                    dstrain(2,ip,iq) = (-1.d0 / det_j) * ((dxdy(ip) * t1uy) - (dxdx(iq) * t2uy))
+                    dstrain(3,ip,iq) = ( 1.d0 / det_j) * ((dydy(ip) * t1uy) - (dydx(iq) * t2uy))
+                    dstrain(3,ip,iq) = dstrain(3,ip,iq)+(-1.d0 / det_j) * ((dxdy(ip) * t1ux) - (dxdx(iq) * t2ux))
+                enddo
+            enddo
+            !
+            return
+        end subroutine MAKE_STRAIN_LOC
+        
+        !****************************************************************************
+        ! DEALLOCATE LOCAL VARIABLES
+        !****************************************************************************
+        
+        subroutine DEALLOCATE_LOC(nn,ct,ww,dd,dxdx,dxdy,dydx,dydy,dstrain,fx,fy)
+            !
+            implicit none    
+            ! intent IN
+            integer*4,                              intent(in ) :: nnt,nn
+            ! intent OUT 
+            real*8,     dimension(nn),  allocatable, intent(inout) :: ct,ww
+            real*8,     dimension(nn),  allocatable, intent(inout) :: dxdx,dydy,dxdy,dydx
+            real*8,     dimension(nn,nn),allocatable, intent(inout) :: dd,fx,fy
+            real*8,     dimension(3,nn,nn), allocatable, intent(inout) :: dstrain
+            ! DEALLOCATION
+            deallocate(ct)
+            deallocate(ww)
+            deallocate(dd)
+            deallocate(dxdx)
+            deallocate(dxdy)
+            deallocate(dydx)
+            deallocate(dydy)
+            deallocate(fx)
+            deallocate(fy)
+            deallocate(dstrain)
+            !
+            return
+        end subroutine DEALLOCATE_LOC
+        !****************************************************************************
+        ! COMPUTE ELASTIC STIFFNESS MATRIX
+        !****************************************************************************
+        
+        subroutine stiff_matrix(lambda,mu,DEL)
+            !
+            implicit none
+            ! intent IN
+            real*8, intent(in)                      :: lambda,mu
+            ! intent OUT
+            real*8, dimension(4,4), intent(inout)   :: DEL
+            !
             DEL(:,:) = 0d0
             DEL(1:3,1:3)   = DEL(1:3,1:3) + lambda
             DEL(1,1)       = DEL(1,1) + 2*mu
             DEL(2,2)       = DEL(2,2) + 2*mu
             DEL(3,3)       = DEL(3,3) + 2*mu
             DEL(4,4)       = DEL(4,4) + mu
-            
+            !
             return
-        
+            ! 
         end subroutine stiff_matrix
         
+        !****************************************************************************
         ! MISES YIELDING LOCUS AND GRADIENT
+        !****************************************************************************
+
         subroutine mises_yld_locus(stress, center, radius, syld, FM, gradF)
-            
+            ! 
             implicit none
-            
+            ! intent IN
             real*8,               intent(in)    :: radius,syld
             real*8, dimension(4), intent(in)    :: stress,center
+            ! intent OUT
             real*8, dimension(4), intent(out)   :: gradF
             real*8,               intent(out)   :: FM
+            !
             real*8, dimension(4), parameter     :: A = (/1.0,1.0,1.0,2.0/)
             real*8, dimension(4)                :: dev
             real*8                              :: tau_eq
@@ -445,63 +578,81 @@ module nonlinear2d
             call tau_mises(dev-center, tau_eq)
             FM             =   tau_eq-syld-radius
             gradF = 0.5d0*A*(dev-center)/tau_eq
-        
+            !  
             return
-
+            !
         end subroutine mises_yld_locus
         
+        !****************************************************************************
         ! OCTAHEDRAL SHEAR STRESS
+        !****************************************************************************
+        
         subroutine tau_mises(stress,tau_eq)
-            
+            !
             implicit none
-            
+            ! intent IN
             real*8, dimension(4), intent(in)    :: stress
+            ! intent OUT
             real*8,               intent(out)   :: tau_eq
+            !
             real*8, dimension(4), parameter     :: A = (/1.0,1.0,1.0,2.0/) 
             integer*4                           :: k
-            
+            ! 
             tau_eq = 0.0d0
             do k=1,4
                 tau_eq = tau_eq+A(k)*(stress(k)**2)
             end do
             tau_eq = sqrt(0.5*tau_eq)
-
+            !
             return
-
+            ! 
         end subroutine
         
+        !****************************************************************************
         ! TENSOR COMPONENTS (SPHERICAL & DEVIATORIC)
+        !****************************************************************************
+        
         subroutine tensor_components(stress, dev)
-            
+            !     
             implicit none
-            
+            ! intent IN
             real*8, dimension(4), intent(in)    :: stress
+            ! intent OUT
             real*8, dimension(4), intent(out)   :: dev
+            !
             real*8                              :: press 
             integer*4                           :: k
-
+            !
             dev = stress
             press = sum(stress(1:3))/3
             dev(1:3) = dev(1:3)-press
+            !
             return
-
+            !
         end subroutine tensor_components
             
+        !****************************************************************************
         ! CHECK PLASTIC CONSISTENCY (KKT CONDITIONS)
+        !****************************************************************************
+        
         subroutine check_plasticity (dtrial, stress0, center, radius, syld, &
             st_elp, alpha_elp,nel)
-            
+            !     
             implicit none
-            
+            ! intent IN
+            integer*4, intent(in)                   :: nel 
+            real*8,                 intent(in)      :: radius,syld
+            real*8, dimension(4),   intent(in)      :: center,stress0
+            ! intent INOUT
+            real*8, dimension(4),   intent(inout)   :: dtrial
+            ! intent OUT
+            real*8,                 intent(out)     :: alpha_elp
+            logical,                intent(out)     :: st_elp
+            !
             integer*4                               :: k
             real*8                                  :: FS, FT,checkload
             real*8, dimension(4)                    :: gradFS, gradFT, stress1
-            real*8,                 intent(in)      :: radius,syld
-            real*8, dimension(4),   intent(in)      :: center,stress0
-            real*8,                 intent(out)     :: alpha_elp
-            logical,                intent(out)     :: st_elp
-            real*8, dimension(4),   intent(inout)   :: dtrial
-            integer*4, intent(in)                   :: nel 
+            !
             stress1= dtrial+stress0
             call mises_yld_locus(stress0,center,radius,syld,FS,gradFS)
             call mises_yld_locus(stress1,center,radius,syld,FT,gradFT)

@@ -64,8 +64,6 @@ subroutine UPDATE_ALL_INCREMENTS(ie,nnt,nn,cs_nnz,cs,fk,mvec,dsxx,dsyy,dszz,dsxy
             is = nn*(j -1) +i
             in = cs(cs(ie -1) + is)
 
-            fk(in)                  = fk(in)      + fx_el(i,j)/mvec(in)
-            fk(in+nnt)              = fk(in+nnt)  + fy_el(i,j)/mvec(in+nnt)
             dsxx(in)                = dsxx(in) + sxx_el(i,j)
             dsyy(in)                = dsyy(in) + syy_el(i,j)
             dszz(in)                = dszz(in) + szz_el(i,j)
@@ -83,10 +81,6 @@ subroutine UPDATE_ALL_INCREMENTS(ie,nnt,nn,cs_nnz,cs,fk,mvec,dsxx,dsyy,dszz,dsxy
             depl_all(in+nnt)        = depl_all(in+nnt)   + depl_el(2,i,j)
             depl_all(in+2*nnt)      = depl_all(in+2*nnt) + depl_el(3,i,j)
             depl_all(in+3*nnt)      = depl_all(in+3*nnt) + depl_el(4,i,j)
-            if (present(sism)) then
-                sism(in) = sism(in)         + fxs_el(i,j)
-                sism(in+nnt) = sism(in+nnt) + fys_el(i,j)
-            endif
         enddo
     enddo
     return
