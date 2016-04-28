@@ -1064,6 +1064,71 @@ module nonlinear2d
         end subroutine
 end module nonlinear2d
 
+module seismic
+    
+    contains
+        
+        subroutine MAKE_SEISMIC_FORCES(nnt,ne,cs_nnz,cs,sdeg_mat,snl,&
+            alfa1,alfa2,beta1,beta2,gamma1,gamma2,dt,displ,mvec,fe)
+            !
+            implicit none
+            ! INTENT IN
+            integer*4, intent(in)                       :: nnt,ne,nm,cs_nnz
+            integer*4, intent(in), dimension(nm)        :: sdeg_mat
+            integer*4, intent(in), dimension(0:cs_nnz)  :: cs
+            real*8,    intent(in), dimension(ne)        :: alfa1,beta1,gamma1,delta1
+            real*8,    intent(in), dimension(ne)        :: alfa2,beta2,gamma2,delta2 
+            real*8,    intent(in), dimension(2*nnt)     :: displ,mvec
+            ! INTENT INOUT
+            real*8,    intent(inout), dimension(2*nnt)  :: fe
+            type(nl_element), intent(inout), dimension(ne) :: snl 
+            ! 
+            real*8,     dimension(:),  allocatable      :: ct,ww
+            real*8,     dimension(:),  allocatable      :: dxdx,dydy,dxdy,dydx
+            real*8,     dimension(:,:),allocatable      :: dd,det_j,fxs,fys
+            real*8                                      :: t1ux,t1uy,t2ux,
+            real*8                                      :: t2uy,t1fx,t1fy,t2fx,t2fy
+            integer*4                                   :: ie,ip,iq,il,im,nn,is,in
+            !
+            do ie = 1,ne 
+                im = cs(cs(ie-1) + 0)
+                nn = sdeg_mat(im)+1
+                
+                ! ALLOCATION/INITIALIZATION LOCAL VARIABLES 
+                call ALLOINIT_LOC(nnt,nn,ct,ww,dd,dxdx,dxdy,dydx,dydy,dstrain, &
+                    fxs,fys,displ)
+                allocate(sxxs(nn,nn))
+                allocate(syys(nn,nn))
+                allocate(szzs(nn,nn))
+                allocate(sxys(nn,nn))
+                sxxs = 0.d0
+                syys = 0.d0
+                sxys = 0.d0
+                szzs = 0.d0
+                fe = 0.0d0
+                ! LOOP OVER GLL
+                do iq = 1,nn
+                    do ip = 1,nn
+                        call MAKE_SEISMIC_MOMENT_NEW(nn,sxxs,syys,szzs,sxys,&
+                            check_node_sism,check_dist_node_sism,length_cns,ie,facsmom, &
+                            nl_sism,func_type,func_indx,func_data,nf,tt1, &
+                            nfunc_data,tag_func)
+                        call MAKE_INTERNAL_FORCE_EL(nn,ct,ww,dd,dxdx,dxdy,dydx,dydy,&
+                            sxxs,syys,szzs,sxys,fxs,fys)
+                    enddo
+                enddo
+                ! ASSIGN TO GLOBAL NODAL EXTERNAL FORCES
+                do iq = 1,nn
+                    do ip = 1,nn
+                        is = nn*(iq-1)+ip
+                        in = cs(cs(ie-1)+is)
+                        sism(in) = sism(in)         + fxs_el(ip,iq)
+                        sism(in+nnt) = sism(in+nnt) + fys_el(ip,iq)
+                    enddo
+                enddo
+            enddo
+end module seismic
+
 module write_output
     
     contains
