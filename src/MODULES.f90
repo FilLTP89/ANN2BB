@@ -276,7 +276,7 @@ module nonlinear2d
         ! MAKE NL INTERNAL FORCES
         !****************************************************************************
         
-        subroutine MAKE_INTERNAL_FORCES_NL(nnt,ne,cs_nnz,cs,sdeg_mat,snl,&
+        subroutine MAKE_INTERNAL_FORCES_NL(nnt,ne,nm,cs_nnz,cs,sdeg_mat,snl,&
             alfa1,alfa2,beta1,beta2,gamma1,gamma2,dt,displ,fk,mvec)
 
             implicit none
@@ -285,19 +285,19 @@ module nonlinear2d
             integer*4, intent(in), dimension(nm)        :: sdeg_mat
             integer*4, intent(in), dimension(0:cs_nnz)  :: cs
             real*8,    intent(in)                       :: dt
-            real*8,    intent(in), dimension(ne)        :: alfa1,beta1,gamma1,delta1
-            real*8,    intent(in), dimension(ne)        :: alfa2,beta2,gamma2,delta2 
+            real*8,    intent(in), dimension(ne)        :: alfa1,beta1,gamma1
+            real*8,    intent(in), dimension(ne)        :: alfa2,beta2,gamma2
             real*8,    intent(in), dimension(2*nnt)     :: displ,mvec
             ! INTENT INOUT
-            real*8,    intent(inout), dimension(2*nnt)  :: fk,fe
+            real*8,    intent(inout), dimension(2*nnt)  :: fk
             type(nl_element), intent(inout), dimension(ne) :: snl 
             ! 
             real*8,     dimension(:),  allocatable      :: ct,ww
             real*8,     dimension(:),  allocatable      :: dxdx,dydy,dxdy,dydx
             real*8,     dimension(:,:),allocatable      :: dd,det_j,fx,fy
             real*8,     dimension(:,:,:), allocatable   :: dstrain
-            real*8,     dimension(4)                    :: dtrial
-            real*8                                      :: alpha_epl,t1ux,t1uy,t2ux,
+            real*8,     dimension(4)                    :: dtrial,dstrain_alpha
+            real*8                                      :: alpha_epl,t1ux,t1uy,t2ux
             real*8                                      :: t2uy,t1fx,t1fy,t2fx,t2fy
             integer*4                                   :: ie,ip,iq,il,im,nn,is,in
             logical                                     :: st_epl
@@ -307,26 +307,29 @@ module nonlinear2d
                 nn = sdeg_mat(im)+1
                 
                 ! ALLOCATION/INITIALIZATION LOCAL VARIABLES 
-                call ALLOINIT_LOC(nnt,nn,ct,ww,dd,dxdx,dxdy,dydx,dydy,dstrain, &
-                    fx,fy,displ)
+                call ALLOINIT_LOC(ie,nnt,cs,cs_nnz,nn,ct,ww,dd,dxdx,dxdy,dydx,dydy,dstrain, &
+                    fx,fy,displ,alfa1(ie),alfa2(ie),beta1(ie),beta2(ie),gamma1(ie),gamma2(ie))
                 ! DISPLACEMENT VS VELOCITY FORMULATION
-                snl(ie)%strain(:,:) = snl(ie)%strain(:,:) + dstrain(:,:) 
+                snl(ie)%strain(:,:,:) = snl(ie)%strain(:,:,:) + dstrain(:,:,:) 
                 do iq = 1,nn
                     do ip = 1,nn
                         ! COMPUTE TRIAL STRESS INCREMENT
                         dtrial(:) = 0.d0
+                        dstrain_alpha(:) = 0.d0
+                        dstrain_alpha(1:2) = dstrain(1:2,ip,iq)
+                        dstrain_alpha(4)   = dstrain(3,ip,iq)
                         call MAKE_STRESS_LOC(snl(ie)%lambda(ip,iq),snl(ie)%mu(ip,iq),&
-                            dstrain(:,ip,iq),dtrial)
+                            dstrain_alpha,dtrial)
                         ! CHECK PLASTICITY
                         call check_plasticity(dtrial,snl(ie)%stress(:,ip,iq),snl(ie)%center(:,ip,iq),&
                             snl(ie)%radius(ip,iq),snl(ie)%syld(ip,iq),st_epl,alpha_epl,ie)
                         ! PLASTIC CORRECTION 
                         if (st_epl) then
                             write(*,*) "PLASTIC"
-                            call plastic_corrector(dstrain,dtrial,snl(ie)%center(:,ip,iq),  &
+                            call plastic_corrector(dstrain_alpha,dtrial,snl(ie)%center(:,ip,iq),  &
                                 snl(ie)%radius(ip,iq),snl(ie)%syld(ip,iq),snl(ie)%biso(ip,iq),&
                                 snl(ie)%rinf(ip,iq),snl(ie)%ckin(ip,iq),snl(ie)%kkin(ip,iq),  &
-                                mu(ip,iq),lambda(ip,iq),snl(ie)%plastic_strain(:,ip,iq),ie)
+                                snl(ie)%mu(ip,iq),snl(ie)%lambda(ip,iq),snl(ie)%plastic_strain(:,ip,iq),ie)
                         endif
                         ! VELOCITY VS DISPLACEMENT FORMULATION
                         snl(ie)%stress(:,ip,iq) = dtrial(:)
@@ -343,23 +346,27 @@ module nonlinear2d
                         t2fx = 0.0d0
                         t1fy = 0.0d0
                         t2fy = 0.0d0
-
+       
                         ! derivatives with respect to eta ( there is a delta(iq,im) )
                         do il=1,nn
-                            t1fx = t1fx+dd(il,ip)*ww(il)*ww(iq)*(sxx(il,iq)*dydy(il)-sxy(il,iq)*dxdy(il))
-                            t1fy = t1fy+dd(il,ip)*ww(il)*ww(iq)*(sxy(il,iq)*dydy(il)-syy(il,iq)*dxdy(il))
+                            t1fx = t1fx+dd(il,ip)*ww(il)*ww(iq)*&
+                                (snl(ie)%stress(1,il,iq)*dydy(il)-snl(ie)%stress(3,il,iq)*dxdy(il))
+                            t1fy = t1fy+dd(il,ip)*ww(il)*ww(iq)*&
+                                (snl(ie)%stress(3,il,iq)*dydy(il)-snl(ie)%stress(2,il,iq)*dxdy(il))
                         enddo
                         ! derivatives with respect to xi ( there is a delta(ip,il) )
                         do im=1,nn
-                            t2fx=t2fx+dd(im,iq)*ww(ip)*ww(im)*(sxx(ip,im)*dydx(im)-sxy(ip,im)*dxdx(im))
-                            t2fy=t2fy+dd(im,iq)*ww(ip)*ww(im)*(sxy(ip,im)*dydx(im)-syy(ip,im)*dxdx(im))
+                            t2fx = t2fx+dd(im,iq)*ww(ip)*ww(im)*&
+                                (snl(ie)%stress(1,ip,im)*dydx(im)-snl(ie)%stress(4,ip,im)*dxdx(im))
+                            t2fy = t2fy+dd(im,iq)*ww(ip)*ww(im)*&
+                                (snl(ie)%stress(4,ip,im)*dydx(im)-snl(ie)%stress(2,ip,im)*dxdx(im))
                         enddo
                         ! ELEMENT-WISE FORCES
-                        fx(ip,iq) = t1fx-t2fx
-                        fy(ip,iq) = t1fy-t2fy
+                        fx(ip,iq) = t1fx - t2fx
+                        fy(ip,iq) = t1fy - t2fy
                         ! GLOBAL NODAL FORCES
-                        fk(in)     = fk(in)     + fx_el(ip,iq)/mvec(in)
-                        fk(in+nnt) = fk(in+nnt) + fy_el(ip,iq)/mvec(in+nnt)
+                        fk(in)     = fk(in)     + fx(ip,iq)/mvec(in)
+                        fk(in+nnt) = fk(in+nnt) + fy(ip,iq)/mvec(in+nnt)
 
                     enddo
                 enddo
@@ -375,13 +382,16 @@ module nonlinear2d
         ! ALLOCATE LOCAL VARIABLES
         !****************************************************************************
         
-        subroutine ALLOINIT_LOC(nnt,nn,ct,ww,dd,dxdx,dxdy,dydx,dydy,dstrain, &
-            fx,fy,displ)
+        subroutine ALLOINIT_LOC(ie,nnt,cs,cs_nnz,nn,ct,ww,dd,dxdx,dxdy,dydx,dydy,dstrain, &
+            fx,fy,displ,alfa1,alfa2,beta1,beta2,gamma1,gamma2)
             !
             implicit none    
             ! intent IN
-            integer*4,                              intent(in ) :: nnt,nn
+            integer*4,                              intent(in ) :: ie,nnt,cs_nnz,nn
+            integer*4, dimension(0:cs_nnz),         intent(in ) :: cs
             real*8, dimension(2*nnt),               intent(in ) :: displ
+            real*8,    intent(in)                               :: alfa1,beta1,gamma1
+            real*8,    intent(in)                               :: alfa2,beta2,gamma2 
             ! intent OUT 
             real*8,     dimension(:),  allocatable, intent(out) :: ct,ww
             real*8,     dimension(:),  allocatable, intent(out) :: dxdx,dydy,dxdy,dydx
@@ -406,7 +416,7 @@ module nonlinear2d
             call lgl(nn,ct,ww,dd)
             ! LOOP OVER GLL
             fx = 0.d0; fy = 0.d0
-            dxdx = 0.d0; dxdy = 0.d0; dydx = 0.d0; dydy = 0.d0; det_j = 0.d0
+            dxdx = 0.d0; dxdy = 0.d0; dydx = 0.d0; dydy = 0.d0
             dstrain(:,:,:) = 0.d0
             do j = 1,nn
                 do i = 1,nn
@@ -420,7 +430,7 @@ module nonlinear2d
             call MAKE_DERIVATIVES_LOC(nn,alfa1,alfa2,beta1,beta2,gamma1,gamma2,ct,&
                 dxdy,dydy,dxdx,dydx)
             ! MAKE STRAIN
-            call MAKE_STRAIN_LOC(nn,ux,uy,dxdx,dxdy,dydx,dydy,dstrain)
+            call MAKE_STRAIN_LOC(nn,dd,ux,uy,dxdx,dxdy,dydx,dydy,dstrain)
             ! DEALLOCATE
             deallocate(ux)
             deallocate(uy)
@@ -433,7 +443,7 @@ module nonlinear2d
         !****************************************************************************
         
         subroutine MAKE_DERIVATIVES_LOC(nn,alfa1,alfa2,beta1,beta2,gamma1,gamma2,ct,&
-            dxdy,dydy,dxdx,dydx,det_j)
+            dxdy,dydy,dxdx,dydx)
             !           
             implicit none
             ! intent IN
@@ -462,15 +472,15 @@ module nonlinear2d
         ! COMPUTE ELEMENT-WISE STRAIN TENSOR
         !****************************************************************************
         
-        subroutine MAKE_STRAIN_LOC(nn,ux,uy,dxdx,dxdy,dydx,dydy,dstrain)
+        subroutine MAKE_STRAIN_LOC(nn,dd,ux,uy,dxdx,dxdy,dydx,dydy,dstrain)
             ! 
             implicit none
             ! intent IN
             integer*4, intent(in)                       :: nn
-            real*8, dimension(nn,nn), intent(in)        :: ux,uy
-            real*8, dimension(nn,nn), intent(in)        :: dxdx,dxdy,dydx,dydy
+            real*8, dimension(nn),    intent(in)        :: dxdx,dxdy,dydx,dydy
+            real*8, dimension(nn,nn), intent(in)        :: dd,ux,uy
             ! intent INOUT
-            real*8, dimension(1:3,nn,nn), intent(inout) :: dstrain
+            real*8, dimension(3,nn,nn), intent(inout)   :: dstrain
             real*8                                      :: t1ux,t1uy,t2ux,t2uy
             real*8                                      :: t1fx,t1fy,t2fx,t2fy,det_j
             !
@@ -508,16 +518,14 @@ module nonlinear2d
         ! DEALLOCATE LOCAL VARIABLES
         !****************************************************************************
         
-        subroutine DEALLOCATE_LOC(nn,ct,ww,dd,dxdx,dxdy,dydx,dydy,dstrain,fx,fy)
+        subroutine DEALLOCATE_LOC(ct,ww,dd,dxdx,dxdy,dydx,dydy,dstrain,fx,fy)
             !
             implicit none    
-            ! intent IN
-            integer*4,                              intent(in ) :: nnt,nn
-            ! intent OUT 
-            real*8,     dimension(nn),  allocatable, intent(inout) :: ct,ww
-            real*8,     dimension(nn),  allocatable, intent(inout) :: dxdx,dydy,dxdy,dydx
-            real*8,     dimension(nn,nn),allocatable, intent(inout) :: dd,fx,fy
-            real*8,     dimension(3,nn,nn), allocatable, intent(inout) :: dstrain
+            ! intent INOUT 
+            real*8,     dimension(:),  allocatable, intent(inout) :: ct,ww
+            real*8,     dimension(:),  allocatable, intent(inout) :: dxdx,dydy,dxdy,dydx
+            real*8,     dimension(:,:),allocatable, intent(inout) :: dd,fx,fy
+            real*8,     dimension(:,:,:), allocatable, intent(inout) :: dstrain
             ! DEALLOCATION
             deallocate(ct)
             deallocate(ww)
@@ -532,28 +540,49 @@ module nonlinear2d
             !
             return
         end subroutine DEALLOCATE_LOC
-        !****************************************************************************
-        ! COMPUTE ELASTIC STIFFNESS MATRIX
-        !****************************************************************************
         
-        subroutine stiff_matrix(lambda,mu,DEL)
-            !
+        subroutine STIFF_MATRIX(lambda,mu,DEL)
             implicit none
             ! intent IN
-            real*8, intent(in)                      :: lambda,mu
+            real*8, intent(in) :: lambda,mu
             ! intent OUT
-            real*8, dimension(4,4), intent(inout)   :: DEL
+            real*8, intent(out), dimension(4,4) :: DEL
             !
-            DEL(:,:) = 0d0
-            DEL(1:3,1:3)   = DEL(1:3,1:3) + lambda
-            DEL(1,1)       = DEL(1,1) + 2*mu
-            DEL(2,2)       = DEL(2,2) + 2*mu
-            DEL(3,3)       = DEL(3,3) + 2*mu
-            DEL(4,4)       = DEL(4,4) + mu
+            DEL(:,:) = 0.d0
+            DEL(1,1) = 2*mu
+            DEL(2,2) = 2*mu
+            DEL(3,3) = 2*mu
+            DEL(4,4) = 2*mu
+            DEL(1:3,1:3) = DEL(1:3,1:3) + lambda
             !
             return
-            ! 
-        end subroutine stiff_matrix
+        end subroutine STIFF_MATRIX
+
+        !****************************************************************************
+        ! COMPUTE STRESS STATE
+        !****************************************************************************
+        
+        subroutine MAKE_STRESS_LOC(lambda,mu,dE,dS)
+            !
+            implicit none
+            ! input IN
+            real*8, intent(in)                  :: lambda,mu
+            real*8, intent(in), dimension(4)    :: dE
+            ! input INOUT
+            real*8, intent(inout), dimension(4) :: dS
+            !
+            real*8, dimension(4,4)              :: DEL
+            integer*4                           :: ip 
+            ! STIFFNESS MATRIX (PLANE STRAIN VERSION)
+            call STIFF_MATRIX(lambda,mu,DEL)
+            ! COMPUTE STRESS i
+            do ip=1,4
+                dS(ip) = dot_product(DEL(:,ip),dE(:))
+            enddo
+            !
+            return
+            !
+        end subroutine MAKE_STRESS_LOC
         
         !****************************************************************************
         ! MISES YIELDING LOCUS AND GRADIENT
@@ -573,10 +602,12 @@ module nonlinear2d
             real*8, dimension(4)                :: dev
             real*8                              :: tau_eq
             integer*4                           :: k
-            
+            ! COMPUTE TENSOR COMPONENTS 
             call tensor_components (stress, dev)
+            ! COMPUTE MISES FUNCTION
             call tau_mises(dev-center, tau_eq)
-            FM             =   tau_eq-syld-radius
+            FM = tau_eq-syld-radius
+            ! COMPUTE MISES FUNCTION GRADIENT
             gradF = 0.5d0*A*(dev-center)/tau_eq
             !  
             return
@@ -597,7 +628,7 @@ module nonlinear2d
             !
             real*8, dimension(4), parameter     :: A = (/1.0,1.0,1.0,2.0/) 
             integer*4                           :: k
-            ! 
+            ! COMPUTE OCTAHEDRAL SHEAR STRESS 
             tau_eq = 0.0d0
             do k=1,4
                 tau_eq = tau_eq+A(k)*(stress(k)**2)
@@ -1066,19 +1097,31 @@ end module nonlinear2d
 
 module seismic
     
+    use nonlinear2d
+    implicit none
     contains
         
-        subroutine MAKE_SEISMIC_FORCES(nnt,ne,cs_nnz,cs,sdeg_mat,snl,&
+        subroutine MAKE_SEISMIC_FORCES(nl_sism,length_cns,check_node_sism,&
+            check_dist_node_sism,facsmom,nnt,ne,cs_nnz,cs,sdeg_mat,snl,&
             alfa1,alfa2,beta1,beta2,gamma1,gamma2,dt,displ,mvec,fe)
             !
             implicit none
             ! INTENT IN
-            integer*4, intent(in)                       :: nnt,ne,nm,cs_nnz
+            integer*4, intent(in)                       :: nnt,ne,nm,cs_nnz,nf
+            integer*4, intent(in)                       :: nl_sism,length_cns
+            integer*4, intent(in)                       :: nfunc_data
             integer*4, intent(in), dimension(nm)        :: sdeg_mat
             integer*4, intent(in), dimension(0:cs_nnz)  :: cs
+            integer*4, intent(in), dimension(length_cns,5) :: check_node_sism
+            integer*4, intent(in), dimension(nf)        :: func_type,tag_func
+            integer*4, intent(in), dimension(nf+1)      :: func_indx
+            real*8, dimension(nfunc_data)               :: func_data         
+            real*8,    intent(in)                       :: tt1
             real*8,    intent(in), dimension(ne)        :: alfa1,beta1,gamma1,delta1
             real*8,    intent(in), dimension(ne)        :: alfa2,beta2,gamma2,delta2 
             real*8,    intent(in), dimension(2*nnt)     :: displ,mvec
+            real*8, dimension(length_cns,1)             :: check_dist_node_sism
+            real*8, dimension(nl_sism,3)                :: facsmom       
             ! INTENT INOUT
             real*8,    intent(inout), dimension(2*nnt)  :: fe
             type(nl_element), intent(inout), dimension(ne) :: snl 
@@ -1086,17 +1129,19 @@ module seismic
             real*8,     dimension(:),  allocatable      :: ct,ww
             real*8,     dimension(:),  allocatable      :: dxdx,dydy,dxdy,dydx
             real*8,     dimension(:,:),allocatable      :: dd,det_j,fxs,fys
-            real*8                                      :: t1ux,t1uy,t2ux,
+            real*8,     dimension(:,:),allocatable      :: sxxs,syys,szzs,sxys
+            real*8                                      :: t1ux,t1uy,t2ux
             real*8                                      :: t2uy,t1fx,t1fy,t2fx,t2fy
             integer*4                                   :: ie,ip,iq,il,im,nn,is,in
             !
+            fe = 0.d0
             do ie = 1,ne 
                 im = cs(cs(ie-1) + 0)
                 nn = sdeg_mat(im)+1
                 
                 ! ALLOCATION/INITIALIZATION LOCAL VARIABLES 
-                call ALLOINIT_LOC(nnt,nn,ct,ww,dd,dxdx,dxdy,dydx,dydy,dstrain, &
-                    fxs,fys,displ)
+                call ALLOINIT_LOC(ie,nnt,nn,ct,ww,dd,dxdx,dxdy,dydx,dydy,dstrain, &
+                    fxs,fys,displ,alfa1(ie),alfa2(ie),beta1(ie),beta2(ie),gamma1(ie),gamma2(ie))
                 allocate(sxxs(nn,nn))
                 allocate(syys(nn,nn))
                 allocate(szzs(nn,nn))
@@ -1122,11 +1167,14 @@ module seismic
                     do ip = 1,nn
                         is = nn*(iq-1)+ip
                         in = cs(cs(ie-1)+is)
-                        sism(in) = sism(in)         + fxs_el(ip,iq)
-                        sism(in+nnt) = sism(in+nnt) + fys_el(ip,iq)
+                        sism(in)    = sism(in)      + fxs(ip,iq)
+                        sism(in+nnt)= sism(in+nnt)  + fys(ip,iq)
+                        fe(in)      = fe(in)        + sism(in)/mvec(in)
+                        fe(in+nnt)  = fe(in+nnt)    + sism(in+nnt)/mvec(in+nnt)  
                     enddo
                 enddo
             enddo
+    end subroutine 
 end module seismic
 
 module write_output

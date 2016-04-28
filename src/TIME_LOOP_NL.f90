@@ -700,9 +700,10 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
             write(*,'(A)') '----------COMPUTING SEISMIC EXTERNAL FORCES---------------'
             call system_clock(COUNT=clock_start,COUNT_RATE=clock(2))   
 
-
-            fe = fe + sism/mvec 
-        
+            call MAKE_SEISMIC_FORCES(nl_sism,length_cns,check_node_sism,&
+                check_dist_node_sism,facsmom,nnt,ne,cs_nnz,cs,sdeg_mat,snl,&
+                alfa1,alfa2,beta1,beta2,gamma1,gamma2,dt,displ,mvec,fe)
+             
             call system_clock(COUNT=clock_finish)
             time_fe = time_fe+float(clock_finish - clock_start) / float(clock(2))
             write(*,'(A)') 'Seismic External Forces: OK'

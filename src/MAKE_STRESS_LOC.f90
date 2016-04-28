@@ -25,20 +25,6 @@
 !> @param[inout] dS stress tensor
 
 
-subroutine MAKE_STRESS_LOC(lambda,mu,dE,dS)
-    implicit none
-    
-    real*8, intent(in)                  :: lambda,mu
-    real*8, intent(in), dimension(4)    :: dE
-    real*8, intent(inout), dimension(4) :: dS
-
-    dS(1)=(lambda+2.0d0*mu)*dE(1)+lambda*(dE(2)+dE(3))
-    dS(2)=(lambda+2.0d0*mu)*dE(2)+lambda*(dE(1)+dE(3))
-    dS(3)=lambda*(dE(1)+dE(2))
-    dS(4)=mu*dE(4)
-    
-    return
-end subroutine MAKE_STRESS_LOC
 !! mode: f90
 !! show-trailing-whitespace: t
 !! End:
