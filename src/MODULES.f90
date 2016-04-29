@@ -253,23 +253,23 @@ end module qsort_c_module
 !> @brief  Module for non linear calculation in 2D
 
 module nonlinear2d
-        real*8, parameter :: FTOL = 0.00100000000D0
-        real*8, parameter :: LTOL = 0.0010000000000D0
-        real*8, parameter :: STOL = 0.0010000000000000D0
-        type nl_element   !< element structure for time loop (RAM saving)
-            ! nl stored variables
-            real*8, dimension(:,:),   allocatable    :: radius
-            real*8, dimension(:,:,:), allocatable    :: stress
-            real*8, dimension(:,:,:), allocatable    :: strain
-            real*8, dimension(:,:,:), allocatable    :: center
-            real*8, dimension(:,:,:), allocatable    :: plastic_strain
-            ! elastic parameters
-            real*8, dimension(:,:), allocatable      :: lambda,mu
-            ! nonlinear parameters
-            real*8, dimension(:,:),    allocatable   :: syld,rinf,biso
-            real*8, dimension(:,:),    allocatable   :: ckin,kkin
-        
-        end type 
+    real*8, parameter :: FTOL = 0.00100000000D0
+    real*8, parameter :: LTOL = 0.0010000000000D0
+    real*8, parameter :: STOL = 0.0010000000000000D0
+    type nl_element   !< element structure for time loop (RAM saving)
+        ! nl stored variables
+        real*8, dimension(:,:),   allocatable    :: radius
+        real*8, dimension(:,:,:), allocatable    :: stress
+        real*8, dimension(:,:,:), allocatable    :: strain
+        real*8, dimension(:,:,:), allocatable    :: center
+        real*8, dimension(:,:,:), allocatable    :: plastic_strain
+        ! elastic parameters
+        real*8, dimension(:,:), allocatable      :: lambda,mu
+        ! nonlinear parameters
+        real*8, dimension(:,:),    allocatable   :: syld,rinf,biso
+        real*8, dimension(:,:),    allocatable   :: ckin,kkin
+    
+    end type 
     contains
         
         !****************************************************************************
@@ -1101,35 +1101,35 @@ module seismic
     implicit none
     contains
         
-        subroutine MAKE_SEISMIC_FORCES(nl_sism,length_cns,check_node_sism,&
-            check_dist_node_sism,facsmom,nnt,ne,cs_nnz,cs,sdeg_mat,snl,&
-            alfa1,alfa2,beta1,beta2,gamma1,gamma2,dt,displ,mvec,fe)
+        subroutine MAKE_SEISMIC_FORCES(nnt,nm,ne,nf,cs_nnz,cs,sdeg_mat,nfunc_data,nl_sism,length_cns,&
+            check_node_sism,check_dist_node_sism,func_data,func_type,tag_func,func_indx,facsmom,tt1,&
+            snl,alfa1,alfa2,beta1,beta2,gamma1,gamma2,displ,mvec,sism,fe)
             !
             implicit none
             ! INTENT IN
-            integer*4, intent(in)                       :: nnt,ne,nm,cs_nnz,nf
-            integer*4, intent(in)                       :: nl_sism,length_cns
-            integer*4, intent(in)                       :: nfunc_data
-            integer*4, intent(in), dimension(nm)        :: sdeg_mat
-            integer*4, intent(in), dimension(0:cs_nnz)  :: cs
-            integer*4, intent(in), dimension(length_cns,5) :: check_node_sism
-            integer*4, intent(in), dimension(nf)        :: func_type,tag_func
-            integer*4, intent(in), dimension(nf+1)      :: func_indx
-            real*8, dimension(nfunc_data)               :: func_data         
-            real*8,    intent(in)                       :: tt1
-            real*8,    intent(in), dimension(ne)        :: alfa1,beta1,gamma1,delta1
-            real*8,    intent(in), dimension(ne)        :: alfa2,beta2,gamma2,delta2 
-            real*8,    intent(in), dimension(2*nnt)     :: displ,mvec
-            real*8, dimension(length_cns,1)             :: check_dist_node_sism
-            real*8, dimension(nl_sism,3)                :: facsmom       
+            integer*4, intent(in)                               :: nnt,nm,ne,nf,cs_nnz
+            integer*4, intent(in)                               :: nfunc_data,nl_sism,length_cns
+            integer*4, intent(in), dimension(nm)                :: sdeg_mat
+            integer*4, intent(in), dimension(nf)                :: func_type,tag_func
+            integer*4, intent(in), dimension(nf+1)              :: func_indx
+            integer*4, intent(in), dimension(0:cs_nnz)          :: cs
+            integer*4, intent(in), dimension(length_cns,5)      :: check_node_sism
+            real*8,    intent(in)                               :: tt1
+            real*8,    intent(in), dimension(ne)                :: alfa1,beta1,gamma1
+            real*8,    intent(in), dimension(ne)                :: alfa2,beta2,gamma2
+            real*8,    intent(in), dimension(2*nnt)             :: displ,mvec
+            real*8,    intent(in), dimension(nl_sism,3)         :: facsmom       
+            real*8,    intent(in), dimension(nfunc_data)        :: func_data         
+            real*8,    intent(in), dimension(length_cns,1)      :: check_dist_node_sism
             ! INTENT INOUT
-            real*8,    intent(inout), dimension(2*nnt)  :: fe
-            type(nl_element), intent(inout), dimension(ne) :: snl 
+            type(nl_element), intent(inout), dimension(ne)      :: snl 
+            real*8,           intent(inout), dimension(2*nnt)   :: sism,fe
             ! 
             real*8,     dimension(:),  allocatable      :: ct,ww
             real*8,     dimension(:),  allocatable      :: dxdx,dydy,dxdy,dydx
             real*8,     dimension(:,:),allocatable      :: dd,det_j,fxs,fys
             real*8,     dimension(:,:),allocatable      :: sxxs,syys,szzs,sxys
+            real*8,     dimension(:,:,:), allocatable   :: dstrain
             real*8                                      :: t1ux,t1uy,t2ux
             real*8                                      :: t2uy,t1fx,t1fy,t2fx,t2fy
             integer*4                                   :: ie,ip,iq,il,im,nn,is,in
@@ -1140,8 +1140,9 @@ module seismic
                 nn = sdeg_mat(im)+1
                 
                 ! ALLOCATION/INITIALIZATION LOCAL VARIABLES 
-                call ALLOINIT_LOC(ie,nnt,nn,ct,ww,dd,dxdx,dxdy,dydx,dydy,dstrain, &
+                call ALLOINIT_LOC(ie,nnt,cs,cs_nnz,nn,ct,ww,dd,dxdx,dxdy,dydx,dydy,dstrain, &
                     fxs,fys,displ,alfa1(ie),alfa2(ie),beta1(ie),beta2(ie),gamma1(ie),gamma2(ie))
+                
                 allocate(sxxs(nn,nn))
                 allocate(syys(nn,nn))
                 allocate(szzs(nn,nn))
@@ -1150,7 +1151,6 @@ module seismic
                 syys = 0.d0
                 sxys = 0.d0
                 szzs = 0.d0
-                fe = 0.0d0
                 ! LOOP OVER GLL
                 do iq = 1,nn
                     do ip = 1,nn
@@ -1178,7 +1178,12 @@ module seismic
 end module seismic
 
 module write_output
-    
+    type nodepatched
+        ! nl stored variables
+        real*8, dimension(:,:), allocatable    :: stress
+        real*8, dimension(:,:), allocatable    :: strain
+        real*8, dimension(:,:), allocatable    :: plastic_strain
+    end type nodepatched 
     contains
         subroutine WRITE_MONITOR_EL(cs_nnz,cs,ne,nm,sdeg_mat,prop_mat,nmonit,its,ndt_monitor,option_out_var, &
                 unit_disp,unit_vel,unit_acc,unit_strain,unit_stress,unit_omega,node_m,nnt,         &
@@ -1424,32 +1429,31 @@ module write_output
             return
         end subroutine WRITE_MONITOR_EL
         
-        ! nonlinear
+        ! nonlinear output 
         subroutine WRITE_MONITOR_NL(unit_disp,unit_vel,unit_acc,unit_strain,unit_stress,unit_omega,option_out_var,&
-            nmonit,ndt_monitor,node_m,nnt,its,tt1,dis,vel,acc,nodal_counter,duxdx,duxdy,duydx,duydy,&
-            sxx,syy,szz,sxy)
-            
+            nmonit,ndt_monitor,node_m,nnt,its,tt1,dis,vel,acc,nodal_counter,disout)
+            ! 
             implicit none
+            ! intent IN
             real*8,                         intent(in) :: tt1,ndt_monitor
             integer*4,                      intent(in) :: nmonit,its,nnt
-            real*8,     dimension(2*nnt) ,  intent(inout) :: dis,vel,acc
-            real*8,     dimension(nnt)   ,  intent(inout) :: duxdx,duydy,duxdy,duydx
-            real*8,     dimension(nnt)   ,  intent(inout) :: sxx,syy,szz,sxy
             integer*4,  dimension(6),       intent(in) :: option_out_var
             integer*4,  dimension(nnt),     intent(in) :: nodal_counter
             integer*4,  dimension(nmonit),  intent(in) :: node_m
-            integer*4,  dimension(nmonit),  intent(inout) ::  unit_disp
-            integer*4,  dimension(nmonit),  intent(inout) ::  unit_vel
-            integer*4,  dimension(nmonit),  intent(inout) ::  unit_acc
-            integer*4,  dimension(nmonit),  intent(inout) ::  unit_stress
-            integer*4,  dimension(nmonit),  intent(inout) ::  unit_strain
-            integer*4,  dimension(nmonit),  intent(inout) ::  unit_omega
+            ! intent INOUT
+            integer*4,  dimension(nmonit),  intent(inout) :: unit_disp
+            integer*4,  dimension(nmonit),  intent(inout) :: unit_vel
+            integer*4,  dimension(nmonit),  intent(inout) :: unit_acc
+            integer*4,  dimension(nmonit),  intent(inout) :: unit_stress
+            integer*4,  dimension(nmonit),  intent(inout) :: unit_strain
+            integer*4,  dimension(nmonit),  intent(inout) :: unit_omega
+            real*8,     dimension(2*nnt) ,  intent(inout) :: dis,vel,acc
+            type(nodepatched),              intent(inout) :: disout
+            !
             integer*4                                     ::  in,i
-
             logical                                       :: condition
-            
             real*8                                        :: sxx_out,syy_out,szz_out,sxy_out
-            real*8                                        :: duxdx_out,duxdy_out,duydx_out,duydy_out
+            real*8                                        :: exx_out,eyy_out,gxy_out
             
             condition = (nmonit.ge.1).and.(int(real(its)/ndt_monitor).eq.(real(its)/ndt_monitor))
 
@@ -1480,18 +1484,20 @@ module write_output
                         write(unit_acc(i),'(3ES16.6)') tt1,acc(in),acc(in+nnt)
                     enddo
                 endif
-
+                ! STRESS OUTPUT
                 if (option_out_var(4).eq.1) then
+
+                    call UPDATE_OUT_STRESS(ne,nnt,cs_nnz,cs,nm,sdeg_mat,snl,disout)
                     do i = 1,nmonit
                         in = node_m(i)
-                        sxx_out = sxx(in)/nodal_counter(in)
-                        syy_out = syy(in)/nodal_counter(in)
-                        szz_out = szz(in)/nodal_counter(in)
-                        sxy_out = sxy(in)/nodal_counter(in)
-                        if (dabs(sxx(in)).lt.(1.0d-99)) sxx_out=0.0
-                        if (dabs(syy(in)).lt.(1.0d-99)) syy_out=0.0
-                        if (dabs(sxy(in)).lt.(1.0d-99)) sxy_out=0.0
-                        if (dabs(szz(in)).lt.(1.0d-99)) szz_out=0.0
+                        sxx_out = disout%stress(1,in)/nodal_counter(in)
+                        syy_out = disout%stress(2,in)/nodal_counter(in)
+                        szz_out = disout%stress(3,in)/nodal_counter(in)
+                        sxy_out = disout%stress(4,in)/nodal_counter(in)
+                        if (dabs(disout%stress(1,in)).lt.(1.0d-99)) sxx_out=0.d0
+                        if (dabs(disout%stress(2,in)).lt.(1.0d-99)) syy_out=0.d0
+                        if (dabs(disout%stress(3,in)).lt.(1.0d-99)) szz_out=0.d0
+                        if (dabs(disout%stress(4,in)).lt.(1.0d-99)) sxy_out=0.d0
                         write(unit_stress(i),'(5E16.8)') tt1,sxx_out,syy_out,sxy_out,szz_out
                     enddo
                 endif
@@ -1499,10 +1505,9 @@ module write_output
                 if (option_out_var(5).eq.1) then
                     do i = 1,nmonit
                         in = node_m(i) 
-                        duxdx_out = duxdx(in) / nodal_counter(in)
-                        duydy_out = duydy(in) / nodal_counter(in)
-                        duxdy_out = duxdy(in) / nodal_counter(in)
-                        duydx_out = duydx(in) / nodal_counter(in) 
+                        _out = duxdx(in) / nodal_counter(in)
+                        _out = duydy(in) / nodal_counter(in)
+                        _out = duxdy(in) / nodal_counter(in)
                         if (dabs(duxdx(in)).lt.(1.0d-99)) duxdx_out=0.0
                         if (dabs(duydy(in)).lt.(1.0d-99)) duydy_out=0.0
                         if (dabs(duxdy(in)).lt.(1.0d-99)) duxdy_out=0.0
@@ -1528,6 +1533,96 @@ module write_output
 
             return
         end subroutine WRITE_MONITOR_NL
+        !
+        subroutine UPDATE_OUT_STRESS(ne,nnt,cs_nnz,cs,nm,sdeg_mat,snl,disout)
+            !
+            implicit none
+            ! intent IN 
+            integer*4, intent(in)                       :: ne,nnt,cs_nnz,nm
+            integer*4, intent(in), dimension(nm)        :: sdeg_mat
+            integer*4, intent(in), dimension(0:cs_nnz)  :: cs
+            type(nl_element), intent(in), dimension(ne) :: snl
+            ! intent INOUT
+            type(nodepatched), intent(inout)            :: disout
+            !
+            integer*4                                   :: ie,im,nn,in,is,i,j 
+            
+            do ie = 1,ne
+                im = cs(cs(ie-1) + 0)
+                nn = sdeg_mat(im)+1
+                do j = 1,nn
+                    do i = 1,nn
+                        is = nn*(j -1) +i
+                        in = cs(cs(ie -1) + is)
+                        
+                        disout%stress(:,in) = disout%stress(:,in) + &
+                            snl(ie)%stress(:,i,j)
+
+                    enddo
+                enddo
+            enddo
+            return
+        end subroutine UPDATE_OUT_STRESS
+        !
+        subroutine UPDATE_OUT_STRAIN(ne,nnt,cs_nnz,cs,nm,sdeg_mat,snl,disout)
+            !
+            implicit none
+            ! intent IN 
+            integer*4, intent(in)                       :: ne,nnt,cs_nnz,nm
+            integer*4, intent(in), dimension(nm)        :: sdeg_mat
+            integer*4, intent(in), dimension(0:cs_nnz)  :: cs
+            type(nl_element), intent(in), dimension(ne) :: snl
+            ! intent INOUT
+            type(nodepatched), intent(inout)            :: disout
+            !
+            integer*4                                   :: ie,im,nn,in,is,i,j 
+            
+            do ie = 1,ne
+                im = cs(cs(ie-1) + 0)
+                nn = sdeg_mat(im)+1
+                do j = 1,nn
+                    do i = 1,nn
+                        is = nn*(j -1) +i
+                        in = cs(cs(ie -1) + is)
+                        
+                        disout%strain(:,in) = disout%strain(:,in) + &
+                            snl(ie)%strain(:,i,j)
+
+                    enddo
+                enddo
+            enddo
+            return
+        end subroutine UPDATE_OUT_STRAIN
+        !
+        subroutine UPDATE_OUT_PLASTIC_STRAIN(ne,nnt,cs_nnz,cs,nm,sdeg_mat,snl,disout)
+            !
+            implicit none
+            ! intent IN 
+            integer*4, intent(in)                       :: ne,nnt,cs_nnz,nm
+            integer*4, intent(in), dimension(nm)        :: sdeg_mat
+            integer*4, intent(in), dimension(0:cs_nnz)  :: cs
+            type(nl_element), intent(in), dimension(ne) :: snl
+            ! intent INOUT
+            type(nodepatched), intent(inout)            :: disout
+            !
+            integer*4                                   :: ie,im,nn,in,is,i,j 
+            
+            do ie = 1,ne
+                im = cs(cs(ie-1) + 0)
+                nn = sdeg_mat(im)+1
+                do j = 1,nn
+                    do i = 1,nn
+                        is = nn*(j -1) +i
+                        in = cs(cs(ie -1) + is)
+                        
+                        disout%plastic_strain(:,in) = disout%plastic_strain(:,in) + &
+                            snl(ie)%plastic_strain(:,i,j)
+
+                    enddo
+                enddo
+            enddo
+            return
+    end subroutine UPDATE_OUT_PLASTIC_STRAIN
 end module write_output
 !! mode: f90
 !! show-trailing-whitespace: t

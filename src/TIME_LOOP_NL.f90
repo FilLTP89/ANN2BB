@@ -139,7 +139,7 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
     real*8, dimension(ne)                   :: alfa1,beta1,gamma1,delta1
     real*8, dimension(ne)                   :: alfa2,beta2,gamma2,delta2 
     real*8, dimension(nnt)                  :: xs,ys
-    real*8, dimension(nm,8)                 :: prop_mat
+    real*8, dimension(nm,9)                 :: prop_mat
     real*8, dimension(NNZ_N)                :: N_TOT
     real*8, dimension(nf,2*nnt)             :: Fmat
     real*8, dimension(nfunc_data)           :: func_data         
@@ -186,6 +186,7 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
     integer*4, dimension(nmonit) :: unit_omega
     integer*4, dimension(nmonit) :: unit_uDRM 
     integer*4, dimension (6)     :: option_out_var           
+    type(nodepatched)            :: disout
 
     !************************************************
     !
@@ -208,23 +209,9 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
 
     !************************************************
     !
-    !           ELEMENT-WISE VECTORS 
+    !           NONLINEAR ELEMENT-WISE VECTORS 
     !
     !************************************************
-
-    real*8                                  :: gamma
-    real*8, dimension(:),   allocatable     :: ct,ww,dxdx_el,dxdy_el,dydx_el,dydy_el
-    real*8, dimension(:,:), allocatable     :: dd,ux_el,uy_el,vx_el,vy_el
-    real*8, dimension(:,:), allocatable     :: duxdx_el,duxdy_el,duydx_el,duydy_el
-    real*8, dimension(:,:), allocatable     :: sxx_el,syy_el,szz_el,sxy_el
-    real*8, dimension(:,:), allocatable     :: sxxs_el,syys_el,szzs_el,sxys_el
-    real*8, dimension(:,:), allocatable     :: fx_el,fy_el,fxs_el,fys_el
-    real*8, dimension(:,:), allocatable     :: det_j,mu_el,lambda_el 
-    ! NONLINEAR
-    real*8, dimension(:,:),     allocatable :: syld_el,Riso_el
-    real*8, dimension(:,:),     allocatable :: Rinf_el,biso_el
-    real*8, dimension(:,:),     allocatable :: Ckin_el,kkin_el
-    real*8, dimension(:,:,:),   allocatable :: Xkin_el,depl_el
     type(nl_element), dimension(:), allocatable :: snl
 
     !************************************************
@@ -268,111 +255,28 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
     !************************************************
     
     interface
-
+        ! ALLOCATE/INITIALIZE ALL NL VARIABLES
         subroutine ALLOINIT_NL_ALL(ne,sdeg_mat,nm,nnt,cs_nnz,cs,prop_mat,u1,u2,vel,acc,v1,fk,fe,fd,&
-            snl,option_out_var,nl_sism,sism,update_index_el_az,nodal_counter)  
-            
+            snl,option_out_var,disout,nl_sism,sism,update_index_el_az,nodal_counter)  
+            !
             use nonlinear2d
-
+            !
             implicit none
-            
             ! intent IN
             integer*4,                              intent(in)      :: ne,nm,nnt,cs_nnz,nl_sism
-            real*8,     dimension(nm,9)             intent(in)      :: prop_mat
             integer*4,  dimension(6),               intent(in)      :: option_out_var
             integer*4,  dimension(nm),              intent(in)      :: sdeg_mat
             integer*4,  dimension(0:cs_nnz),        intent(in)      :: cs
+            real*8,     dimension(nm,9),            intent(in)      :: prop_mat
             real*8,     dimension(2*nnt),           intent(in)      :: v1
             ! intent INOUT
             real*8,     dimension(:), allocatable,  intent(inout)   :: u1,u2,vel,acc,fk,fe,fd,sism
             integer*4,  dimension(:), allocatable,  intent(inout)   :: update_index_el_az,nodal_counter
-            type(nl_element), dimension(:), allocatable,intent(inout)   :: snl
+            type(nl_element), dimension(:), allocatable, intent(inout)   :: snl
+            type(nodepatched), intent(inout)                        :: disout
             ! counters
             integer*4                                               :: nn,im,iaz,ie,in,is,i,j
         end subroutine ALLOINIT_NL_ALL 
-        ! allocation element-wise variables (to be updated at each time-step)
-        subroutine MAKE_STRAIN(nn,dd,dxdx,dxdy,dydx,dydy,ux,uy,duxdx,duxdy,duydx,duydy,dt)
-            
-            implicit none
-            real*8                                  :: t1ux,t1uy,t2ux,t2uy
-            real*8                                  :: t1fx,t1fy,t2fx,t2fy,det_j
-            integer*4                               :: ip,iq,il,im
-            real*8,                  intent(in)     :: dt
-            integer*4,               intent(in)     :: nn
-            real*8, dimension(nn),   intent(in)     :: dxdx,dxdy,dydx,dydy
-            real*8, dimension(nn,nn),intent(in)     :: dd,ux,uy
-            real*8, dimension(nn,nn),intent(inout)  :: duxdx,duxdy,duydx,duydy
-
-        end subroutine MAKE_STRAIN    
-        ! update increments at each time-step
-        subroutine UPDATE_ALL_INCREMENTS(ie,nnt,nn,cs_nnz,cs,fk,mvec,dsxx,dsyy,dszz,dsxy,&
-            dduxdx,dduxdy,dduydx,dduydy,dxkin_all,depl_all,driso_all,fx_el,fy_el,&
-            sxx_el,syy_el,szz_el,sxy_el,duxdx_el,duxdy_el,duydx_el,duydy_el,xkin_el,&
-            riso_el,depl_el,fxs_el,fys_el,sism)
-            
-            implicit none
-            ! intent IN 
-            integer*4,                          intent(in)          :: nnt,nn,cs_nnz,ie
-            integer*4,  dimension(0:cs_nnz),    intent(in)          :: cs
-            real*8,     dimension(nn,nn),       intent(in)          :: fx_el,fy_el
-            real*8,     dimension(nn,nn),       intent(in)          :: duxdx_el,duxdy_el,duydx_el,duydy_el
-            real*8,     dimension(nn,nn),       intent(in)          :: sxx_el,syy_el,szz_el,sxy_el,riso_el
-            real*8,     dimension(4,nn,nn),     intent(in)          :: xkin_el,depl_el
-            real*8,     dimension(2*nnt),       intent(in)          :: mvec
-            ! intent INOUT
-            real*8,     dimension(nnt),         intent(inout)       :: dsxx,dsyy,dszz,dsxy
-            real*8,     dimension(nnt),         intent(inout)       :: dduxdx,dduxdy,dduydx,dduydy
-            real*8,     dimension(nnt),         intent(inout)       :: driso_all
-            real*8,     dimension(2*nnt),       intent(inout)       :: fk
-            real*8,     dimension(4*nnt),       intent(inout)       :: dxkin_all,depl_all
-            real*8,     dimension(nn,nn),       intent(in),    optional   :: fxs_el,fys_el
-            real*8,     dimension(2*nnt),       intent(inout), optional   :: sism
-            integer*4                                               :: in,is,i,j 
-        end subroutine UPDATE_ALL_INCREMENTS
-        ! deallocate element-wise variables (nonlinear internal forces) 
-        subroutine DEALLOCATE_NL_EL(ct,ww,dd,dxdx_el,dxdy_el,dydx_el,dydy_el,det_j, &
-            duxdx_el,duxdy_el,duydx_el,duydy_el,sxx_el,syy_el,sxy_el,szz_el,     &
-            lambda_el,mu_el,syld_el,Ckin_el,kkin_el,Riso_el,Rinf_el,biso_el,     &
-            Xkin_el,dEpl_el,fx_el,fy_el,nl_sism,fxs_el,fys_el,sxxs_el,syys_el,   &
-            sxys_el,szzs_el,ux_el,uy_el)
-            
-            implicit none 
-            ! intent IN 
-            integer*4,  intent(in)                                   :: nl_sism
-            ! intent INOUT
-            real*8,     intent(inout), dimension(:), allocatable     :: ct,ww
-            real*8,     intent(inout), dimension(:), allocatable     :: dxdx_el,dydy_el
-            real*8,     intent(inout), dimension(:), allocatable     :: dxdy_el,dydx_el
-            real*8,     intent(inout), dimension(:,:), allocatable   :: dd,det_j,fx_el,fy_el
-            real*8,     intent(inout), dimension(:,:), allocatable   :: fxs_el,fys_el
-            real*8,     intent(inout), dimension(:,:), allocatable   :: duxdx_el,dUydy_el
-            real*8,     intent(inout), dimension(:,:), allocatable   :: duxdy_el,dUydx_el
-            real*8,     intent(inout), dimension(:,:), allocatable   :: sxx_el,syy_el,sxy_el,szz_el
-            real*8,     intent(inout), dimension(:,:), allocatable   :: sxxs_el,syys_el,sxys_el,szzs_el
-            real*8,     intent(inout), dimension(:,:), allocatable   :: lambda_el,mu_el,syld_el
-            real*8,     intent(inout), dimension(:,:), allocatable   :: Riso_el,biso_el,Rinf_el
-            real*8,     intent(inout), dimension(:,:), allocatable   :: Ckin_el,kkin_el
-            real*8,     intent(inout), dimension(:,:), allocatable   :: ux_el,uy_el 
-            real*8,     intent(inout), dimension(:,:,:), allocatable :: Xkin_el,dEpl_el
-        end subroutine DEALLOCATE_NL_EL
-        ! update stress and hardening variables at each time-step
-        subroutine UPDATE_ALL(nnt,sxx,syy,szz,sxy,dsxx,dsyy,dszz,dsxy,&
-            duxdx,duxdy,duydx,duydy,dduxdx,dduxdy,dduydx,dduydy,xkin_all,dxkin_all,&
-            riso_all,driso_all,epl_all,depl_all,nodal_counter)
-            
-            implicit none
-            ! intent IN
-            integer*4,                intent(in)                :: nnt
-            integer*4, dimension(nnt),intent(in)                :: nodal_counter
-            ! intent INOUT
-            real*8, dimension(nnt),   intent(inout)             :: sxx,syy,szz,sxy
-            real*8, dimension(nnt),   intent(inout)             :: dsxx,dsyy,dszz,dsxy
-            real*8, dimension(nnt),   intent(inout)             :: duxdx,duydy,duxdy,duydx
-            real*8, dimension(nnt),   intent(inout)             :: dduxdx,dduydy,dduxdy,dduydx
-            real*8, dimension(nnt),   intent(inout)             :: riso_all,driso_all
-            real*8, dimension(4*nnt), intent(inout)             :: xkin_all,dxkin_all
-            real*8, dimension(4*nnt), intent(inout)             :: epl_all,depl_all
-        end subroutine UPDATE_ALL 
     
     end interface
     
@@ -685,34 +589,33 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         write(*,'(A)')
         write(*,'(A)') '*************************************************************'
         write(*,'(A)') '----------COMPUTING NON LINEAR INTERNAL FORCES---------------'
+        !
         call system_clock(COUNT=clock_start,COUNT_RATE=clock(2))  
-
-        call MAKE_INTERNAL_FORCES_NL(dt,u1,ne,cs_nnz,cs,ct,nm,ww,dd,nnt,snl,&
+        ! DISPLACEMENT FORMULATION
+        call MAKE_INTERNAL_FORCES_NL(nnt,ne,nm,cs_nnz,cs,sdeg_mat,snl,&
             alfa1,alfa2,beta1,beta2,gamma1,gamma2,dt,u1,fk,mvec)
-        
+        !
         call system_clock(COUNT=clock_finish)
         time_fk = float(clock_finish - clock_start) / float(clock(2))
+        !
         write(*,'(A)') 'Non Linear Internal Forces: OK'
         ! COMPUTE EXTERNAL SEISMIC FORCES sism(fe) 
         if (nl_sism.gt.0) 
             write(*,'(A)')
             write(*,'(A)') '*************************************************************'
             write(*,'(A)') '----------COMPUTING SEISMIC EXTERNAL FORCES---------------'
+            !
             call system_clock(COUNT=clock_start,COUNT_RATE=clock(2))   
-
-            call MAKE_SEISMIC_FORCES(nl_sism,length_cns,check_node_sism,&
+            !
+            call MAKE_SEISMIC_FORCES(nl_sism,nm,length_cns,check_node_sism,&
                 check_dist_node_sism,facsmom,nnt,ne,cs_nnz,cs,sdeg_mat,snl,&
-                alfa1,alfa2,beta1,beta2,gamma1,gamma2,dt,displ,mvec,fe)
-             
+                alfa1,alfa2,beta1,beta2,gamma1,gamma2,displ,mvec,fe)
+            ! 
             call system_clock(COUNT=clock_finish)
             time_fe = time_fe+float(clock_finish - clock_start) / float(clock(2))
+            !
             write(*,'(A)') 'Seismic External Forces: OK'
         endif
-
-        call UPDATE_OUTPUT(nnt,snl,sxx,syy,szz,sxy,duxdx,duxdy,duydx,duydy,&
-            xkin,riso,epl,nodal_counter)
-        
-
         
         !COMPUTE VISCID FORCES fd = N_TOT*v1
         call system_clock(COUNT=clock_start,COUNT_RATE=clock(2)) 
@@ -783,8 +686,7 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         !     WRITE OUTPUT FILE
         !********************************************************************************************
         call WRITE_MONITOR_NL(unit_disp,unit_vel,unit_acc,unit_strain,unit_stress,unit_omega,option_out_var,&
-            nmonit,ndt_monitor,node_m,nnt,its,tt1,u1,vel,acc,nodal_counter,duxdx,duxdy,duydx,duydy,&
-            sxx,syy,szz,sxy)
+            nmonit,ndt_monitor,node_m,nnt,its,tt1,u1,vel,acc,nodal_counter,disout)
         
         !-----DRM---------------------------------------------------------------------------------------------------
         !Write out displacement in DRM nodes for I step

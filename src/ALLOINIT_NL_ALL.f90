@@ -23,23 +23,23 @@
 !> @param[inout] sxx,syy,sxy,szz nodal values for the stress tensor (on element)
 
 subroutine ALLOINIT_NL_ALL(ne,sdeg_mat,nm,nnt,cs_nnz,cs,prop_mat,u1,u2,vel,acc,v1,fk,fe,fd,&
-    snl,option_out_var,nl_sism,sism,update_index_el_az,nodal_counter)  
-    
+    snl,option_out_var,disout,nl_sism,sism,update_index_el_az,nodal_counter)  
+    ! 
     use nonlinear2d
-
+    !
     implicit none
-    
     ! intent IN
     integer*4,                              intent(in)      :: ne,nm,nnt,cs_nnz,nl_sism
-    real*8,     dimension(nm,9)             intent(in)      :: prop_mat
     integer*4,  dimension(6),               intent(in)      :: option_out_var
     integer*4,  dimension(nm),              intent(in)      :: sdeg_mat
     integer*4,  dimension(0:cs_nnz),        intent(in)      :: cs
+    real*8,     dimension(nm,9),            intent(in)      :: prop_mat
     real*8,     dimension(2*nnt),           intent(in)      :: v1
     ! intent INOUT
     real*8,     dimension(:), allocatable,  intent(inout)   :: u1,u2,vel,acc,fk,fe,fd,sism
     integer*4,  dimension(:), allocatable,  intent(inout)   :: update_index_el_az,nodal_counter
     type(nl_element), dimension(:), allocatable, intent(inout)   :: snl
+    type(nodepatched), intent(inout)                        :: disout
     ! counters
     integer*4                                               :: nn,im,iaz,ie,in,is,i,j
     
@@ -112,7 +112,17 @@ subroutine ALLOINIT_NL_ALL(ne,sdeg_mat,nm,nnt,cs_nnz,cs,prop_mat,u1,u2,vel,acc,v
                 enddo 
             enddo
         enddo
-    endif  
+    endif 
+    if (option_out_var(4)==1) then
+        allocate(disout%stress(1:4,nnt))
+        disout%stress(:,:) = 0.d0
+    endif
+    if (option_out_var(5)==1) then
+        allocate(disout%strain(1:3,nnt))
+        allocate(disout%plastic_strain(1:3,nnt))
+        disout%strain(:,:) = 0.d0
+        disout%plastic_strain(:,:) = 0.d0
+    endif
     return
 end subroutine ALLOINIT_NL_ALL
 !! mode: f90
