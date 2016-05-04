@@ -257,20 +257,21 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
     interface
         ! ALLOCATE/INITIALIZE ALL NL VARIABLES
         subroutine ALLOINIT_NL_ALL(ne,sdeg_mat,nm,nnt,cs_nnz,cs,prop_mat,u1,u2,vel,acc,v1,fk,fe,fd,&
-            snl,option_out_var,disout,nl_sism,sism,update_index_el_az,nodal_counter)  
+            snl,option_out_var,disout,update_index_el_az,nodal_counter)  
             !
             use nonlinear2d
+            use write_output
             !
             implicit none
             ! intent IN
-            integer*4,                              intent(in)      :: ne,nm,nnt,cs_nnz,nl_sism
+            integer*4,                              intent(in)      :: ne,nm,nnt,cs_nnz
             integer*4,  dimension(6),               intent(in)      :: option_out_var
             integer*4,  dimension(nm),              intent(in)      :: sdeg_mat
             integer*4,  dimension(0:cs_nnz),        intent(in)      :: cs
             real*8,     dimension(nm,9),            intent(in)      :: prop_mat
             real*8,     dimension(2*nnt),           intent(in)      :: v1
             ! intent INOUT
-            real*8,     dimension(:), allocatable,  intent(inout)   :: u1,u2,vel,acc,fk,fe,fd,sism
+            real*8,     dimension(:), allocatable,  intent(inout)   :: u1,u2,vel,acc,fk,fe,fd
             integer*4,  dimension(:), allocatable,  intent(inout)   :: update_index_el_az,nodal_counter
             type(nl_element), dimension(:), allocatable, intent(inout)   :: snl
             type(nodepatched), intent(inout)                        :: disout
@@ -400,7 +401,7 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
     ! INITIALIZATION
     !********************************************************************************************
     call ALLOINIT_NL_ALL(ne,sdeg_mat,nm,nnt,cs_nnz,cs,prop_mat,u1,u2,vel,acc,v1,fk,fe,fd,&
-            snl,option_out_var,nl_sism,sism,update_index_el_az,nodal_counter)  
+            snl,option_out_var,disout,update_index_el_az,nodal_counter)  
     
     dt2 = dt*dt
     number_of_threads = 1                                                !PARALLEL Kiana 06.10.2015
@@ -600,16 +601,16 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         !
         write(*,'(A)') 'Non Linear Internal Forces: OK'
         ! COMPUTE EXTERNAL SEISMIC FORCES sism(fe) 
-        if (nl_sism.gt.0) 
+        if (nl_sism.gt.0) then 
             write(*,'(A)')
             write(*,'(A)') '*************************************************************'
             write(*,'(A)') '----------COMPUTING SEISMIC EXTERNAL FORCES---------------'
             !
             call system_clock(COUNT=clock_start,COUNT_RATE=clock(2))   
             !
-            call MAKE_SEISMIC_FORCES(nl_sism,nm,length_cns,check_node_sism,&
-                check_dist_node_sism,facsmom,nnt,ne,cs_nnz,cs,sdeg_mat,snl,&
-                alfa1,alfa2,beta1,beta2,gamma1,gamma2,displ,mvec,fe)
+            call MAKE_SEISMIC_FORCES(nnt,nm,ne,nf,cs_nnz,cs,sdeg_mat,nfunc_data,nl_sism,length_cns,&
+            check_node_sism,check_dist_node_sism,func_data,func_type,tag_func,func_indx,facsmom,tt1,&
+            snl,alfa1,alfa2,beta1,beta2,gamma1,gamma2,u1,mvec,sism,fe)
             ! 
             call system_clock(COUNT=clock_finish)
             time_fe = time_fe+float(clock_finish - clock_start) / float(clock(2))
@@ -685,8 +686,9 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         !********************************************************************************************
         !     WRITE OUTPUT FILE
         !********************************************************************************************
-        call WRITE_MONITOR_NL(unit_disp,unit_vel,unit_acc,unit_strain,unit_stress,unit_omega,option_out_var,&
-            nmonit,ndt_monitor,node_m,nnt,its,tt1,u1,vel,acc,nodal_counter,disout)
+        call WRITE_MONITOR_NL(unit_disp,unit_vel,unit_acc,unit_strain,unit_stress,unit_omega,&
+            option_out_var,nmonit,ndt_monitor,node_m,nm,ne,nnt,cs,cs_nnz,sdeg_mat,snl,its,tt1,&
+            u1,vel,acc,nodal_counter,disout)
         
         !-----DRM---------------------------------------------------------------------------------------------------
         !Write out displacement in DRM nodes for I step
@@ -754,8 +756,8 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
     write(*,'(A,F8.4,A)')'Mean time-step CPU time= ', &
         time_total / dfloat(nts - 1),' s'
 
-    deallocate(update_index_el_az,u1,u2,fk,fe,fd,vel,acc,xkin_all,epl_all,riso_all)
-    deallocate(sxx,syy,szz,sxy,dsxx,dsyy,dszz,dsxy,duxdx,duxdy,duydx,duydy)
+    call DEALLOCATE_ALL(ne,u1,u2,vel,acc,v1,fk,fe,fd,snl,disout,&
+        update_index_el_az,nodal_counter)   
     if (nf.gt.0) deallocate(func_value) 
     if (nnode_dirX.gt.0) deallocate(inode_dirX)
     if (nnode_dirY.gt.0) deallocate(inode_dirY)

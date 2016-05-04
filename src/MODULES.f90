@@ -507,7 +507,8 @@ module nonlinear2d
                     dstrain(1,ip,iq) = ( 1.d0 / det_j) * ((dydy(ip) * t1ux) - (dydx(iq) * t2ux))
                     dstrain(2,ip,iq) = (-1.d0 / det_j) * ((dxdy(ip) * t1uy) - (dxdx(iq) * t2uy))
                     dstrain(3,ip,iq) = ( 1.d0 / det_j) * ((dydy(ip) * t1uy) - (dydx(iq) * t2uy))
-                    dstrain(3,ip,iq) = dstrain(3,ip,iq)+(-1.d0 / det_j) * ((dxdy(ip) * t1ux) - (dxdx(iq) * t2ux))
+                    dstrain(3,ip,iq) = 0.5*(dstrain(3,ip,iq)+(-1.d0 / det_j) * &
+                        ((dxdy(ip) * t1ux) - (dxdx(iq) * t2ux)))
                 enddo
             enddo
             !
@@ -1178,6 +1179,10 @@ module seismic
 end module seismic
 
 module write_output
+
+    use nonlinear2d
+    implicit none
+    
     type nodepatched
         ! nl stored variables
         real*8, dimension(:,:), allocatable    :: stress
@@ -1284,7 +1289,7 @@ module write_output
                         
                         call LGL(nn,ct,ww,dd)
                         
-                        call MAKE_DERIVATIVES(nn,alfa1(ie),alfa2(ie),beta1(ie),beta2(ie),gamma1(ie),gamma2(ie),ct,&
+                        call MAKE_DERIVATIVES_LOC(nn,alfa1(ie),alfa2(ie),beta1(ie),beta2(ie),gamma1(ie),gamma2(ie),ct,&
                             dxdy_el,dydy_el,dxdx_el,dydx_el)
                         
                         do jj=1,nn
@@ -1430,25 +1435,29 @@ module write_output
         end subroutine WRITE_MONITOR_EL
         
         ! nonlinear output 
-        subroutine WRITE_MONITOR_NL(unit_disp,unit_vel,unit_acc,unit_strain,unit_stress,unit_omega,option_out_var,&
-            nmonit,ndt_monitor,node_m,nnt,its,tt1,dis,vel,acc,nodal_counter,disout)
+        subroutine WRITE_MONITOR_NL(unit_disp,unit_vel,unit_acc,unit_strain,unit_stress,unit_omega,&
+            option_out_var,nmonit,ndt_monitor,node_m,nm,ne,nnt,cs,cs_nnz,sdeg_mat,snl,its,tt1,&
+            dis,vel,acc,nodal_counter,disout)
             ! 
             implicit none
             ! intent IN
-            real*8,                         intent(in) :: tt1,ndt_monitor
-            integer*4,                      intent(in) :: nmonit,its,nnt
-            integer*4,  dimension(6),       intent(in) :: option_out_var
-            integer*4,  dimension(nnt),     intent(in) :: nodal_counter
-            integer*4,  dimension(nmonit),  intent(in) :: node_m
+            real*8,                         intent(in)  :: tt1,ndt_monitor
+            integer*4,                      intent(in)  :: nm,ne,nnt,cs_nnz,nmonit,its
+            integer*4, dimension(6),        intent(in)  :: option_out_var
+            integer*4, dimension(nm),       intent(in)  :: sdeg_mat
+            integer*4, dimension(nnt),      intent(in)  :: nodal_counter
+            integer*4, dimension(nmonit),   intent(in)  :: node_m
+            integer*4, dimension(0:cs_nnz), intent(in)  :: cs
+            type(nl_element), dimension(ne),intent(in)  :: snl
             ! intent INOUT
-            integer*4,  dimension(nmonit),  intent(inout) :: unit_disp
-            integer*4,  dimension(nmonit),  intent(inout) :: unit_vel
-            integer*4,  dimension(nmonit),  intent(inout) :: unit_acc
-            integer*4,  dimension(nmonit),  intent(inout) :: unit_stress
-            integer*4,  dimension(nmonit),  intent(inout) :: unit_strain
-            integer*4,  dimension(nmonit),  intent(inout) :: unit_omega
-            real*8,     dimension(2*nnt) ,  intent(inout) :: dis,vel,acc
-            type(nodepatched),              intent(inout) :: disout
+            integer*4, dimension(nmonit), intent(inout) :: unit_disp
+            integer*4, dimension(nmonit), intent(inout) :: unit_vel
+            integer*4, dimension(nmonit), intent(inout) :: unit_acc
+            integer*4, dimension(nmonit), intent(inout) :: unit_stress
+            integer*4, dimension(nmonit), intent(inout) :: unit_strain
+            integer*4, dimension(nmonit), intent(inout) :: unit_omega
+            real*8,    dimension(2*nnt) , intent(inout) :: dis,vel,acc
+            type(nodepatched),            intent(inout) :: disout
             !
             integer*4                                     ::  in,i
             logical                                       :: condition
@@ -1501,33 +1510,34 @@ module write_output
                         write(unit_stress(i),'(5E16.8)') tt1,sxx_out,syy_out,sxy_out,szz_out
                     enddo
                 endif
-
+                ! STRAIN OUTPUT
                 if (option_out_var(5).eq.1) then
+
+                    call UPDATE_OUT_STRAIN(ne,nnt,cs_nnz,cs,nm,sdeg_mat,snl,disout)
                     do i = 1,nmonit
                         in = node_m(i) 
-                        _out = duxdx(in) / nodal_counter(in)
-                        _out = duydy(in) / nodal_counter(in)
-                        _out = duxdy(in) / nodal_counter(in)
-                        if (dabs(duxdx(in)).lt.(1.0d-99)) duxdx_out=0.0
-                        if (dabs(duydy(in)).lt.(1.0d-99)) duydy_out=0.0
-                        if (dabs(duxdy(in)).lt.(1.0d-99)) duxdy_out=0.0
-                        if (dabs(duydx(in)).lt.(1.0d-99)) duydx_out=0.0
-                        write(unit_strain(i),'(4E16.8)') tt1,duxdx_out,duydy_out,0.5*(duxdy_out+duydx_out) 
+                        exx_out = disout%strain(1,in) / nodal_counter(in)
+                        eyy_out = disout%strain(2,in) / nodal_counter(in)
+                        gxy_out = disout%strain(3,in) / nodal_counter(in)
+                        if (dabs(disout%strain(1,in)).lt.(1.0d-99)) exx_out=0.d0
+                        if (dabs(disout%strain(2,in)).lt.(1.0d-99)) eyy_out=0.d0
+                        if (dabs(disout%strain(3,in)).lt.(1.0d-99)) gxy_out=0.d0
+                        write(unit_strain(i),'(4E16.8)') tt1,exx_out,eyy_out,gxy_out 
                     enddo
                 endif
 
-                if (option_out_var(6) .eq. 1) then  
-                    do i = 1,nmonit
-                        in = node_m(i) 
-                        duxdx_out = duxdx(in) / nodal_counter(in)
-                        duydy_out = duydy(in) / nodal_counter(in)
-                        duxdy_out = duxdy(in) / nodal_counter(in)
-                        duydx_out = duydx(in) / nodal_counter(in) 
-                        if (dabs(duxdy(in)).lt.(1.0d-99)) duxdy_out=0.0
-                        if (dabs(duydx(in)).lt.(1.0d-99)) duydx_out=0.0
-                        write(unit_omega(i),'(2E16.8)') tt1, 0.5*(duxdy_out-duydx_out) 
-                    enddo
-                endif
+!                if (option_out_var(6) .eq. 1) then  
+!                    do i = 1,nmonit
+!                        in = node_m(i) 
+!                        duxdx_out = duxdx(in) / nodal_counter(in)
+!                        duydy_out = duydy(in) / nodal_counter(in)
+!                        duxdy_out = duxdy(in) / nodal_counter(in)
+!                        duydx_out = duydx(in) / nodal_counter(in) 
+!                        if (dabs(duxdy(in)).lt.(1.0d-99)) duxdy_out=0.0
+!                        if (dabs(duydx(in)).lt.(1.0d-99)) duydx_out=0.0
+!                        write(unit_omega(i),'(2E16.8)') tt1, 0.5*(duxdy_out-duydx_out) 
+!                    enddo
+!                endif
 
             endif
 

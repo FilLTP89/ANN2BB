@@ -23,20 +23,21 @@
 !> @param[inout] sxx,syy,sxy,szz nodal values for the stress tensor (on element)
 
 subroutine ALLOINIT_NL_ALL(ne,sdeg_mat,nm,nnt,cs_nnz,cs,prop_mat,u1,u2,vel,acc,v1,fk,fe,fd,&
-    snl,option_out_var,disout,nl_sism,sism,update_index_el_az,nodal_counter)  
+    snl,option_out_var,disout,update_index_el_az,nodal_counter)  
     ! 
     use nonlinear2d
+    use write_output
     !
     implicit none
     ! intent IN
-    integer*4,                              intent(in)      :: ne,nm,nnt,cs_nnz,nl_sism
+    integer*4,                              intent(in)      :: ne,nm,nnt,cs_nnz
     integer*4,  dimension(6),               intent(in)      :: option_out_var
     integer*4,  dimension(nm),              intent(in)      :: sdeg_mat
     integer*4,  dimension(0:cs_nnz),        intent(in)      :: cs
     real*8,     dimension(nm,9),            intent(in)      :: prop_mat
     real*8,     dimension(2*nnt),           intent(in)      :: v1
     ! intent INOUT
-    real*8,     dimension(:), allocatable,  intent(inout)   :: u1,u2,vel,acc,fk,fe,fd,sism
+    real*8,     dimension(:), allocatable,  intent(inout)   :: u1,u2,vel,acc,fk,fe,fd
     integer*4,  dimension(:), allocatable,  intent(inout)   :: update_index_el_az,nodal_counter
     type(nl_element), dimension(:), allocatable, intent(inout)   :: snl
     type(nodepatched), intent(inout)                        :: disout
@@ -88,10 +89,6 @@ subroutine ALLOINIT_NL_ALL(ne,sdeg_mat,nm,nnt,cs_nnz,cs,prop_mat,u1,u2,vel,acc,v
     allocate(fk(2*nnt)); fk = 0.0d0
     allocate(fd(2*nnt)); fd = 0.0d0
     allocate(fe(2*nnt)); fe = 0.0d0
-    ! external tensor moment load
-    if(nl_sism.gt.0) then
-        allocate(sism(2*nnt))
-    endif
     ! update index 
     allocate(update_index_el_az(2*nnt))
     do iaz = 1,2*nnt
