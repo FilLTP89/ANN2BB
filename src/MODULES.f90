@@ -1,4 +1,4 @@
-!    Copyright (C) 2014 The SPEED FOUNDATION
+!   Copyright (C) 2014 The SPEED FOUNDATION
 !    Author: Ilario Mazzieri
 !
 !    This file is part of SPEED.
@@ -302,7 +302,8 @@ module nonlinear2d
             integer*4                                   :: ie,ip,iq,il,im,nn,is,in
             logical                                     :: st_epl
            !
-            do ie = 1,ne 
+            do ie = 1,ne
+                write(*,*) "ELEMENT: ",ie
                 im = cs(cs(ie-1) + 0)
                 nn = sdeg_mat(im)+1
                 
@@ -325,7 +326,6 @@ module nonlinear2d
                             snl(ie)%radius(ip,iq),snl(ie)%syld(ip,iq),st_epl,alpha_epl,ie)
                         ! PLASTIC CORRECTION 
                         if (st_epl) then
-                            write(*,*) "PLASTIC"
                             call plastic_corrector(dstrain_alpha,dtrial,snl(ie)%center(:,ip,iq),  &
                                 snl(ie)%radius(ip,iq),snl(ie)%syld(ip,iq),snl(ie)%biso(ip,iq),&
                                 snl(ie)%rinf(ip,iq),snl(ie)%ckin(ip,iq),snl(ie)%kkin(ip,iq),  &
@@ -708,7 +708,6 @@ module nonlinear2d
                     alpha_elp = 1d0
                     st_elp    = .false.
                 else
-                    write(*,*)"INVERT"
                     call gotoFpegasus(stress0,dtrial,center,radius,syld,1,alpha_elp)
                     st_elp    = .true.
                 end if
@@ -716,12 +715,6 @@ module nonlinear2d
                 write(*,*) 'ERROR: FS: ',FS,'>',FTOL,'!!!!'
                 alpha_elp  = 0d0
                 st_elp = .true.
-                write(*,*) "NEL",nel
-                write(*,*) "STRESS0",stress0
-                write(*,*) "DTRIAL",dtrial
-                write(*,*) "SYLD",syld
-                write(*,*) "CENTER",center
-                read(*,*)
             end if
             dtrial=stress0+dtrial*alpha_elp
             call mises_yld_locus(dtrial,center,radius,syld,FS,gradFS)
