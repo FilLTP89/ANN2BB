@@ -33,21 +33,20 @@
 !> @param[out] fy y-componnent for internal forces
 
 
-subroutine MAKE_INTERNAL_FORCE_EL(nn,ct,ww,dd,&             
-    dxdx,dxdy,dydx,dydy,sxx,syy,szz,sxy,&
-    fx,fy)                               
-
+subroutine MAKE_INTERNAL_FORCE_EL(nn,ww,dd,dxdx,dxdy,dydx,dydy,&
+    sxx,syy,szz,sxy,fx,fy)                               
+    !
     implicit none
+    ! intent IN
+    integer*4, intent(in)                   :: nn
+    real*8, intent(in), dimension(nn)       :: ww,dxdx,dxdy,dydx,dydy
+    real*8, intent(in), dimension(nn,nn)    :: dd,sxx,syy,szz,sxy
+    !intent INOUT
+    real*8, intent(inout), dimension(nn,nn) :: fx,fy
 
-    integer*4 :: nn
-    real*8, dimension(nn) :: ct,ww
-    real*8, dimension(nn,nn) :: dd
-    real*8, dimension(nn) :: dxdx,dxdy,dydx,dydy
-    real*8, dimension(nn,nn) :: sxx,syy,szz,sxy,fx,fy
-
-    integer*4 :: ip,iq,il,im,i
-    real*8 :: det_j,t1ux,t1uy,t2ux,t2uy,t1fx,t1fy,t2fx,t2fy
-
+    integer*4                               :: ip,iq,il,im,i
+    real*8                                  :: t1ux,t1uy,t2ux,t2uy
+    real*8                                  :: t1fx,t1fy,t2fx,t2fy
     ! FORCE CALCULATION
 
     do iq = 1,nn
@@ -69,14 +68,11 @@ subroutine MAKE_INTERNAL_FORCE_EL(nn,ct,ww,dd,&
                     * (sxy(ip,im)*dydx(im) - syy(ip,im)*dxdx(im))
             enddo
 
-            det_j = dxdx(iq)*dydy(ip) - dxdy(ip)*dydx(iq)
-
             fx(ip,iq) = t1fx - t2fx
             fy(ip,iq) = t1fy - t2fy
         enddo
     enddo
-
-
+    !
     return
 
 end subroutine MAKE_INTERNAL_FORCE_EL

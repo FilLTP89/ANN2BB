@@ -348,37 +348,40 @@ module nonlinear2d
                     enddo
                 enddo
 
-                ! COMPUTE INTERNAL FORCES
+!                ! COMPUTE INTERNAL FORCES
+                call MAKE_INTERNAL_FORCE_EL(nn,ww,dd,dxdx,dxdy,dydx,dydy,snl(ie)%stress(1,:,:),&
+                    snl(ie)%stress(2,:,:),snl(ie)%stress(3,:,:),snl(ie)%stress(4,:,:),fx,fy)
                 do iq = 1,nn
                     do ip = 1,nn
                         is = nn*(iq-1)+ip
                         in = cs(cs(ie-1)+is)
-                        
-                        t1fx = 0.0d0
-                        t2fx = 0.0d0
-                        t1fy = 0.0d0
-                        t2fy = 0.0d0
-       
-                        ! derivatives with respect to eta ( there is a delta(iq,im) )
-                        do il=1,nn
-                            t1fx = t1fx+dd(il,ip)*ww(il)*ww(iq)*&
-                                (snl(ie)%stress(1,il,iq)*dydy(il)-snl(ie)%stress(4,il,iq)*dxdy(il))
-                            t1fy = t1fy+dd(il,ip)*ww(il)*ww(iq)*&
-                                (snl(ie)%stress(4,il,iq)*dydy(il)-snl(ie)%stress(2,il,iq)*dxdy(il))
-                        enddo
-                        ! derivatives with respect to xi ( there is a delta(ip,il) )
-                        do im=1,nn
-                            t2fx = t2fx+dd(im,iq)*ww(ip)*ww(im)*&
-                                (snl(ie)%stress(1,ip,im)*dydx(im)-snl(ie)%stress(4,ip,im)*dxdx(im))
-                            t2fy = t2fy+dd(im,iq)*ww(ip)*ww(im)*&
-                                (snl(ie)%stress(4,ip,im)*dydx(im)-snl(ie)%stress(2,ip,im)*dxdx(im))
-                        enddo
-                        ! ELEMENT-WISE FORCES
-                        fx(ip,iq) = t1fx - t2fx
-                        fy(ip,iq) = t1fy - t2fy
-                        ! GLOBAL NODAL FORCES
                         fk(in)     = fk(in)     + fx(ip,iq)/mvec(in)
                         fk(in+nnt) = fk(in+nnt) + fy(ip,iq)/mvec(in+nnt)
+!                        
+!                        t1fx = 0.0d0
+!                        t2fx = 0.0d0
+!                        t1fy = 0.0d0
+!                        t2fy = 0.0d0
+!       
+!                        ! derivatives with respect to eta ( there is a delta(iq,im) )
+!                        do il=1,nn
+!                            t1fx = t1fx+dd(il,ip)*ww(il)*ww(iq)*&
+!                                (snl(ie)%stress(1,il,iq)*dydy(il)-snl(ie)%stress(4,il,iq)*dxdy(il))
+!                            t1fy = t1fy+dd(il,ip)*ww(il)*ww(iq)*&
+!                                (snl(ie)%stress(4,il,iq)*dydy(il)-snl(ie)%stress(2,il,iq)*dxdy(il))
+!                        enddo
+!                        ! derivatives with respect to xi ( there is a delta(ip,il) )
+!                        do im=1,nn
+!                            t2fx = t2fx+dd(im,iq)*ww(ip)*ww(im)*&
+!                                (snl(ie)%stress(1,ip,im)*dydx(im)-snl(ie)%stress(4,ip,im)*dxdx(im))
+!                            t2fy = t2fy+dd(im,iq)*ww(ip)*ww(im)*&
+!                                (snl(ie)%stress(4,ip,im)*dydx(im)-snl(ie)%stress(2,ip,im)*dxdx(im))
+!                        enddo
+!                        ! ELEMENT-WISE FORCES
+!                        fx(ip,iq) = t1fx - t2fx
+!                        fy(ip,iq) = t1fy - t2fy
+!                        ! GLOBAL NODAL FORCES
+!
 
                     enddo
                 enddo
@@ -1162,7 +1165,7 @@ module seismic
                             check_node_sism,check_dist_node_sism,length_cns,ie,facsmom, &
                             nl_sism,func_type,func_indx,func_data,nf,tt1, &
                             nfunc_data,tag_func)
-                        call MAKE_INTERNAL_FORCE_EL(nn,ct,ww,dd,dxdx,dxdy,dydx,dydy,&
+                        call MAKE_INTERNAL_FORCE_EL(nn,ww,dd,dxdx,dxdy,dydx,dydy,&
                             sxxs,syys,szzs,sxys,fxs,fys)
                     enddo
                 enddo
@@ -1293,7 +1296,7 @@ module write_output
                         call LGL(nn,ct,ww,dd)
                         
                         call MAKE_DERIVATIVES_LOC(nn,alfa1(ie),alfa2(ie),beta1(ie),beta2(ie),gamma1(ie),gamma2(ie),ct,&
-                            dxdy_el,dydy_el,dxdx_el,dydx_el)
+                            dxdx_el,dxdy_el,dydx_el,dydy_el)
                         
                         do jj=1,nn
                             do ii=1,nn
@@ -1312,11 +1315,6 @@ module write_output
                             do ii=1,nn
                                 is = nn*(jj -1) + ii
                                 in = cs(cs(ie -1) + is)
-                                if (ie==10) then
-!                                    write(*,*) "strain",duxdx_el(ii,jj),duxdy_el(ii,jj),duydx_el(ii,jj),duydy_el(ii,jj)
-!                                    read(*,*)
-                                endif
-                                     
                                 
                                 duxdx(in) = duxdx(in) + duxdx_el(ii,jj)
                                 duydy(in) = duydy(in) + duydy_el(ii,jj)

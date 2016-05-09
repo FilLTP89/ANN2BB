@@ -63,10 +63,10 @@ subroutine MAKE_STRAIN(nn,dd,dxdx,dxdy,dydx,dydy,ux,uy,duxdx,duxdy,duydx,duydy,d
                t2ux = t2ux + ux(ip,im) * dd(iq,im)
                t2uy = t2uy + uy(ip,im) * dd(iq,im)
             enddo
-            duxdx(ip,iq) = ( dt / det_j) * ((dydy(ip) * t1ux) - (dydx(iq) * t2ux))
-            duydx(ip,iq) = ( dt / det_j) * ((dydy(ip) * t1uy) - (dydx(iq) * t2uy))
-            duxdy(ip,iq) = (-dt / det_j) * ((dxdy(ip) * t1ux) - (dxdx(iq) * t2ux))
-            duydy(ip,iq) = (-dt / det_j) * ((dxdy(ip) * t1uy) - (dxdx(iq) * t2uy))
+            duxdx(ip,iq) = ( 1.d0 / det_j) * ((dydy(ip) * t1ux) - (dydx(iq) * t2ux))
+            duydx(ip,iq) = ( 1.d0 / det_j) * ((dydy(ip) * t1uy) - (dydx(iq) * t2uy))
+            duxdy(ip,iq) = (-1.d0 / det_j) * ((dxdy(ip) * t1ux) - (dxdx(iq) * t2ux))
+            duydy(ip,iq) = (-1.d0 / det_j) * ((dxdy(ip) * t1uy) - (dxdx(iq) * t2uy))
         enddo
     enddo
     return
