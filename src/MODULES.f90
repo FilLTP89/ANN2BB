@@ -322,10 +322,22 @@ module nonlinear2d
                         call MAKE_STRESS_LOC(snl(ie)%lambda(ip,iq),snl(ie)%mu(ip,iq),&
                             dstrain_alpha,dtrial)
                         ! CHECK PLASTICITY
+                        write(*,*) "DEBUG - VALUES"
+                        write(*,*) snl(ie)%stress(:,ip,iq)
+                        write(*,*) snl(ie)%center(:,ip,iq)
+                        write(*,*) snl(ie)%strain(:,ip,iq)
+                        write(*,*) dstrain(:,ip,iq)
+                        write(*,*) dtrial
                         call check_plasticity(dtrial,snl(ie)%stress(:,ip,iq),snl(ie)%center(:,ip,iq),&
                             snl(ie)%radius(ip,iq),snl(ie)%syld(ip,iq),st_epl,alpha_epl,ie)
                         ! PLASTIC CORRECTION 
+                        write(*,*) alpha_epl
                         if (st_epl) then
+                            write(*,*) "PLASTIC" 
+
+                            write(*,*) dstrain_alpha
+                            dstrain_alpha = alpha_epl*dstrain_alpha
+                            write(*,*) dstrain_alpha
                             call plastic_corrector(dstrain_alpha,dtrial,snl(ie)%center(:,ip,iq),  &
                                 snl(ie)%radius(ip,iq),snl(ie)%syld(ip,iq),snl(ie)%biso(ip,iq),&
                                 snl(ie)%rinf(ip,iq),snl(ie)%ckin(ip,iq),snl(ie)%kkin(ip,iq),  &
@@ -350,9 +362,9 @@ module nonlinear2d
                         ! derivatives with respect to eta ( there is a delta(iq,im) )
                         do il=1,nn
                             t1fx = t1fx+dd(il,ip)*ww(il)*ww(iq)*&
-                                (snl(ie)%stress(1,il,iq)*dydy(il)-snl(ie)%stress(3,il,iq)*dxdy(il))
+                                (snl(ie)%stress(1,il,iq)*dydy(il)-snl(ie)%stress(4,il,iq)*dxdy(il))
                             t1fy = t1fy+dd(il,ip)*ww(il)*ww(iq)*&
-                                (snl(ie)%stress(3,il,iq)*dydy(il)-snl(ie)%stress(2,il,iq)*dxdy(il))
+                                (snl(ie)%stress(4,il,iq)*dydy(il)-snl(ie)%stress(2,il,iq)*dxdy(il))
                         enddo
                         ! derivatives with respect to xi ( there is a delta(ip,il) )
                         do im=1,nn
@@ -428,7 +440,8 @@ module nonlinear2d
             enddo
             ! MAKE DERIVATIVES
             call MAKE_DERIVATIVES_LOC(nn,alfa1,alfa2,beta1,beta2,gamma1,gamma2,ct,&
-                dxdy,dydy,dxdx,dydx)
+                dxdx,dxdy,dydx,dydy)
+             
             ! MAKE STRAIN
             call MAKE_STRAIN_LOC(nn,dd,ux,uy,dxdx,dxdy,dydx,dydy,dstrain)
             ! DEALLOCATE
@@ -443,7 +456,7 @@ module nonlinear2d
         !****************************************************************************
         
         subroutine MAKE_DERIVATIVES_LOC(nn,alfa1,alfa2,beta1,beta2,gamma1,gamma2,ct,&
-            dxdy,dydy,dxdx,dydx)
+            dxdx,dxdy,dydx,dydy)
             !           
             implicit none
             ! intent IN
@@ -507,8 +520,8 @@ module nonlinear2d
                     dstrain(1,ip,iq) = ( 1.d0 / det_j) * ((dydy(ip) * t1ux) - (dydx(iq) * t2ux))
                     dstrain(2,ip,iq) = (-1.d0 / det_j) * ((dxdy(ip) * t1uy) - (dxdx(iq) * t2uy))
                     dstrain(3,ip,iq) = ( 1.d0 / det_j) * ((dydy(ip) * t1uy) - (dydx(iq) * t2uy))
-                    dstrain(3,ip,iq) = 0.5*(dstrain(3,ip,iq)+(-1.d0 / det_j) * &
-                        ((dxdy(ip) * t1ux) - (dxdx(iq) * t2ux)))
+                    dstrain(3,ip,iq) = dstrain(3,ip,iq)+(-1.d0 / det_j) * &
+                        ((dxdy(ip) * t1ux) - (dxdx(iq) * t2ux))
                 enddo
             enddo
             !
@@ -555,6 +568,8 @@ module nonlinear2d
             DEL(3,3) = 2*mu
             DEL(4,4) = mu
             DEL(1:3,1:3) = DEL(1:3,1:3) + lambda
+            write(*,*) "DEL"
+            write(*,*) DEL
             !
             return
         end subroutine STIFF_MATRIX
