@@ -553,7 +553,7 @@ module nonlinear2d
             DEL(1,1) = 2*mu
             DEL(2,2) = 2*mu
             DEL(3,3) = 2*mu
-            DEL(4,4) = 2*mu
+            DEL(4,4) = mu
             DEL(1:3,1:3) = DEL(1:3,1:3) + lambda
             !
             return
@@ -609,7 +609,7 @@ module nonlinear2d
             call tau_mises(dev-center, tau_eq)
             FM = tau_eq-syld-radius
             ! COMPUTE MISES FUNCTION GRADIENT
-            gradF = 0.5d0*A*(dev-center)/tau_eq
+            gradF = 1.5d0*A*(dev-center)/tau_eq
             !  
             return
             !
@@ -634,7 +634,7 @@ module nonlinear2d
             do k=1,4
                 tau_eq = tau_eq+A(k)*(stress(k)**2)
             end do
-            tau_eq = sqrt(0.5*tau_eq)
+            tau_eq = sqrt(1.5*tau_eq)
             !
             return
             ! 
@@ -653,7 +653,6 @@ module nonlinear2d
             real*8, dimension(4), intent(out)   :: dev
             !
             real*8                              :: press 
-            integer*4                           :: k
             !
             dev = stress
             press = sum(stress(1:3))/3
@@ -769,11 +768,7 @@ module nonlinear2d
                 X1 = center + 0.5d0*(dX1+dX2)
                 R1 = radius + 0.5d0*(dR1+dR2)
                 dEpl1 = 0.5d0*(dEpl1+dEpl2)
-                if (nel==73) then
-                    write(*,*) "correction"
-                    write(*,*) center
-                    write(*,*) X1
-                endif
+                
                 ! ERROR
                 call tau_mises(dS2-dS1,err0)
                 call tau_mises(S1,err1)
@@ -785,7 +780,7 @@ module nonlinear2d
                     stress = S1
                     center = X1
                     radius = R1
-
+                    dEpl   = dEpl+dEpl1
                     call mises_yld_locus (stress, center,radius,syld,FM,gradFM)
                     if (FM.gt.FTOL) then
                         call drift_corr(stress,center,radius,syld,&
