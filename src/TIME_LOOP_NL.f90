@@ -277,8 +277,24 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
             type(nodepatched), intent(inout)                        :: disout
             ! counters
             integer*4                                               :: nn,im,iaz,ie,in,is,i,j
-        end subroutine ALLOINIT_NL_ALL 
-    
+        end subroutine ALLOINIT_NL_ALL
+
+        subroutine DEALLOCATE_ALL(ne,u1,u2,vel,acc,fk,fe,fd,snl,disout,update_index_el_az,nodal_counter)  
+            ! 
+            use nonlinear2d
+            use write_output
+            !
+            implicit none
+            ! intent IN
+            integer*4, intent(in)                                      :: ne
+            ! intent INOUT
+            real*8,     dimension(:), allocatable,  intent(inout)      :: u1,u2,vel,acc,fk,fe,fd
+            integer*4,  dimension(:), allocatable,  intent(inout)      :: update_index_el_az,nodal_counter
+            type(nl_element), dimension(:), allocatable, intent(inout) :: snl
+            type(nodepatched), intent(inout)                           :: disout
+            ! counters
+            integer*4                                                  :: ie 
+        end subroutine DEALLOCATE_ALL 
     end interface
     
     pi = 4.d0*datan(1.d0)
@@ -756,7 +772,7 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
     write(*,'(A,F8.4,A)')'Mean time-step CPU time= ', &
         time_total / dfloat(nts - 1),' s'
 
-    call DEALLOCATE_ALL(ne,u1,u2,vel,acc,v1,fk,fe,fd,snl,disout,&
+    call DEALLOCATE_ALL(ne,u1,u2,vel,acc,fk,fe,fd,snl,disout,&
         update_index_el_az,nodal_counter)   
     if (nf.gt.0) deallocate(func_value) 
     if (nnode_dirX.gt.0) deallocate(inode_dirX)

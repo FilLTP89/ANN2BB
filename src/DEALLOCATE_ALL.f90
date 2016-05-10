@@ -22,7 +22,7 @@
 !> @version 1.0
 !> @param[inout] sxx,syy,sxy,szz nodal values for the stress tensor (on element)
 
-subroutine DEALLOCATE_ALL(ne,u1,u2,vel,acc,v1,fk,fe,fd,snl,disout,update_index_el_az,nodal_counter)  
+subroutine DEALLOCATE_ALL(ne,u1,u2,vel,acc,fk,fe,fd,snl,disout,update_index_el_az,nodal_counter)  
     ! 
     use nonlinear2d
     use write_output
@@ -31,7 +31,7 @@ subroutine DEALLOCATE_ALL(ne,u1,u2,vel,acc,v1,fk,fe,fd,snl,disout,update_index_e
     ! intent IN
     integer*4, intent(in)                                      :: ne
     ! intent INOUT
-    real*8,     dimension(:), allocatable,  intent(inout)      :: u1,u2,v1,vel,acc,fk,fe,fd
+    real*8,     dimension(:), allocatable,  intent(inout)      :: u1,u2,vel,acc,fk,fe,fd
     integer*4,  dimension(:), allocatable,  intent(inout)      :: update_index_el_az,nodal_counter
     type(nl_element), dimension(:), allocatable, intent(inout) :: snl
     type(nodepatched), intent(inout)                           :: disout
@@ -63,7 +63,6 @@ subroutine DEALLOCATE_ALL(ne,u1,u2,vel,acc,v1,fk,fe,fd,snl,disout,update_index_e
     deallocate(u2)  
     deallocate(vel) 
     deallocate(acc)
-    deallocate(v1)
     ! current internal & external forces 
     deallocate(fk)
     deallocate(fd)
