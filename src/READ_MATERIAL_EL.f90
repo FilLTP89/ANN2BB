@@ -160,7 +160,7 @@ subroutine READ_MATERIAL_EL(file_mat,nm,propm, typem, tagm, &
     integer*4 :: ileft,iright, itest
     integer*4 :: i,j,trash,status
 
-    character*2000000 :: input_line
+    character*2000 :: input_line
     character*4 :: keyword
     logical,intent(in) :: NLFLAG
 
@@ -225,33 +225,28 @@ subroutine READ_MATERIAL_EL(file_mat,nm,propm, typem, tagm, &
         elseif (keyword.eq.'DIRX') then
             idX = idX + 1
             read(input_line(ileft:iright),*)tagdX(idX),fdX(idX),&
-             valdX(idX,1),valdX(idX,2)
-
+                valdX(idX,1),valdX(idX,2)
         elseif (keyword.eq.'DIRY') then
             idY = idY + 1
             read(input_line(ileft:iright),*)tagdY(idY),fdY(idY),&
-             valdY(idY,1),valdY(idY,2)
-         
+                valdY(idY,1),valdY(idY,2)
         elseif (keyword.eq.'NEUX') then
             inX = inX + 1
-            read(input_line(ileft:iright),*)tagnX(inX),fnX(inX),&
-             valnX(inX,1),valnX(inX,2)
 
+            read(input_line(ileft:iright),*)tagnX(inX),fnX(inX),&
+                valnX(inX,1),valnX(inX,2)
         elseif (keyword.eq.'NEUY') then
             inY = inY + 1
             read(input_line(ileft:iright),*)tagnY(inY),fnY(inY),&
              valnY(inY,1),valnY(inY,2)
-
         elseif (keyword.eq.'PLOX') then
             ipX = ipX + 1
             read(input_line(ileft:iright),*)fpX(ipX),&
              valpX(ipX,1),valpX(ipX,2),valpX(ipX,3)
-
         elseif (keyword.eq.'PLOY') then
             ipY = ipY + 1
             read(input_line(ileft:iright),*)fpY(ipY),&
              valpY(ipY,1),valpY(ipY,2),valpY(ipY,3)
-
         elseif (keyword.eq.'PLAX') then
             iplX = iplX + 1
             read(input_line(ileft:iright),*)fplX(iplX),&

@@ -571,8 +571,6 @@ module nonlinear2d
             DEL(3,3) = 2*mu
             DEL(4,4) = mu
             DEL(1:3,1:3) = DEL(1:3,1:3) + lambda
-            write(*,*) "DEL"
-            write(*,*) DEL
             !
             return
         end subroutine STIFF_MATRIX

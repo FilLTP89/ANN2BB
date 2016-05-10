@@ -589,6 +589,7 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
                 enddo
             endif
         endif
+
         !********************************************************************************************
         ! SEISMIC MOMENT LOAD       
         !********************************************************************************************
@@ -634,7 +635,7 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
                     nl_sism,func_type,func_indx,func_data,nf,tt1, &
                     nfunc_data,tag_func)
 
-                call MAKE_INTERNAL_FORCE_EL(nn,ct,ww,dd,&
+                call MAKE_INTERNAL_FORCE_EL(nn,ww,dd,&
                     dxdx_el,dxdy_el,dydx_el,dydy_el,&
                     sxx_el,syy_el,szz_el,sxy_el,fx_el,fy_el)
                 do j = 1,nn
@@ -690,8 +691,6 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
 
             call system_clock(COUNT=clock_finish)
             time_disp_DRM = float(clock_finish - clock_start) / float(clock(2))
-
-            !-----------------------------------------------------------------------------------------------------------                                 
         else
             do fn = 1,nf
             func_value(fn) = GET_FUNC_VALUE(nf,func_type,func_indx,func_data, &
@@ -729,7 +728,6 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         total_fk = total_fk + time_fk
         total_fd = total_fd + time_fd
         total_u = total_u + time_u
-
         !********************************************************************************************
         !     WRITE OUTPUT FILE
         !********************************************************************************************

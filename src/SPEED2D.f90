@@ -503,7 +503,7 @@ program SPEED2D
         nload_abc_el,tag_abc_el,nload_BDRM_el,tag_BDRM_el,   &
         nload_dg_el,tag_dg_el,nnod_macro,xx_macro,yy_macro,  &
         nelem,con,nedge,con_bc)
-
+    
     write(*,'(A)')'MESH FILE: OK'    
     write(*,'(A)') '****************************************************'
     write(*,'(A)')
