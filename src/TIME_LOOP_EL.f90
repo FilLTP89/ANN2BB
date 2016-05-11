@@ -485,7 +485,6 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         endif
 
     endif
-
     if (tagstep.eq.2) then 
         call get_disp_valueDRM(nf_drm,func_type_drm,func_indx_drm,nfunc_data_drm,func_data_drm, &     !DRM Scandella 12.04.2006  
             dt,disp_PDRM_t)                                                   !DRM Scandella 02.11.2005 
@@ -569,6 +568,7 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
 
                 !-----------------------------------------------------------------------------------------------------
         else
+            
             if (nnode_neuX.gt.0) then
                 do i = 1,nnode_neuX
                     in = inode_neuX(i)                 
@@ -589,7 +589,6 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
                 enddo
             endif
         endif
-
         !********************************************************************************************
         ! SEISMIC MOMENT LOAD       
         !********************************************************************************************
@@ -676,7 +675,7 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         time_fd = float(clock_finish - clock_start) / float(clock(2))
         call system_clock(COUNT=clock_start,COUNT_RATE=clock(2)) 
         fe = fe + sism/mvec
-        
+
         u2 = 2.0d0 * u1 - u0 + dt2*(fe - fk - fd)
         call system_clock(COUNT=clock_finish)
         time_u = float(clock_finish - clock_start) / float(clock(2))
