@@ -568,6 +568,12 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
 
                 !-----------------------------------------------------------------------------------------------------
         else
+            write(*,*) "drm tagstep ok"
+            read(*,*)
+            do fn = 1,nf
+                func_value(fn) = get_func_value(nf,func_type,func_indx,func_data, &
+                    fn,tt1,0.d0)
+            enddo                                                                                          !DRM Scandella 02.11.2005 
             
             if (nnode_neuX.gt.0) then
                 do i = 1,nnode_neuX
@@ -691,6 +697,8 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
             call system_clock(COUNT=clock_finish)
             time_disp_DRM = float(clock_finish - clock_start) / float(clock(2))
         else
+            write(*,*) "NEUMANN ok"
+            read(*,*)
             do fn = 1,nf
             func_value(fn) = GET_FUNC_VALUE(nf,func_type,func_indx,func_data, &
                 fn,tt2,0.0d0)

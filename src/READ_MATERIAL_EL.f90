@@ -319,6 +319,10 @@ subroutine READ_MATERIAL_EL(file_mat,nm,propm, typem, tagm, &
                 func_indx(ifunc +1) = func_indx(ifunc) + 2
                 read(input_line(ileft:iright),*)trash,trash,&
                     (func_data(j), j = func_indx(ifunc),func_indx(ifunc +1) -1)
+            elseif (func_type(ifunc).eq.12) then
+                func_indx(ifunc +1) = func_indx(ifunc) + 3
+                read(input_line(ileft:iright),*)trash,trash,&
+                    (func_data(j), j = func_indx(ifunc),func_indx(ifunc +1) -1)
             elseif (func_type(ifunc).eq.31) then
                 func_indx(ifunc +1) = func_indx(ifunc) + 3
                 read(input_line(ileft:iright),*)trash,trash,&
