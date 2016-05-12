@@ -194,7 +194,7 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
     integer*4, dimension(nmonit)    :: unit_omega
     integer*4, dimension(nnode_TOT) :: unit_uDRM 
     integer*4, dimension (6)        :: option_out_var           
-
+    logical                         :: condition
 
     !********************************************************************************************
     !             BOUNDARY CONDITIONS
@@ -256,7 +256,7 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
     integer*4 :: make_damping_yes_or_not
     real*8 :: ndt_monitor                                   
     integer*4, dimension(:), allocatable :: nodal_counter
-
+    
     pi = 4.d0*datan(1.d0)
 
     !********************************************************************************************
@@ -495,9 +495,19 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         enddo                                                                                          !DRM Scandella 02.11.2005 
     endif                                                                                            !DRM Scandella 02.11.2005  
 
+    
+    
+    
+    
+    
     !********************************************************************************************
     !     ALL STEPS
     !********************************************************************************************	
+    
+    
+    
+    
+    
     
     do its = 0,nts 
 
@@ -508,7 +518,7 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         tt0 = dfloat(its -1) * dt
         tt1 = dfloat(its) * dt
         tt2 = dfloat(its +1) * dt
-
+        
         write(*,'(A,F7.4)') 'TIME: ', tt1
 
         !-----DRM-----------------------------------------------------------------------------------------		       
@@ -568,13 +578,9 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
 
                 !-----------------------------------------------------------------------------------------------------
         else
-            write(*,*) "drm tagstep ok"
-            read(*,*)
             do fn = 1,nf
-                func_value(fn) = get_func_value(nf,func_type,func_indx,func_data, &
-                    fn,tt1,0.d0)
             enddo                                                                                          !DRM Scandella 02.11.2005 
-            
+!             
             if (nnode_neuX.gt.0) then
                 do i = 1,nnode_neuX
                     in = inode_neuX(i)                 
@@ -697,11 +703,9 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
             call system_clock(COUNT=clock_finish)
             time_disp_DRM = float(clock_finish - clock_start) / float(clock(2))
         else
-            write(*,*) "NEUMANN ok"
-            read(*,*)
             do fn = 1,nf
-            func_value(fn) = GET_FUNC_VALUE(nf,func_type,func_indx,func_data, &
-                fn,tt2,0.0d0)
+                func_value(fn) = GET_FUNC_VALUE(nf,func_type,func_indx,func_data, &
+                    fn,tt2,0.0d0)
             enddo
         endif                                                                                       !DRM Scandella 28.10.2005 
 
@@ -738,9 +742,12 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         !********************************************************************************************
         !     WRITE OUTPUT FILE
         !********************************************************************************************
-        call WRITE_MONITOR_EL(cs_nnz,cs,ne,nm,sdeg_mat,prop_mat,nmonit,its,ndt_monitor,option_out_var, &
-                unit_disp,unit_vel,unit_acc,unit_strain,unit_stress,unit_omega,node_m,nnt,         &
+        condition = (nmonit.ge.1).and.(int(real(its)/ndt_monitor).eq.(real(its)/ndt_monitor)) 
+        if (condition) then
+            call WRITE_MONITOR_EL(cs_nnz,cs,ne,nm,sdeg_mat,prop_mat,nmonit,option_out_var, &
+                unit_disp,unit_vel,unit_acc,unit_strain,unit_stress,unit_omega,node_m,nnt, &
                 tt1,u1,vel,acc,nodal_counter,alfa1,alfa2,beta1,beta2,gamma1,gamma2)
+        endif
 
         !-----DRM---------------------------------------------------------------------------------------------------
         !Write out displacement in DRM nodes for I step

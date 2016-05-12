@@ -95,8 +95,9 @@ real*8 function GET_FUNC_VALUE(nf,func_type,func_indx,func_data,n,t,t0_sism)
             * dexp(-1.0d0*func_data(func_indx(n))*tt_t0*tt_t0)
     ! - Sigmoidal function 
     elseif (func_type(n).eq.12) then
+
         tt_t0 = t - func_data(func_indx(n) +2)
-        val   = func_data(func_indx(n))*(1.0d0/(1.0d0+dexp(-func_data(func_indx(n)+1)*tt_t0)))  
+        val   = func_data(func_indx(n))*(1.0d0/(1.0d0+exp(-func_data(func_indx(n)+1)*tt_t0)))  
     ! - Double impulse for seismic moment.. not yet implemented
     !elseif (func_type(n).eq.6) then
     !tt_t0 = t - func_data(func_indx(n) +1)

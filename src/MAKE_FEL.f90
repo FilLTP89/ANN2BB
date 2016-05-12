@@ -233,8 +233,8 @@ subroutine MAKE_FEL(nnode,xs,ys,cs_nnz,cs,&
             enddo
         enddo
 
-
-        if (ntest .gt. 0) then 
+        if (ntest .gt. 0) then
+            
             do ip = 1,ntest
             fn = 0
             do if = 1,nfunc
@@ -273,9 +273,6 @@ subroutine MAKE_FEL(nnode,xs,ys,cs_nnz,cs,&
                     !fmat(fn,in+nnode) = fmat(fn,in+nnode) -sin(2.d0*pi*xs(in)) &
                     !                   * ( 1.d0 - 3.d0*(sin(pi*ys(in)))**2.d0 ) &
                     !                   * (det_j(i,j) * ww(i) * ww(j))
-
-
-
 
                     enddo
                 enddo               
@@ -703,28 +700,24 @@ subroutine MAKE_FEL(nnode,xs,ys,cs_nnz,cs,&
 
         if (nl_neuX.gt.0) then
             do il = 1,nl_neuX
-            if (tag_neuX(il).eq.cs_bc(cs_bc(ie -1) +0)) then
-                fn = 0
-                do if = 1,nfunc
-                if (fun_neuX(il).eq.tag_func(if)) fn = if
-                enddo
-
-                if (fn.gt.0) then
-                    v1 = val_neuX(il,1)
-                    v2 = val_neuX(il,2)
-
-                    do i = 1,nn
-                    in = cs_bc(cs_bc(ie -1) +i)
-
-                    id1 = in
-                    v = 0.5d0*((ct(i) + 1.0d0)*v2 - (ct(i) - 1.0d0)*v1)
-                    term = 0.5d0 * ll * ww(i) * v
-
-                    fmat(fn,id1) = fmat(fn,id1) + term
-
+                if (tag_neuX(il).eq.cs_bc(cs_bc(ie -1) +0)) then
+                    fn = 0
+                    do if = 1,nfunc
+                        if (fun_neuX(il).eq.tag_func(if)) fn = if
                     enddo
+
+                    if (fn.gt.0) then
+                        v1 = val_neuX(il,1)
+                        v2 = val_neuX(il,2)
+                        do i = 1,nn
+                            in = cs_bc(cs_bc(ie -1) +i)
+                            id1 = in
+                            v = 0.5d0*((ct(i) + 1.0d0)*v2 - (ct(i) - 1.0d0)*v1)
+                            term = 0.5d0 * ll * ww(i) * v
+                            fmat(fn,id1) = fmat(fn,id1) + term
+                        enddo
+                    endif
                 endif
-            endif
             enddo
         endif
 
