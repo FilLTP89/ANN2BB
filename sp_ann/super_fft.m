@@ -1,105 +1,91 @@
+%% *Fourier tranform*
+% _Editor: Filippo Gatti
+% CentraleSupélec - Laboratoire MSSMat
+% DICA - Politecnico di Milano
+% Copyright 2016_
+%% NOTES
+% _super_fft_: function to evaluate:
+%  # Fourier Spectrum (Amplitude and Phase),
+%  # Power Spectral Density
+%  # Main Period of input signal
+%% INPUT:
+% * _dt (sampling time step)_
+% * _thr (input signal)_
+% * _K0_smooth (flag for Konno-Ohmachi smoothing (K0_smooth=1) or not (K0_smooth=0))_
+% * _nfr (number of points for FFT computation (optional))_
+%% OUTPUT:
+% * _vfr (frequency column vector)_
+% * _amp (FS amplitude column vector)_
+% * _ang (FS phase column vector)_
+% * _psd (Power Spectral Density column vector)_
+% * _nTm (Main Natural Period evaluated between fcut_low and fcut_high)_
+%% N.B.:
+% nfr should be odd number to be able to transpose the
+% conjugate part [size(fsr)=nfr (odd)]
 function [varargout]=super_fft(varargin)
-    %===============
-    % Fourier tranform
-    % Editor: Filippo Gatti
-    % CentraleSupélec - Laboratoire MSSMat
-    % Politecnico di Milano - DICA
-    % Copyright 2014-15
-    % NOTES
-    % super_fft: function to evaluate:
-    %  - Fourier Spectrum (Amplitude and Phase),
-    %  - Power Spectral Density
-    %  - Main Period of input signal
-    % INPUT:  dt (sampling time step)
-    %         acc (input signal)
-    %         K0_smooth (flag for Konno-Ohmachi smoothing (K0_smooth=1) or not (K0_smooth=0))
-    %         N_FFT (number of points for FFT computation (optional))
-    % OUTPUT: f (frequency column vector)
-    %         AMP (FFT amplitude column vector)
-    %         PH (FFT phase column vector)
-    %         PYY (Power Spectral Density column vector)
-    %         Tm (FFT Main Period evaluated between fcut_low and fcut_high)
-    %===============
-    %======================================================================
-    % SET-UP
-    %======================================================================
-    %----------------------------------------------------------------------
-    % time step
-    %----------------------------------------------------------------------
-    dt=varargin{1};
-    %----------------------------------------------------------------------
-    %----------------------------------------------------------------------
-    % acceleration
-    %----------------------------------------------------------------------
-    acc=varargin{2}(:);
-    %----------------------------------------------------------------------
-    %----------------------------------------------------------------------
-    % Konno-Ohmachi Smoothing
-    %----------------------------------------------------------------------
-    KO_smooth = varargin{3};
-    %======================================================================
-    %======================================================================
-    % FREQUENCY VECTOR
-    %======================================================================
-    %----------------------------------------------------------------------
-    % NFFT definition
-    %----------------------------------------------------------------------
+    
+    %% SET-UP
+    %%
+    % _time step_
+    dtm = varargin{1};
+    %%
+    % _acceleration_
+    thr=varargin{2}(:);
+    %%
+    % _Konno-Ohmachi Smoothing flag_
+    kos = varargin{3};
+    
+    %% FREQUENCY VECTOR_
+    % _nfr definition_
+    
     if nargin>3
-        N_FFT=varargin{4};
+        nfr=varargin{4};
     else
-        N_FFT=2^nextpow2(numel(acc))+1;
+        nfr=2^nextpow2(numel(thr))+1;
     end
-    % N.B.: N_FFT should be odd number to be able to transpose the
-    % conjugate part
-    %----------------------------------------------------------------------
-    %----------------------------------------------------------------------
-    % frequency vector
-    %----------------------------------------------------------------------
-    df=1/dt/(N_FFT-1);     f=(0:N_FFT-1)*df;    f = f(:);
-    %======================================================================
-    %======================================================================
-    % FOURIER RESPONSE
-    %======================================================================
-    %----------------------------------------------------------------------
-    % fft complete response
-    %----------------------------------------------------------------------
-    %afft=fft(acc,N_FFT)./numel(acc);
-    afft=fft(acc,N_FFT).*dt;
-    % size(afft)=N_FFT (odd)
-    %----------------------------------------------------------------------
-    %----------------------------------------------------------------------
-    % amplitude of fft response
-    %----------------------------------------------------------------------
-    AMP=abs(afft);
-    % Konno-Ohmachi smoothing
-    if KO_smooth                                                            
-        AMP=smooth_KO(AMP,40);
+    %%
+    % _frequency vector_
+    dfr=1/dtm/(nfr-1);     
+    vfr=(0:nfr-1)*dfr;    
+    vfr = vfr(:);
+    
+    %% FOURIER RESPONSE
+    
+    %%
+    % _fft complete response_
+    % fsr=fft(thr,nfr)./numel(thr);
+    fsr = fft(thr,nfr).*dtm;
+    
+    %%
+    % _amplitude of fft response_
+    amp = abs(fsr);
+    %%
+    % _Konno-Ohmachi smoothing_
+    if kos
+        amp=smooth_KO(amp,40);
     end
-    AMP = AMP(:);
-    %----------------------------------------------------------------------
-    %----------------------------------------------------------------------
-    % phase angle of fft (to be unwrapped)
-    %----------------------------------------------------------------------
-    PH=angle(afft);
-    %----------------------------------------------------------------------
-    %----------------------------------------------------------------------
-    % Power Spectral Density
-    %----------------------------------------------------------------------
-    PYY=(afft).*(conj(afft))/N_FFT;
-    %======================================================================
-    %======================================================================
-    % MAIN PERIOD
-    %======================================================================
-    idx0=find(f>=.1,1,'first');
-    idx1=find(f<=40,1,'last');
-    Tm1 = sum(AMP(idx0:idx1).^2./f(idx0:idx1));
-    Tm2 = sum(AMP(idx0:idx1).^2);
-    %======================================================================    
-    varargout{1}=f(:);
-    varargout{2}=AMP(:);
-    varargout{3}=PH(:);
-    varargout{4}=afft(:);
-    varargout{5}=PYY(:);
-    varargout{6}=Tm1/Tm2;
+    amp = amp(:);
+    
+    %%
+    % _phase angle of fft (to be unwrapped)_
+    ang = unwrap(angle(fsr));
+    
+    %% POWER SPECTRAL DENSITY
+    psd=(fsr).*(conj(fsr))/nfr;
+    
+    %% MAIN PERIOD
+    idx0 = find(vfr>=.1,1,'first');
+    idx1 = find(vfr<=40,1,'last');
+    nTm1 = sum(amp(idx0:idx1).^2./vfr(idx0:idx1));
+    nTm2 = sum(amp(idx0:idx1).^2);
+    nTm = nTm1/nTm2;
+    
+    %% OUTPUT
+    varargout{1}=vfr(:);
+    varargout{2}=amp(:);
+    varargout{3}=ang(:);
+    varargout{4}=fsr(:);
+    varargout{5}=psd(:);
+    varargout{6}=nTm;
     return
 end

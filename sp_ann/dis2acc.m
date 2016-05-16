@@ -1,59 +1,83 @@
-function [varargout] = dis2acc(varargin)
-    % ===============
-    % Signal Processing
-    % Editor: Filippo Gatti
-    % CentraleSupélec - Laboratoire MSSMat
-    % Politecnico di Milano - DICA
-    % Copyright 2016
-    % NOTES
-    % dis2acc: function to differentiate displacement records to get accelerogram 
-    % by applying butterworth filter and detrending.
-    % INPUT:  dt (sampling time step)
-    %         dis (input displacement record)
-    %         fcut_low (corner frequency)
-    %         fcut_high (cut-off frequency)
-    % OUTPUT: acc (band-pass filtered acceleration time-history column vector)
-    %         vel (velocity time-history column vector)
-    %         dis (displacement time-history column vector)
-    % ===============
-    dt=varargin{1};                     % time step
-    dis=varargin{2}(:);                 % displacement record
-    fcut_low  =.01;                     % default corner frequency
-    fcut_high = 25;                     % default cutoff frequency
+%% *Displacement Processing*
+% _Editor: Filippo Gatti
+% CentraleSupélec - Laboratoire MSSMat
+% DICA - Politecnico di Milano
+% Copyright 2014-15_
+%% NOTES
+% _dis2acc_: function to differentiate displacement record to get velocigram
+% and accelerogram by applying butterworth filter and detrending.
+%% INPUT:
+% * _dtm (sampling time step)_
+% * _thd (input accelerogram)_
+% * _lfr (corner frequency)_
+% * _hfr (cut-off frequency)_
+%% OUTPUT:
+% * _tha (band-pass filtered acceleration time-history column vector)_
+% * _thv (velocity time-history column vector)_
+% * _thd (displacement time-history column vector)_
+function [varargout] = band_pass_filter(varargin)
+    
+    %% SET-UP
+    % _time-step_
+    dtm = varargin{1};
+    %%
+    % _accelerogram_
+    thd = varargin{2}(:);
+    %%
+    % _default corner frequency (high-pass filter)_
+    lfr =.01;
+    %%
+    % _default cutoff frequency (low-pass filter)_
+    hfr = 25;
+    %%
+    % _default butterworth order_
+    bfo = 2;
+    %%
+    % custom corner frequency (high-pass filter)_
     if nargin>=3
-        fcut_low=varargin{3};           % customized corner frequency
+        lfr=varargin{3};
     end
+    %%
+    % custom cutoff frequency (low-pass filter)_
     if nargin>=4
-        fcut_high=varargin{4};          % customized corner frequency
+        hfr=varargin{4};
     end
-    %======================================================================
-    % BUTTERWORTH FILTER DEFINITION
-    %======================================================================
+    %%
+    % Nyquist frequency
+    fNy = 0.5/dtm;
+    if hfr>fNy
+        hfr = fNy;
+    end
+    
+    %% BUTTERWORTH FILTER
+    
     if nargin>3 || nargin<3
         % BP filter definition
-        [bb,ab]=butter(2,[fcut_low fcut_high]*2*dt,'bandpass');
+        [bfb,bfa] = butter(bfo,[lfr hfr]./fNy,'bandpass');
         fprintf('\nBP FILTER: f(corner): %.2f Hz - f(cut-off): %.2f Hz\n',...
-            fcut_low,fcut_high);
+            lfr,hfr);
     else
         % LF filter definition
-        [bb,ab]=butter(2,fcut_low*2*dt,'high');
-        fprintf('\nLF FILTER: f(corner): %.2f Hz\n',fcut_low);
+        [bfb,bfa] = butter(bfo,lfr./fNy,'high');
+        fprintf('\nLF FILTER: f(corner): %.2f Hz\n',lfr);
     end
-    %======================================================================
-    % INTEGRATION/DIFFERENTIATION/DETRENDING/FILTERING
-    %======================================================================
-    % filtering displacement...
-    dis=filtfilt(bb,ab,dis);
-    % detrending displacement...
-    dis=detrend(dis);
-    % cosinus-tapering displacement...
-    dis=cos_taper(dis);
-    % differentiating...
-    vel=[0;diff(dis)/dt];
-    acc=[0;diff(vel)/dt];
     
-    varargout{1} = acc;
-    varargout{2} = vel;
-    varargout{3} = dis;
+    %% PROCESSING DISPLACEMENT
+    % _acasual filtering_
+    thd=filtfilt(bb,ab,thd);
+    %%
+    % _detrending _
+    thd=detrend(thd);
+    %%
+    % _applying cosinus taper_
+    thd=cos_taper(thd);
+    
+    %% BACK TO ACCELERATION
+    thv=[0;diff(thd)/dt];
+    tha=[0;diff(thv)/dt];
+    %% OUTPUT
+    varargout{1} = tha(:);
+    varargout{2} = thv(:);
+    varargout{3} = thd(:);
     return
 end

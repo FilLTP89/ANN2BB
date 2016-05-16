@@ -1,64 +1,97 @@
-function [varargout] = vel2acc(varargin)
-    % ===============
-    % Signal Processing
-    % Editor: Filippo Gatti
+    %% *Velocigram Processing*
+    % _Editor: Filippo Gatti
     % CentraleSupélec - Laboratoire MSSMat
     % Politecnico di Milano - DICA
-    % Copyright 2016
-    % NOTES
-    % vel2acc: function to differentiate velocigram to get accelerogram 
+    % Copyright 2016_
+    %% NOTES
+    % _vel2acc_: function to differentiate velocigram to get accelerogram 
     % by applying butterworth filter and detrending.
-    % INPUT:  dt (sampling time step)
-    %         vel (input velocigram)
-    %         fcut_low (corner frequency)
-    %         fcut_high (cut-off frequency)
-    % OUTPUT: acc (band-pass filtered acceleration time-history column vector)
-    %         vel (velocity time-history column vector)
-    %         dis (displacement time-history column vector)
-    % ===============
-    dt=varargin{1};                     % time step
-    vel=varargin{2}(:);                 % velocigram
-    fcut_low  =.01;                     % default corner frequency
-    fcut_high = 25;                     % default cutoff frequency
+    %% INPUT:  
+    % * _dt (sampling time step)_
+    % * _thv (input velocigram)_
+    % * _lfr (corner frequency)_
+    % * _hfr (cut-off frequency)_
+    %% OUTPUT: 
+    % * _tha (band-pass filtered acceleration time-history column
+    % vector)_
+    % * _thv (velocity time-history column vector)_
+    % * _thd (displacement time-history column vector)_
+
+    function [varargout] = vel2acc(varargin)
+    %% SET-UP
+    % _time-step_
+    dtm = varargin{1};
+    %%
+    % _accelerogram_
+    thv = varargin{2}(:);
+    %%
+    % _default corner frequency (high-pass filter)_
+    lfr =.01;
+    %%
+    % _default cutoff frequency (low-pass filter)_
+    hfr = 25;
+    %%
+    % _default butterworth order_
+    bfo = 2;
+    %%
+    % custom corner frequency (high-pass filter)_
     if nargin>=3
-        fcut_low=varargin{3};           % customized corner frequency
+        lfr=varargin{3};
     end
+    %%
+    % custom cutoff frequency (low-pass filter)_
     if nargin>=4
-        fcut_high=varargin{4};          % customized corner frequency
+        hfr=varargin{4};
     end
-    %======================================================================
-    % BUTTERWORTH FILTER DEFINITION
-    %======================================================================
+    %%
+    % Nyquist frequency
+    fNy = 0.5/dtm;
+    if hfr>fNy
+        hfr = fNy;
+    end
+    
+    %% BUTTERWORTH FILTER
+    
     if nargin>3 || nargin<3
         % BP filter definition
-        [bb,ab]=butter(2,[fcut_low fcut_high]*2*dt,'bandpass');
+        [bfb,bfa] = butter(bfo,[lfr hfr]./fNy,'bandpass');
         fprintf('\nBP FILTER: f(corner): %.2f Hz - f(cut-off): %.2f Hz\n',...
-            fcut_low,fcut_high);
+            lfr,hfr);
     else
         % LF filter definition
-        [bb,ab]=butter(2,fcut_low*2*dt,'high');
-        fprintf('\nLF FILTER: f(corner): %.2f Hz\n',fcut_low);
+        [bfb,bfa] = butter(bfo,lfr./fNy,'high');
+        fprintf('\nLF FILTER: f(corner): %.2f Hz\n',lfr);
     end
-    %======================================================================
-    % INTEGRATION/DIFFERENTIATION/DETRENDING/FILTERING
-    %======================================================================
-    vel=filtfilt(bb,ab,vel);
-    % detrending velocity...
-    vel=detrend(vel);
-    % integrating displacement...
-    dis=cumtrapz(vel)*dt;
-    % filtering displacement...
-    dis=filtfilt(bb,ab,dis);
-    % detrending displacement...
-    dis=detrend(dis);
-    % cosinus-tapering displacement...
-    dis=cos_taper(dis);
-    % differentiating...
-    vel=[0;diff(dis)/dt];
-    acc=[0;diff(vel)/dt];
     
-    varargout{1} = acc;
-    varargout{2} = vel;
-    varargout{3} = dis;
+    %% PROCESSING VELOCITY
+    % _acasual filtering_
+    thv = filtfilt(bfb,bfa,thv);
+    %%
+    % _detrending_
+    thv = detrend(thv);
+    
+    %% COMPUTING/PROCESSING DISPLACEMENT
+    % _integration_
+    thd = cumtrapz(thv)*dtm;
+    %%
+    % _acasual filtering_
+    thd = filtfilt(bfb,bfa,thd);
+    %%
+    % _detrending_
+    thd = detrend(thd);
+    %%
+    % _applying cosinus taper_
+    thd = cos_taper(thd);
+    
+    %% BACK TO ACCELERATION
+    thv = [0;diff(thd)/dtm];
+    tha = [0;diff(thv)/dtm];
+    
+    thv = cumtrapz(tha)*dtm;
+    thd = cumtrapz(thv)*dtm;
+    %% OUTPUT
+    varargout{1} = tha(:);
+    varargout{2} = thv(:);
+    varargout{3} = thd(:);
     return
 end
