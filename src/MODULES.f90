@@ -277,18 +277,17 @@ module nonlinear2d
         !****************************************************************************
         
         subroutine MAKE_INTERNAL_FORCES_NL(nnt,ne,nm,cs_nnz,cs,sdeg_mat,snl,&
-            alfa1,alfa2,beta1,beta2,gamma1,gamma2,dt,displ,fk,mvec)
-
+            alfa1,alfa2,beta1,beta2,gamma1,gamma2,displ,fk,mvec)
+            !
             implicit none
-            ! INTENT IN
+            ! intent IN
             integer*4, intent(in)                       :: nnt,ne,nm,cs_nnz
             integer*4, intent(in), dimension(nm)        :: sdeg_mat
             integer*4, intent(in), dimension(0:cs_nnz)  :: cs
-            real*8,    intent(in)                       :: dt
             real*8,    intent(in), dimension(ne)        :: alfa1,beta1,gamma1
             real*8,    intent(in), dimension(ne)        :: alfa2,beta2,gamma2
             real*8,    intent(in), dimension(2*nnt)     :: displ,mvec
-            ! INTENT INOUT
+            ! intent INOUT
             real*8,    intent(inout), dimension(2*nnt)  :: fk
             type(nl_element), intent(inout), dimension(ne) :: snl 
             ! 
@@ -301,9 +300,8 @@ module nonlinear2d
             real*8                                      :: t2uy,t1fx,t1fy,t2fx,t2fy
             integer*4                                   :: ie,ip,iq,il,im,nn,is,in
             logical                                     :: st_epl
-           !
+            !
             do ie = 1,ne
-                write(*,*) "ELEMENT: ",ie
                 im = cs(cs(ie-1) + 0)
                 nn = sdeg_mat(im)+1
                 
@@ -311,7 +309,8 @@ module nonlinear2d
                 call ALLOINIT_LOC(ie,nnt,cs,cs_nnz,nn,ct,ww,dd,dxdx,dxdy,dydx,dydy,dstrain, &
                     fx,fy,displ,alfa1(ie),alfa2(ie),beta1(ie),beta2(ie),gamma1(ie),gamma2(ie))
                 ! DISPLACEMENT VS VELOCITY FORMULATION
-                snl(ie)%strain(:,:,:) = snl(ie)%strain(:,:,:) + dstrain(:,:,:) 
+!                snl(ie)%strain(:,:,:) = snl(ie)%strain(:,:,:) + dstrain(:,:,:) 
+                snl(ie)%strain(:,:,:) = dstrain(:,:,:)
                 do iq = 1,nn
                     do ip = 1,nn
                         ! COMPUTE TRIAL STRESS INCREMENT
@@ -322,22 +321,11 @@ module nonlinear2d
                         call MAKE_STRESS_LOC(snl(ie)%lambda(ip,iq),snl(ie)%mu(ip,iq),&
                             dstrain_alpha,dtrial)
                         ! CHECK PLASTICITY
-                        write(*,*) "DEBUG - VALUES"
-                        write(*,*) snl(ie)%stress(:,ip,iq)
-                        write(*,*) snl(ie)%center(:,ip,iq)
-                        write(*,*) snl(ie)%strain(:,ip,iq)
-                        write(*,*) dstrain(:,ip,iq)
-                        write(*,*) dtrial
                         call check_plasticity(dtrial,snl(ie)%stress(:,ip,iq),snl(ie)%center(:,ip,iq),&
                             snl(ie)%radius(ip,iq),snl(ie)%syld(ip,iq),st_epl,alpha_epl,ie)
                         ! PLASTIC CORRECTION 
-                        write(*,*) alpha_epl
                         if (st_epl) then
-                            write(*,*) "PLASTIC" 
-
-                            write(*,*) dstrain_alpha
-                            dstrain_alpha = alpha_epl*dstrain_alpha
-                            write(*,*) dstrain_alpha
+                            dstrain_alpha = (1.d0-alpha_epl)*dstrain_alpha
                             call plastic_corrector(dstrain_alpha,dtrial,snl(ie)%center(:,ip,iq),  &
                                 snl(ie)%radius(ip,iq),snl(ie)%syld(ip,iq),snl(ie)%biso(ip,iq),&
                                 snl(ie)%rinf(ip,iq),snl(ie)%ckin(ip,iq),snl(ie)%kkin(ip,iq),  &
@@ -350,7 +338,7 @@ module nonlinear2d
 
 !                ! COMPUTE INTERNAL FORCES
                 call MAKE_INTERNAL_FORCE_EL(nn,ww,dd,dxdx,dxdy,dydx,dydy,snl(ie)%stress(1,:,:),&
-                    snl(ie)%stress(2,:,:),snl(ie)%stress(3,:,:),snl(ie)%stress(4,:,:),fx,fy)
+                    snl(ie)%stress(2,:,:),snl(ie)%stress(4,:,:),fx,fy)
                 do iq = 1,nn
                     do ip = 1,nn
                         is = nn*(iq-1)+ip
@@ -683,7 +671,7 @@ module nonlinear2d
         !****************************************************************************
         
         subroutine check_plasticity (dtrial, stress0, center, radius, syld, &
-            st_elp, alpha_elp,nel)
+            st_elp, alpha_epl, nel)
             !     
             implicit none
             ! intent IN
@@ -693,7 +681,7 @@ module nonlinear2d
             ! intent INOUT
             real*8, dimension(4),   intent(inout)   :: dtrial
             ! intent OUT
-            real*8,                 intent(out)     :: alpha_elp
+            real*8,                 intent(out)     :: alpha_epl
             logical,                intent(out)     :: st_elp
             !
             integer*4                               :: k
@@ -707,31 +695,31 @@ module nonlinear2d
 
             if (abs(FS).le.FTOL) then
                 if (checkload.ge.-LTOL) then
-                    alpha_elp = 0d0
+                    alpha_epl = 0d0
                     st_elp    = .true.
                 else
                     if (FT.lt.-FTOL) then
-                        alpha_elp = 1d0
+                        alpha_epl = 1d0
                         st_elp    = .false.
                     elseif(FT.gt.FTOL) then
-                        call gotoFpegasus(stress0,dtrial,center,radius,syld,10,alpha_elp)
+                        call gotoFpegasus(stress0,dtrial,center,radius,syld,10,alpha_epl)
                         st_elp    = .true.
                     endif
                 end if
             elseif (FS.lt.-FTOL) then
                 if (FT.le.FTOL) then
-                    alpha_elp = 1d0
+                    alpha_epl = 1d0
                     st_elp    = .false.
                 else
-                    call gotoFpegasus(stress0,dtrial,center,radius,syld,1,alpha_elp)
+                    call gotoFpegasus(stress0,dtrial,center,radius,syld,1,alpha_epl)
                     st_elp    = .true.
                 end if
             elseif (FS.gt.FTOL) then
                 write(*,*) 'ERROR: FS: ',FS,'>',FTOL,'!!!!'
-                alpha_elp  = 0d0
+                alpha_epl  = 0d0
                 st_elp = .true.
             end if
-            dtrial=stress0+dtrial*alpha_elp
+            dtrial=stress0+dtrial*alpha_epl
             call mises_yld_locus(dtrial,center,radius,syld,FS,gradFS)
         end subroutine check_plasticity
         
@@ -1647,87 +1635,67 @@ module write_output
             type(nodepatched),            intent(inout) :: disout
             !
             integer*4                                     ::  in,i
-            logical                                       :: condition
             real*8                                        :: sxx_out,syy_out,szz_out,sxy_out
             real*8                                        :: exx_out,eyy_out,gxy_out
             
-            condition = (nmonit.ge.1).and.(int(real(its)/ndt_monitor).eq.(real(its)/ndt_monitor))
-
-            if (condition) then
-                if (option_out_var(1).eq.1) then   
-                    do i = 1,nmonit
-                        in = node_m(i)
-                        if (dabs(dis(in)).lt.(1.0d-99))     dis(in)= 0.d0
-                        if (dabs(dis(in+nnt)).lt.(1.0d-99)) dis(in+nnt)=0.d0
-                        write(unit_disp(i),'(3ES16.6)') tt1,dis(in),dis(in+nnt)
-                    enddo
-                endif
-
-                if (option_out_var(2).eq.1) then   
-                    do i = 1,nmonit
-                        in = node_m(i)
-                        if (dabs(vel(in)).lt.(1.0d-99))     vel(in)= 0.d0
-                        if (dabs(vel(in+nnt)).lt.(1.0d-99)) vel(in+nnt)=0.d0
-                        write(unit_vel(i),'(3ES16.6)') tt1,vel(in),vel(in+nnt)
-                    enddo
-                endif
-
-                if (option_out_var(3).eq.1) then   
-                    do i = 1,nmonit
-                        in = node_m(i)
-                        if (dabs(acc(in)).lt.(1.0d-99))     acc(in)= 0.d0
-                        if (dabs(acc(in+nnt)).lt.(1.0d-99)) acc(in+nnt)=0.d0
-                        write(unit_acc(i),'(3ES16.6)') tt1,acc(in),acc(in+nnt)
-                    enddo
-                endif
-                ! STRESS OUTPUT
-                if (option_out_var(4).eq.1) then
-
-                    call UPDATE_OUT_STRESS(ne,nnt,cs_nnz,cs,nm,sdeg_mat,snl,disout)
-                    do i = 1,nmonit
-                        in = node_m(i)
-                        sxx_out = disout%stress(1,in)/nodal_counter(in)
-                        syy_out = disout%stress(2,in)/nodal_counter(in)
-                        szz_out = disout%stress(3,in)/nodal_counter(in)
-                        sxy_out = disout%stress(4,in)/nodal_counter(in)
-                        if (dabs(disout%stress(1,in)).lt.(1.0d-99)) sxx_out=0.d0
-                        if (dabs(disout%stress(2,in)).lt.(1.0d-99)) syy_out=0.d0
-                        if (dabs(disout%stress(3,in)).lt.(1.0d-99)) szz_out=0.d0
-                        if (dabs(disout%stress(4,in)).lt.(1.0d-99)) sxy_out=0.d0
-                        write(unit_stress(i),'(5E16.8)') tt1,sxx_out,syy_out,sxy_out,szz_out
-                    enddo
-                endif
-                ! STRAIN OUTPUT
-                if (option_out_var(5).eq.1) then
-
-                    call UPDATE_OUT_STRAIN(ne,nnt,cs_nnz,cs,nm,sdeg_mat,snl,disout)
-                    do i = 1,nmonit
-                        in = node_m(i) 
-                        exx_out = disout%strain(1,in) / nodal_counter(in)
-                        eyy_out = disout%strain(2,in) / nodal_counter(in)
-                        gxy_out = disout%strain(3,in) / nodal_counter(in)
-                        if (dabs(disout%strain(1,in)).lt.(1.0d-99)) exx_out=0.d0
-                        if (dabs(disout%strain(2,in)).lt.(1.0d-99)) eyy_out=0.d0
-                        if (dabs(disout%strain(3,in)).lt.(1.0d-99)) gxy_out=0.d0
-                        write(unit_strain(i),'(4E16.8)') tt1,exx_out,eyy_out,gxy_out 
-                    enddo
-                endif
-
-!                if (option_out_var(6) .eq. 1) then  
-!                    do i = 1,nmonit
-!                        in = node_m(i) 
-!                        duxdx_out = duxdx(in) / nodal_counter(in)
-!                        duydy_out = duydy(in) / nodal_counter(in)
-!                        duxdy_out = duxdy(in) / nodal_counter(in)
-!                        duydx_out = duydx(in) / nodal_counter(in) 
-!                        if (dabs(duxdy(in)).lt.(1.0d-99)) duxdy_out=0.0
-!                        if (dabs(duydx(in)).lt.(1.0d-99)) duydx_out=0.0
-!                        write(unit_omega(i),'(2E16.8)') tt1, 0.5*(duxdy_out-duydx_out) 
-!                    enddo
-!                endif
-
+            if (option_out_var(1).eq.1) then   
+                do i = 1,nmonit
+                    in = node_m(i)
+                    if (dabs(dis(in)).lt.(1.0d-99))     dis(in)= 0.d0
+                    if (dabs(dis(in+nnt)).lt.(1.0d-99)) dis(in+nnt)=0.d0
+                    write(unit_disp(i),'(3ES16.6)') tt1,dis(in),dis(in+nnt)
+                enddo
             endif
 
+            if (option_out_var(2).eq.1) then   
+                do i = 1,nmonit
+                    in = node_m(i)
+                    if (dabs(vel(in)).lt.(1.0d-99))     vel(in)= 0.d0
+                    if (dabs(vel(in+nnt)).lt.(1.0d-99)) vel(in+nnt)=0.d0
+                    write(unit_vel(i),'(3ES16.6)') tt1,vel(in),vel(in+nnt)
+                enddo
+            endif
+
+            if (option_out_var(3).eq.1) then   
+                do i = 1,nmonit
+                    in = node_m(i)
+                    if (dabs(acc(in)).lt.(1.0d-99))     acc(in)= 0.d0
+                    if (dabs(acc(in+nnt)).lt.(1.0d-99)) acc(in+nnt)=0.d0
+                    write(unit_acc(i),'(3ES16.6)') tt1,acc(in),acc(in+nnt)
+                enddo
+            endif
+            ! STRESS OUTPUT
+            if (option_out_var(4).eq.1) then
+
+                call UPDATE_OUT_STRESS(ne,nnt,cs_nnz,cs,nm,sdeg_mat,snl,disout)
+                do i = 1,nmonit
+                    in = node_m(i)
+                    sxx_out = disout%stress(1,in)/nodal_counter(in)
+                    syy_out = disout%stress(2,in)/nodal_counter(in)
+                    szz_out = disout%stress(3,in)/nodal_counter(in)
+                    sxy_out = disout%stress(4,in)/nodal_counter(in)
+                    if (dabs(disout%stress(1,in)).lt.(1.0d-99)) sxx_out=0.d0
+                    if (dabs(disout%stress(2,in)).lt.(1.0d-99)) syy_out=0.d0
+                    if (dabs(disout%stress(3,in)).lt.(1.0d-99)) szz_out=0.d0
+                    if (dabs(disout%stress(4,in)).lt.(1.0d-99)) sxy_out=0.d0
+                    write(unit_stress(i),'(5ES16.8)') tt1,sxx_out,syy_out,sxy_out,szz_out
+                enddo
+            endif
+            ! STRAIN OUTPUT
+            if (option_out_var(5).eq.1) then
+
+                call UPDATE_OUT_STRAIN(ne,nnt,cs_nnz,cs,nm,sdeg_mat,snl,disout)
+                do i = 1,nmonit
+                    in = node_m(i) 
+                    exx_out = disout%strain(1,in) / nodal_counter(in)
+                    eyy_out = disout%strain(2,in) / nodal_counter(in)
+                    gxy_out = disout%strain(3,in) / nodal_counter(in)
+                    if (dabs(disout%strain(1,in)).lt.(1.0d-99)) exx_out=0.d0
+                    if (dabs(disout%strain(2,in)).lt.(1.0d-99)) eyy_out=0.d0
+                    if (dabs(disout%strain(3,in)).lt.(1.0d-99)) gxy_out=0.d0
+                    write(unit_strain(i),'(4ES16.8)') tt1,exx_out,eyy_out,gxy_out 
+                enddo
+            endif
             return
         end subroutine WRITE_MONITOR_NL
         !

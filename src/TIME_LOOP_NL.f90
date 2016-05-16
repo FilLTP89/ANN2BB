@@ -187,6 +187,7 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
     integer*4, dimension(nmonit) :: unit_uDRM 
     integer*4, dimension (6)     :: option_out_var           
     type(nodepatched)            :: disout
+    logical                      :: condition
 
     !************************************************
     !
@@ -610,7 +611,7 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         call system_clock(COUNT=clock_start,COUNT_RATE=clock(2))  
         ! DISPLACEMENT FORMULATION
         call MAKE_INTERNAL_FORCES_NL(nnt,ne,nm,cs_nnz,cs,sdeg_mat,snl,&
-            alfa1,alfa2,beta1,beta2,gamma1,gamma2,dt,u1,fk,mvec)
+            alfa1,alfa2,beta1,beta2,gamma1,gamma2,u1,fk,mvec)
         !
         call system_clock(COUNT=clock_finish)
         time_fk = float(clock_finish - clock_start) / float(clock(2))
@@ -702,9 +703,12 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         !********************************************************************************************
         !     WRITE OUTPUT FILE
         !********************************************************************************************
-        call WRITE_MONITOR_NL(unit_disp,unit_vel,unit_acc,unit_strain,unit_stress,unit_omega,&
-            option_out_var,nmonit,ndt_monitor,node_m,nm,ne,nnt,cs,cs_nnz,sdeg_mat,snl,its,tt1,&
-            u1,vel,acc,nodal_counter,disout)
+        condition = (nmonit.ge.1).and.(int(real(its)/ndt_monitor).eq.(real(its)/ndt_monitor)) 
+        if (condition) then
+            call WRITE_MONITOR_NL(unit_disp,unit_vel,unit_acc,unit_strain,unit_stress,unit_omega,&
+                option_out_var,nmonit,ndt_monitor,node_m,nm,ne,nnt,cs,cs_nnz,sdeg_mat,snl,its,tt1,&
+                u1,vel,acc,nodal_counter,disout)
+        endif
         
         !-----DRM---------------------------------------------------------------------------------------------------
         !Write out displacement in DRM nodes for I step
