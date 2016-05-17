@@ -31,19 +31,19 @@
 !> @param[out] duydy nodal values for spatial derivatives of the displacement
 
 
-subroutine MAKE_STRAIN(nn,dd,dxdx,dxdy,dydx,dydy,ux,uy,duxdx,duxdy,duydx,duydy,dt)
-    
+subroutine MAKE_STRAIN(nn,dd,dxdx,dxdy,dydx,dydy,ux,uy,duxdx,duxdy,duydx,duydy)
+    ! 
     implicit none
-    real*8                                  :: t1ux,t1uy,t2ux,t2uy
-    real*8                                  :: t1fx,t1fy,t2fx,t2fy,det_j
-    integer*4                               :: ip,iq,il,im
-    real*8,                  intent(in)     :: dt
+    !
+    ! intent IN
     integer*4,               intent(in)     :: nn
     real*8, dimension(nn),   intent(in)     :: dxdx,dxdy,dydx,dydy
     real*8, dimension(nn,nn),intent(in)     :: dd,ux,uy
+    !
+    real*8                                  :: t1ux,t1uy,t2ux,t2uy
+    real*8                                  :: t1fx,t1fy,t2fx,t2fy,det_j
+    integer*4                               :: ip,iq,il,im
     real*8, dimension(nn,nn),intent(inout)  :: duxdx,duxdy,duydx,duydy
-
-    !   DERIVATIVE CALCULATION
 
     do iq = 1,nn
         do ip = 1,nn

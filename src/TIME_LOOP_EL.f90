@@ -494,20 +494,10 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
                 fn,dt,0.d0)
         enddo                                                                                          !DRM Scandella 02.11.2005 
     endif                                                                                            !DRM Scandella 02.11.2005  
-
-    
-    
-    
-    
     
     !********************************************************************************************
     !     ALL STEPS
     !********************************************************************************************	
-    
-    
-    
-    
-    
     
     do its = 0,nts 
 
@@ -648,7 +638,7 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
 
                 call MAKE_INTERNAL_FORCE_EL(nn,ww,dd,&
                     dxdx_el,dxdy_el,dydx_el,dydy_el,&
-                    sxx_el,syy_el,szz_el,sxy_el,fx_el,fy_el)
+                    sxx_el,syy_el,sxy_el,fx_el,fy_el)
                 do j = 1,nn
                     do i = 1,nn
                         is = nn*(j -1) +i
