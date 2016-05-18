@@ -297,7 +297,7 @@ module nonlinear2d
             real*8,     dimension(:,:,:), allocatable   :: dstrain
             real*8,     dimension(4)                    :: dtrial,dstrain_alpha
             real*8,     dimension(4)                    :: dplastic_strain
-            real*8                                      :: alpha_epl,t1ux,t1uy,t2ux
+            real*8                                      :: FS,alpha_epl,t1ux,t1uy,t2ux
             real*8                                      :: t2uy,t1fx,t1fy,t2fx,t2fy
             integer*4                                   :: ie,ip,iq,il,im,nn,is,in
             logical                                     :: st_epl
@@ -314,10 +314,9 @@ module nonlinear2d
                 
                 dstrain(:,:,:) = dstrain(:,:,:) - snl(ie)%strain(:,:,:)
                 
-                write(*,*) "dstrain :",dstrain
-                write(*,*) "-------"
-                write(*,*) "strain0 :",snl(ie)%strain
-                read(*,*)
+!                write(*,*) "dstrain :",dstrain
+!                write(*,*) "-------"
+!                write(*,*) "strain0 :",snl(ie)%strain
                 
                 dplastic_strain = 0.d0
                 
@@ -334,17 +333,38 @@ module nonlinear2d
                         dstrain_alpha(4)   = dstrain(3,ip,iq)
                         call MAKE_STRESS_LOC(snl(ie)%lambda(ip,iq),snl(ie)%mu(ip,iq),&
                             dstrain_alpha,dtrial)
+                        write(*,*) "========================================"
+                        write(*,*) "" 
+                        write(*,*) "PREDICTION: ",ip,iq
+                        write(*,*) "TRIAL"
+                        write(*,*) "dstrain_alpha: ",dstrain_alpha
+                        write(*,*) "stress0: ",snl(ie)%stress(:,ip,iq)
+                        write(*,*) "dtrial: ",dtrial
+                        write(*,*) "" 
                         ! CHECK PLASTICITY
                         call check_plasticity(dtrial,snl(ie)%stress(:,ip,iq),snl(ie)%center(:,ip,iq),&
-                            snl(ie)%radius(ip,iq),snl(ie)%syld(ip,iq),st_epl,alpha_epl,ip,iq)
-                        ! PLASTIC CORRECTION 
+                            snl(ie)%radius(ip,iq),snl(ie)%syld(ip,iq),st_epl,alpha_epl,ip,iq,FS)
+                        ! PLASTIC CORRECTION
                         if (st_epl) then
+                            write(*,*) "--------------------------------"
+                            write(*,*) ""
+                            write(*,*) "FS: ",FS
                             write(*,*) "plastic step"
+                            write(*,*) "alpha_epl: ",alpha_epl
+                            write(*,*) "check plasticity"
+                            write(*,*) "dtrial: ",dtrial
                             dstrain_alpha = (1.d0-alpha_epl)*dstrain_alpha
                             call plastic_corrector(dstrain_alpha,dtrial,snl(ie)%center(:,ip,iq),  &
                                 snl(ie)%radius(ip,iq),snl(ie)%syld(ip,iq),snl(ie)%biso(ip,iq),&
                                 snl(ie)%rinf(ip,iq),snl(ie)%ckin(ip,iq),snl(ie)%kkin(ip,iq),  &
-                                snl(ie)%mu(ip,iq),snl(ie)%lambda(ip,iq),dplastic_strain,ie)
+                                snl(ie)%mu(ip,iq),snl(ie)%lambda(ip,iq),dplastic_strain,ie,FS)
+                            if (FS.gt.FTOL) then
+                                write(*,*) "FS: ",FS
+                                write(*,*) "dtrial: ",dtrial
+                                read(*,*)
+                            endif
+                            write(*,*) "" 
+                            write(*,*) "================================================"
                         endif
                         ! STRAIN VECTOR
                         snl(ie)%strain(:,ip,iq)         = snl(ie)%strain(:,ip,iq)         + &
@@ -463,7 +483,7 @@ module nonlinear2d
                 enddo
             enddo
             ! MAKE DERIVATIVES
-            call MAKE_DERIVATIVES_LOC(nn,alfa1,alfa2,beta1,beta2,gamma1,gamma2,ct,&
+            call MAKE_DERIVATIVES(alfa1,alfa2,beta1,beta2,gamma1,gamma2,nn,ct,&
                 dxdx,dxdy,dydx,dydy)
              
             ! MAKE STRAIN
@@ -478,36 +498,6 @@ module nonlinear2d
 
             return
         end subroutine ALLOINIT_LOC
-        
-        !****************************************************************************
-        ! MAKE DERIVATIVES
-        !****************************************************************************
-        
-        subroutine MAKE_DERIVATIVES_LOC(nn,alfa1,alfa2,beta1,beta2,gamma1,gamma2,ct,&
-            dxdx,dxdy,dydx,dydy)
-            !           
-            implicit none
-            ! intent IN
-            integer*4, intent(in)               :: nn
-            real*8, intent(in)                  :: alfa1,alfa2
-            real*8, intent(in)                  :: beta1,beta2
-            real*8, intent(in)                  :: gamma1,gamma2
-            real*8, intent(in)   , dimension(nn):: ct
-            ! intent INOUT
-            real*8, intent(inout), dimension(nn):: dxdx,dxdy
-            real*8, intent(inout), dimension(nn):: dydx,dydy
-            ! 
-            integer*4 :: i
-            ! COMPUTE SHAPE-FUNCTION DERIVATIVES
-            do i = 1,nn
-                dxdy(i) = beta1 + gamma1 * ct(i)
-                dydy(i) = beta2 + gamma2 * ct(i)
-                dxdx(i) = alfa1 + gamma1 * ct(i)
-                dydx(i) = alfa2 + gamma2 * ct(i)
-            enddo
-            ! 
-            return
-        end subroutine MAKE_DERIVATIVES_LOC
         
         !****************************************************************************
         ! COMPUTE ELEMENT-WISE STRAIN TENSOR
@@ -707,7 +697,7 @@ module nonlinear2d
         !****************************************************************************
         
         subroutine check_plasticity (dtrial, stress0, center, radius, syld, &
-            st_elp, alpha_epl, ip,iq)
+            st_elp, alpha_epl, ip,iq,FS)
             !     
             implicit none
             ! intent IN
@@ -717,17 +707,25 @@ module nonlinear2d
             ! intent INOUT
             real*8, dimension(4),   intent(inout)   :: dtrial
             ! intent OUT
-            real*8,                 intent(out)     :: alpha_epl
+            real*8,                 intent(out)     :: FS,alpha_epl
             logical,                intent(out)     :: st_elp
             !
             integer*4                               :: k
-            real*8                                  :: FS, FT,checkload
+            real*8                                  :: FT,checkload
             real*8, dimension(4)                    :: gradFS, gradFT, stress1
             !
             stress1= dtrial+stress0
             call mises_yld_locus(stress0,center,radius,syld,FS,gradFS)
             call mises_yld_locus(stress1,center,radius,syld,FT,gradFT)
             checkload=sum(gradFS*dtrial)/sum(gradFS**2)/sum(dtrial**2)
+           
+!            if (FS*FT.lt.0.d0) then
+!                write(*,*) ""
+!                write(*,*) "FS, gradFS :",FS,gradFS
+!                write(*,*) "FT, gradFT :",FT,gradFT
+!                write(*,*) ""
+!                read(*,*)
+!            endif
 
             if (abs(FS).le.FTOL) then
                 if (checkload.ge.-LTOL) then
@@ -766,7 +764,7 @@ module nonlinear2d
         end subroutine check_plasticity
         
         subroutine plastic_corrector(dEps_alpha,stress,center,syld, &
-            radius,biso,Rinf,Ckin,kkin,mu,lambda,dEpl,nel)
+            radius,biso,Rinf,Ckin,kkin,mu,lambda,dEpl,nel,FM)
 
             implicit none
             integer*4, intent(in) :: nel
@@ -776,7 +774,8 @@ module nonlinear2d
             real*8, dimension(4,4)              :: DEL
             real*8, dimension(4), parameter     :: A = (/1.0,1.0,1.0,0.5/)
             real*8                              :: Ttot,deltaTk,qq,R1,R2,dR1,dR2,err0,err1
-            real*8                              :: FM,hard1,hard2,deltaTmin
+            real*8                              :: hard1,hard2,deltaTmin
+            real*8, intent(out)                 :: FM
             real(8)                             :: Resk
             logical                             :: flag_fail
             real*8, dimension(4)                :: gradFM,S1,S2,X1,X2
@@ -1523,7 +1522,7 @@ module write_output
                     
                     call LGL(nn,ct,ww,dd)
                     
-                    call MAKE_DERIVATIVES_LOC(nn,alfa1(ie),alfa2(ie),beta1(ie),beta2(ie),gamma1(ie),gamma2(ie),ct,&
+                    call MAKE_DERIVATIVES(alfa1(ie),alfa2(ie),beta1(ie),beta2(ie),gamma1(ie),gamma2(ie),nn,ct,&
                         dxdx_el,dxdy_el,dydx_el,dydy_el)
                     
                     do jj=1,nn
@@ -1845,4 +1844,3 @@ end module write_output
 !! show-trailing-whitespace: t
 !! End:
 !! vim: set sw=4 ts=8 et tw=80 smartindent : !!
-
