@@ -33,7 +33,7 @@
 !> @param[out] fy y-componnent for internal forces
 
 
-subroutine MAKE_INTERNAL_FORCE_EL(nn,ww,dd,dxdx,dxdy,dydx,dydy,&
+subroutine MAKE_INTERNAL_FORCE(nn,ww,dd,dxdx,dxdy,dydx,dydy,&
     sxx,syy,sxy,fx,fy)                               
     !
     implicit none
@@ -81,7 +81,7 @@ subroutine MAKE_INTERNAL_FORCE_EL(nn,ww,dd,dxdx,dxdy,dydx,dydy,&
     enddo
     !
     return
-end subroutine MAKE_INTERNAL_FORCE_EL
+end subroutine MAKE_INTERNAL_FORCE
 !! mode: f90
 !! show-trailing-whitespace: t
 !! End:

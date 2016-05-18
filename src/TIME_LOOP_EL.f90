@@ -636,7 +636,7 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
                     nl_sism,func_type,func_indx,func_data,nf,tt1, &
                     nfunc_data,tag_func)
 
-                call MAKE_INTERNAL_FORCE_EL(nn,ww,dd,&
+                call MAKE_INTERNAL_FORCE(nn,ww,dd,&
                     dxdx_el,dxdy_el,dydx_el,dydy_el,&
                     sxx_el,syy_el,sxy_el,fx_el,fy_el)
                 do j = 1,nn

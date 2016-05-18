@@ -22,8 +22,8 @@
 !> @version 1.0
 
 !> @param[in] nn number of 1-D Legendre nodes
-!> @param[in] lambda_el nodal values of Lame coefficient lambda 
-!> @param[in] mu_el nodal values of Lame coefficient mu
+!> @param[in] lambda nodal values of Lame coefficient lambda 
+!> @param[in] mu nodal values of Lame coefficient mu
 !> @param[in] duxdx nodal values for spatial derivatives of the displacement 
 !> @param[in] duydx nodal values for spatial derivatives of the displacement
 !> @param[in] duxdy nodal values for spatial derivatives of the displacement
@@ -33,29 +33,34 @@
 !> @param[out] szz nodal values for the stress tensor
 !> @param[out] sxy nodal values for the stress tensor
 
-subroutine MAKE_STRESS(lambda_el,mu_el,nn,&
-    duxdx,duxdy,duydx,duydy,&
-    sxx,syy,szz,sxy)
-
+subroutine MAKE_STRESS(nn,lambda,mu,duxdx,duxdy,duydx,duydy,sxx,syy,szz,sxy)
+    !
     implicit none
+    ! intent IN
     integer*4, intent(in)                   :: nn
     real*8, dimension(nn,nn), intent(in)    :: duxdx,duxdy,duydx,duydy
-    real*8, dimension(nn,nn), intent(in)    :: mu_el,lambda_el    
-    real*8, dimension(nn,nn), intent(inout) :: sxx,syy,szz,sxy
-    integer*4 :: ip,iq
-    real*8 :: lambda,mu
-
+    real*8, dimension(nn,nn), intent(in)    :: mu,lambda    
+    ! intent OUT
+    real*8, dimension(nn,nn), intent(inout)   :: sxx,syy,szz,sxy
+    !
+    real*8                                  :: lambda_,mu_
+    integer*4                               :: ip,iq
+    !
+    sxx = 0.d0
+    syy = 0.d0
+    szz = 0.d0
+    sxy = 0.d0
     do iq = 1,nn   
         do ip = 1,nn
-            mu     = mu_el(ip,iq)
-            lambda = lambda_el(ip,iq)
-            sxx(ip,iq) = (lambda +2.0d0*mu)*duxdx(ip,iq) + lambda*duydy(ip,iq)
-            syy(ip,iq) = (lambda +2.0d0*mu)*duydy(ip,iq) + lambda*duxdx(ip,iq)
-            sxy(ip,iq) = mu*(duxdy(ip,iq) + duydx(ip,iq))
-            szz(ip,iq) = lambda*duxdx(ip,iq) + lambda*duydy(ip,iq)
+            mu_     = mu(ip,iq)
+            lambda_ = lambda(ip,iq)
+            sxx(ip,iq) = (lambda_ +2.0d0*mu_)*duxdx(ip,iq) + lambda_*duydy(ip,iq)
+            syy(ip,iq) = (lambda_ +2.0d0*mu_)*duydy(ip,iq) + lambda_*duxdx(ip,iq)
+            szz(ip,iq) = lambda_*(duxdx(ip,iq)+duydy(ip,iq))
+            sxy(ip,iq) = mu_*(duxdy(ip,iq) + duydx(ip,iq))
         enddo
     enddo
-
+    !
     return
-
+    !
 end subroutine MAKE_STRESS

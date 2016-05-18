@@ -253,9 +253,9 @@ end module qsort_c_module
 !> @brief  Module for non linear calculation in 2D
 
 module nonlinear2d
-    real*8, parameter :: FTOL = 0.00100000000D0
-    real*8, parameter :: LTOL = 0.0010000000000D0
-    real*8, parameter :: STOL = 0.0010000000000000D0
+    real*8, parameter :: FTOL = 0.010000000000d0
+    real*8, parameter :: LTOL = 0.010000000000d0
+    real*8, parameter :: STOL = 0.010000000000d0
     type nl_element   !< element structure for time loop (RAM saving)
         ! nl stored variables
         real*8, dimension(:,:),   allocatable    :: radius
@@ -294,9 +294,15 @@ module nonlinear2d
             real*8,     dimension(:),  allocatable      :: ct,ww
             real*8,     dimension(:),  allocatable      :: dxdx,dydy,dxdy,dydx
             real*8,     dimension(:,:),allocatable      :: dd,fx,fy
-            real*8,     dimension(:,:,:), allocatable   :: dstrain
-            real*8,     dimension(4)                    :: dtrial,dstrain_alpha
-            real*8,     dimension(4)                    :: dplastic_strain
+            real*8,     dimension(:,:,:), allocatable   :: dstrain,dstrial
+            !
+            real*8, dimension(4)                        :: stress_,dstrial_,center_
+            real*8, dimension(4)                        :: dstrain_,dpstrain_ 
+            real*8                                      :: radius_,syld_ 
+            real*8                                      :: lambda_,mu_     
+            real*8                                      :: ckin_,kkin_  
+            real*8                                      :: biso_,rinf_   
+            !
             real*8                                      :: FS,alpha_epl,t1ux,t1uy,t2ux
             real*8                                      :: t2uy,t1fx,t1fy,t2fx,t2fy
             integer*4                                   :: ie,ip,iq,il,im,nn,is,in
@@ -309,127 +315,102 @@ module nonlinear2d
                 ! COMPUTE STRAIN 
                 !*********************************************************************************
                 
-                call ALLOINIT_LOC(ie,nnt,cs,cs_nnz,nn,ct,ww,dd,dxdx,dxdy,dydx,dydy,dstrain, &
-                    fx,fy,displ,alfa1(ie),alfa2(ie),beta1(ie),beta2(ie),gamma1(ie),gamma2(ie))
+                call ALLOINIT_LOC(ie,nnt,cs,cs_nnz,nn,ct,ww,dd,dxdx,dxdy,dydx,dydy,dstrain,dstrial, &
+                    fx,fy,displ,alfa1(ie),alfa2(ie),beta1(ie),beta2(ie),gamma1(ie),gamma2(ie),&
+                    snl(ie)%lambda,snl(ie)%mu)
                 
                 dstrain(:,:,:) = dstrain(:,:,:) - snl(ie)%strain(:,:,:)
-                
-!                write(*,*) "dstrain :",dstrain
-!                write(*,*) "-------"
-!                write(*,*) "strain0 :",snl(ie)%strain
-                
-                dplastic_strain = 0.d0
-                
                 !*********************************************************************************
                 ! COMPUTE STRESS
                 !*********************************************************************************
                 
                 do iq = 1,nn
                     do ip = 1,nn
-                        ! COMPUTE TRIAL STRESS INCREMENT
-                        dtrial(:) = 0.d0
-                        dstrain_alpha(:) = 0.d0
-                        dstrain_alpha(1:2) = dstrain(1:2,ip,iq)
-                        dstrain_alpha(4)   = dstrain(3,ip,iq)
-                        call MAKE_STRESS_LOC(snl(ie)%lambda(ip,iq),snl(ie)%mu(ip,iq),&
-                            dstrain_alpha,dtrial)
-                        write(*,*) "========================================"
-                        write(*,*) "" 
-                        write(*,*) "PREDICTION: ",ip,iq
-                        write(*,*) "TRIAL"
-                        write(*,*) "dstrain_alpha: ",dstrain_alpha
-                        write(*,*) "stress0: ",snl(ie)%stress(:,ip,iq)
-                        write(*,*) "dtrial: ",dtrial
-                        write(*,*) "" 
+                        
+                        ! STARTING POINT
+                        stress_ = snl(ie)%stress(:,ip,iq)
+                        center_ = snl(ie)%center(:,ip,iq)
+                        radius_ = snl(ie)%radius(ip,iq)
+                        lambda_ = snl(ie)%lambda(ip,iq)
+                        mu_     = snl(ie)%mu(ip,iq)
+                        syld_   = snl(ie)%syld(ip,iq)
+                        ckin_   = snl(ie)%ckin(ip,iq)
+                        kkin_   = snl(ie)%kkin(ip,iq)
+                        biso_   = snl(ie)%biso(ip,iq)
+                        rinf_   = snl(ie)%rinf(ip,iq)
+                        
+                        ! STRAIN INCREMENT
+                        dstrial_(:)   = 0.d0
+                        dstrain_(:)   = 0.d0
+                        dstrain_(1:2) = dstrain(1:2,ip,iq)
+                        dstrain_(4)   = dstrain(3,ip,iq)
+                        dpstrain_(:)  = 0.d0
+                        
+                        ! TRIAL STRESS INCREMENT
+                        dstrial_(:)    = dstrial(:,ip,iq)
+
                         ! CHECK PLASTICITY
-                        call check_plasticity(dtrial,snl(ie)%stress(:,ip,iq),snl(ie)%center(:,ip,iq),&
-                            snl(ie)%radius(ip,iq),snl(ie)%syld(ip,iq),st_epl,alpha_epl,ip,iq,FS)
+                        call check_plasticity(dstrial_,stress_,center_,radius_,&
+                            syld_,st_epl,alpha_epl,ip,iq,FS)
+                        WRITE(*,*) "ALPHA",alpha_epl
+                        
                         ! PLASTIC CORRECTION
                         if (st_epl) then
-                            write(*,*) "--------------------------------"
-                            write(*,*) ""
-                            write(*,*) "FS: ",FS
-                            write(*,*) "plastic step"
-                            write(*,*) "alpha_epl: ",alpha_epl
-                            write(*,*) "check plasticity"
-                            write(*,*) "dtrial: ",dtrial
-                            dstrain_alpha = (1.d0-alpha_epl)*dstrain_alpha
-                            call plastic_corrector(dstrain_alpha,dtrial,snl(ie)%center(:,ip,iq),  &
-                                snl(ie)%radius(ip,iq),snl(ie)%syld(ip,iq),snl(ie)%biso(ip,iq),&
-                                snl(ie)%rinf(ip,iq),snl(ie)%ckin(ip,iq),snl(ie)%kkin(ip,iq),  &
-                                snl(ie)%mu(ip,iq),snl(ie)%lambda(ip,iq),dplastic_strain,ie,FS)
-                            if (FS.gt.FTOL) then
-                                write(*,*) "FS: ",FS
-                                write(*,*) "dtrial: ",dtrial
-                                read(*,*)
-                            endif
-                            write(*,*) "" 
-                            write(*,*) "================================================"
+                            dstrain_ = (1.d0-alpha_epl)*dstrain_
+                            write(*,*) "plastic"
+                            call plastic_corrector(dstrain_,dstrial_,center_,radius_,syld_,&
+                                biso_,rinf_,ckin_,kkin_,mu_,lambda_,dpstrain_,ie,FS)
                         endif
+                        
+                        ! STRESS VECTOR
+                        snl(ie)%stress(:,ip,iq) = dstrial_
                         ! STRAIN VECTOR
-                        snl(ie)%strain(:,ip,iq)         = snl(ie)%strain(:,ip,iq)         + &
-                            dstrain(:,ip,iq)
+                        snl(ie)%strain(:,ip,iq) = snl(ie)%strain(:,ip,iq) + &
+                            (/dstrain_(1:2),dstrain_(4)/)
                         ! PLASTIC STRAIN VECTOR
                         snl(ie)%plastic_strain(:,ip,iq) = snl(ie)%plastic_strain(:,ip,iq) + &
-                            (/dplastic_strain(1:2),dplastic_strain(4)/)
-                        ! STRESS VECTOR
-                        snl(ie)%stress(:,ip,iq)         = dtrial(:)
+                            (/dpstrain_(1:2),dpstrain_(4)/)
+                        ! CENTER
+                        snl(ie)%center(:,ip,iq) = center_
+                        ! RADIUS
+                        snl(ie)%radius(ip,iq)   = radius_
+                        
+                        write(*,*) "STRESS N+1: ",SNL(IE)%STRESS(:,IP,IQ)
+                        write(*,*) "STRAIN N+1: ",SNL(IE)%STRAIN(:,IP,IQ)
+                        write(*,*) "CENTER N+1: ",SNL(IE)%CENTER(:,IP,IQ)
+
                     enddo
                 enddo
                 
                 !*********************************************************************************
-                ! COMPUTE INTERNAL FORCES
+                ! COMPUTE LOCAL INTERNAL FORCES
                 !*********************************************************************************
                 
-                call MAKE_INTERNAL_FORCE_EL(nn,ww,dd,dxdx,dxdy,dydx,dydy,snl(ie)%stress(1,:,:),&
+                call MAKE_INTERNAL_FORCE(nn,ww,dd,dxdx,dxdy,dydx,dydy,snl(ie)%stress(1,:,:),&
                     snl(ie)%stress(2,:,:),snl(ie)%stress(4,:,:),fx,fy)
+                !*********************************************************************************
+                ! COMPUTE LOCAL INTERNAL FORCES
+                !*********************************************************************************
                 do iq = 1,nn
                     do ip = 1,nn
                         is = nn*(iq-1)+ip
                         in = cs(cs(ie-1)+is)
                         fk(in)     = fk(in)     + fx(ip,iq)/mvec(in)
                         fk(in+nnt) = fk(in+nnt) + fy(ip,iq)/mvec(in+nnt)
-!                        
-!                        t1fx = 0.0d0
-!                        t2fx = 0.0d0
-!                        t1fy = 0.0d0
-!                        t2fy = 0.0d0
-!       
-!                        ! derivatives with respect to eta ( there is a delta(iq,im) )
-!                        do il=1,nn
-!                            t1fx = t1fx+dd(il,ip)*ww(il)*ww(iq)*&
-!                                (snl(ie)%stress(1,il,iq)*dydy(il)-snl(ie)%stress(4,il,iq)*dxdy(il))
-!                            t1fy = t1fy+dd(il,ip)*ww(il)*ww(iq)*&
-!                                (snl(ie)%stress(4,il,iq)*dydy(il)-snl(ie)%stress(2,il,iq)*dxdy(il))
-!                        enddo
-!                        ! derivatives with respect to xi ( there is a delta(ip,il) )
-!                        do im=1,nn
-!                            t2fx = t2fx+dd(im,iq)*ww(ip)*ww(im)*&
-!                                (snl(ie)%stress(1,ip,im)*dydx(im)-snl(ie)%stress(4,ip,im)*dxdx(im))
-!                            t2fy = t2fy+dd(im,iq)*ww(ip)*ww(im)*&
-!                                (snl(ie)%stress(4,ip,im)*dydx(im)-snl(ie)%stress(2,ip,im)*dxdx(im))
-!                        enddo
-!                        ! ELEMENT-WISE FORCES
-!                        fx(ip,iq) = t1fx - t2fx
-!                        fy(ip,iq) = t1fy - t2fy
-!                        ! GLOBAL NODAL FORCES
-!
-
                     enddo
                 enddo
                 ! DEALLOCATE ELEMENT-WISE VARIABLES
-                call DEALLOCATE_LOC(ct,ww,dd,dxdx,dxdy,dydx,dydy,dstrain,fx,fy)
+                call DEALLOCATE_LOC(ct,ww,dd,dxdx,dxdy,dydx,dydy,dstrain,dstrial,fx,fy)
             enddo
-            ! 
             return
             !
         end subroutine MAKE_INTERNAL_FORCES_NL
         
         !****************************************************************************
-        ! ALLOCATE LOCAL VARIABLES
+        ! ALLOCATE LOCAL VARIABLES (LINEAR CASE)
         !****************************************************************************
         
-        subroutine ALLOINIT_LOC(ie,nnt,cs,cs_nnz,nn,ct,ww,dd,dxdx,dxdy,dydx,dydy,dstrain, &
+        subroutine ALLOINIT_LOC_EL(ie,nnt,cs,cs_nnz,nn,ct,ww,dd,dxdx,dxdy,dydx,dydy,dstrain, &
             fx,fy,displ,alfa1,alfa2,beta1,beta2,gamma1,gamma2)
             !
             implicit none    
@@ -440,40 +421,46 @@ module nonlinear2d
             real*8,    intent(in)                                   :: alfa1,beta1,gamma1
             real*8,    intent(in)                                   :: alfa2,beta2,gamma2 
             ! intent OUT 
-            real*8,     dimension(:),  allocatable, intent(out)     :: ct,ww
-            real*8,     dimension(:),  allocatable, intent(out)     :: dxdx,dydy,dxdy,dydx
-            real*8,     dimension(:,:),allocatable, intent(out)     :: dd,fx,fy
-            real*8,     dimension(:,:,:), allocatable, intent(out)  :: dstrain
-            real*8,     dimension(nn,nn)                            :: ux,uy
+            real*8, dimension(:),     allocatable, intent(out)      :: ct,ww
+            real*8, dimension(:),     allocatable, intent(out)      :: dxdx,dydy,dxdy,dydx
+            real*8, dimension(:,:),   allocatable, intent(out)      :: dd,fx,fy
+            real*8, dimension(:,:,:), allocatable, intent(out)      :: dstrain
+            !
             real*8,     dimension(nn,nn)                            :: duxdx,duxdy,duydx,duydy
+            real*8,     dimension(nn,nn)                            :: ux,uy,sxx,syy,szz,sxy
             integer*4                                               :: i,j,is,in
+            
             ! ALLOCATION
-            allocate(ct(nn))
-            allocate(ww(nn))
-            allocate(dd(nn,nn))
-            allocate(dxdx(nn))
-            allocate(dxdy(nn))
-            allocate(dydx(nn))
-            allocate(dydy(nn))
-            allocate(fx(nn,nn))
-            allocate(fy(nn,nn))
+            allocate(ct(nn),ww(nn),dd(nn,nn))
+            allocate(dxdx(nn),dxdy(nn),dydx(nn),dydy(nn))
+            allocate(fx(nn,nn),fy(nn,nn))
             allocate(dstrain(3,nn,nn))
             ! INITIALIZATION
             call lgl(nn,ct,ww,dd)
             ! LOOP OVER GLL
-            ux = 0.0d0
-            uy = 0.0d0
-            duxdx = 0.d0
-            duxdy = 0.d0
-            duydx = 0.d0
-            duydy = 0.d0
-            fx = 0.d0
-            fy = 0.d0
             dxdx = 0.d0
             dxdy = 0.d0
             dydx = 0.d0
             dydy = 0.d0
+            !
+            ux = 0.0d0
+            uy = 0.0d0
+            !
+            duxdx = 0.d0
+            duxdy = 0.d0
+            duydx = 0.d0
+            duydy = 0.d0
+            !
+            sxx = 0.d0
+            syy = 0.d0
+            szz = 0.d0
+            sxy = 0.d0
+            !
+            fx = 0.d0
+            fy = 0.d0
+            !
             dstrain(:,:,:) = 0.d0
+            !
             do j = 1,nn
                 do i = 1,nn
                     is = nn*(j -1) +i
@@ -482,6 +469,7 @@ module nonlinear2d
                     uy(i,j) = displ(in+nnt)
                 enddo
             enddo
+            
             ! MAKE DERIVATIVES
             call MAKE_DERIVATIVES(alfa1,alfa2,beta1,beta2,gamma1,gamma2,nn,ct,&
                 dxdx,dxdy,dydx,dydy)
@@ -497,60 +485,109 @@ module nonlinear2d
             enddo
 
             return
+        end subroutine ALLOINIT_LOC_EL
+        
+        !****************************************************************************
+        ! ALLOCATE LOCAL VARIABLES (NONLINEAR CASE)
+        !****************************************************************************
+        
+        subroutine ALLOINIT_LOC(ie,nnt,cs,cs_nnz,nn,ct,ww,dd,dxdx,dxdy,dydx,dydy,dstrain,dstrial, &
+            fx,fy,displ,alfa1,alfa2,beta1,beta2,gamma1,gamma2,lambda,mu)
+            !
+            implicit none    
+            ! intent IN
+            integer*4,                              intent(in)      :: ie,nnt,cs_nnz,nn
+            integer*4, dimension(0:cs_nnz),         intent(in)      :: cs
+            real*8, dimension(2*nnt),               intent(in)      :: displ
+            real*8, dimension(nn,nn),               intent(in)      :: lambda,mu
+            real*8,    intent(in)                                   :: alfa1,beta1,gamma1
+            real*8,    intent(in)                                   :: alfa2,beta2,gamma2 
+            ! intent OUT 
+            real*8, dimension(:),     allocatable, intent(out)      :: ct,ww
+            real*8, dimension(:),     allocatable, intent(out)      :: dxdx,dydy,dxdy,dydx
+            real*8, dimension(:,:),   allocatable, intent(out)      :: dd,fx,fy
+            real*8, dimension(:,:,:), allocatable, intent(out)      :: dstrain
+            real*8, dimension(:,:,:), allocatable, intent(out)      :: dstrial
+            !
+            real*8,     dimension(nn,nn)                            :: duxdx,duxdy,duydx,duydy
+            real*8,     dimension(nn,nn)                            :: ux,uy,sxx,syy,szz,sxy
+            integer*4                                               :: i,j,is,in
+            
+            ! ALLOCATION
+            allocate(ct(nn),ww(nn),dd(nn,nn))
+            allocate(dxdx(nn),dxdy(nn),dydx(nn),dydy(nn))
+            allocate(fx(nn,nn),fy(nn,nn))
+            allocate(dstrain(3,nn,nn))
+            allocate(dstrial(4,nn,nn))
+            ! INITIALIZATION
+            call lgl(nn,ct,ww,dd)
+            ! LOOP OVER GLL
+            dxdx = 0.d0
+            dxdy = 0.d0
+            dydx = 0.d0
+            dydy = 0.d0
+            !
+            ux = 0.0d0
+            uy = 0.0d0
+            !
+            duxdx = 0.d0
+            duxdy = 0.d0
+            duydx = 0.d0
+            duydy = 0.d0
+            !
+            sxx = 0.d0
+            syy = 0.d0
+            szz = 0.d0
+            sxy = 0.d0
+            !
+            fx = 0.d0
+            fy = 0.d0
+            !
+            dstrain(:,:,:) = 0.d0
+            dstrial(:,:,:) = 0.d0
+            !
+            do j = 1,nn
+                do i = 1,nn
+                    is = nn*(j -1) +i
+                    in = cs(cs(ie -1) + is)
+                    ux(i,j) = displ(in)
+                    uy(i,j) = displ(in+nnt)
+                enddo
+            enddo
+            
+            ! MAKE DERIVATIVES
+            call MAKE_DERIVATIVES(alfa1,alfa2,beta1,beta2,gamma1,gamma2,nn,ct,&
+                dxdx,dxdy,dydx,dydy)
+             
+            ! MAKE STRAIN
+            call MAKE_STRAIN(nn,dd,dxdx,dxdy,dydx,dydy,ux,uy,duxdx,duxdy,duydx,duydy)
+            do j = 1,nn
+                do i = 1,nn
+                    dstrain(1,i,j) = duxdx(i,j)
+                    dstrain(2,i,j) = duydy(i,j)
+                    dstrain(3,i,j) = duxdy(i,j)+duydx(i,j)
+                enddo
+            enddo
+
+            ! MAKE STRESS
+            call MAKE_STRESS(nn,lambda,mu,duxdx,duxdy,duydx,duydy,sxx,syy,szz,sxy)
+            do j = 1,nn
+                do i = 1,nn
+                    dstrial(1,i,j) = sxx(i,j)
+                    dstrial(2,i,j) = syy(i,j)
+                    dstrial(3,i,j) = szz(i,j)
+                    dstrial(4,i,j) = sxy(i,j)
+                enddo
+            enddo
+
+            return
         end subroutine ALLOINIT_LOC
-        
-        !****************************************************************************
-        ! COMPUTE ELEMENT-WISE STRAIN TENSOR
-        !****************************************************************************
-        
-!        subroutine MAKE_STRAIN_LOC(nn,dd,ux,uy,dxdx,dxdy,dydx,dydy,dstrain)
-!            ! 
-!            implicit none
-!            ! intent IN
-!            integer*4, intent(in)                       :: nn
-!            real*8, dimension(nn),    intent(in)        :: dxdx,dxdy,dydx,dydy
-!            real*8, dimension(nn,nn), intent(in)        :: dd,ux,uy
-!            ! intent INOUT
-!            real*8, dimension(3,nn,nn), intent(inout)   :: dstrain
-!            real*8                                      :: t1ux,t1uy,t2ux,t2uy
-!            real*8                                      :: t1fx,t1fy,t2fx,t2fy,det_j
-!            !
-!            integer*4                                   :: ip,iq,il,im
-!            ! COMPUTE STRAIN
-!            do iq = 1,nn
-!                do ip = 1,nn
-!                    t1ux = 0.d0
-!                    t1uy = 0.d0
-!                    t2ux = 0.d0
-!                    t2uy = 0.d0
-!                    
-!                    det_j = dxdx(iq)*dydy(ip)-dxdy(ip)*dydx(iq)
-!                    
-!                    do il = 1,nn
-!                       t1ux = t1ux + ux(il,iq) * dd(ip,il)
-!                       t1uy = t1uy + uy(il,iq) * dd(ip,il)
-!                    enddo
-!
-!                    do im = 1,nn
-!                       t2ux = t2ux + ux(ip,im) * dd(iq,im)
-!                       t2uy = t2uy + uy(ip,im) * dd(iq,im)
-!                    enddo
-!                    dstrain(1,ip,iq) = ( 1.d0 / det_j) * ((dydy(ip) * t1ux) - (dydx(iq) * t2ux))
-!                    dstrain(2,ip,iq) = (-1.d0 / det_j) * ((dxdy(ip) * t1uy) - (dxdx(iq) * t2uy))
-!                    dstrain(3,ip,iq) = ( 1.d0 / det_j) * ((dydy(ip) * t1uy) - (dydx(iq) * t2uy))
-!                    dstrain(3,ip,iq) = dstrain(3,ip,iq)+(-1.d0 / det_j) * &
-!                        ((dxdy(ip) * t1ux) - (dxdx(iq) * t2ux))
-!                enddo
-!            enddo
-!            !
-!            return
-!        end subroutine MAKE_STRAIN_LOC
         
         !****************************************************************************
         ! DEALLOCATE LOCAL VARIABLES
         !****************************************************************************
         
-        subroutine DEALLOCATE_LOC(ct,ww,dd,dxdx,dxdy,dydx,dydy,dstrain,fx,fy)
+        subroutine DEALLOCATE_LOC(ct,ww,dd,dxdx,dxdy,dydx,dydy,dstrain,dstrial,fx,fy)
             !
             implicit none    
             ! intent INOUT 
@@ -558,6 +595,7 @@ module nonlinear2d
             real*8,     dimension(:),  allocatable, intent(inout) :: dxdx,dydy,dxdy,dydx
             real*8,     dimension(:,:),allocatable, intent(inout) :: dd,fx,fy
             real*8,     dimension(:,:,:), allocatable, intent(inout) :: dstrain
+            real*8,     dimension(:,:,:), allocatable, intent(inout) :: dstrial
             ! DEALLOCATION
             deallocate(ct)
             deallocate(ww)
@@ -569,6 +607,7 @@ module nonlinear2d
             deallocate(fx)
             deallocate(fy)
             deallocate(dstrain)
+            deallocate(dstrial)
             !
             return
         end subroutine DEALLOCATE_LOC
@@ -590,31 +629,6 @@ module nonlinear2d
             return
         end subroutine STIFF_MATRIX
 
-        !****************************************************************************
-        ! COMPUTE STRESS STATE
-        !****************************************************************************
-        
-        subroutine MAKE_STRESS_LOC(lambda,mu,dE,dS)
-            !
-            implicit none
-            ! input IN
-            real*8, intent(in)                  :: lambda,mu
-            real*8, intent(in), dimension(4)    :: dE
-            ! input INOUT
-            real*8, intent(inout), dimension(4) :: dS
-            !
-            real*8, dimension(4,4)              :: DEL
-            integer*4                           :: ip 
-            ! STIFFNESS MATRIX (PLANE STRAIN VERSION)
-            call STIFF_MATRIX(lambda,mu,DEL)
-            ! COMPUTE STRESS 
-            do ip=1,4
-                dS(ip) = DEL(ip,1)*dE(1)+DEL(ip,2)*dE(2)+DEL(ip,3)*dE(3)+DEL(ip,4)*dE(4)
-            enddo
-            return
-            !
-        end subroutine MAKE_STRESS_LOC
-        
         !****************************************************************************
         ! MISES YIELDING LOCUS AND GRADIENT
         !****************************************************************************
@@ -719,14 +733,6 @@ module nonlinear2d
             call mises_yld_locus(stress1,center,radius,syld,FT,gradFT)
             checkload=sum(gradFS*dtrial)/sum(gradFS**2)/sum(dtrial**2)
            
-!            if (FS*FT.lt.0.d0) then
-!                write(*,*) ""
-!                write(*,*) "FS, gradFS :",FS,gradFS
-!                write(*,*) "FT, gradFT :",FT,gradFT
-!                write(*,*) ""
-!                read(*,*)
-!            endif
-
             if (abs(FS).le.FTOL) then
                 if (checkload.ge.-LTOL) then
                     alpha_epl = 0d0
@@ -749,13 +755,6 @@ module nonlinear2d
                     st_elp    = .true.
                 end if
             elseif (FS.gt.FTOL) then
-                write(*,*) 'ERROR: FS: ',FS,'>',FTOL,'!!!!'
-                write(*,*) 'stress0: ',stress0
-                write(*,*) 'dtrial: ',dtrial
-                write(*,*) 'center: ',center
-                write(*,*) 'syld: ',syld
-                write(*,*) 'glls: ',ip,iq
-                stop
                 alpha_epl  = 0d0
                 st_elp = .true.
             end if
@@ -930,7 +929,6 @@ module nonlinear2d
                 end do
             end do
             dPlastMult = max(0.0d0,dPlastMult/(hard+temp_vec))
-
         end subroutine compute_plastic_modulus
 
 
@@ -1096,7 +1094,6 @@ module nonlinear2d
 
             if (FM.gt.FTOL) then
                 write(*,*) "WARNING: F>TOL"
-                read(*,*)
             endif
         end subroutine gotoFpegasus
 
@@ -1173,7 +1170,7 @@ module seismic
             real*8,     dimension(:),  allocatable      :: dxdx,dydy,dxdy,dydx
             real*8,     dimension(:,:),allocatable      :: dd,det_j,fxs,fys
             real*8,     dimension(:,:),allocatable      :: sxxs,syys,szzs,sxys
-            real*8,     dimension(:,:,:), allocatable   :: dstrain
+            real*8,     dimension(:,:,:), allocatable   :: dstrain,dstrial
             real*8                                      :: t1ux,t1uy,t2ux
             real*8                                      :: t2uy,t1fx,t1fy,t2fx,t2fy
             integer*4                                   :: ie,ip,iq,il,im,nn,is,in
@@ -1184,9 +1181,8 @@ module seismic
                 nn = sdeg_mat(im)+1
                 
                 ! ALLOCATION/INITIALIZATION LOCAL VARIABLES 
-                call ALLOINIT_LOC(ie,nnt,cs,cs_nnz,nn,ct,ww,dd,dxdx,dxdy,dydx,dydy,dstrain, &
+                call ALLOINIT_LOC_EL(ie,nnt,cs,cs_nnz,nn,ct,ww,dd,dxdx,dxdy,dydx,dydy,dstrain, &
                     fxs,fys,displ,alfa1(ie),alfa2(ie),beta1(ie),beta2(ie),gamma1(ie),gamma2(ie))
-                
                 allocate(sxxs(nn,nn))
                 allocate(syys(nn,nn))
                 allocate(szzs(nn,nn))
@@ -1202,7 +1198,7 @@ module seismic
                             check_node_sism,check_dist_node_sism,length_cns,ie,facsmom, &
                             nl_sism,func_type,func_indx,func_data,nf,tt1, &
                             nfunc_data,tag_func)
-                        call MAKE_INTERNAL_FORCE_EL(nn,ww,dd,dxdx,dxdy,dydx,dydy,&
+                        call MAKE_INTERNAL_FORCE(nn,ww,dd,dxdx,dxdy,dydx,dydy,&
                             sxxs,syys,sxys,fxs,fys)
                     enddo
                 enddo
@@ -1561,8 +1557,7 @@ module write_output
                         lambda_el = prop_mat(im,2)
                         mu_el     = prop_mat(im,3)
                         
-                        call MAKE_STRESS(lambda_el,mu_el,nn,     &
-                            duxdx_el,duxdy_el,duydx_el,duydy_el, &
+                        call MAKE_STRESS(nn,lambda_el,mu_el,duxdx_el,duxdy_el,duydx_el,duydy_el, &
                             sxx_el,syy_el,szz_el,sxy_el)
                         do jj=1,nn
                             do ii=1,nn
