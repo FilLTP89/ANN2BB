@@ -4,9 +4,9 @@ module nonlinear2d
     !
     implicit none
     !
-    real*8, parameter :: FTOL = 0.010000000000d0
-    real*8, parameter :: LTOL = 0.010000000000d0
-    real*8, parameter :: STOL = 0.010000000000d0
+    real*8, parameter :: FTOL = 0.0010000000000d0
+    real*8, parameter :: LTOL = 0.0010000000000d0
+    real*8, parameter :: STOL = 0.0010000000000d0
     !
     contains
         
@@ -57,14 +57,20 @@ module nonlinear2d
                     fx,fy,displ,alfa1(ie),alfa2(ie),beta1(ie),beta2(ie),gamma1(ie),gamma2(ie),&
                     snl(ie)%lambda,snl(ie)%mu)
                 
-                dstrain(:,:,:) = dstrain(:,:,:) - snl(ie)%strain(:,:,:)
+!                dstrain(:,:,:) = dstrain(:,:,:) - snl(ie)%strain(:,:,:)
+!                dstrial(:,:,:) = dstrial(:,:,:) - snl(ie)%stress(:,:,:)
+                snl(ie)%strain(:,:,:) = snl(ie)%strain(:,:,:) + dstrain(:,:,:) 
                 !*********************************************************************************
                 ! COMPUTE STRESS
                 !*********************************************************************************
                 
                 do iq = 1,nn
                     do ip = 1,nn
-                        
+                        write(*,*) "=================================="
+                        write(*,*) "STRESS N: ",SNL(IE)%STRESS(:,IP,IQ)
+                        write(*,*) "STRAIN N: ",SNL(IE)%STRAIN(:,IP,IQ)
+                        write(*,*) "CENTER N: ",SNL(IE)%CENTER(:,IP,IQ)
+                        write(*,*) "STRIAL N: ",DSTRIAL(:,IP,IQ) 
                         ! STARTING POINT
                         stress_ = snl(ie)%stress(:,ip,iq)
                         center_ = snl(ie)%center(:,ip,iq)
@@ -90,8 +96,8 @@ module nonlinear2d
                         ! CHECK PLASTICITY
                         call check_plasticity(dstrial_,stress_,center_,radius_,&
                             syld_,st_epl,alpha_epl,ip,iq,FS)
-                        WRITE(*,*) "ALPHA",alpha_epl
-                        
+                        WRITE(*,*) "ALPHA: ",alpha_epl
+                        write(*,*) "FS: ",FS 
                         ! PLASTIC CORRECTION
                         if (st_epl) then
                             dstrain_ = (1.d0-alpha_epl)*dstrain_
@@ -99,23 +105,22 @@ module nonlinear2d
                             call plastic_corrector(dstrain_,dstrial_,center_,radius_,syld_,&
                                 biso_,rinf_,ckin_,kkin_,mu_,lambda_,dpstrain_,ie,FS)
                         endif
+                        write(*,*) "STRIAL N: ",DSTRIAL_ 
                         
                         ! STRESS VECTOR
-                        snl(ie)%stress(:,ip,iq) = dstrial_
-                        ! STRAIN VECTOR
-                        snl(ie)%strain(:,ip,iq) = snl(ie)%strain(:,ip,iq) + &
-                            (/dstrain_(1:2),dstrain_(4)/)
+                        snl(ie)%stress(:,ip,iq) = dstrial_(:)
+                        ! CENTER
+                        snl(ie)%center(:,ip,iq) = center_(:)
+                        ! RADIUS
+                        snl(ie)%radius(ip,iq)   = radius_
                         ! PLASTIC STRAIN VECTOR
                         snl(ie)%plastic_strain(:,ip,iq) = snl(ie)%plastic_strain(:,ip,iq) + &
                             (/dpstrain_(1:2),dpstrain_(4)/)
-                        ! CENTER
-                        snl(ie)%center(:,ip,iq) = center_
-                        ! RADIUS
-                        snl(ie)%radius(ip,iq)   = radius_
                         
                         write(*,*) "STRESS N+1: ",SNL(IE)%STRESS(:,IP,IQ)
                         write(*,*) "STRAIN N+1: ",SNL(IE)%STRAIN(:,IP,IQ)
                         write(*,*) "CENTER N+1: ",SNL(IE)%CENTER(:,IP,IQ)
+                        write(*,*) "=================================="
 
                     enddo
                 enddo
@@ -288,6 +293,7 @@ module nonlinear2d
                     st_elp    = .true.
                 end if
             elseif (FS.gt.FTOL) then
+                write(*,*) "ERROR FS>0"
                 alpha_epl  = 0d0
                 st_elp = .true.
             end if
