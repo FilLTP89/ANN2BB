@@ -20,7 +20,11 @@ dir:
 $(BUILDDIR)/$(EXEC): $(OBJS)
 	$(FC_PC) -o $@ $(OBJS) $(LD_PC_FLAGS) 
 
+NONLINEAR.o : WRITE_MONITORS.o
+WRITE_MONITORS.o : NONLINEAR.o
 $(OBJS) : $(BUILDDIR)/%.o : $(SRCDIR)/%.f90 $(BUILDDIR)/MODULES.o
+$(OBJS) : $(BUILDDIR)/%.o : $(SRCDIR)/%.f90 $(BUILDDIR)/WRITE_MONITORS.o
+$(OBJS) : $(BUILDDIR)/%.o : $(SRCDIR)/%.f90 $(BUILDDIR)/NONLINEAR.o
 	$(FC_PC) $(FC_PC_FLAGS) $< -o $@
 
 # Make clean instructions

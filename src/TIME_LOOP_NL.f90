@@ -627,7 +627,7 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
             !
             call MAKE_SEISMIC_FORCES(nnt,nm,ne,nf,cs_nnz,cs,sdeg_mat,nfunc_data,nl_sism,length_cns,&
             check_node_sism,check_dist_node_sism,func_data,func_type,tag_func,func_indx,facsmom,tt1,&
-            snl,alfa1,alfa2,beta1,beta2,gamma1,gamma2,u1,mvec,sism,fe)
+            alfa1,alfa2,beta1,beta2,gamma1,gamma2,u1,mvec,sism,fe)
             ! 
             call system_clock(COUNT=clock_finish)
             time_fe = time_fe+float(clock_finish - clock_start) / float(clock(2))
