@@ -57,8 +57,8 @@ module nonlinear2d
                     fx,fy,displ,alfa1(ie),alfa2(ie),beta1(ie),beta2(ie),gamma1(ie),gamma2(ie),&
                     snl(ie)%lambda,snl(ie)%mu)
                 
-!                dstrain(:,:,:) = dstrain(:,:,:) - snl(ie)%strain(:,:,:)
-!                dstrial(:,:,:) = dstrial(:,:,:) - snl(ie)%stress(:,:,:)
+                dstrain(:,:,:) = dstrain(:,:,:) - snl(ie)%strain(:,:,:)
+                dstrial(:,:,:) = dstrial(:,:,:) - snl(ie)%stress(:,:,:)
                 snl(ie)%strain(:,:,:) = snl(ie)%strain(:,:,:) + dstrain(:,:,:) 
                 !*********************************************************************************
                 ! COMPUTE STRESS
@@ -68,9 +68,6 @@ module nonlinear2d
                     do ip = 1,nn
                         write(*,*) "=================================="
                         write(*,*) "STRESS N: ",SNL(IE)%STRESS(:,IP,IQ)
-                        write(*,*) "STRAIN N: ",SNL(IE)%STRAIN(:,IP,IQ)
-                        write(*,*) "CENTER N: ",SNL(IE)%CENTER(:,IP,IQ)
-                        write(*,*) "STRIAL N: ",DSTRIAL(:,IP,IQ) 
                         ! STARTING POINT
                         stress_ = snl(ie)%stress(:,ip,iq)
                         center_ = snl(ie)%center(:,ip,iq)
@@ -97,7 +94,6 @@ module nonlinear2d
                         call check_plasticity(dstrial_,stress_,center_,radius_,&
                             syld_,st_epl,alpha_epl,ip,iq,FS)
                         WRITE(*,*) "ALPHA: ",alpha_epl
-                        write(*,*) "FS: ",FS 
                         ! PLASTIC CORRECTION
                         if (st_epl) then
                             dstrain_ = (1.d0-alpha_epl)*dstrain_
@@ -118,8 +114,6 @@ module nonlinear2d
                             (/dpstrain_(1:2),dpstrain_(4)/)
                         
                         write(*,*) "STRESS N+1: ",SNL(IE)%STRESS(:,IP,IQ)
-                        write(*,*) "STRAIN N+1: ",SNL(IE)%STRAIN(:,IP,IQ)
-                        write(*,*) "CENTER N+1: ",SNL(IE)%CENTER(:,IP,IQ)
                         write(*,*) "=================================="
 
                     enddo
