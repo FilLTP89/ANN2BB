@@ -114,9 +114,9 @@ subroutine ALLOINIT_NL_ALL(ne,sdeg_mat,nm,nnt,cs_nnz,cs,prop_mat,u1,u2,vel,acc,v
         allocate(disout%stress(1:4,nnt))
         disout%stress(:,:) = 0.d0
     endif
-    if (option_out_var(5)==1) then
-        allocate(disout%strain(1:3,nnt))
-        allocate(disout%plastic_strain(1:3,nnt))
+    if (option_out_var(5).gt.0) then
+        allocate(disout%strain(3,nnt))
+        allocate(disout%plastic_strain(3,nnt))
         disout%strain(:,:) = 0.d0
         disout%plastic_strain(:,:) = 0.d0
     endif

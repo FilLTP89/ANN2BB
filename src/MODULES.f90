@@ -254,8 +254,10 @@ end module qsort_c_module
 
 
 module seismic
-    
+    use fields
+    !    
     implicit none
+    !
     contains
         
         subroutine MAKE_SEISMIC_FORCES(nnt,nm,ne,nf,cs_nnz,cs,sdeg_mat,nfunc_data,nl_sism,length_cns,&
@@ -330,87 +332,6 @@ module seismic
                 enddo
             enddo
     end subroutine 
-    
-    !****************************************************************************
-    ! ALLOCATE LOCAL VARIABLES (LINEAR CASE)
-    !****************************************************************************
-        
-    subroutine ALLOINIT_LOC_EL(ie,nnt,cs,cs_nnz,nn,ct,ww,dd,dxdx,dxdy,dydx,dydy,dstrain, &
-        fx,fy,displ,alfa1,alfa2,beta1,beta2,gamma1,gamma2)
-        !
-        implicit none    
-        ! intent IN
-        integer*4,                              intent(in)      :: ie,nnt,cs_nnz,nn
-        integer*4, dimension(0:cs_nnz),         intent(in)      :: cs
-        real*8, dimension(2*nnt),               intent(in)      :: displ
-        real*8,    intent(in)                                   :: alfa1,beta1,gamma1
-        real*8,    intent(in)                                   :: alfa2,beta2,gamma2 
-        ! intent OUT 
-        real*8, dimension(:),     allocatable, intent(out)      :: ct,ww
-        real*8, dimension(:),     allocatable, intent(out)      :: dxdx,dydy,dxdy,dydx
-        real*8, dimension(:,:),   allocatable, intent(out)      :: dd,fx,fy
-        real*8, dimension(:,:,:), allocatable, intent(out)      :: dstrain
-        !
-        real*8,     dimension(nn,nn)                            :: duxdx,duxdy,duydx,duydy
-        real*8,     dimension(nn,nn)                            :: ux,uy,sxx,syy,szz,sxy
-        integer*4                                               :: i,j,is,in
-        
-        ! ALLOCATION
-        allocate(ct(nn),ww(nn),dd(nn,nn))
-        allocate(dxdx(nn),dxdy(nn),dydx(nn),dydy(nn))
-        allocate(fx(nn,nn),fy(nn,nn))
-        allocate(dstrain(3,nn,nn))
-        ! INITIALIZATION
-        call lgl(nn,ct,ww,dd)
-        ! LOOP OVER GLL
-        dxdx = 0.d0
-        dxdy = 0.d0
-        dydx = 0.d0
-        dydy = 0.d0
-        !
-        ux = 0.0d0
-        uy = 0.0d0
-        !
-        duxdx = 0.d0
-        duxdy = 0.d0
-        duydx = 0.d0
-        duydy = 0.d0
-        !
-        sxx = 0.d0
-        syy = 0.d0
-        szz = 0.d0
-        sxy = 0.d0
-        !
-        fx = 0.d0
-        fy = 0.d0
-        !
-        dstrain(:,:,:) = 0.d0
-        !
-        do j = 1,nn
-            do i = 1,nn
-                is = nn*(j -1) +i
-                in = cs(cs(ie -1) + is)
-                ux(i,j) = displ(in)
-                uy(i,j) = displ(in+nnt)
-            enddo
-        enddo
-        
-        ! MAKE DERIVATIVES
-        call MAKE_DERIVATIVES(alfa1,alfa2,beta1,beta2,gamma1,gamma2,nn,ct,&
-            dxdx,dxdy,dydx,dydy)
-         
-        ! MAKE STRAIN
-        call MAKE_STRAIN(nn,dd,dxdx,dxdy,dydx,dydy,ux,uy,duxdx,duxdy,duydx,duydy)
-        do j = 1,nn
-            do i = 1,nn
-                dstrain(1,i,j) = duxdx(i,j)
-                dstrain(2,i,j) = duydy(i,j)
-                dstrain(3,i,j) = duxdy(i,j)+duydx(i,j)
-            enddo
-        enddo
-
-        return
-    end subroutine ALLOINIT_LOC_EL
 end module seismic
 !! mode: f90
 !! show-trailing-whitespace: t

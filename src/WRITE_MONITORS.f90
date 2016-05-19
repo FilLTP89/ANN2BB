@@ -1,16 +1,15 @@
 module write_output
     !
-    use nonlinear2d
+    use fields
     !
     implicit none
     !
-    type nodepatched
-        ! nl stored variables
-        real*8, dimension(:,:), allocatable    :: stress
-        real*8, dimension(:,:), allocatable    :: strain
-        real*8, dimension(:,:), allocatable    :: plastic_strain
-    end type nodepatched 
     contains
+        
+        !****************************************************************************
+        ! OPEN MONITOR FILE
+        !****************************************************************************
+        
         subroutine MAKE_MONITOR_FILES(nnt,nmonit,option_out_var,nnode_TOT,tagstep,&
                 unit_disp,unit_vel,unit_acc,unit_stress,unit_strain,unit_omega,unit_uDRM)
 
@@ -33,7 +32,6 @@ module write_output
             character*70                                :: file_omega 
             character*70                                :: file_uDRM
             integer*4                                   :: i 
-            
             if (nmonit.ge.1) then
                 if (option_out_var(1).eq.1) then  
                     file_disp = 'monitorXXXXX.d'  
@@ -129,9 +127,7 @@ module write_output
                     enddo
                 endif
 
-                if (option_out_var(5).eq.1) then  
-                        write(*,*) "DEBUG"
-                        read(*,*)
+                if (option_out_var(5).gt.0) then  
                     file_strain = 'monitorXXXXX.e'
                     do i = 1,nmonit
                         unit_strain(i)=400000+i
@@ -208,23 +204,29 @@ module write_output
             endif                                           !DRM Scandella 25.11.2005
             return
         end  subroutine MAKE_MONITOR_FILES
-
+        
+        !****************************************************************************
+        ! WRITE MONITORS - ELASTIC CASE
+        !****************************************************************************
+        
         subroutine WRITE_MONITOR_EL(cs_nnz,cs,ne,nm,sdeg_mat,prop_mat,nmonit,option_out_var, &
-                unit_disp,unit_vel,unit_acc,unit_strain,unit_stress,unit_omega,node_m,nnt,         &
-                tt1,dis,vel,acc,nodal_counter,alfa1,alfa2,beta1,beta2,gamma1,gamma2)
-            
+            unit_disp,unit_vel,unit_acc,unit_strain,unit_stress,unit_omega,node_m,nnt,         &
+            tt1,dis,vel,acc,nodal_counter,alfa1,alfa2,beta1,beta2,gamma1,gamma2)
+            ! 
             implicit none
+            ! intent IN
             real*8,                         intent(in)      :: tt1
             integer*4,                      intent(in)      :: nmonit,nnt,nm,ne,cs_nnz
             integer*4,  dimension(nm),      intent(in)      :: sdeg_mat
             integer*4,  dimension(0:cs_nnz),intent(in)      :: cs
-            real*8,     dimension(2*nnt) ,  intent(inout)   :: dis,vel,acc
             real*8,     dimension(nm,8)  ,  intent(in)      :: prop_mat
             real*8,     dimension(ne)    ,  intent(in)      :: alfa1,beta1,gamma1
             real*8,     dimension(ne)    ,  intent(in)      :: alfa2,beta2,gamma2 
             integer*4,  dimension(6),       intent(in)      :: option_out_var
             integer*4,  dimension(nnt),     intent(in)      :: nodal_counter
             integer*4,  dimension(nmonit),  intent(in)      :: node_m
+            ! intent INOUT
+            real*8,     dimension(2*nnt) ,  intent(inout)   :: dis,vel,acc
             integer*4,  dimension(nmonit),  intent(inout)   :: unit_disp
             integer*4,  dimension(nmonit),  intent(inout)   :: unit_vel
             integer*4,  dimension(nmonit),  intent(inout)   :: unit_acc
@@ -232,7 +234,7 @@ module write_output
             integer*4,  dimension(nmonit),  intent(inout)   :: unit_strain
             integer*4,  dimension(nmonit),  intent(inout)   :: unit_omega
             integer*4                                       :: ii,jj,i,ie,im,is,in,nn
-
+            !
             real*8, dimension(:),   allocatable :: ct,ww,dxdx_el,dxdy_el,dydx_el,dydy_el
             real*8, dimension(:,:), allocatable :: dd,ux_el,uy_el
             real*8, dimension(:,:), allocatable :: duxdx_el,duxdy_el,duydx_el,duydy_el
@@ -241,7 +243,7 @@ module write_output
             real*8, dimension(nnt)              :: sxx,syy,sxy,szz 
             real*8, dimension(nnt)              :: duxdx,duydy,duxdy,duydx
             
-           ! Displacements
+            ! Displacements
             if (option_out_var(1).eq.1) then   
                 do i = 1,nmonit
                     in = node_m(i)
@@ -339,8 +341,8 @@ module write_output
                         allocate(sxy_el(nn,nn))
                         allocate(mu_el(nn,nn))
                         allocate(lambda_el(nn,nn))
-                        lambda_el = prop_mat(im,2)
-                        mu_el     = prop_mat(im,3)
+                        lambda_el(:,:) = prop_mat(im,2)
+                        mu_el(:,:)     = prop_mat(im,3)
                         
                         call MAKE_STRESS(nn,lambda_el,mu_el,duxdx_el,duxdy_el,duydx_el,duydy_el, &
                             sxx_el,syy_el,szz_el,sxy_el)
@@ -468,6 +470,7 @@ module write_output
             integer*4                                     ::  in,i
             real*8                                        :: sxx_out,syy_out,szz_out,sxy_out
             real*8                                        :: exx_out,eyy_out,gxy_out
+            real*8                                        :: epxx_out,epyy_out,gpxy_out
             
             if (option_out_var(1).eq.1) then   
                 do i = 1,nmonit
@@ -527,7 +530,44 @@ module write_output
                     write(unit_strain(i),'(4ES16.8)') tt1,exx_out,eyy_out,gxy_out 
                 enddo
             endif
-            return
+            ! PLASTIC STRAIN OUTPUT 
+            if (option_out_var(5).eq.2) then
+
+                call UPDATE_OUT_PLASTIC_STRAIN(ne,nnt,cs_nnz,cs,nm,sdeg_mat,snl,disout)
+                do i = 1,nmonit
+                    in = node_m(i) 
+                    epxx_out = disout%plastic_strain(1,in) / nodal_counter(in)
+                    epyy_out = disout%plastic_strain(2,in) / nodal_counter(in)
+                    gpxy_out = disout%plastic_strain(3,in) / nodal_counter(in)
+                    if (dabs(disout%plastic_strain(1,in)).lt.(1.0d-99)) epxx_out=0.d0
+                    if (dabs(disout%plastic_strain(2,in)).lt.(1.0d-99)) epyy_out=0.d0
+                    if (dabs(disout%plastic_strain(3,in)).lt.(1.0d-99)) gpxy_out=0.d0
+                    write(unit_strain(i),'(4ES16.8)') tt1,epxx_out,epyy_out,gpxy_out 
+                enddo
+            endif
+            ! STRAIN-PLASTIC STRAIN OUTPUT 
+            if (option_out_var(5).eq.3) then
+
+                call UPDATE_OUT_STRAIN(ne,nnt,cs_nnz,cs,nm,sdeg_mat,snl,disout)
+                call UPDATE_OUT_PLASTIC_STRAIN(ne,nnt,cs_nnz,cs,nm,sdeg_mat,snl,disout)
+                do i = 1,nmonit
+                    in = node_m(i) 
+                    exx_out = disout%strain(1,in) / nodal_counter(in)
+                    eyy_out = disout%strain(2,in) / nodal_counter(in)
+                    gxy_out = disout%strain(3,in) / nodal_counter(in)
+                    epxx_out = disout%plastic_strain(1,in) / nodal_counter(in)
+                    epyy_out = disout%plastic_strain(2,in) / nodal_counter(in)
+                    gpxy_out = disout%plastic_strain(3,in) / nodal_counter(in)
+                    if (dabs(disout%strain(1,in)).lt.(1.0d-99)) exx_out=0.d0
+                    if (dabs(disout%strain(2,in)).lt.(1.0d-99)) eyy_out=0.d0
+                    if (dabs(disout%strain(3,in)).lt.(1.0d-99)) gxy_out=0.d0
+                    if (dabs(disout%plastic_strain(1,in)).lt.(1.0d-99)) epxx_out=0.d0
+                    if (dabs(disout%plastic_strain(2,in)).lt.(1.0d-99)) epyy_out=0.d0
+                    if (dabs(disout%plastic_strain(3,in)).lt.(1.0d-99)) gpxy_out=0.d0
+                    write(unit_strain(i),'(7F16.8)') tt1,exx_out,eyy_out,gxy_out,&
+                        epxx_out,epyy_out,gpxy_out 
+                enddo
+            endif
         end subroutine WRITE_MONITOR_NL
         !
         subroutine UPDATE_OUT_STRESS(ne,nnt,cs_nnz,cs,nm,sdeg_mat,snl,disout)
@@ -623,4 +663,3 @@ end module write_output
 !! show-trailing-whitespace: t
 !! End:
 !! vim: set sw=4 ts=8 et tw=80 smartindent : !!
-

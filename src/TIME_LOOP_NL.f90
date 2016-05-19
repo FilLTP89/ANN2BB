@@ -97,12 +97,13 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
     nnode_BD,nMDRM,tag_MDRM,val_PDRM,fun_ord,node_PDRM,glob_x,glob_y,           &
     option_out_var,test,nelem_dg,IDG_only_uv,JDG_only_uv,MDG_only_uv,nnz_dg_only_uv)    
     
+    use fields 
     use write_output
-    use nonlinear2d
     use seismic
+    use nonlinear2d
     !
     implicit none
-
+    !
     integer*4                               :: NNZ_K,NNZ_N,error,test,nelem_dg,nnz_dg_only_uv
     integer*4                               :: i,is,in,id1,id2,idt,j,jn,k,kn,iaz,jaz,kaz
     integer*4                               :: clock_start,clock_finish,start,finish
