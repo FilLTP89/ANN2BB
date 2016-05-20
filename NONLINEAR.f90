@@ -4,9 +4,9 @@ module nonlinear2d
     !
     implicit none
     !
-    real*8, parameter :: FTOL = 0.000001000000000d0
-    real*8, parameter :: LTOL = 0.000001000000000d0
-    real*8, parameter :: STOL = 0.000001000000000d0
+    real*8, parameter :: FTOL = 0.0010000000000d0
+    real*8, parameter :: LTOL = 0.0010000000000d0
+    real*8, parameter :: STOL = 0.000010000000000d0
     !
     contains
         
@@ -57,8 +57,8 @@ module nonlinear2d
                     fx,fy,displ,alfa1(ie),alfa2(ie),beta1(ie),beta2(ie),gamma1(ie),gamma2(ie),&
                     snl(ie)%lambda,snl(ie)%mu)
                 
-                dstrain(:,:,:) = dstrain(:,:,:) - snl(ie)%strain(:,:,:)
-                dstrial(:,:,:) = dstrial(:,:,:) - snl(ie)%stress(:,:,:)
+!                dstrain(:,:,:) = dstrain(:,:,:) - snl(ie)%strain(:,:,:)
+!                dstrial(:,:,:) = dstrial(:,:,:) - snl(ie)%stress(:,:,:)
                 snl(ie)%strain(:,:,:) = snl(ie)%strain(:,:,:) +dstrain(:,:,:) 
 !                snl(ie)%stress(:,:,:) = snl(ie)%stress(:,:,:) +dstrial(:,:,:) 
                 !*********************************************************************************
@@ -105,7 +105,7 @@ module nonlinear2d
                         snl(ie)%radius(ip,iq)   = radius_
                         ! PLASTIC STRAIN VECTOR
                         snl(ie)%plastic_strain(:,ip,iq) = snl(ie)%plastic_strain(:,ip,iq) + &
-                            dpstrain_(:)
+                            (/dpstrain_(1:2),dpstrain_(4)/)
                         
                     enddo
                 enddo
@@ -134,9 +134,6 @@ module nonlinear2d
             !
         end subroutine MAKE_INTERNAL_FORCES_NL
         
-        !*********************************************************************************
-        ! STIFFNESS MATRIX 
-        !*********************************************************************************
         
         subroutine STIFF_MATRIX(lambda,mu,DEL)
             implicit none
@@ -146,16 +143,11 @@ module nonlinear2d
             real*8, intent(out), dimension(4,4) :: DEL
             !
             DEL(:,:) = 0.d0
-            DEL(1,1) = lambda+2*mu
-            DEL(2,2) = lambda+2*mu
-            DEL(3,3) = lambda+2*mu
+            DEL(1,1) = 2*mu
+            DEL(2,2) = 2*mu
+            DEL(3,3) = 2*mu
             DEL(4,4) = mu
-            DEL(1,2) = lambda
-            DEL(1,3) = lambda
-            DEL(2,1) = lambda
-            DEL(2,3) = lambda
-            DEL(3,1) = lambda
-            DEL(3,2) = lambda
+            DEL(1:3,1:3) = DEL(1:3,1:3) + lambda
             !
             return
         end subroutine STIFF_MATRIX
@@ -164,29 +156,27 @@ module nonlinear2d
         ! MISES YIELDING LOCUS AND GRADIENT
         !****************************************************************************
 
-        subroutine mises_yld_locus(stress, center, radius, syld, FM, gradFM)
+        subroutine mises_yld_locus(stress, center, radius, syld, FM, gradF)
             ! 
             implicit none
             ! intent IN
             real*8,               intent(in)    :: radius,syld
             real*8, dimension(4), intent(in)    :: stress,center
             ! intent OUT
-            real*8, dimension(4), intent(out)   :: gradFM
+            real*8, dimension(4), intent(out)   :: gradF
             real*8,               intent(out)   :: FM
             !
+            real*8, dimension(4), parameter     :: A = (/1.0,1.0,1.0,2.0/)
             real*8, dimension(4)                :: dev
             real*8                              :: tau_eq
             integer*4                           :: k
             ! COMPUTE TENSOR COMPONENTS 
             call tensor_components (stress, dev)
             ! COMPUTE MISES FUNCTION
-            call tau_mises(dev-center,tau_eq)
-            FM = tau_eq - syld - radius
+            call tau_mises(dev-center, tau_eq)
+            FM = tau_eq-syld-radius
             ! COMPUTE MISES FUNCTION GRADIENT
-            gradFM(1) = 1.5*(dev(1)-center(1))/tau_eq
-            gradFM(2) = 1.5*(dev(2)-center(2))/tau_eq
-            gradFM(3) = 1.5*(dev(3)-center(3))/tau_eq
-            gradFM(4) = 3.0*(dev(4)-center(4))/tau_eq
+            gradF = 1.5d0*A*(dev-center)/tau_eq
             !  
             return
             !
@@ -196,22 +186,21 @@ module nonlinear2d
         ! OCTAHEDRAL SHEAR STRESS
         !****************************************************************************
         
-        subroutine tau_mises(dev,tau_eq)
+        subroutine tau_mises(stress,tau_eq)
             !
             implicit none
             ! intent IN
-            real*8, dimension(4), intent(in)    :: dev
+            real*8, dimension(4), intent(in)    :: stress
             ! intent OUT
             real*8,               intent(out)   :: tau_eq
             !
+            real*8, dimension(4), parameter     :: A = (/1.0,1.0,1.0,2.0/) 
             integer*4                           :: k
-            
             ! COMPUTE OCTAHEDRAL SHEAR STRESS 
-            
-            tau_eq = dev(1)**2 + &
-                     dev(2)**2 + &
-                     dev(3)**2 + &
-                     2*dev(4)**2
+            tau_eq = 0.0d0
+            do k=1,4
+                tau_eq = tau_eq+A(k)*(stress(k)**2)
+            end do
             tau_eq = sqrt(1.5*tau_eq)
             !
             return
@@ -232,11 +221,9 @@ module nonlinear2d
             !
             real*8                              :: press 
             !
-            press = (stress(1) + stress(2) + stress(3))*0.333333333333333333d0
-            dev(1) = stress(1) - press
-            dev(2) = stress(2) - press
-            dev(3) = stress(3) - press
-            dev(4) = stress(4)
+            dev = stress
+            press = sum(stress(1:3))*0.333333333333333333d0
+            dev(1:3) = dev(1:3)-press
             !
             return
             !
@@ -263,54 +250,37 @@ module nonlinear2d
             real*8                                  :: FS,FT,checkload
             real*8, dimension(4)                    :: gradFS, gradFT, stress1
             !
-            
-            ! PREDICTION STRESS
             stress1= dtrial+stress0
-            
-            ! CHECK MISES FUNCTION
             call mises_yld_locus(stress0,center,radius,syld,FS,gradFS)
             call mises_yld_locus(stress1,center,radius,syld,FT,gradFT)
-            
-            ! CHECK LOAD DIRECTION 
             checkload=sum(gradFS*dtrial)/sum(gradFS**2)/sum(dtrial**2)
-            
-            ! CHECK PLASTICITY 
-            if (abs(FS).le.FTOL) then ! FS = 0
-                !
-                if (checkload.ge.-LTOL) then ! PLASTIC LOADING
+           
+            if (abs(FS).le.FTOL) then
+                if (checkload.ge.-LTOL) then
                     alpha_epl = 0.0d0
                     st_elp    = .true.
-
-                else ! GENERALIZED UNLOADING
-                    
-                    if (FT.lt.-FTOL) then ! ELASTIC UNLOADING
+                else
+                    if (FT.lt.-FTOL) then
                         alpha_epl = 1.0d0
                         st_elp    = .false.
-                    
-                    elseif(FT.gt.FTOL) then ! PLASTIC UNLOADING
+                    elseif(FT.gt.FTOL) then
                         call gotoFpegasus(stress0,dtrial,center,radius,syld,10,alpha_epl)
                         st_elp    = .true.
                     endif
-                
                 end if
-
-            elseif (FS.lt.-FTOL) then ! FS<0
-
-                if (FT.le.FTOL) then ! ELASTIC LOADING
+            elseif (FS.lt.-FTOL) then
+                if (FT.le.FTOL) then
                     alpha_epl = 1.0d0
                     st_elp    = .false.
-
-                else ! ELASTO-PLASTIC LOADING
+                else
                     call gotoFpegasus(stress0,dtrial,center,radius,syld,1,alpha_epl)
                     st_elp    = .true.
                 end if
-
             elseif (FS.gt.FTOL) then
                 write(*,*) "ERROR FS>0"
                 alpha_epl  = 0.0d0
                 st_elp = .true.
             end if
-            ! ON-LOCUS STRESS STATE 
             dtrial=stress0+dtrial*alpha_epl
             call mises_yld_locus(dtrial,center,radius,syld,FS,gradFS)
         end subroutine check_plasticity
@@ -610,9 +580,7 @@ module nonlinear2d
                                 flagxit=.true.
                             else
                                 alpha0=0.0d0
-                                alpha1=1.0d0
                                 F0=Fsave
-                                write(*,*) "ERROR IN FINDING F=0 (REVERSAL)"
                             endif
                             exit
                         else
@@ -624,22 +592,23 @@ module nonlinear2d
                         exit
                     endif
                 end do
+                if (.not.flagxit) then
+                    write(*,*) "ERROR IN FINDING F=0 (REVERSAL)"
+                    alpha1=1.0d0
+                    alpha0=0.0d0
+                endif
             end if
 
             do counter0=1,10
-                alpha  = alpha1 - F1*(alpha1 - alpha0)/(F1-F0)
-                stress = start0 + alpha*dtrial
+                alpha  = alpha1-F1*(alpha1-alpha0)/(F1-F0)
+                stress = start0+alpha*dtrial
                 call mises_yld_locus(stress,center,radius,s0,FM,gradF)
                 if (abs(FM).le.FTOL) then
                     exit
                 else
-                    if (FM*F0<0) then
-                        alpha0  =   alpha1
-                        F0      =   F1
-                    else
-                        F0      =   0.5d0*F0
-                    endif
+                    alpha0  =   alpha1
                     alpha1  =   alpha
+                    F0      =   F1
                     F1      =   FM
                 endif
 
@@ -647,10 +616,6 @@ module nonlinear2d
 
             if (FM.gt.FTOL) then
                 write(*,*) "WARNING: F>TOL"
-                write(*,*) "F = ",FM
-            else
-                write(*,*) "INTERSECTION FOUND"
-                write(*,*) "F = ",FM
             endif
         end subroutine gotoFpegasus
         

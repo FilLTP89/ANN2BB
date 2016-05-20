@@ -470,7 +470,7 @@ module write_output
             integer*4                                     ::  in,i
             real*8                                        :: sxx_out,syy_out,szz_out,sxy_out
             real*8                                        :: exx_out,eyy_out,gxy_out
-            real*8                                        :: epxx_out,epyy_out,gpxy_out
+            real*8                                        :: epxx_out,epyy_out,epzz_out,gpxy_out
             
             if (option_out_var(1).eq.1) then   
                 do i = 1,nmonit
@@ -538,11 +538,13 @@ module write_output
                     in = node_m(i) 
                     epxx_out = disout%plastic_strain(1,in) / nodal_counter(in)
                     epyy_out = disout%plastic_strain(2,in) / nodal_counter(in)
-                    gpxy_out = disout%plastic_strain(3,in) / nodal_counter(in)
+                    gpxy_out = disout%plastic_strain(4,in) / nodal_counter(in)
+                    epzz_out = disout%plastic_strain(3,in) / nodal_counter(in)
                     if (dabs(disout%plastic_strain(1,in)).lt.(1.0d-99)) epxx_out=0.d0
                     if (dabs(disout%plastic_strain(2,in)).lt.(1.0d-99)) epyy_out=0.d0
-                    if (dabs(disout%plastic_strain(3,in)).lt.(1.0d-99)) gpxy_out=0.d0
-                    write(unit_strain(i),'(4ES16.8)') tt1,epxx_out,epyy_out,gpxy_out 
+                    if (dabs(disout%plastic_strain(4,in)).lt.(1.0d-99)) gpxy_out=0.d0
+                    if (dabs(disout%plastic_strain(3,in)).lt.(1.0d-99)) epzz_out=0.d0
+                    write(unit_strain(i),'(5ES16.8)') tt1,epxx_out,epyy_out,gpxy_out,epzz_out 
                 enddo
             endif
             ! STRAIN-PLASTIC STRAIN OUTPUT 
@@ -557,15 +559,17 @@ module write_output
                     gxy_out = disout%strain(3,in) / nodal_counter(in)
                     epxx_out = disout%plastic_strain(1,in) / nodal_counter(in)
                     epyy_out = disout%plastic_strain(2,in) / nodal_counter(in)
-                    gpxy_out = disout%plastic_strain(3,in) / nodal_counter(in)
+                    gpxy_out = disout%plastic_strain(4,in) / nodal_counter(in)
+                    epzz_out = disout%plastic_strain(3,in) / nodal_counter(in)
                     if (dabs(disout%strain(1,in)).lt.(1.0d-99)) exx_out=0.d0
                     if (dabs(disout%strain(2,in)).lt.(1.0d-99)) eyy_out=0.d0
                     if (dabs(disout%strain(3,in)).lt.(1.0d-99)) gxy_out=0.d0
                     if (dabs(disout%plastic_strain(1,in)).lt.(1.0d-99)) epxx_out=0.d0
                     if (dabs(disout%plastic_strain(2,in)).lt.(1.0d-99)) epyy_out=0.d0
-                    if (dabs(disout%plastic_strain(3,in)).lt.(1.0d-99)) gpxy_out=0.d0
-                    write(unit_strain(i),'(7F16.8)') tt1,exx_out,eyy_out,gxy_out,&
-                        epxx_out,epyy_out,gpxy_out 
+                    if (dabs(disout%plastic_strain(4,in)).lt.(1.0d-99)) gpxy_out=0.d0
+                    if (dabs(disout%plastic_strain(3,in)).lt.(1.0d-99)) epzz_out=0.d0
+                    write(unit_strain(i),'(8F16.8)') tt1,exx_out,eyy_out,gxy_out,&
+                        epxx_out,epyy_out,gpxy_out,epzz_out 
                 enddo
             endif
         end subroutine WRITE_MONITOR_NL

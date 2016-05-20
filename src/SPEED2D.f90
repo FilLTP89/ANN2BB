@@ -459,12 +459,11 @@ program SPEED2D
     write(*,'(A)') '*******************************************************'
     write(*,'(A)') '-------------------READING MESH FILE-------------------'
     write(*,'(A,A20)') 'Grid File : ',grid_file
-
+    
     inquire(file=grid_file,exist=filefound); 
 
     if (filefound .eqv. .FALSE.) then
         read(*,*)
-        stop
     endif
 
     call READ_DIME_GRID_EL(grid_file,nmat,tag_mat,&

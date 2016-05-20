@@ -24,9 +24,8 @@
 
 subroutine ALLOINIT_NL_ALL(ne,sdeg_mat,nm,nnt,cs_nnz,cs,prop_mat,u1,u2,vel,acc,v1,fk,fe,fd,&
     snl,option_out_var,disout,update_index_el_az,nodal_counter)  
-    ! 
-    use nonlinear2d
-    use write_output
+    !
+    use fields
     !
     implicit none
     ! intent IN
@@ -62,7 +61,7 @@ subroutine ALLOINIT_NL_ALL(ne,sdeg_mat,nm,nnt,cs_nnz,cs,prop_mat,u1,u2,vel,acc,v
         allocate(snl(ie)%stress(4,nn,nn))
         allocate(snl(ie)%strain(3,nn,nn))
         allocate(snl(ie)%center(4,nn,nn))
-        allocate(snl(ie)%plastic_strain(3,nn,nn))
+        allocate(snl(ie)%plastic_strain(4,nn,nn))
         ! initialization
         snl(ie)%lambda = prop_mat(im,2)
         snl(ie)%mu     = prop_mat(im,3)
@@ -77,7 +76,6 @@ subroutine ALLOINIT_NL_ALL(ne,sdeg_mat,nm,nnt,cs_nnz,cs,prop_mat,u1,u2,vel,acc,v
         snl(ie)%strain(:,:,:)           = 0.d0
         snl(ie)%center(:,:,:)           = 0.d0
         snl(ie)%plastic_strain(:,:,:)   = 0.d0
-
     enddo
     
     ! current displacement/velocity/acceleration vectors
@@ -116,7 +114,7 @@ subroutine ALLOINIT_NL_ALL(ne,sdeg_mat,nm,nnt,cs_nnz,cs,prop_mat,u1,u2,vel,acc,v
     endif
     if (option_out_var(5).gt.0) then
         allocate(disout%strain(3,nnt))
-        allocate(disout%plastic_strain(3,nnt))
+        allocate(disout%plastic_strain(4,nnt))
         disout%strain(:,:) = 0.d0
         disout%plastic_strain(:,:) = 0.d0
     endif
