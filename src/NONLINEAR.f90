@@ -185,7 +185,8 @@ module nonlinear2d
             ! COMPUTE MISES FUNCTION GRADIENT
             gradFM(1) = 1.5*(dev(1)-center(1))/tau_eq
             gradFM(2) = 1.5*(dev(2)-center(2))/tau_eq
-            gradFM(3) = 1.5*(dev(3)-center(3))/tau_eq
+!            gradFM(3) = 1.5*(dev(3)-center(3))/tau_eq
+            gradFM(3) = 0.d0
             gradFM(4) = 3.0*(dev(4)-center(4))/tau_eq
             !  
             return
