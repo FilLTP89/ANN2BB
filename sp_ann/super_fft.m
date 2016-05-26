@@ -17,6 +17,7 @@
 % * _vfr (frequency column vector)_
 % * _amp (FS amplitude column vector)_
 % * _ang (FS phase column vector)_
+% * _fsr_ (Fourier Complex Spectrum)
 % * _psd (Power Spectral Density column vector)_
 % * _nTm (Main Natural Period evaluated between fcut_low and fcut_high)_
 %% N.B.:

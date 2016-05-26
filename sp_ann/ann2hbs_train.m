@@ -61,51 +61,51 @@ function [varargout] = ann2hbs_train(varargin)
     %% SET-UP
     hbs = varargin{1};
     ann = varargin{2};
-    smr.mon=hbs.mon;
-    if nargin>2
-        smr.mon.cp = varargin{3};
-        smr.mon.nc = numel(smr.mon.cp);
-    end
-    
-    inn =  cell(smr.mon.nc,ann.tar.nT);
-    trs =  cell(smr.mon.nc,ann.tar.nT);
+    trs.mon = hbs.mon;
     
     %%
     % _input periods_
-    for k_ = 1:ann.inp.nT
-        idx = find(abs(hbs.mon.vTn-ann.inp.vTn(k_))<1e-8);
-        if ~isempty(idx)
-            iid(k_) = idx;
+    
+    for j_ = 1:hbs.mon.nc
+        for k_ = 1:ann.(hbs.mon.cp{j_}).inp.nT
+            idx = find(abs(hbs.mon.vTn-ann.(hbs.mon.cp{j_}).inp.vTn(k_))<1e-8);
+            if ~isempty(idx)
+                iid(k_) = idx;
+            end
         end
     end
     %%
     % _target natural periods_
-    for k_ = 1:ann.tar.nT
-        idx = find(abs(hbs.mon.vTn-ann.tar.vTn(k_))<1e-8);
-        if ~isempty(idx)
-            tid(k_) = idx;
+    for j_ = 1:hbs.mon.nc
+        for k_ = 1:ann.(hbs.mon.cp{j_}).tar.nT
+            idx = find(abs(hbs.mon.vTn-ann.(hbs.mon.cp{j_}).tar.vTn(k_))<1e-8);
+            if ~isempty(idx)
+                tid(k_) = idx;
+            end
         end
     end
     
-    for j_ = 1:smr.mon.nc
-        eval(sprintf(['psa = reshape(cell2mat(arrayfun(@(v) v{:}.psa.%s,hbs.syn,',...
-            '''UniformOutput'',0)),hbs.mon.nT,hbs.mon.na)'';'],smr.mon.cp{j_}));
-        eval(sprintf(['pgv = reshape(cell2mat(arrayfun(@(v) v{:}.pgv.%s(2),hbs.syn,',...
-            '''UniformOutput'',0)),hbs.mon.na,1);'],smr.mon.cp{j_}));
-        eval(sprintf(['pgd = reshape(cell2mat(arrayfun(@(v) v{:}.pgd.%s(2),hbs.syn,',...
-            '''UniformOutput'',0)),hbs.mon.na,1);'],smr.mon.cp{j_}));
+    inn = cell(hbs.mon.nc,1);
+    for j_ = 1:hbs.mon.nc
+        psa = reshape(cell2mat(cellfun(@(v) v.psa.(hbs.mon.cp{j_}),hbs.syn,...
+            'UniformOutput',0)),hbs.mon.na,hbs.mon.nT);
+        pgv = reshape(cell2mat(cellfun(@(v) v.pgv.(hbs.mon.cp{j_})(2),hbs.syn,...
+            'UniformOutput',0)),hbs.mon.na,1);
+        pgd = reshape(cell2mat(cellfun(@(v) v.pgd.(hbs.mon.cp{j_})(2),hbs.syn,...
+            'UniformOutput',0)),hbs.mon.na,1);
         inn{j_} = [psa(:,iid),pgv,pgd];
     end
-
+    
     %% TRAIN NETWORK
-    for j_ = 1:smr.mon.nc
+    for j_ = 1:hbs.mon.nc
         inp = log10(inn{j_});
         for i_ = 1:hbs.mon.na
             try
-                out = 10.^(sim(ann.net,inp(i_,:)'));
-                eval(sprintf('smr.syn{i_}.vTn.%s = [ann.tar.vTn;ann.inp.vTn];',smr.mon.cp{j_}));
-                eval(sprintf('smr.syn{i_}.nTn.%s = numel(smr.syn{i_}.vTn.%s);',smr.mon.cp{j_},smr.mon.cp{j_}));
-                eval(sprintf('smr.syn{i_}.psa.%s = [out(:);inn{j_}(i_,1:end-2)''];',smr.mon.cp{j_}));
+                out = 10.^(sim(ann.(hbs.mon.cp{j_}).net,inp(i_,:)'));
+                trs.syn{i_}.vTn.(hbs.mon.cp{j_}) = ...
+                    [ann.(hbs.mon.cp{j_}).tar.vTn;ann.(hbs.mon.cp{j_}).inp.vTn];
+                trs.syn{i_}.nTn.(hbs.mon.cp{j_}) = numel(trs.syn{i_}.vTn.(hbs.mon.cp{j_}));
+                trs.syn{i_}.psa.(hbs.mon.cp{j_}) = [out(:);inn{j_}(i_,1:end-2)'];
             catch
                 keyboard
             end
@@ -113,6 +113,6 @@ function [varargout] = ann2hbs_train(varargin)
     end
 
     %% OUTPUT
-    varargout{1} = smr;
+    varargout{1} = trs;
     return
 end

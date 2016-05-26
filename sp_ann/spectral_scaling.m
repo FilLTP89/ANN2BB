@@ -45,36 +45,38 @@ function [varargout] = spectral_scaling(varargin)
     % _spectral matching set up_
     nit = 5;                    % number of iterations
     obj_vfr = flip(1./tar_vTn);
-    obj_vfr(isnan(obj_vfr)) = 0.5/obj_dtm;
-    obj_nfr = numel(obj_vfr);
-    %% SPECTRAL MATCHING
-    
+    obj_vfr(~isfinite(obj_vfr)) = 0.5/obj_dtm;
+    %% SPECTRAL MATCHING    
     for i_ = 1:nit % spectral matching iterations
         %%
         % _fourier spectra_
-        [inp_vfr,obj_fsa,~,~,~,~] = super_fft(obj_dtm,obj_tha,0);
-        inp_vfr = inp_vfr(find(inp_vfr<=1/2/obj_dtm));
+        [inp_vfr,~,~,obj_fsa,~,~] = super_fft(obj_dtm,obj_tha,0);
+        
+        obj_nfs = numel(obj_fsa);
+        obj_fsa(obj_nfs+1:2*obj_nfs-1) = flip(conj(obj_fsa(1:end-1)));
         %%
         % _psa response spectra_
         [~,~,~,obj_psa,~] = newmark_sd(obj_tha,obj_dtm,tar_vTn,0.05);
         obj_psa(1) = max(abs(obj_tha));
         %%
         % _psa response spectral ratio_
-        obj_rra          = -ones(obj_nfr,1);
         obj_rra = flip(obj_psa./tar_psa);
         obj_rra(1)       = 1.;
         obj_rra = interp1(obj_vfr,obj_rra,inp_vfr,'linear');
         obj_rra(inp_vfr>=frm) = obj_psa(1)./tar_psa(1);
+        obj_rra(obj_nfs+1:2*obj_nfs-1) = flip(conj(obj_rra(1:end-1)));
         %%
         % _new (scaled) fourier spectrum_
-        obj_fsa = obj_fsa./obj_rra;
+        obj_fsa = obj_fsa./obj_rra./obj_dtm;
         %%
         % _new accelerogram
-        obj_tha = detrend(real(ifft(obj_fsa),obj_ntm,'symmetric'),'constant');
+        obj_fsa = obj_fsa(~isnan(obj_fsa));
+        obj_tha = detrend(real(ifft(obj_fsa,obj_ntm,1,'symmetric')));
+        obj_tha = obj_tha(~isnan(obj_tha));        
     end
     %%
     % _filtering
-    [obj_tha,obj_thv,obj_thd] = band_pass_filter(obj_tha,obj_dtm,lfr,hfr);
+    [obj_tha,obj_thv,obj_thd] = band_pass_filter(obj_dtm,obj_tha,lfr,hfr);
     %% OUTPUT
     varargout{1} = obj_dtm;
     varargout{2} = obj_tha;

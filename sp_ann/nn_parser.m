@@ -19,9 +19,8 @@ function [varargout] = nn_parser(varargin)
     
     %% SET-UP
     if nargin>1 % load existing ann
-        ann.fn = varargin{2};
-        load(ann.fn);
-        ann.net = net;
+        ann = load(varargin{2},'net');
+        ann.fn  = varargin{2};
     else
         % [TODO] generate ann
     end
