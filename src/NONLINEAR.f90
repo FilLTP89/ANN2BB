@@ -307,7 +307,7 @@ module nonlinear2d
                 end if
 
             elseif (FS.gt.FTOL) then
-                write(*,*) "ERROR FS>0"
+                write(*,*) "ERROR FS:",FS,">FTOL"
                 alpha_epl  = 0.0d0
                 st_elp = .true.
             end if
@@ -613,7 +613,7 @@ module nonlinear2d
                                 alpha0=0.0d0
                                 alpha1=1.0d0
                                 F0=Fsave
-                                write(*,*) "ERROR IN FINDING F=0 (REVERSAL)"
+                                write(*,*) "ERROR IN FINDING F=0 (REVERSAL)", F0
                             endif
                             exit
                         else
@@ -647,11 +647,7 @@ module nonlinear2d
             end do
 
             if (FM.gt.FTOL) then
-                write(*,*) "WARNING: F>TOL"
-                write(*,*) "F = ",FM
-            else
-                write(*,*) "INTERSECTION FOUND"
-                write(*,*) "F = ",FM
+                write(*,*) "WARNING: F=",FM,">FTOL!!!!!!"
             endif
         end subroutine gotoFpegasus
         
