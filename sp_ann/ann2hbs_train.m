@@ -36,7 +36,7 @@
 % * hbs.mon.nNy(mon.na,1) = Nyquist index    (real vector)
 % * hbs.mon.vfr(mon.na,1) = frequency vector (real cell vector)
 %%
-% * _hbs.syn(mtd.na,1)     = structure vectors (cell vector)_
+% * _hbs.syn(mtd.na,1)    = structure vectors (cell vector)_
 % * hbs.syn{i}.tha.x      = x-acceleration    (real vector)
 % * hbs.syn{i}.tha.y      = y-acceleration    (real vector)
 % * hbs.syn{i}.tha.z      = z-acceleration    (real vector)
@@ -50,7 +50,9 @@
 % * hbs.syn{i}.fsa.y = y-fourier spectrum
 % * hbs.syn{i}.fsa.z = z-fourier spectrum
 %%
-% * _ann (trained artificial neural network structure)_
+% * _ann (trained Artificial Neural Network (ANN) structure)_
+% * ann.hrz = trained ANN for horizontal components
+% * ann.vrt = trained ANN for vertical   components
 %% OUTPUT:
 % * _trs (output structure)_
 
@@ -59,8 +61,15 @@ function [varargout] = ann2hbs_train(varargin)
     %% SET-UP
     hbs = varargin{1};
     ann = varargin{2};
-    inn =  cell(hbs.mon.nc,ann.tar.nT);
-    trs =  cell(hbs.mon.nc,ann.tar.nT);
+    smr.mon=hbs.mon;
+    if nargin>2
+        smr.mon.cp = varargin{3};
+        smr.mon.nc = numel(smr.mon.cp);
+    end
+    
+    inn =  cell(smr.mon.nc,ann.tar.nT);
+    trs =  cell(smr.mon.nc,ann.tar.nT);
+    
     %%
     % _input periods_
     for k_ = 1:ann.inp.nT
@@ -78,31 +87,32 @@ function [varargout] = ann2hbs_train(varargin)
         end
     end
     
-    for j_ = 1:hbs.mon.nc
+    for j_ = 1:smr.mon.nc
         eval(sprintf(['psa = reshape(cell2mat(arrayfun(@(v) v{:}.psa.%s,hbs.syn,',...
-            '''UniformOutput'',0)),hbs.mon.nT,hbs.mon.na)'';'],hbs.mon.cp{j_}));
+            '''UniformOutput'',0)),hbs.mon.nT,hbs.mon.na)'';'],smr.mon.cp{j_}));
         eval(sprintf(['pgv = reshape(cell2mat(arrayfun(@(v) v{:}.pgv.%s(2),hbs.syn,',...
-            '''UniformOutput'',0)),hbs.mon.na,1);'],hbs.mon.cp{j_}));
+            '''UniformOutput'',0)),hbs.mon.na,1);'],smr.mon.cp{j_}));
         eval(sprintf(['pgd = reshape(cell2mat(arrayfun(@(v) v{:}.pgd.%s(2),hbs.syn,',...
-            '''UniformOutput'',0)),hbs.mon.na,1);'],hbs.mon.cp{j_}));
+            '''UniformOutput'',0)),hbs.mon.na,1);'],smr.mon.cp{j_}));
         inn{j_} = [psa(:,iid),pgv,pgd];
     end
+
     %% TRAIN NETWORK
-    
-    for j_ = 1:hbs.mon.nc
+    for j_ = 1:smr.mon.nc
         inp = log10(inn{j_});
         for i_ = 1:hbs.mon.na
             try
                 out = 10.^(sim(ann.net,inp(i_,:)'));
-                trs{j_,i_}.vTn = [ann.tar.vTn;ann.inp.vTn];
-                trs{j_,i_}.nTn = numel(trs{j_,i_}.vTn);
-                trs{j_,i_}.psa = [out(:);inn{j_}(i_,1:end-2)'];
+                eval(sprintf('smr.syn{i_}.vTn.%s = [ann.tar.vTn;ann.inp.vTn];',smr.mon.cp{j_}));
+                eval(sprintf('smr.syn{i_}.nTn.%s = numel(smr.syn{i_}.vTn.%s);',smr.mon.cp{j_},smr.mon.cp{j_}));
+                eval(sprintf('smr.syn{i_}.psa.%s = [out(:);inn{j_}(i_,1:end-2)''];',smr.mon.cp{j_}));
             catch
                 keyboard
             end
         end
     end
+
     %% OUTPUT
-    varargout{1} = trs;
+    varargout{1} = smr;
     return
 end

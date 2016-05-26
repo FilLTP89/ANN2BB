@@ -28,8 +28,8 @@ function [varargout] = nn_parser(varargin)
     %%
     % _reference natural periods (last 2 values = PGV and PGD)_
     %----------------------------------------------------------------------
-    Tc = varargin{1}; % corner period for ANN
-    switch Tc
+    TnC = varargin{1}; % corner period for ANN
+    switch TnC
         case 0.5
             inp.vTn = [0.6:0.1:1.0,1.25:0.25:5.0]';
             tar.vTn = [0,0.05,0.1:0.1:0.5]';
@@ -44,6 +44,7 @@ function [varargout] = nn_parser(varargin)
     tar.nT = numel(tar.vTn);
     ann.inp = inp;
     ann.tar = tar;
+    ann.TnC = TnC;
     %% OUTPUT
     varargout{1} = ann;
     return

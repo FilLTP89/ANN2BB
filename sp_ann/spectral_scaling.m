@@ -44,10 +44,9 @@ function [varargout] = spectral_scaling(varargin)
     %%
     % _spectral matching set up_
     nit = 5;                    % number of iterations
-    obj_nfr = tar_nTn+2;
-    obj_vfr = -ones(obj_nfr,1);
-    obj_vfr(end)     = 0.5/obj_dtm;
-    obj_vfr(2:end-1) = flip(1./tar_vTn);
+    obj_vfr = flip(1./tar_vTn);
+    obj_vfr(isnan(obj_vfr)) = 0.5/obj_dtm;
+    obj_nfr = numel(obj_vfr);
     %% SPECTRAL MATCHING
     
     for i_ = 1:nit % spectral matching iterations
@@ -62,9 +61,8 @@ function [varargout] = spectral_scaling(varargin)
         %%
         % _psa response spectral ratio_
         obj_rra          = -ones(obj_nfr,1);
+        obj_rra = flip(obj_psa./tar_psa);
         obj_rra(1)       = 1.;
-        obj_rra(end)     = obj_psa(1)./tar_psa(1);
-        obj_rra(2:end-1) = flip(obj_psa./tar_psa);
         obj_rra = interp1(obj_vfr,obj_rra,inp_vfr,'linear');
         obj_rra(inp_vfr>=frm) = obj_psa(1)./tar_psa(1);
         %%

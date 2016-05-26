@@ -29,7 +29,7 @@
 % * mon.nr = number of records        (integer)
 % * mon.cp = motion component         (integer: 1,2,3)
 % * mon.nc = number of components     (integer)
-%% 
+%%
 % * _nss    = structure of numerical simulations_
 %%
 % * _nss.mon    = structure of monitor data_

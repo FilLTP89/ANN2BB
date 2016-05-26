@@ -54,12 +54,12 @@ function [varargout] = band_pass_filter(varargin)
     if nargin>3 || nargin<3
         % BP filter definition
         [bfb,bfa] = butter(bfo,[lfr hfr]./fNy,'bandpass');
-        fprintf('\nBP FILTER: f(corner): %.2f Hz - f(cut-off): %.2f Hz\n',...
-            lfr,hfr);
+%         fprintf('\nBP FILTER: f(corner): %.2f Hz - f(cut-off): %.2f Hz\n',...
+%             lfr,hfr);
     else
         % LF filter definition
         [bfb,bfa] = butter(bfo,lfr./fNy,'high');
-        fprintf('\nLF FILTER: f(corner): %.2f Hz\n',lfr);
+%         fprintf('\nLF FILTER: f(corner): %.2f Hz\n',lfr);
     end
     
     %% PROCESSING ACCELERATION
