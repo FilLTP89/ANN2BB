@@ -2,7 +2,7 @@ function [] = GUI_nn_setup()
     %% ANN - DATABASE
     global mon ann Sann
     Sann.flag=0;
-    Sann.fn={'...';'...';'...'};
+    Sann.fn={'';'...';'...'}
     Sann.fh(1) = figure('units','pixels',...
         'position',[0 500 305 355],...
         'menubar','none',...
@@ -21,17 +21,17 @@ function [] = GUI_nn_setup()
     Sann.bg(1) = uibuttongroup(Sann.fh(1),'units','pix',...
         'pos',[5 300 295 50],'Title','Direction');
     Sann.rd(1) = uicontrol(Sann.bg(1),...
-        'style','checkbox',...
+        'style','radio',...
         'unit','pix',...
         'position',[15 5 90 40],...
         'string','X','callback',{@tp_call,Sann});
     Sann.rd(2) = uicontrol(Sann.bg(1),...
-        'style','checkbox',...
+        'style','radio',...
         'unit','pix',...
         'position',[105 5 90 40],...
         'string','Y','callback',{@tp_call,Sann});
     Sann.rd(3) = uicontrol(Sann.bg(1),...
-        'style','checkbox',...
+        'style','radio',...
         'unit','pix',...
         'position',[200 5 90 40],...
         'string','Z','callback',{@tp_call,Sann});
@@ -84,7 +84,7 @@ function [] = tp_call(varargin)
                 end
                 ann.status(2) = 1;
                 TnC = GUI_13([500 500 305 255],'CORNER PERIOD',[.01 3],0.75);
-                ann.y = nn_parser(TnC,Sann.fn{2});
+                ann.y = nn_parser(TnC,Sann.fn{1});
                 disp('-----> ANN(Y): LOADED!');
             else
                 warning('ERROR: Y COMPONENT NOT SELECTED!');
@@ -101,27 +101,23 @@ function [] = tp_call(varargin)
                 end
                 ann.status(3) = 1;
                 TnC = GUI_13([500 500 305 255],'CORNER PERIOD',[.01 3],0.75);
-                ann.z = nn_parser(TnC,Sann.fn{3});
+                ann.z = nn_parser(TnC,Sann.fn{1});
                 disp('-----> ANN(Z): LOADED!');
             else
                 warning('ERROR: Z COMPONENT NOT SELECTED!');
             end
     end
-    [outstring,newpos] = textwrap(Sann.lb(1),Sann.fn);
-    oldpos=get(Sann.lb(1),'pos');
-    oldpos(end)=newpos(end);
-    set(Sann.lb(1),'String',outstring,'Position',oldpos);
     return
 end
 
 function [] = pb_call(varargin)
-    global Sann ann
+    global Sann
     % Callback for pushbutton.
+    press_button(varargin{1});
     if varargin{1} == Sann.pb(1)
         %%
         % _exit_
         if any(ann.status)
-            ann.cp = fieldnames(ann);
             close(Sann.fh(1))  % Found the one we are looking for.
         end
     end
