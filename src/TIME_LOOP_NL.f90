@@ -613,7 +613,7 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         call system_clock(COUNT=clock_start,COUNT_RATE=clock(2))  
         ! DISPLACEMENT FORMULATION
         call MAKE_INTERNAL_FORCES_NL(nnt,ne,nm,cs_nnz,cs,sdeg_mat,snl,&
-            alfa1,alfa2,beta1,beta2,gamma1,gamma2,u1,fk,mvec)
+            alfa1,alfa2,beta1,beta2,gamma1,gamma2,v1,fk,mvec,dt)
         !
         call system_clock(COUNT=clock_finish)
         time_fk = float(clock_finish - clock_start) / float(clock(2))

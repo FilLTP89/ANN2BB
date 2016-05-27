@@ -7,9 +7,9 @@ module nonlinear2d
     real*8, parameter                   :: zero=0.d0,one=1.0d0
     real*8, parameter                   :: half=0.5d0,two=2.0d0,three=3.0d0
     !
-    real*8, parameter :: FTOL = 0.000001000000000d0
-    real*8, parameter :: LTOL = 0.000001000000000d0
-    real*8, parameter :: STOL = 0.000001000000000d0
+    real*8, parameter :: FTOL = 0.000001D0
+    real*8, parameter :: LTOL = 0.000001D0
+    real*8, parameter :: STOL = 1.0D0
     !
     real*8, parameter, dimension(4,4)   :: MM = reshape((/ &
         one , zero, zero, zero, &
@@ -34,7 +34,7 @@ module nonlinear2d
         !****************************************************************************
         
         subroutine MAKE_INTERNAL_FORCES_NL(nnt,ne,nm,cs_nnz,cs,sdeg_mat,snl,&
-            alfa1,alfa2,beta1,beta2,gamma1,gamma2,displ,fk,mvec)
+            alfa1,alfa2,beta1,beta2,gamma1,gamma2,displ,fk,mvec,dt)
             !
             implicit none
             ! intent IN
@@ -44,6 +44,7 @@ module nonlinear2d
             real*8,    intent(in), dimension(ne)        :: alfa1,beta1,gamma1
             real*8,    intent(in), dimension(ne)        :: alfa2,beta2,gamma2
             real*8,    intent(in), dimension(2*nnt)     :: displ,mvec
+            real*8,    intent(in)                       :: dt
             ! intent INOUT
             real*8,    intent(inout), dimension(2*nnt)  :: fk
             type(nl_element), intent(inout), dimension(ne) :: snl 
@@ -75,10 +76,11 @@ module nonlinear2d
                 call ALLOINIT_LOC_NL(ie,nnt,cs,cs_nnz,nn,ct,ww,dd,dxdx,dxdy,dydx,dydy,dstrain,dstrial, &
                     fx,fy,displ,alfa1(ie),alfa2(ie),beta1(ie),beta2(ie),gamma1(ie),gamma2(ie),&
                     snl(ie)%lambda,snl(ie)%mu)
-                
-                dstrain(:,:,:) = dstrain(:,:,:) - snl(ie)%strain(:,:,:)
-                dstrial(:,:,:) = dstrial(:,:,:) - snl(ie)%stress(:,:,:)
-                snl(ie)%strain(:,:,:) = snl(ie)%strain(:,:,:) +dstrain(:,:,:) 
+                    dstrain = dstrain*dt
+                    dstrial = dstrial*dt
+!                dstrain(:,:,:) = dstrain(:,:,:) - snl(ie)%strain(:,:,:)
+!                dstrial(:,:,:) = dstrial(:,:,:) - snl(ie)%stress(:,:,:)
+                snl(ie)%strain(:,:,:) = snl(ie)%strain(:,:,:) + dstrain(:,:,:)
 !                snl(ie)%stress(:,:,:) = snl(ie)%stress(:,:,:) +dstrial(:,:,:) 
                 !*********************************************************************************
                 ! COMPUTE STRESS
@@ -98,21 +100,23 @@ module nonlinear2d
                         biso_   = snl(ie)%biso(ip,iq)
                         rinf_   = snl(ie)%rinf(ip,iq)
                         
+
                         ! STRAIN INCREMENT
-                        dstrial_(:)   = 0.d0
-                        dstrain_(:)   = 0.d0
+                        dstrain_(:)   = zero
                         dstrain_(1:2) = dstrain(1:2,ip,iq)
                         dstrain_(4)   = dstrain(3,ip,iq)
-                        dpstrain_(:)  = 0.d0
+                        dpstrain_(:)  = zero
                         ! TRIAL STRESS INCREMENT
-                        dstrial_(:)    = dstrial(:,ip,iq)
-
+                        dstrial_(:)   = zero
+                        dstrial_(:)   = dstrial(:,ip,iq)
+                        
                         ! CHECK PLASTICITY
                         call check_plasticity(dstrial_,stress_,center_,radius_,&
                             syld_,st_epl,alpha_epl)
                         ! PLASTIC CORRECTION
                         if (st_epl) then
-                            dstrain_(:) = (1.d0-alpha_epl)*dstrain_(:)
+                            write(*,*) "alpha_epl",alpha_epl
+                            dstrain_(:) = (one-alpha_epl)*dstrain_(:)
                             call plastic_corrector(dstrain_,dstrial_,center_,radius_,syld_,&
                                 biso_,rinf_,ckin_,kkin_,mu_,lambda_,dpstrain_)
                         endif
@@ -202,11 +206,11 @@ module nonlinear2d
             call tau_mises(dev-center,tau_eq)
             FM = tau_eq - syld - radius
             ! COMPUTE MISES FUNCTION GRADIENT
-            gradFM(1) = 1.5*(dev(1)-center(1))/tau_eq
-            gradFM(2) = 1.5*(dev(2)-center(2))/tau_eq
+            gradFM(1) = three/two*(dev(1)-center(1))/tau_eq
+            gradFM(2) = three/two*(dev(2)-center(2))/tau_eq
 !            gradFM(3) = 1.5*(dev(3)-center(3))/tau_eq
-            gradFM(3) = 0.d0
-            gradFM(4) = 3.0*(dev(4)-center(4))/tau_eq
+            gradFM(3) = zero
+            gradFM(4) = three*(dev(4)-center(4))/tau_eq
             !  
             return
             !
@@ -259,7 +263,7 @@ module nonlinear2d
             !
             real*8                              :: I1 
             !
-            I1 = (stress(1) + stress(2) + stress(3))/three
+            I1 = dot_product(stress,m)/three
             !
             dev = stress - I1*m
             !
@@ -296,19 +300,19 @@ module nonlinear2d
             call mises_yld_locus(stress1,center,radius,syld,FT,gradFT)
             
             ! CHECK LOAD DIRECTION 
-            checkload=sum(gradFS*dtrial)/sum(gradFS**2)/sum(dtrial**2)
+            checkload = dot_product(gradFS,dtrial)/sum(gradFS**2)/sum(dtrial**2)
             
             ! CHECK PLASTICITY 
             if (abs(FS).le.FTOL) then ! FS = 0
                 !
                 if (checkload.ge.-LTOL) then ! PLASTIC LOADING
-                    alpha_epl = 0.0d0
+                    alpha_epl = zero
                     st_elp    = .true.
 
                 else ! GENERALIZED UNLOADING
                     
                     if (FT.lt.-FTOL) then ! ELASTIC UNLOADING
-                        alpha_epl = 1.0d0
+                        alpha_epl = one
                         st_elp    = .false.
                     
                     elseif(FT.gt.FTOL) then ! PLASTIC UNLOADING
@@ -321,7 +325,7 @@ module nonlinear2d
             elseif (FS.lt.-FTOL) then ! FS<0
 
                 if (FT.le.FTOL) then ! ELASTIC LOADING
-                    alpha_epl = 1.0d0
+                    alpha_epl = one
                     st_elp    = .false.
 
                 else ! ELASTO-PLASTIC LOADING
@@ -331,7 +335,7 @@ module nonlinear2d
 
             elseif (FS.gt.FTOL) then
                 write(*,*) "ERROR FS:",FS,">FTOL"
-                alpha_epl  = 0.0d0
+                alpha_epl  = zero
                 st_elp = .true.
             end if
             ! ON-LOCUS STRESS STATE 
@@ -360,7 +364,8 @@ module nonlinear2d
             deltaTk = one
             Ttot    = zero
             deltaTmin = 0.01d0
-            do while (Ttot.lt.(1d0-FTOL))
+            flag_fail=.false.
+            do while (Ttot.lt.one)
                 Resk  = 0.0d0
                 dS1   = 0.0d0
                 dX1   = 0.0d0
@@ -401,7 +406,7 @@ module nonlinear2d
                     stress = S1
                     center = X1
                     radius = R1
-                    dEpl   = dEpl1
+                    dEpl   = dEpl+dEpl1
                     call mises_yld_locus (stress, center,radius,syld,FM,gradFM)
                     if (FM.gt.FTOL) then
                         call drift_corr(stress,center,radius,syld,&
@@ -416,11 +421,11 @@ module nonlinear2d
                     flag_fail=.false.
                     deltaTk=qq*deltaTk
                     deltaTk=max(qq*deltaTk,deltaTmin)
-                    deltaTk=min(deltaTk,1d0-Ttot)
+                    deltaTk=min(deltaTk,one-Ttot)
 
                 else
-                    qq=max(0.9d0*sqrt(STOL/Resk),deltaTmin)
-                    deltaTk=qq*deltaTk
+                    qq=max(0.9d0*sqrt(STOL/Resk),0.1d0)
+                    deltaTk=max(qq*deltaTk,deltaTmin)
                     flag_fail=.true.
                 end if
             end do
@@ -530,14 +535,14 @@ module nonlinear2d
             real*8                           :: FM
             real*8, dimension(4)             :: gradFM
             !real*8, dimension(4), parameter  :: A = (/1.0,1.0,1.0,0.5/)
-            integer*4                        :: k
+            !integer*4                        :: k
 
             ! INCREMENT IN ISOTROPIC HARDENING VARIABLES (R)
             dradius = biso*(rinf-radius)
 
             ! INCREMENT IN KINEMATIC HARDENING VARIABLES (Xij)
             call mises_yld_locus (stress,center,radius,syld,FM,gradFM)
-            dcenter = (ckin*two/three)*matmul(MM,gradFM)-center*kkin
+            dcenter = (ckin*two/three)*matmul(MM1,gradFM)-center*kkin
             !dX_ij(:)=2*A(:)*gradF_mises(:)*C_lmc/3-X_ij(:)*kapa_lmc
 
         end subroutine hardening_increments
@@ -550,11 +555,11 @@ module nonlinear2d
             real*8,               intent(inout) :: radius
             real*8,               intent(in)    :: lambda,mu,syld,biso,Rinf,Ckin,kkin
             real*8                              :: F0,F1,beta,hard,radiust
-            real*8, dimension(4)                :: gradF0,gradF1,dstress,stresst,centert
-            real*8, dimension(4),     parameter :: A = (/1.0,1.0,1.0,0.5/)
+            real*8, dimension(4)                :: tempv,gradF0,gradF1,dstress,stresst,centert
+            !real*8, dimension(4),     parameter :: A = (/1.0,1.0,1.0,0.5/)
             real*8, dimension(4,4)              :: DEL
             integer*4                           :: counter,k,j
-            
+            real*8, parameter :: FTOL_DRIFT =   0.0000001D0 
             ! INITIAL PLASTIC CONDITION
             call mises_yld_locus(stress,center,radius,syld,F0,gradF0)
             call stiff_matrix(lambda,mu,DEL)
@@ -562,45 +567,57 @@ module nonlinear2d
                 ! COMPUTE HARDENING INCREMENTS
                 hard = biso*(Rinf-radius)
                 hard = hard + Ckin
-                hard = hard - kkin*sum(gradF0*center)
+                hard = hard - kkin*dot_product(gradF0,center)
                 ! COMPUTE BETA FOR DRIFT CORRECTION
-                beta = 0d0
-                do j=1,4
-                    do k=1,4
-                        beta=beta+gradF0(k)*DEL(k,j)*A(j)*gradF0(j)
-                    end do
-                end do
-                beta=F0/(hard+beta)
+                beta  = zero
+                tempv = matmul(MM1,gradF0)
+                tempv = matmul(DEL,tempv)
+                beta  = dot_product(tempv,gradF0)
+!                do j=1,4
+!                    do k=1,4
+!                        beta=beta+gradF0(k)*DEL(k,j)*A(j)*gradF0(j)
+!                    end do
+!                end do
+                beta = F0/(hard+beta)
                 ! STRESS-STRAIN-HARDENING CORRECTION
-                dstress=0d0
-                do k=1,4
-                    do j=1,4
-                        dstress(k)=dstress(k)-beta*DEL(j,k)*A(j)*gradF0(j)
-                    end do
-                end do
+                dstress = zero
+                dstress = -beta*tempv
+                
+!                do k=1,4
+!                    do j=1,4
+!                        dstress(k)=dstress(k)-beta*DEL(j,k)*A(j)*gradF0(j)
+!                    end do
+!                end do
                 stresst = stress+dstress
-                centert = center+beta*(2*A*gradF0*Ckin/3-center*kkin)
+                centert = center+beta*((two*ckin/three)*matmul(MM,gradF0)-center*kkin)
                 radiust = radius+beta*(Rinf-radius)*biso
                 
                 ! CHECK DRIFT
                 call mises_yld_locus(stresst,centert,radiust,syld,F1,gradF1)
                 if (abs(F1).gt.abs(F0)) then
-                    beta   = F0/sum(gradF0*gradF0)
-                    stress = stress-beta*gradF0
-                else
-                    stress = stresst
-                    center = centert
-                    radius = radiust
-                    dEplastic = dEplastic+beta*A*gradF0
-                    if (abs(F1).le.FTOL) then
-                        exit
-                    else
-                        F0     = F1
-                        gradF0 = gradF1
-                    endif
+                    beta    = F0/dot_product(gradF0,gradF0)
+                    dstress = -beta*gradF0
+                    stresst = stress+dstress
+                    centert = center
+                    radiust = radius
+                    call mises_yld_locus(stresst,centert,radiust,syld,F1,gradF1)
                 endif
-                
+                stress = stresst
+                center = centert
+                radius = radiust
+                dEplastic = dEplastic+beta*matmul(MM1,gradF0)
+
+                if (abs(F1).le.FTOL_DRIFT) then
+                    write(*,*) "drift corrected!",F1
+                    exit
+                else
+                    F0     = F1
+                    gradF0 = gradF1
+                endif
             enddo
+            if (abs(F1).le.FTOL) then
+                write(*,*) "drift corrected!",F1
+            endif 
             return
         end subroutine drift_corr
 
@@ -617,8 +634,8 @@ module nonlinear2d
             integer*4                           :: counter0,counter1
             logical                             :: flagxit
 
-            alpha1  = 1.0d0
-            alpha0  = 0.0d0
+            alpha1  = one
+            alpha0  = zero
             stress0 = start0+alpha0*dtrial
             stress1 = start0+alpha1*dtrial
             call mises_yld_locus(stress0,center,radius,s0,F0,gradF)
@@ -638,23 +655,20 @@ module nonlinear2d
                                 F1=FM
                                 flagxit=.true.
                             else
-                                alpha0=0.0d0
-                                alpha1=1.0d0
+                                alpha0=zero
                                 F0=Fsave
-                                write(*,*) "ERROR IN FINDING F=0 (REVERSAL)", F0
                             endif
-                            exit
+                            exit ! exit loop counter1=1,nsub
                         else
                             alpha0=alpha
                             F0=FM
                         endif
                     end do
                     if (flagxit) then
-                        exit
+                        exit ! exit loop counter0=1,3
                     endif
                 end do
             end if
-
             do counter0=1,10
                 alpha  = alpha1 - F1*(alpha1 - alpha0)/(F1-F0)
                 stress = start0 + alpha*dtrial
@@ -662,16 +676,15 @@ module nonlinear2d
                 if (abs(FM).le.FTOL) then
                     exit
                 else
-                    if (FM*F0<0) then
-                        alpha0  =   alpha1
-                        F0      =   F1
+                    if(FM*F1.lt.zero) then
+                        alpha0=alpha1
+                        F0=F1
                     else
-                        F0      =   0.5d0*F0
+                        F0=F0*half
                     endif
-                    alpha1  =   alpha
-                    F1      =   FM
+                    F1=FM
+                    alpha1=alpha
                 endif
-
             end do
 
             if (FM.gt.FTOL) then
