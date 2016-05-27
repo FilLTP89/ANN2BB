@@ -350,17 +350,17 @@ module nonlinear2d
             real*8, dimension(4,4)              :: DEL
             real*8, dimension(4), parameter     :: A = (/1.0,1.0,1.0,0.5/)
             real*8                              :: Ttot,deltaTk,qq,R1,R2,dR1,dR2,err0,err1
-            real*8                              :: hard1,hard2,deltaTmin
+            real*8                              :: hard0,hard1,hard2,deltaTmin
             real(8)                             :: FM,Resk
             logical                             :: flag_fail
             real*8, dimension(4)                :: gradFM,S1,S2,X1,X2
             real*8, dimension(4)                :: dS1,dS2,dX1,dX2,dEpl1,dEpl2
             
             call stiff_matrix(lambda,mu,DEL)
-            deltaTk = 1.0d0
-            Ttot    = 0.0d0
+            deltaTk = one
+            Ttot    = zero
             deltaTmin = 0.01d0
-            do while (Ttot.lt.(one-FTOL))
+            do while (Ttot.lt.(1d0-FTOL))
                 Resk  = 0.0d0
                 dS1   = 0.0d0
                 dX1   = 0.0d0
@@ -370,37 +370,38 @@ module nonlinear2d
                 dR2   = 0.0d0
                 dEpl1 = 0.0d0
                 dEpl2 = 0.0d0
-
+                
                 ! FIRST ORDER COMPUTATION
+                
                 call ep_integration(dEps_alpha*deltaTk,stress,center,radius,syld,&
                     mu,lambda,biso,Rinf,Ckin,kkin,dS1,dX1,dR1,dEpl1,hard1)
 
                 S1 = stress + dS1
                 X1 = center + dX1 
                 R1 = radius + dR1
-               
+                
                 ! SECOND ORDER COMPUTATION
                 call ep_integration(dEps_alpha*deltaTk,S1,X1,R1,syld,mu,lambda,&
                     biso,Rinf,Ckin,kkin,dS2,dX2,dR2,dEpl2,hard2)
                 
                 ! TEMPORARY VARIABLES
-                S1 = stress + 0.5d0*(dS1+dS2)
-                X1 = center + 0.5d0*(dX1+dX2)
-                R1 = radius + 0.5d0*(dR1+dR2)
-                dEpl1 = 0.5d0*(dEpl1+dEpl2)
+                S1 = stress + half*(dS1+dS2)
+                X1 = center + half*(dX1+dX2)
+                R1 = radius + half*(dR1+dR2)
+                dEpl1 =       half*(dEpl1+dEpl2)
                 
                 ! ERROR
                 call tau_mises(dS2-dS1,err0)
                 call tau_mises(S1,err1)
 
-                Resk=0.5d0*max(epsilon(Resk),err0/err1,abs(hard1-hard2)/)
+                Resk = half*max(epsilon(Resk),err0/err1)
                 
                 if (Resk.le.STOL) then
                     
                     stress = S1
                     center = X1
                     radius = R1
-                    dEpl   = dEpl+dEpl1
+                    dEpl   = dEpl1
                     call mises_yld_locus (stress, center,radius,syld,FM,gradFM)
                     if (FM.gt.FTOL) then
                         call drift_corr(stress,center,radius,syld,&
@@ -410,7 +411,7 @@ module nonlinear2d
                     Ttot=Ttot+deltaTk
                     qq = min(0.9d0*sqrt(STOL/Resk),1.1d0) 
                     if (flag_fail) then
-                        qq = min(qq,1.0d0)
+                        qq = min(qq,one)
                     endif
                     flag_fail=.false.
                     deltaTk=qq*deltaTk
