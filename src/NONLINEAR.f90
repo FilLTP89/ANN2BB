@@ -4,10 +4,29 @@ module nonlinear2d
     !
     implicit none
     !
+    real*8, parameter                   :: zero=0.d0,one=1.0d0
+    real*8, parameter                   :: half=0.5d0,two=2.0d0,three=3.0d0
+    !
     real*8, parameter :: FTOL = 0.000001000000000d0
     real*8, parameter :: LTOL = 0.000001000000000d0
     real*8, parameter :: STOL = 0.000001000000000d0
     !
+    real*8, parameter, dimension(4,4)   :: MM = reshape((/ &
+        one , zero, zero, zero, &
+        zero, one , zero, zero, &
+        zero, zero, one , zero, &
+        zero, zero, zero, two   &
+        /), (/4,4/))
+    
+    real*8, parameter, dimension(4,4)   :: MM1 = reshape((/ &   
+        one , zero, zero, zero, &
+        zero, one , zero, zero, &
+        zero, zero, one , zero, &
+        zero, zero, zero, half   &
+        /), (/4,4/))
+    
+    real*8, parameter, dimension(4)     :: m = (/one,one,one,zero/)
+
     contains
         
         !****************************************************************************
@@ -159,7 +178,7 @@ module nonlinear2d
             !
             return
         end subroutine STIFF_MATRIX
-
+        
         !****************************************************************************
         ! MISES YIELDING LOCUS AND GRADIENT
         !****************************************************************************
@@ -197,23 +216,30 @@ module nonlinear2d
         ! OCTAHEDRAL SHEAR STRESS
         !****************************************************************************
         
-        subroutine tau_mises(dev,tau_eq)
+        subroutine tau_mises(dev,J2M)
+            ! correspondence rule:
+            !  2-d case     3-d case  
+            ! (11) <=> sxx   (11) <=> sxx 
+            ! (22) <=> syy   (22) <=> syy 
+            ! (33) <=> szz   (33) <=> szz 
+            ! (12) <=> sxy   (12) <=> sxy
+            !                (23) <=> syz
+            !                (31) <=> szx
+            ! and continuum mechanics sign conventions
             !
             implicit none
             ! intent IN
             real*8, dimension(4), intent(in)    :: dev
             ! intent OUT
-            real*8,               intent(out)   :: tau_eq
+            real*8,               intent(out)   :: J2M
             !
-            integer*4                           :: k
+            real*8, dimension(4)                :: temp
+            real*8                              :: J2M2
             
             ! COMPUTE OCTAHEDRAL SHEAR STRESS 
-            
-            tau_eq = dev(1)**2 + &
-                     dev(2)**2 + &
-                     dev(3)**2 + &
-                     2*dev(4)**2
-            tau_eq = sqrt(1.5*tau_eq)
+            temp = three/two*matmul(MM,dev)
+            J2M2 = dot_product(dev,temp)
+            J2M  = sqrt(J2M2)
             !
             return
             ! 
@@ -231,13 +257,11 @@ module nonlinear2d
             ! intent OUT
             real*8, dimension(4), intent(out)   :: dev
             !
-            real*8                              :: press 
+            real*8                              :: I1 
             !
-            press = (stress(1) + stress(2) + stress(3))*0.333333333333333333d0
-            dev(1) = stress(1) - press
-            dev(2) = stress(2) - press
-            dev(3) = stress(3) - press
-            dev(4) = stress(4)
+            I1 = (stress(1) + stress(2) + stress(3))/three
+            !
+            dev = stress - I1*m
             !
             return
             !
@@ -264,10 +288,9 @@ module nonlinear2d
             real*8                                  :: FS,FT,checkload
             real*8, dimension(4)                    :: gradFS, gradFT, stress1
             !
-            
             ! PREDICTION STRESS
             stress1= dtrial+stress0
-            
+            ! 
             ! CHECK MISES FUNCTION
             call mises_yld_locus(stress0,center,radius,syld,FS,gradFS)
             call mises_yld_locus(stress1,center,radius,syld,FT,gradFT)
@@ -337,7 +360,7 @@ module nonlinear2d
             deltaTk = 1.0d0
             Ttot    = 0.0d0
             deltaTmin = 0.01d0
-            do while (Ttot.lt.1d0-FTOL)
+            do while (Ttot.lt.(one-FTOL))
                 Resk  = 0.0d0
                 dS1   = 0.0d0
                 dX1   = 0.0d0
@@ -370,7 +393,7 @@ module nonlinear2d
                 call tau_mises(dS2-dS1,err0)
                 call tau_mises(S1,err1)
 
-                Resk=0.5d0*max(epsilon(Resk),err0/err1)
+                Resk=0.5d0*max(epsilon(Resk),err0/err1,abs(hard1-hard2)/)
                 
                 if (Resk.le.STOL) then
                     
@@ -416,7 +439,7 @@ module nonlinear2d
             real*8,               intent(out)   :: hard
             !
             real*8, dimension(4)                :: gradF
-            real*8, dimension(4), parameter     :: A = (/1.0,1.0,1.0,0.5/)
+            !real*8, dimension(4), parameter     :: A = (/1.0,1.0,1.0,0.5/)
             real*8, dimension(4,4)              :: DEL
             real*8                              :: Fmises,dPlast
             integer*4                           :: j,k
@@ -435,14 +458,16 @@ module nonlinear2d
             
             dradius = dPlast*dradius
             dcenter = dPlast*dcenter
-            do k=1,4 
-                dEplast(k)=dEplast(k)+dPlast*gradF(k)*A(k)
-            end do
-            do j = 1,4 ! stress increment
-                do k = 1,4
-                    dstress(j)=DEL(k,j)*(dstrain(j)-A(k)*dPlast*gradF(k))  
-                end do
-            end do
+!            do k=1,4 
+!                dEplast(k)=dEplast(k)+dPlast*gradF(k)*A(k)
+!            end do
+            dEplast = dPlast*matmul(MM1,gradF)
+            dstress = matmul(DEL,dstrain-dEplast) 
+!            do j = 1,4 ! stress increment
+!                do k = 1,4
+!                    dstress(j)=DEL(k,j)*(dstrain(j)-A(k)*dPlast*gradF(k))  
+!                end do
+!            end do
             
             return
 
@@ -460,57 +485,59 @@ module nonlinear2d
             ! intent OUT
             real*8,                 intent(out):: dPlastMult,hard
             !
-            real*8                             :: temp_vec,FM
-            real*8, dimension(4)               :: gradF
-            real*8, dimension(4),   parameter  :: A =(/1.0,1.0,1.0,0.5/)
+            real*8                             :: Ah,FM
+            real*8, dimension(4)               :: gradF,tempv
             real*8, dimension(4,4)             :: DEL
-            integer*4                          :: j,k
+!            integer*4                          :: j,k
             
             call stiff_matrix(lambda,mu,DEL)
             call mises_yld_locus(stress,center,radius,syld,FM,gradF)
             
             hard = Ckin+biso*(Rinf-radius)
-            hard = hard-kkin*sum(center*gradF)
+            hard = hard-kkin*dot_product(center,gradF)
             
-            temp_vec   = 0.0d0
-            dPlastMult = 0.0d0
-
-            do k = 1,4
-                do j = 1,4
-                    temp_vec   = temp_vec+gradF(j)*DEL(j,k)*gradF(k)*A(k)
-                    dPlastMult = dPlastMult+gradF(j)*DEL(j,k)*dEps(k)
-                end do
-            end do
-            dPlastMult = max(0.0d0,dPlastMult/(hard+temp_vec))
+            dPlastMult = zero 
+            
+            tempv = matmul(MM1,gradF)
+            tempv = matmul(DEL,tempv)
+            Ah    = dot_product(tempv,gradF)
+            tempv = matmul(DEL,dEps)
+            dPlastMult = dot_product(gradF,tempv)
+!            Ah=zero
+!            do k = 1,4
+!                do j = 1,4
+!                    Ah   = Ah+gradF(j)*DEL(j,k)*gradF(k)*A(k)
+!                    dPlastMult = dPlastMult+gradF(j)*DEL(j,k)*dEps(k)
+!                end do
+!            end do
+            dPlastMult = max(0.0d0,dPlastMult/(hard+Ah))
         end subroutine compute_plastic_modulus
 
 
-        subroutine hardening_increments(Sigma_ij, R, X_ij, sigma_yld, &
-            b_lmc, Rinf_lmc, C_lmc, kapa_lmc, dR, dX_ij)
+        subroutine hardening_increments(stress, radius, center, syld, &
+            biso, rinf, ckin, kkin, dradius, dcenter)
 
             ! INCREMENTS OF INTRINSIC STATIC VARIABLES
 
-            real*8,               intent(in) :: sigma_yld       ! first yielding limit
-            real*8,               intent(in) :: R               ! actual mises radius
-            real*8,               intent(in) :: b_lmc, Rinf_lmc ! Lamaitre and Chaboche parameters (isotropic hardening)
-            real*8,               intent(in) :: C_lmc, kapa_lmc ! Lamaitre and Chaboche parameters (kinematic hardening)
-            real*8, dimension(4), intent(in) :: Sigma_ij        ! actual stress state
-            real*8, dimension(4), intent(in) :: X_ij            ! actual back stress state
-
-            real*8,               intent(out):: dR              ! mises radius increment
-            real*8, dimension(4), intent(out):: dX_ij           ! back stress increment
+            real*8,               intent(in) :: syld,radius
+            real*8,               intent(in) :: biso,rinf,ckin,kkin
+            real*8, dimension(4), intent(in) :: stress,center
+            !
+            real*8,               intent(out):: dradius
+            real*8, dimension(4), intent(out):: dcenter
             
-            real*8                           :: F_mises
-            real*8, dimension(4)             :: gradF_mises
-            real*8, dimension(4), parameter  :: A = (/1.0,1.0,1.0,0.5/)
+            real*8                           :: FM
+            real*8, dimension(4)             :: gradFM
+            !real*8, dimension(4), parameter  :: A = (/1.0,1.0,1.0,0.5/)
             integer*4                        :: k
 
             ! INCREMENT IN ISOTROPIC HARDENING VARIABLES (R)
-            dR = b_lmc*(Rinf_lmc-R)
+            dradius = biso*(rinf-radius)
 
             ! INCREMENT IN KINEMATIC HARDENING VARIABLES (Xij)
-            call mises_yld_locus (Sigma_ij, X_ij, R, sigma_yld, F_mises, gradF_mises)
-            dX_ij(:)=2*A(:)*gradF_mises(:)*C_lmc/3-X_ij(:)*kapa_lmc
+            call mises_yld_locus (stress,center,radius,syld,FM,gradFM)
+            dcenter = (ckin*two/three)*matmul(MM,gradFM)-center*kkin
+            !dX_ij(:)=2*A(:)*gradF_mises(:)*C_lmc/3-X_ij(:)*kapa_lmc
 
         end subroutine hardening_increments
 
