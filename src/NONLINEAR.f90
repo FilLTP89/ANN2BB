@@ -291,6 +291,7 @@ module nonlinear2d
             integer*4                               :: k
             real*8                                  :: FS,FT,checkload
             real*8, dimension(4)                    :: gradFS, gradFT, stress1
+            integer*4                               :: plasticity
             !
             ! PREDICTION STRESS
             stress1= dtrial+stress0
@@ -302,22 +303,24 @@ module nonlinear2d
             ! CHECK LOAD DIRECTION 
             checkload = dot_product(gradFS,dtrial)/sum(gradFS**2)/sum(dtrial**2)
             
-            ! CHECK PLASTICITY 
+            ! CHECK PLASTICITiY 
             if (abs(FS).le.FTOL) then ! FS = 0
                 !
                 if (checkload.ge.-LTOL) then ! PLASTIC LOADING
                     alpha_epl = zero
                     st_elp    = .true.
-
+                    plasticity = 1
                 else ! GENERALIZED UNLOADING
                     
                     if (FT.lt.-FTOL) then ! ELASTIC UNLOADING
                         alpha_epl = one
                         st_elp    = .false.
+                        plasticity = 2
                     
                     elseif(FT.gt.FTOL) then ! PLASTIC UNLOADING
                         call gotoFpegasus(stress0,dtrial,center,radius,syld,10,alpha_epl)
                         st_elp    = .true.
+                        plasticity=3
                     endif
                 
                 end if
@@ -327,20 +330,23 @@ module nonlinear2d
                 if (FT.le.FTOL) then ! ELASTIC LOADING
                     alpha_epl = one
                     st_elp    = .false.
-
+                    plasticity=4
                 else ! ELASTO-PLASTIC LOADING
                     call gotoFpegasus(stress0,dtrial,center,radius,syld,1,alpha_epl)
                     st_elp    = .true.
+                    plasticity=5
                 end if
 
             elseif (FS.gt.FTOL) then
                 write(*,*) "ERROR FS:",FS,">FTOL"
                 alpha_epl  = zero
                 st_elp = .true.
+                plasticity=6
             end if
             ! ON-LOCUS STRESS STATE 
             dtrial=stress0+dtrial*alpha_epl
             call mises_yld_locus(dtrial,center,radius,syld,FS,gradFS)
+            write(*,*) "plasticity",plasticity
         end subroutine check_plasticity
         
         subroutine plastic_corrector(dEps_alpha,stress,center,syld, &
@@ -353,7 +359,7 @@ module nonlinear2d
             real*8,               intent(in)    :: syld,biso,Rinf,Ckin,kkin,mu,lambda
             real*8, dimension(4,4)              :: DEL
             real*8, dimension(4), parameter     :: A = (/1.0,1.0,1.0,0.5/)
-            real*8                              :: Ttot,deltaTk,qq,R1,R2,dR1,dR2,err0,err1
+            real*8                              :: Ttot,deltaTk,qq,R1,R2,dR1,dR2,err0,err1,err2,err3
             real*8                              :: hard0,hard1,hard2,deltaTmin
             real(8)                             :: FM,Resk
             logical                             :: flag_fail
@@ -363,18 +369,22 @@ module nonlinear2d
             call stiff_matrix(lambda,mu,DEL)
             deltaTk = one
             Ttot    = zero
-            deltaTmin = 0.01d0
-            flag_fail=.false.
+            deltaTmin = 0.001d0
+            flag_fail =.true.
             do while (Ttot.lt.one)
-                Resk  = 0.0d0
-                dS1   = 0.0d0
-                dX1   = 0.0d0
-                dS2   = 0.0d0
-                dX2   = 0.0d0
-                dR1   = 0.0d0
-                dR2   = 0.0d0
-                dEpl1 = 0.0d0
-                dEpl2 = 0.0d0
+                write(*,*) "BEFORE------"
+                write(*,*) "flag_fail",flag_fail
+                write(*,*) "deltaTk",deltaTk
+                write(*,*) "Ttot",Ttot
+                Resk  = zero
+                dS1   = zero
+                dX1   = zero
+                dS2   = zero
+                dX2   = zero
+                dR1   = zero
+                dR2   = zero
+                dEpl1 = zero
+                dEpl2 = zero
                 
                 ! FIRST ORDER COMPUTATION
                 
@@ -398,36 +408,48 @@ module nonlinear2d
                 ! ERROR
                 call tau_mises(dS2-dS1,err0)
                 call tau_mises(S1,err1)
-
-                Resk = half*max(epsilon(Resk),err0/err1)
+                
+                call tau_mises(dX1-dX2,err2)
+                call tau_mises(X1,err3)
+                Resk = half*max(epsilon(Resk),err0/err1,err2/err3)
                 
                 if (Resk.le.STOL) then
-                    
+                    write(*,*) "RESK",Resk,"< STOL",STOL 
                     stress = S1
                     center = X1
                     radius = R1
                     dEpl   = dEpl+dEpl1
+
                     call mises_yld_locus (stress, center,radius,syld,FM,gradFM)
+                    write(*,*) "before drift - FM:",FM
                     if (FM.gt.FTOL) then
                         call drift_corr(stress,center,radius,syld,&
                                 biso,Rinf,Ckin,kkin,lambda,mu,dEpl)
                     endif
-                   
-                    Ttot=Ttot+deltaTk
-                    qq = min(0.9d0*sqrt(STOL/Resk),1.1d0) 
+                    qq = min(0.9d0*sqrt(STOL/Resk),1.1d0)
+                    write(*,*) "qq",qq
                     if (flag_fail) then
                         qq = min(qq,one)
+                        write(*,*) "qq",qq
                     endif
                     flag_fail=.false.
+                    Ttot=Ttot+deltaTk
                     deltaTk=qq*deltaTk
+                    write(*,*) "deltaT",deltaTk
                     deltaTk=max(qq*deltaTk,deltaTmin)
+                    write(*,*) "deltaT",deltaTk
                     deltaTk=min(deltaTk,one-Ttot)
-
+                    write(*,*) "deltaT",deltaTk
                 else
                     qq=max(0.9d0*sqrt(STOL/Resk),0.1d0)
                     deltaTk=max(qq*deltaTk,deltaTmin)
                     flag_fail=.true.
+
                 end if
+                write(*,*) "BEFORE------"
+                write(*,*) "flag_fail",flag_fail
+                write(*,*) "deltaTk",deltaTk
+                write(*,*) "Ttot",Ttot
             end do
         end subroutine plastic_corrector
 
@@ -608,7 +630,6 @@ module nonlinear2d
                 dEplastic = dEplastic+beta*matmul(MM1,gradF0)
 
                 if (abs(F1).le.FTOL_DRIFT) then
-                    write(*,*) "drift corrected!",F1
                     exit
                 else
                     F0     = F1
@@ -617,6 +638,9 @@ module nonlinear2d
             enddo
             if (abs(F1).le.FTOL) then
                 write(*,*) "drift corrected!",F1
+            else 
+                write(*,*) "DRIFT NOT CORRECTED"
+                read(*,*)
             endif 
             return
         end subroutine drift_corr
@@ -689,6 +713,8 @@ module nonlinear2d
 
             if (FM.gt.FTOL) then
                 write(*,*) "WARNING: F=",FM,">FTOL!!!!!!"
+            else
+                write(*,*) "PEGASUS: INTERSECTION FOUND",FM
             endif
         end subroutine gotoFpegasus
         
