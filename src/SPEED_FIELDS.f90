@@ -140,29 +140,29 @@ module fields
             ! INITIALIZATION
             call lgl(nn,ct,ww,dd)
             ! LOOP OVER GLL
-            dxdx = 0.d0
-            dxdy = 0.d0
-            dydx = 0.d0
-            dydy = 0.d0
+            dxdx = 0.0d0
+            dxdy = 0.0d0
+            dydx = 0.0d0
+            dydy = 0.0d0
             !
             ux = 0.0d0
             uy = 0.0d0
             !
-            duxdx = 0.d0
-            duxdy = 0.d0
-            duydx = 0.d0
-            duydy = 0.d0
+            duxdx = 0.0d0
+            duxdy = 0.0d0
+            duydx = 0.0d0
+            duydy = 0.0d0
             !
-            sxx = 0.d0
-            syy = 0.d0
-            szz = 0.d0
-            sxy = 0.d0
+            sxx = 0.0d0
+            syy = 0.0d0
+            szz = 0.0d0
+            sxy = 0.0d0
             !
-            fx = 0.d0
-            fy = 0.d0
+            fx = 0.0d0
+            fy = 0.0d0
             !
-            dstrain(:,:,:) = 0.d0
-            dstrial(:,:,:) = 0.d0
+            dstrain(:,:,:) = 0.0d0
+            dstrial(:,:,:) = 0.0d0
             !
             do j = 1,nn
                 do i = 1,nn

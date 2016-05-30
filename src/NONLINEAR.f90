@@ -79,59 +79,59 @@ module nonlinear2d
                     dstrain = dstrain*dt
                     dstrial = dstrial*dt
 !                dstrain(:,:,:) = dstrain(:,:,:) - snl(ie)%strain(:,:,:)
-!                dstrial(:,:,:) = dstrial(:,:,:) - snl(ie)%stress(:,:,:)
+!                dstrial(:,:,:) = dstrial(:,:,:) - snl(ie)%stress(:,:,:)!
                 snl(ie)%strain(:,:,:) = snl(ie)%strain(:,:,:) + dstrain(:,:,:)
-!                snl(ie)%stress(:,:,:) = snl(ie)%stress(:,:,:) +dstrial(:,:,:) 
+                snl(ie)%stress(:,:,:) = snl(ie)%stress(:,:,:) +dstrial(:,:,:) 
                 !*********************************************************************************
                 ! COMPUTE STRESS
                 !*********************************************************************************
                 
-                do iq = 1,nn
-                    do ip = 1,nn
-                        ! STARTING POINT
-                        stress_ = snl(ie)%stress(:,ip,iq)
-                        center_ = snl(ie)%center(:,ip,iq)
-                        radius_ = snl(ie)%radius(ip,iq)
-                        lambda_ = snl(ie)%lambda(ip,iq)
-                        mu_     = snl(ie)%mu(ip,iq)
-                        syld_   = snl(ie)%syld(ip,iq)
-                        ckin_   = snl(ie)%ckin(ip,iq)
-                        kkin_   = snl(ie)%kkin(ip,iq)
-                        biso_   = snl(ie)%biso(ip,iq)
-                        rinf_   = snl(ie)%rinf(ip,iq)
-                        
-
-                        ! STRAIN INCREMENT
-                        dstrain_(:)   = zero
-                        dstrain_(1:2) = dstrain(1:2,ip,iq)
-                        dstrain_(4)   = dstrain(3,ip,iq)
-                        dpstrain_(:)  = zero
-                        ! TRIAL STRESS INCREMENT
-                        dstrial_(:)   = zero
-                        dstrial_(:)   = dstrial(:,ip,iq)
-                        
-                        ! CHECK PLASTICITY
-                        call check_plasticity(dstrial_,stress_,center_,radius_,&
-                            syld_,st_epl,alpha_epl)
-                        ! PLASTIC CORRECTION
-                        if (st_epl) then
-                            write(*,*) "alpha_epl",alpha_epl
-                            dstrain_(:) = (one-alpha_epl)*dstrain_(:)
-                            call plastic_corrector(dstrain_,dstrial_,center_,radius_,syld_,&
-                                biso_,rinf_,ckin_,kkin_,mu_,lambda_,dpstrain_)
-                        endif
-                        ! STRESS VECTOR
-                        snl(ie)%stress(:,ip,iq) = dstrial_(:)
-                        ! CENTER
-                        snl(ie)%center(:,ip,iq) = center_(:)
-                        ! RADIUS
-                        snl(ie)%radius(ip,iq)   = radius_
-                        ! PLASTIC STRAIN VECTOR
-                        snl(ie)%plastic_strain(:,ip,iq) = snl(ie)%plastic_strain(:,ip,iq) + &
-                            dpstrain_(:)
-                        
-                    enddo
-                enddo
+!                do iq = 1,nn
+!                    do ip = 1,nn
+!                        ! STARTING POINT
+!                        stress_ = snl(ie)%stress(:,ip,iq)
+!                        center_ = snl(ie)%center(:,ip,iq)
+!                        radius_ = snl(ie)%radius(ip,iq)
+!                        lambda_ = snl(ie)%lambda(ip,iq)
+!                        mu_     = snl(ie)%mu(ip,iq)
+!                        syld_   = snl(ie)%syld(ip,iq)
+!                        ckin_   = snl(ie)%ckin(ip,iq)
+!                        kkin_   = snl(ie)%kkin(ip,iq)
+!                        biso_   = snl(ie)%biso(ip,iq)
+!                        rinf_   = snl(ie)%rinf(ip,iq)
+!                        
+!
+!                        ! STRAIN INCREMENT
+!                        dstrain_(:)   = zero
+!                        dstrain_(1:2) = dstrain(1:2,ip,iq)
+!                        dstrain_(4)   = dstrain(3,ip,iq)
+!                        dpstrain_(:)  = zero
+!                        ! TRIAL STRESS INCREMENT
+!                        dstrial_(:)   = zero
+!                        dstrial_(:)   = dstrial(:,ip,iq)
+!                        
+!                        ! CHECK PLASTICITY
+!                        call check_plasticity(dstrial_,stress_,center_,radius_,&
+!                            syld_,st_epl,alpha_epl)
+!                        ! PLASTIC CORRECTION
+!                        if (st_epl) then
+!                            write(*,*) "alpha_epl",alpha_epl
+!                            dstrain_(:) = (one-alpha_epl)*dstrain_(:)
+!                            call plastic_corrector(dstrain_,dstrial_,center_,radius_,syld_,&
+!                                biso_,rinf_,ckin_,kkin_,mu_,lambda_,dpstrain_)
+!                        endif
+!                        ! STRESS VECTOR
+!                        snl(ie)%stress(:,ip,iq) = dstrial_(:)
+!                        ! CENTER
+!                        snl(ie)%center(:,ip,iq) = center_(:)
+!                        ! RADIUS
+!                        snl(ie)%radius(ip,iq)   = radius_
+!                        ! PLASTIC STRAIN VECTOR
+!                        snl(ie)%plastic_strain(:,ip,iq) = snl(ie)%plastic_strain(:,ip,iq) + &
+!                            dpstrain_(:)
+!                        
+!                    enddo
+!                enddo
                 
                 !*********************************************************************************
                 ! COMPUTE LOCAL INTERNAL FORCES
@@ -153,6 +153,9 @@ module nonlinear2d
                 ! DEALLOCATE ELEMENT-WISE VARIABLES
                 call DEALLOCATE_LOC(ct,ww,dd,dxdx,dxdy,dydx,dydy,dstrain,dstrial,fx,fy)
             enddo
+            write(*,*) "FK_NL",fk(cs(cs(3-1)+1)),fk(cs(cs(3-1)+1)+nnt)
+            read(*,*)
+
             return
             !
         end subroutine MAKE_INTERNAL_FORCES_NL
@@ -208,8 +211,8 @@ module nonlinear2d
             ! COMPUTE MISES FUNCTION GRADIENT
             gradFM(1) = three/two*(dev(1)-center(1))/tau_eq
             gradFM(2) = three/two*(dev(2)-center(2))/tau_eq
-!            gradFM(3) = 1.5*(dev(3)-center(3))/tau_eq
-            gradFM(3) = zero
+            gradFM(3) = 1.5*(dev(3)-center(3))/tau_eq
+!            gradFM(3) = zero
             gradFM(4) = three*(dev(4)-center(4))/tau_eq
             !  
             return

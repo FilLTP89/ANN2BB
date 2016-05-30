@@ -668,6 +668,8 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         call system_clock(COUNT=clock_start,COUNT_RATE=clock(2))   
         !Compute fk = K_TOT*u1
         call MATMUL_SPARSE(K_TOT, NNZ_K, JK_TOT, IK_TOT, fk, 2*nnt, u1, 2*nnt, error)
+        write(*,*) "FK_EL",fk(cs(cs(3-1)+1)),fk(cs(cs(3-1)+1)+nnt)
+        read(*,*) 
         call system_clock(COUNT=clock_finish)
         time_fk = float(clock_finish - clock_start) / float(clock(2))
         call system_clock(COUNT=clock_start,COUNT_RATE=clock(2)) 
