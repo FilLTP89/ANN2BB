@@ -81,7 +81,7 @@ module nonlinear2d
 !                dstrain(:,:,:) = dstrain(:,:,:) - snl(ie)%strain(:,:,:)
 !                dstrial(:,:,:) = dstrial(:,:,:) - snl(ie)%stress(:,:,:)!
                 snl(ie)%strain(:,:,:) = snl(ie)%strain(:,:,:) + dstrain(:,:,:)
-                snl(ie)%stress(:,:,:) = snl(ie)%stress(:,:,:) +dstrial(:,:,:) 
+                snl(ie)%stress(:,:,:) = snl(ie)%stress(:,:,:) + dstrial(:,:,:) 
                 !*********************************************************************************
                 ! COMPUTE STRESS
                 !*********************************************************************************
@@ -153,6 +153,7 @@ module nonlinear2d
                 ! DEALLOCATE ELEMENT-WISE VARIABLES
                 call DEALLOCATE_LOC(ct,ww,dd,dxdx,dxdy,dydx,dydy,dstrain,dstrial,fx,fy)
             enddo
+            write(*,*) "DEBUG: NODE",cs(cs(2)+1),cs(cs(2)+1)+nnt
             write(*,*) "FK_NL",fk(cs(cs(3-1)+1)),fk(cs(cs(3-1)+1)+nnt)
             read(*,*)
 
