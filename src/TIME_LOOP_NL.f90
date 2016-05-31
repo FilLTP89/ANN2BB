@@ -504,7 +504,7 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
 
     do its = 0,nts
 
-        fk   = 0.d0 
+        fk   = 0.0d0 
 
         ! Initialize time step    
         fd   = 0.d0 
@@ -611,6 +611,7 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         write(*,'(A)') '----------COMPUTING NON LINEAR INTERNAL FORCES---------------'
         !
         call system_clock(COUNT=clock_start,COUNT_RATE=clock(2))  
+        
         ! DISPLACEMENT FORMULATION
         call MAKE_INTERNAL_FORCES_NL(nnt,ne,nm,cs_nnz,cs,sdeg_mat,snl,&
             alfa1,alfa2,beta1,beta2,gamma1,gamma2,v1,fk,mvec,dt)

@@ -71,11 +71,11 @@ subroutine ALLOINIT_NL_ALL(ne,sdeg_mat,nm,nnt,cs_nnz,cs,prop_mat,u1,u2,vel,acc,v
         snl(ie)%rinf   = prop_mat(im,8)
         snl(ie)%biso   = prop_mat(im,9)
         !
-        snl(ie)%radius(:,:)             = 0.d0
-        snl(ie)%stress(:,:,:)           = 0.d0
-        snl(ie)%strain(:,:,:)           = 0.d0
-        snl(ie)%center(:,:,:)           = 0.d0
-        snl(ie)%plastic_strain(:,:,:)   = 0.d0
+        snl(ie)%radius(:,:)             = 0.0d0
+        snl(ie)%stress(:,:,:)           = 0.0d0
+        snl(ie)%strain(:,:,:)           = 0.0d0
+        snl(ie)%center(:,:,:)           = 0.0d0
+        snl(ie)%plastic_strain(:,:,:)   = 0.0d0
     enddo
     
     ! current displacement/velocity/acceleration vectors
