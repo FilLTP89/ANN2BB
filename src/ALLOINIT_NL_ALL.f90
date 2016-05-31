@@ -79,10 +79,10 @@ subroutine ALLOINIT_NL_ALL(ne,sdeg_mat,nm,nnt,cs_nnz,cs,prop_mat,u1,u2,vel,acc,v
     enddo
     
     ! current displacement/velocity/acceleration vectors
-    allocate(u1(2*nnt));  u1 = 0.d0
-    allocate(u2(2*nnt));  u2 = 0.d0
+    allocate(u1(2*nnt));  u1 = 0.0d0
+    allocate(u2(2*nnt));  u2 = 0.0d0
     allocate(vel(2*nnt)); vel = v1 
-    allocate(acc(2*nnt)); acc = 0.d0
+    allocate(acc(2*nnt)); acc = 0.0d0
     ! current internal & external forces 
     allocate(fk(2*nnt)); fk = 0.0d0
     allocate(fd(2*nnt)); fd = 0.0d0
@@ -110,13 +110,13 @@ subroutine ALLOINIT_NL_ALL(ne,sdeg_mat,nm,nnt,cs_nnz,cs,prop_mat,u1,u2,vel,acc,v
     endif 
     if (option_out_var(4)==1) then
         allocate(disout%stress(1:4,nnt))
-        disout%stress(:,:) = 0.d0
+        disout%stress(:,:) = 0.0d0
     endif
     if (option_out_var(5).gt.0) then
         allocate(disout%strain(3,nnt))
         allocate(disout%plastic_strain(4,nnt))
-        disout%strain(:,:) = 0.d0
-        disout%plastic_strain(:,:) = 0.d0
+        disout%strain(:,:) = 0.0d0
+        disout%plastic_strain(:,:) = 0.0d0
     endif
     return
 end subroutine ALLOINIT_NL_ALL

@@ -24,8 +24,7 @@
 
 subroutine DEALLOCATE_ALL(ne,u1,u2,vel,acc,fk,fe,fd,snl,disout,update_index_el_az,nodal_counter)  
     ! 
-    use nonlinear2d
-    use write_output
+    use fields 
     !
     implicit none
     ! intent IN

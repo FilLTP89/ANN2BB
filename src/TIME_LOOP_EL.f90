@@ -681,7 +681,7 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         write(*,*) "U0",u0(cs(cs(3-1)+1)),u0(cs(cs(3-1)+1)+nnt)
         write(*,*) "U1",u1(cs(cs(3-1)+1)),u1(cs(cs(3-1)+1)+nnt)
         write(*,*) "U2",u2(cs(cs(3-1)+1)),u2(cs(cs(3-1)+1)+nnt)
-        !read(*,*)
+        read(*,*)
 
         u2 = 2.0d0 * u1 - u0 + dt2*(fe - fk - fd)
         call system_clock(COUNT=clock_finish)

@@ -46,10 +46,10 @@ subroutine MAKE_STRESS(nn,lambda,mu,duxdx,duxdy,duydx,duydy,sxx,syy,szz,sxy)
     real*8                                  :: lambda_,mu_
     integer*4                               :: ip,iq
     !
-    sxx = 0.d0
-    syy = 0.d0
-    szz = 0.d0
-    sxy = 0.d0
+    sxx = 0.0d0
+    syy = 0.0d0
+    szz = 0.0d0
+    sxy = 0.0d0
     do iq = 1,nn   
         do ip = 1,nn
             mu_     = mu(ip,iq)

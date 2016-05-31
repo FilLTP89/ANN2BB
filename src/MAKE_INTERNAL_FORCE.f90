@@ -33,8 +33,7 @@
 !> @param[out] fy y-componnent for internal forces
 
 
-subroutine MAKE_INTERNAL_FORCE(nn,ww,dd,dxdx,dxdy,dydx,dydy,&
-    sxx,syy,sxy,fx,fy)                               
+subroutine MAKE_INTERNAL_FORCE(nn,ww,dd,dxdx,dxdy,dydx,dydy,sxx,syy,sxy,fx,fy)                               
     !
     implicit none
     ! intent IN
@@ -86,4 +85,3 @@ end subroutine MAKE_INTERNAL_FORCE
 !! show-trailing-whitespace: t
 !! End:
 !! vim: set sw=4 ts=8 et tw=80 smartindent : !!
-

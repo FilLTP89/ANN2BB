@@ -260,8 +260,7 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         subroutine ALLOINIT_NL_ALL(ne,sdeg_mat,nm,nnt,cs_nnz,cs,prop_mat,u1,u2,vel,acc,v1,fk,fe,fd,&
             snl,option_out_var,disout,update_index_el_az,nodal_counter)  
             !
-            use nonlinear2d
-            use write_output
+            use fields
             !
             implicit none
             ! intent IN
@@ -282,8 +281,7 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
 
         subroutine DEALLOCATE_ALL(ne,u1,u2,vel,acc,fk,fe,fd,snl,disout,update_index_el_az,nodal_counter)  
             ! 
-            use nonlinear2d
-            use write_output
+            use fields 
             !
             implicit none
             ! intent IN
@@ -299,8 +297,6 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
     end interface
     
     pi = 4.d0*datan(1.d0)
-    write(*,*) "sdeg_mat",sdeg_mat
-    read(*,*)
     IN_TOT = IN_TOT -1
 
     ne = cs(0) -1
@@ -642,7 +638,7 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         !*******************************************************************************************
         call system_clock(COUNT=clock_start,COUNT_RATE=clock(2)) 
         call MAKE_INTERNAL_FORCES_NL(nnt,ne,nm,cs_nnz,cs,sdeg_mat,snl,&
-            alfa1,alfa2,beta1,beta2,gamma1,gamma2,u1,fk,mvec,dt)
+            alfa1,alfa2,beta1,beta2,gamma1,gamma2,u0,fk,mvec,dt)
 
         call system_clock(COUNT=clock_finish)
         time_fk = float(clock_finish - clock_start) / float(clock(2))
@@ -656,7 +652,7 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         write(*,*) "U0",u0(cs(cs(2)+1)),u0(cs(cs(2)+1)+nnt)
         write(*,*) "U1",u1(cs(cs(2)+1)),u1(cs(cs(2)+1)+nnt)
         write(*,*) "U2",u2(cs(cs(2)+1)),u2(cs(cs(2)+1)+nnt)
-        !read(*,*)
+        read(*,*)
         
         call system_clock(COUNT=clock_start,COUNT_RATE=clock(2)) 
         u2 = 2.0d0 * u1 - u0 + dt2*(fe - fk - fd)
@@ -793,8 +789,7 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
     write(*,'(A,F8.4,A)')'Mean time-step CPU time= ', &
         time_total / dfloat(nts - 1),' s'
 
-    call DEALLOCATE_ALL(ne,u1,u2,vel,acc,fk,fe,fd,snl,disout,&
-        update_index_el_az,nodal_counter)   
+    call DEALLOCATE_ALL(ne,u1,u2,vel,acc,fk,fe,fd,snl,disout,update_index_el_az,nodal_counter)   
     if (nf.gt.0) deallocate(func_value) 
     if (nnode_dirX.gt.0) deallocate(inode_dirX)
     if (nnode_dirY.gt.0) deallocate(inode_dirY)

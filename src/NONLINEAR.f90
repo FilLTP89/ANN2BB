@@ -168,7 +168,7 @@ module nonlinear2d
             ! intent OUT
             real*8, intent(out), dimension(4,4) :: DEL
             !
-            DEL(:,:) = 0.d0
+            DEL(:,:) = 0.0d0
             DEL(1,1) = lambda+2*mu
             DEL(2,2) = lambda+2*mu
             DEL(3,3) = lambda+2*mu

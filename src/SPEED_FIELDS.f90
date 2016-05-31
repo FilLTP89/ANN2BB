@@ -138,7 +138,7 @@ module fields
             allocate(dstrain(3,nn,nn))
             allocate(dstrial(4,nn,nn))
             ! INITIALIZATION
-            call lgl(nn,ct,ww,dd)
+            call LGL(nn,ct,ww,dd)
             ! LOOP OVER GLL
             dxdx = 0.0d0
             dxdy = 0.0d0
