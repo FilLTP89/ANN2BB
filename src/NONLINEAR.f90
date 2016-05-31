@@ -145,8 +145,8 @@ module nonlinear2d
                     do ip = 1,nn
                         is = nn*(iq-1)+ip
                         in = cs(cs(ie-1)+is)
-                        fk(in)     = fk(in)     + fx(ip,iq)
-                        fk(in+nnt) = fk(in+nnt) + fy(ip,iq)
+                        fk(in)     = fk(in)     + fx(ip,iq)/mvec(in)
+                        fk(in+nnt) = fk(in+nnt) + fy(ip,iq)/mvec(in+nnt)
                     enddo
                 enddo
                 ! DEALLOCATE ELEMENT-WISE VARIABLES

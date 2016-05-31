@@ -85,10 +85,9 @@
 !> @param[in] node_PDRM_el
 !> @param[in] glob_drm_x
 !> @param[in] glob_drm_y
-
 subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    &
-    alfa1,beta1,gamma1,alfa2,beta2,gamma2,delta1,delta2,&
-    cs_nnz_bc,cs_bc,nl_dirX,tag_dirX,nl_dirY,tag_dirY,nl_abc,tag_abc,nelem_abc,nedge_abc,       &
+    alfa1,beta1,gamma1,alfa2,beta2,gamma2,delta1,delta2,cs_nnz_bc,cs_bc,        &
+    nl_dirX,tag_dirX,nl_dirY,tag_dirY,nl_abc,tag_abc,nelem_abc,nedge_abc,       &
     ielem_abc,iedge_abc,nf,func_type,func_indx,nfunc_data,func_data,tag_func,   &
     nf_drm,func_type_drm,func_indx_drm,nfunc_data_drm,func_data_drm,ndt_monitor,&
     N_TOT,IN_TOT,JN_TOT,NNZ_N,mvec,Fmat,u0,v1,nts,dt,nmonit,node_m,nsnap,       &
@@ -300,7 +299,8 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
     end interface
     
     pi = 4.d0*datan(1.d0)
-    
+    write(*,*) "sdeg_mat",sdeg_mat
+    read(*,*)
     IN_TOT = IN_TOT -1
 
     ne = cs(0) -1
@@ -504,10 +504,8 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
 
     do its = 0,nts
 
-        fk   = 0.0d0 
-
-        ! Initialize time step    
-        fd   = 0.d0 
+        fk = 0.0d0 
+        fd = 0.d0 
         if (nl_sism.gt.0) sism=0.0d0
 
         call system_clock(COUNT=start,COUNT_RATE=clock(2))
@@ -610,18 +608,6 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         write(*,'(A)') '*************************************************************'
         write(*,'(A)') '----------COMPUTING NON LINEAR INTERNAL FORCES---------------'
         !
-        call system_clock(COUNT=clock_start,COUNT_RATE=clock(2))  
-        
-        ! DISPLACEMENT FORMULATION
-        call MAKE_INTERNAL_FORCES_NL(nnt,ne,nm,cs_nnz,cs,sdeg_mat,snl,&
-            alfa1,alfa2,beta1,beta2,gamma1,gamma2,u1,fk,mvec,dt)
-        fk=fk/mvec
-        write(*,*) "DEBUG: NODE",cs(cs(2)+1),cs(cs(2)+1)+nnt
-        write(*,*) "FK_NL",fk(cs(cs(3-1)+1)),fk(cs(cs(3-1)+1)+nnt)
-        read(*,*)
-        !
-        call system_clock(COUNT=clock_finish)
-        time_fk = float(clock_finish - clock_start) / float(clock(2))
         !
         write(*,'(A)') 'Non Linear Internal Forces: OK'
         ! COMPUTE EXTERNAL SEISMIC FORCES sism(fe) 
@@ -642,12 +628,36 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
             write(*,'(A)') 'Seismic External Forces: OK'
         endif
         
+        !*******************************************************************************************
         !COMPUTE VISCID FORCES fd = N_TOT*v1
+        !*******************************************************************************************
+        
         call system_clock(COUNT=clock_start,COUNT_RATE=clock(2)) 
         call MATMUL_SPARSE(N_TOT, NNZ_N, JN_TOT, IN_TOT, fd, 2*nnt, v1, 2*nnt, error)
         call system_clock(COUNT=clock_finish)
         time_fd = float(clock_finish - clock_start) / float(clock(2))
+        
+        !*******************************************************************************************
+        ! COMPUTE NONLINEAR INTERNAL FORCES
+        !*******************************************************************************************
+        call system_clock(COUNT=clock_start,COUNT_RATE=clock(2)) 
+        call MAKE_INTERNAL_FORCES_NL(nnt,ne,nm,cs_nnz,cs,sdeg_mat,snl,&
+            alfa1,alfa2,beta1,beta2,gamma1,gamma2,u1,fk,mvec,dt)
+
+        call system_clock(COUNT=clock_finish)
+        time_fk = float(clock_finish - clock_start) / float(clock(2))
+
+        !*******************************************************************************************
         ! SOLVE SYSTEM
+        !*******************************************************************************************
+        write(*,*) "DEBUG: NODE",cs(cs(2)+1),cs(cs(2)+1)+nnt
+        write(*,*) "FK_NL",fk(cs(cs(2)+1)),fk(cs(cs(2)+1)+nnt)
+        write(*,*) "MVEC",mvec(cs(cs(2)+1)),mvec(cs(cs(2)+1)+nnt)
+        write(*,*) "U0",u0(cs(cs(2)+1)),u0(cs(cs(2)+1)+nnt)
+        write(*,*) "U1",u1(cs(cs(2)+1)),u1(cs(cs(2)+1)+nnt)
+        write(*,*) "U2",u2(cs(cs(2)+1)),u2(cs(cs(2)+1)+nnt)
+        !read(*,*)
+        
         call system_clock(COUNT=clock_start,COUNT_RATE=clock(2)) 
         u2 = 2.0d0 * u1 - u0 + dt2*(fe - fk - fd)
         call system_clock(COUNT=clock_finish)

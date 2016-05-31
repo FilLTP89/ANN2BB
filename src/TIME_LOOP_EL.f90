@@ -100,6 +100,7 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
     nnode_BD,nMDRM,tag_MDRM,val_PDRM,fun_ord,node_PDRM,glob_x,glob_y,           &
     option_out_var,test,nelem_dg,IDG_only_uv,JDG_only_uv,MDG_only_uv,nnz_dg_only_uv)    
     !
+    use fields
     use write_output
     !
     implicit none
@@ -141,7 +142,7 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
     real*8, dimension(ne)                   :: alfa1,beta1,gamma1,delta1
     real*8, dimension(ne)                   :: alfa2,beta2,gamma2,delta2
     real*8, dimension(nnt)                  :: xs,ys
-    real*8, dimension(nm,8)                 :: prop_mat
+    real*8, dimension(nm,9)                 :: prop_mat
     real*8, dimension(2*nnt)                :: mvec,u0,v1
     real*8, dimension(NNZ_K)                :: K_TOT
     real*8, dimension(NNZ_N)                :: N_TOT
@@ -568,9 +569,6 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
 
                 !-----------------------------------------------------------------------------------------------------
         else
-            do fn = 1,nf
-            enddo                                                                                          !DRM Scandella 02.11.2005 
-!             
             if (nnode_neuX.gt.0) then
                 do i = 1,nnode_neuX
                     in = inode_neuX(i)                 
@@ -668,9 +666,6 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         call system_clock(COUNT=clock_start,COUNT_RATE=clock(2))   
         !Compute fk = K_TOT*u1
         call MATMUL_SPARSE(K_TOT, NNZ_K, JK_TOT, IK_TOT, fk, 2*nnt, u1, 2*nnt, error)
-        write(*,*) "DEBUG: NODE",cs(cs(2)+1),cs(cs(2)+1)+nnt
-        write(*,*) "FK_EL",fk(cs(cs(3-1)+1)),fk(cs(cs(3-1)+1)+nnt)
-        read(*,*) 
         call system_clock(COUNT=clock_finish)
         time_fk = float(clock_finish - clock_start) / float(clock(2))
         call system_clock(COUNT=clock_start,COUNT_RATE=clock(2)) 
@@ -680,6 +675,13 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         time_fd = float(clock_finish - clock_start) / float(clock(2))
         call system_clock(COUNT=clock_start,COUNT_RATE=clock(2)) 
         fe = fe + sism/mvec
+        write(*,*) "DEBUG: NODE",cs(cs(2)+1),cs(cs(2)+1)+nnt
+        write(*,*) "FK_EL",fk(cs(cs(3-1)+1)),fk(cs(cs(3-1)+1)+nnt)
+        write(*,*) "MVEC",mvec(cs(cs(2)+1)),mvec(cs(cs(2)+1)+nnt)
+        write(*,*) "U0",u0(cs(cs(3-1)+1)),u0(cs(cs(3-1)+1)+nnt)
+        write(*,*) "U1",u1(cs(cs(3-1)+1)),u1(cs(cs(3-1)+1)+nnt)
+        write(*,*) "U2",u2(cs(cs(3-1)+1)),u2(cs(cs(3-1)+1)+nnt)
+        !read(*,*)
 
         u2 = 2.0d0 * u1 - u0 + dt2*(fe - fk - fd)
         call system_clock(COUNT=clock_finish)
@@ -765,7 +767,7 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         endif                                           !DRM Scandella 16.11.2005
 
 
-        !********************************************************************************************
+        !*******************************************************************************************
         ! UPDATE
         !********************************************************************************************
         if(its .gt. 0) then
