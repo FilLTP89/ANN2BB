@@ -614,7 +614,11 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         
         ! DISPLACEMENT FORMULATION
         call MAKE_INTERNAL_FORCES_NL(nnt,ne,nm,cs_nnz,cs,sdeg_mat,snl,&
-            alfa1,alfa2,beta1,beta2,gamma1,gamma2,v1,fk,mvec,dt)
+            alfa1,alfa2,beta1,beta2,gamma1,gamma2,u1,fk,mvec,dt)
+        fk=fk/mvec
+        write(*,*) "DEBUG: NODE",cs(cs(2)+1),cs(cs(2)+1)+nnt
+        write(*,*) "FK_NL",fk(cs(cs(3-1)+1)),fk(cs(cs(3-1)+1)+nnt)
+        read(*,*)
         !
         call system_clock(COUNT=clock_finish)
         time_fk = float(clock_finish - clock_start) / float(clock(2))

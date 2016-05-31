@@ -76,12 +76,12 @@ module nonlinear2d
                 call ALLOINIT_LOC_NL(ie,nnt,cs,cs_nnz,nn,ct,ww,dd,dxdx,dxdy,dydx,dydy,dstrain,dstrial, &
                     fx,fy,displ,alfa1(ie),alfa2(ie),beta1(ie),beta2(ie),gamma1(ie),gamma2(ie),&
                     snl(ie)%lambda,snl(ie)%mu)
-                    dstrain = dstrain*dt
-                    dstrial = dstrial*dt
+!                    dstrain = dstrain*dt
+!                    dstrial = dstrial*dt
 !                dstrain(:,:,:) = dstrain(:,:,:) - snl(ie)%strain(:,:,:)
 !                dstrial(:,:,:) = dstrial(:,:,:) - snl(ie)%stress(:,:,:)!
-                snl(ie)%strain(:,:,:) = snl(ie)%strain(:,:,:) + dstrain(:,:,:)
-                snl(ie)%stress(:,:,:) = snl(ie)%stress(:,:,:) + dstrial(:,:,:) 
+                snl(ie)%strain(:,:,:) = dstrain(:,:,:)
+                snl(ie)%stress(:,:,:) = dstrial(:,:,:) 
                 !*********************************************************************************
                 ! COMPUTE STRESS
                 !*********************************************************************************
@@ -136,7 +136,6 @@ module nonlinear2d
                 !*********************************************************************************
                 ! COMPUTE LOCAL INTERNAL FORCES
                 !*********************************************************************************
-                
                 call MAKE_INTERNAL_FORCE(nn,ww,dd,dxdx,dxdy,dydx,dydy,snl(ie)%stress(1,:,:),&
                     snl(ie)%stress(2,:,:),snl(ie)%stress(4,:,:),fx,fy)
                 !*********************************************************************************
@@ -146,16 +145,13 @@ module nonlinear2d
                     do ip = 1,nn
                         is = nn*(iq-1)+ip
                         in = cs(cs(ie-1)+is)
-                        fk(in)     = fk(in)     + fx(ip,iq)/mvec(in)
-                        fk(in+nnt) = fk(in+nnt) + fy(ip,iq)/mvec(in+nnt)
+                        fk(in)     = fk(in)     + fx(ip,iq)
+                        fk(in+nnt) = fk(in+nnt) + fy(ip,iq)
                     enddo
                 enddo
                 ! DEALLOCATE ELEMENT-WISE VARIABLES
                 call DEALLOCATE_LOC(ct,ww,dd,dxdx,dxdy,dydx,dydy,dstrain,dstrial,fx,fy)
             enddo
-            write(*,*) "DEBUG: NODE",cs(cs(2)+1),cs(cs(2)+1)+nnt
-            write(*,*) "FK_NL",fk(cs(cs(3-1)+1)),fk(cs(cs(3-1)+1)+nnt)
-            read(*,*)
 
             return
             !

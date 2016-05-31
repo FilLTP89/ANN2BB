@@ -76,7 +76,7 @@ subroutine MAKE_STIFF_MATRIX(nnod,length,I_STIFF,J_STIFF,M_STIFF, &
         det_j = 0.d0
 
         call LGL(nn,ct,ww,dd)
-
+        
         do i = 1,nn
             dxdy_el(i) = beta1(ie) + gamma1(ie) * ct(i)
             dydy_el(i) = beta2(ie) + gamma2(ie) * ct(i)
