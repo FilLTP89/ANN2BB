@@ -56,7 +56,7 @@ subroutine MAKE_STRESS(nn,lambda,mu,duxdx,duxdy,duydx,duydy,sxx,syy,szz,sxy)
             lambda_ = lambda(ip,iq)
             sxx(ip,iq) = (lambda_ +2.0d0*mu_)*duxdx(ip,iq) + lambda_*duydy(ip,iq)
             syy(ip,iq) = (lambda_ +2.0d0*mu_)*duydy(ip,iq) + lambda_*duxdx(ip,iq)
-            szz(ip,iq) = lambda_*(duxdx(ip,iq)+duydy(ip,iq))
+            szz(ip,iq) = 0.0d0!lambda_*(duxdx(ip,iq)+duydy(ip,iq))
             sxy(ip,iq) = mu_*(duxdy(ip,iq) + duydx(ip,iq))
         enddo
     enddo

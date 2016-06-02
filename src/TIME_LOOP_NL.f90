@@ -652,7 +652,6 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         write(*,*) "U0",u0(cs(cs(2)+1)),u0(cs(cs(2)+1)+nnt)
         write(*,*) "U1",u1(cs(cs(2)+1)),u1(cs(cs(2)+1)+nnt)
         write(*,*) "U2",u2(cs(cs(2)+1)),u2(cs(cs(2)+1)+nnt)
-        read(*,*)
         
         call system_clock(COUNT=clock_start,COUNT_RATE=clock(2)) 
         u2 = 2.0d0 * u1 - u0 + dt2*(fe - fk - fd)
