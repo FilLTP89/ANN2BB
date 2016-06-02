@@ -675,13 +675,17 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         time_fd = float(clock_finish - clock_start) / float(clock(2))
         call system_clock(COUNT=clock_start,COUNT_RATE=clock(2)) 
         fe = fe + sism/mvec
+        write(*,*) "===================================================================="
         write(*,*) "DEBUG: NODE",cs(cs(2)+1),cs(cs(2)+1)+nnt
-        write(*,*) "FK_EL",fk(cs(cs(3-1)+1)),fk(cs(cs(3-1)+1)+nnt)
-        write(*,*) "MVEC",mvec(cs(cs(2)+1)),mvec(cs(cs(2)+1)+nnt)
-        write(*,*) "U0",u0(cs(cs(3-1)+1)),u0(cs(cs(3-1)+1)+nnt)
-        write(*,*) "U1",u1(cs(cs(3-1)+1)),u1(cs(cs(3-1)+1)+nnt)
-        write(*,*) "U2",u2(cs(cs(3-1)+1)),u2(cs(cs(3-1)+1)+nnt)
-        read(*,*)
+        write(*,*) "FK_EL",fk(cs(cs(2)+1)),fk(cs(cs(2)+1)+nnt)
+        write(*,*) "dt",dt,"dt2",dt2
+        write(*,*) "U0",u0(cs(cs(2)+1)),u0(cs(cs(2)+1)+nnt)
+        write(*,*) "U1",u1(cs(cs(2)+1)),u1(cs(cs(2)+1)+nnt)
+        write(*,*) "U2",u2(cs(cs(2)+1)),u2(cs(cs(2)+1)+nnt)
+        write(*,*) "VEL",vel(cs(cs(2)+1)),vel(cs(cs(2)+1)+nnt)
+        write(*,*) "V1",v1(cs(cs(2)+1)),v1(cs(cs(2)+1)+nnt)
+        write(*,*) "ACC",acc(cs(cs(2)+1)),acc(cs(cs(2)+1)+nnt)
+        write(*,*) "--------------------------------------------------------------------"
 
         u2 = 2.0d0 * u1 - u0 + dt2*(fe - fk - fd)
         call system_clock(COUNT=clock_finish)
@@ -777,7 +781,16 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
             u0 = u1
             u1 = u2
         endif    
-
+        write(*,*) "FK_EL",fk(cs(cs(2)+1)),fk(cs(cs(2)+1)+nnt)
+        write(*,*) "dt",dt,"dt2",dt2
+        write(*,*) "U0",u0(cs(cs(2)+1)),u0(cs(cs(2)+1)+nnt)
+        write(*,*) "U1",u1(cs(cs(2)+1)),u1(cs(cs(2)+1)+nnt)
+        write(*,*) "U2",u2(cs(cs(2)+1)),u2(cs(cs(2)+1)+nnt)
+        write(*,*) "VEL",vel(cs(cs(2)+1)),vel(cs(cs(2)+1)+nnt)
+        write(*,*) "V1",v1(cs(cs(2)+1)),v1(cs(cs(2)+1)+nnt)
+        write(*,*) "ACC",acc(cs(cs(2)+1)),acc(cs(cs(2)+1)+nnt)
+        write(*,*) "===================================================================="
+        !read(*,*)
     enddo
 
     if (nmonit.ge.1) then

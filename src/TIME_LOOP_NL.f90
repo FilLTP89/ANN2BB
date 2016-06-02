@@ -222,7 +222,7 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
     !************************************************
     
     integer*4,  dimension(:), allocatable   :: update_index_el_az
-    real*8,     dimension(:), allocatable   :: u1,u2,vel,acc
+    real*8,     dimension(:), allocatable   :: u1,u2,vel,acc,u_predictor
     real*8,     dimension(:), allocatable   :: fk,fe,fd
     real*8,     dimension(:), allocatable   :: sism
     real*8, dimension(2*nnt), intent(in)    :: mvec
@@ -416,7 +416,7 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
     !********************************************************************************************
     call ALLOINIT_NL_ALL(ne,sdeg_mat,nm,nnt,cs_nnz,cs,prop_mat,u1,u2,vel,acc,v1,fk,fe,fd,&
             snl,option_out_var,disout,update_index_el_az,nodal_counter)  
-    
+    allocate(u_predictor(2*nnt)) 
     dt2 = dt*dt
     number_of_threads = 1                                                !PARALLEL Kiana 06.10.2015
     call OMP_set_num_threads(number_of_threads)                          !PARALLEL Kiana 06.10.2015
@@ -637,8 +637,10 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         ! COMPUTE NONLINEAR INTERNAL FORCES
         !*******************************************************************************************
         call system_clock(COUNT=clock_start,COUNT_RATE=clock(2)) 
+        
+        u_predictor=u1+v1*dt+acc*0.5d0*dt2
         call MAKE_INTERNAL_FORCES_NL(nnt,ne,nm,cs_nnz,cs,sdeg_mat,snl,&
-            alfa1,alfa2,beta1,beta2,gamma1,gamma2,u0,fk,mvec,dt)
+            alfa1,alfa2,beta1,beta2,gamma1,gamma2,u_predictor,fk,mvec,dt)
 
         call system_clock(COUNT=clock_finish)
         time_fk = float(clock_finish - clock_start) / float(clock(2))
@@ -648,11 +650,15 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         !*******************************************************************************************
         write(*,*) "DEBUG: NODE",cs(cs(2)+1),cs(cs(2)+1)+nnt
         write(*,*) "FK_NL",fk(cs(cs(2)+1)),fk(cs(cs(2)+1)+nnt)
-        write(*,*) "MVEC",mvec(cs(cs(2)+1)),mvec(cs(cs(2)+1)+nnt)
+        write(*,*) "dt",dt,"dt2",dt2
         write(*,*) "U0",u0(cs(cs(2)+1)),u0(cs(cs(2)+1)+nnt)
         write(*,*) "U1",u1(cs(cs(2)+1)),u1(cs(cs(2)+1)+nnt)
         write(*,*) "U2",u2(cs(cs(2)+1)),u2(cs(cs(2)+1)+nnt)
-        
+        write(*,*) "VEL",vel(cs(cs(2)+1)),vel(cs(cs(2)+1)+nnt)
+        write(*,*) "V1",v1(cs(cs(2)+1)),v1(cs(cs(2)+1)+nnt)
+        write(*,*) "ACC",acc(cs(cs(2)+1)),acc(cs(cs(2)+1)+nnt)
+        write(*,*) "--------------------------------------------------------------------"
+
         call system_clock(COUNT=clock_start,COUNT_RATE=clock(2)) 
         u2 = 2.0d0 * u1 - u0 + dt2*(fe - fk - fd)
         call system_clock(COUNT=clock_finish)
@@ -678,9 +684,6 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
                 fn,tt2,0.0d0)
             enddo
         endif                                                                                       !DRM Scandella 28.10.2005 
-
-        ! write(*,*) func_value, dsin(sqrt(2.d0)*pi*tt2) 
-        ! read(*,*)
 
         !********************************************************************************************
         ! DIRICHLET BOUNDARY CONDITIONS
@@ -756,6 +759,16 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
             u1 = u2
         endif    
 
+        write(*,*) "FK_NL",fk(cs(cs(2)+1)),fk(cs(cs(2)+1)+nnt)
+        write(*,*) "dt",dt,"dt2",dt2
+        write(*,*) "U0",u0(cs(cs(2)+1)),u0(cs(cs(2)+1)+nnt)
+        write(*,*) "U1",u1(cs(cs(2)+1)),u1(cs(cs(2)+1)+nnt)
+        write(*,*) "U2",u2(cs(cs(2)+1)),u2(cs(cs(2)+1)+nnt)
+        write(*,*) "VEL",vel(cs(cs(2)+1)),vel(cs(cs(2)+1)+nnt)
+        write(*,*) "V1",v1(cs(cs(2)+1)),v1(cs(cs(2)+1)+nnt)
+        write(*,*) "ACC",acc(cs(cs(2)+1)),acc(cs(cs(2)+1)+nnt)
+        write(*,*) "===================================================================="
+        !read(*,*) 
     enddo
     write(*,'(A)') '*************************************************************'
 

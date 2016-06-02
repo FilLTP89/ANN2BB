@@ -15926,7 +15926,7 @@ write(*,'(A)')'ALL STEPS'
 	enddo !im = 1,nm
 
 	
-	do ivp = 1,nvp
+	do ivp = 1,np
 	  do i = 1,nnode
 
 		if (i.eq.1) then
