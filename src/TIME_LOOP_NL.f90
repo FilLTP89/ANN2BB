@@ -415,7 +415,7 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
     ! INITIALIZATION
     !********************************************************************************************
     call ALLOINIT_NL_ALL(ne,sdeg_mat,nm,nnt,cs_nnz,cs,prop_mat,u1,u2,vel,acc,v1,fk,fe,fd,&
-            snl,option_out_var,disout,update_index_el_az,nodal_counter)  
+        snl,option_out_var,disout,update_index_el_az,nodal_counter)  
     allocate(u_predictor(2*nnt)) 
     dt2 = dt*dt
     number_of_threads = 1                                                !PARALLEL Kiana 06.10.2015
@@ -497,10 +497,7 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
     !********************************************************************************************
     !     ALL STEPS
     !********************************************************************************************	
-
     do its = 0,nts
-
-        fk = 0.0d0 
         fd = 0.d0 
         if (nl_sism.gt.0) sism=0.0d0
 
@@ -622,6 +619,8 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
             time_fe = time_fe+float(clock_finish - clock_start) / float(clock(2))
             !
             write(*,'(A)') 'Seismic External Forces: OK'
+        else
+            write(*,*) "NO EXTERNAL SEISMIC FORCES"
         endif
         
         !*******************************************************************************************
@@ -638,10 +637,11 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         !*******************************************************************************************
         call system_clock(COUNT=clock_start,COUNT_RATE=clock(2)) 
         
-        u_predictor=u1+v1*dt+acc*0.5d0*dt2
+        !u_predictor=u1+v1*dt+acc*0.5d0*dt2
+        u_predictor=u1
+        fk(:) = 0.d0
         call MAKE_INTERNAL_FORCES_NL(nnt,ne,nm,cs_nnz,cs,sdeg_mat,snl,&
             alfa1,alfa2,beta1,beta2,gamma1,gamma2,u_predictor,fk,mvec,dt)
-
         call system_clock(COUNT=clock_finish)
         time_fk = float(clock_finish - clock_start) / float(clock(2))
 
@@ -650,7 +650,6 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         !*******************************************************************************************
         write(*,*) "DEBUG: NODE",cs(cs(2)+1),cs(cs(2)+1)+nnt
         write(*,*) "FK_NL",fk(cs(cs(2)+1)),fk(cs(cs(2)+1)+nnt)
-        write(*,*) "dt",dt,"dt2",dt2
         write(*,*) "U0",u0(cs(cs(2)+1)),u0(cs(cs(2)+1)+nnt)
         write(*,*) "U1",u1(cs(cs(2)+1)),u1(cs(cs(2)+1)+nnt)
         write(*,*) "U2",u2(cs(cs(2)+1)),u2(cs(cs(2)+1)+nnt)
@@ -690,18 +689,21 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         !********************************************************************************************
 
         if (nnode_dirX.gt.0) then
+            write(*,*) "MODIFIED DIRX"
             do i = 1,nnode_dirX
                 in = inode_dirX(i)
                 u2(in) = 0.0d0; u1(in) = 0.d0; v1(in) = 0.d0;
             enddo
         endif
 
-        if (nnode_dirY.gt.0) then
-            do i = 1,nnode_dirY
-                in = inode_dirY(i) + nnt
-                u2(in) = 0.0d0; u1(in) = 0.d0; v1(in) = 0.d0;
-            enddo
-        endif
+!        if (nnode_dirY.gt.0) then
+!            write(*,*) "MODIFIED DIRY"
+!            do i = 1,nnode_dirY
+!                in = inode_dirY(i) + nnt
+!                write(*,*) "in node: ",in
+!                u2(in) = 0.0d0; u1(in) = 0.d0; v1(in) = 0.d0;
+!            enddo
+!        endif
 
         call system_clock(COUNT=finish)
 
@@ -733,9 +735,11 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
                 do i = 1,nnode_TOT                          !DRM Scandella 16.11.2005
                     in = node_TOT(i)                          !DRM Scandella 16.11.2005
                     if (dabs(u1(in)).lt.(1.0d-99)) then
+            write(*,*) "MODIFIED drm"
                         u1(in)=0.0
                     endif
                     if (dabs(u1(in+nnt)).lt.(1.0d-99)) then
+            write(*,*) "MODIFIED drm"
                         u1(in+nnt)=0.0
                     endif
                     !open(unit_uDRM,file=file_uDRM,position='append')
@@ -760,7 +764,6 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         endif    
 
         write(*,*) "FK_NL",fk(cs(cs(2)+1)),fk(cs(cs(2)+1)+nnt)
-        write(*,*) "dt",dt,"dt2",dt2
         write(*,*) "U0",u0(cs(cs(2)+1)),u0(cs(cs(2)+1)+nnt)
         write(*,*) "U1",u1(cs(cs(2)+1)),u1(cs(cs(2)+1)+nnt)
         write(*,*) "U2",u2(cs(cs(2)+1)),u2(cs(cs(2)+1)+nnt)

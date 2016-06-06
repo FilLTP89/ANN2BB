@@ -1594,6 +1594,9 @@ program SPEED2D
     write(*,'(A)')'             Beginning of the time-loop                 '
     write(*,'(A)')
 
+    write(*,*) "============================="
+    write(*,*) "CHECK"
+
     if (.not.NLFLAG) then
         call TIME_LOOP_EL(nnod,xx_spx,yy_spx,con_nnz,con_spx,&                                                         ! 5
             nmat,tag_mat,sdeg_mat,prop_mat,&                                                                 ! 4

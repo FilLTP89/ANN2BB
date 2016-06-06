@@ -78,66 +78,66 @@ module nonlinear2d
                     snl(ie)%lambda,snl(ie)%mu)
 !                    dstrain = dstrain*dt
 !                    dstrial = dstrial*dt
-                dstrain(:,:,:) = dstrain(:,:,:) - snl(ie)%strain(:,:,:)
-                dstrial(:,:,:) = dstrial(:,:,:) - snl(ie)%stress(:,:,:)!
-                snl(ie)%strain(:,:,:) = snl(ie)%strain(:,:,:)+dstrain(:,:,:)
-!                snl(ie)%stress(:,:,:) = dstrial(:,:,:) 
+                !dstrain(:,:,:) = dstrain(:,:,:) - snl(ie)%strain(:,:,:)
+                !dstrial(:,:,:) = dstrial(:,:,:) - snl(ie)%stress(:,:,:)!
+                snl(ie)%strain(:,:,:) = dstrain(:,:,:)
+                snl(ie)%stress(:,:,:) = dstrial(:,:,:) 
                 !*********************************************************************************
                 ! COMPUTE STRESS
                 !*********************************************************************************
                 
-                do iq = 1,nn
-                    do ip = 1,nn
-                        ! STARTING POINT
-                        stress_ = snl(ie)%stress(:,ip,iq)
-                        center_ = snl(ie)%center(:,ip,iq)
-                        radius_ = snl(ie)%radius(ip,iq)
-                        lambda_ = snl(ie)%lambda(ip,iq)
-                        mu_     = snl(ie)%mu(ip,iq)
-                        syld_   = snl(ie)%syld(ip,iq)
-                        ckin_   = snl(ie)%ckin(ip,iq)
-                        kkin_   = snl(ie)%kkin(ip,iq)
-                        biso_   = snl(ie)%biso(ip,iq)
-                        rinf_   = snl(ie)%rinf(ip,iq)
-                        
-
-                        ! STRAIN INCREMENT
-                        dstrain_(:)   = zero
-                        dstrain_(1:2) = dstrain(1:2,ip,iq)
-                        dstrain_(4)   = dstrain(3,ip,iq)
-                        dpstrain_(:)  = zero
-                        ! TRIAL STRESS INCREMENT
-                        dstrial_(:)   = zero
-                        dstrial_(:)   = dstrial(:,ip,iq)
-                        
-                        ! CHECK PLASTICITY
-                        call check_plasticity(dstrial_,stress_,center_,radius_,&
-                            syld_,st_epl,alpha_epl)
-                        ! PLASTIC CORRECTION
-                        if (st_epl) then
-                            write(*,*) "alpha_epl",alpha_epl
-                            dstrain_(:) = (one-alpha_epl)*dstrain_(:)
-                            call plastic_corrector(dstrain_,dstrial_,center_,radius_,syld_,&
-                                biso_,rinf_,ckin_,kkin_,mu_,lambda_,dpstrain_)
-                        endif
-                        ! STRESS VECTOR
-                        snl(ie)%stress(:,ip,iq) = dstrial_(:)
-                        ! CENTER
-                        snl(ie)%center(:,ip,iq) = center_(:)
-                        ! RADIUS
-                        snl(ie)%radius(ip,iq)   = radius_
-                        ! PLASTIC STRAIN VECTOR
-                        snl(ie)%plastic_strain(:,ip,iq) = snl(ie)%plastic_strain(:,ip,iq) + &
-                            dpstrain_(:)
-                        
-                    enddo
-                enddo
+!                do iq = 1,nn
+!                    do ip = 1,nn
+!                        ! STARTING POINT
+!                        stress_ = snl(ie)%stress(:,ip,iq)
+!                        center_ = snl(ie)%center(:,ip,iq)
+!                        radius_ = snl(ie)%radius(ip,iq)
+!                        lambda_ = snl(ie)%lambda(ip,iq)
+!                        mu_     = snl(ie)%mu(ip,iq)
+!                        syld_   = snl(ie)%syld(ip,iq)
+!                        ckin_   = snl(ie)%ckin(ip,iq)
+!                        kkin_   = snl(ie)%kkin(ip,iq)
+!                        biso_   = snl(ie)%biso(ip,iq)
+!                        rinf_   = snl(ie)%rinf(ip,iq)
+!                        
+!
+!                        ! STRAIN INCREMENT
+!                        dstrain_(:)   = zero
+!                        dstrain_(1:2) = dstrain(1:2,ip,iq)
+!                        dstrain_(4)   = dstrain(3,ip,iq)
+!                        dpstrain_(:)  = zero
+!                        ! TRIAL STRESS INCREMENT
+!                        dstrial_(:)   = zero
+!                        dstrial_(:)   = dstrial(:,ip,iq)
+!                        
+!                        ! CHECK PLASTICITY
+!                        call check_plasticity(dstrial_,stress_,center_,radius_,&
+!                            syld_,st_epl,alpha_epl)
+!                        ! PLASTIC CORRECTION
+!                        if (st_epl) then
+!                            write(*,*) "alpha_epl",alpha_epl
+!                            dstrain_(:) = (one-alpha_epl)*dstrain_(:)
+!                            call plastic_corrector(dstrain_,dstrial_,center_,radius_,syld_,&
+!                                biso_,rinf_,ckin_,kkin_,mu_,lambda_,dpstrain_)
+!                        endif
+!                        ! STRESS VECTOR
+!                        snl(ie)%stress(:,ip,iq) = dstrial_(:)
+!                        ! CENTER
+!                        snl(ie)%center(:,ip,iq) = center_(:)
+!                        ! RADIUS
+!                        snl(ie)%radius(ip,iq)   = radius_
+!                        ! PLASTIC STRAIN VECTOR
+!                        snl(ie)%plastic_strain(:,ip,iq) = snl(ie)%plastic_strain(:,ip,iq) + &
+!                            dpstrain_(:)
+!                        
+!                    enddo
+!                enddo
                 
                 !*********************************************************************************
                 ! COMPUTE LOCAL INTERNAL FORCES
                 !*********************************************************************************
-                call MAKE_INTERNAL_FORCE(nn,ww,dd,dxdx,dxdy,dydx,dydy,snl(ie)%stress(1,:,:),&
-                    snl(ie)%stress(2,:,:),snl(ie)%stress(4,:,:),fx,fy)
+                call MAKE_INTERNAL_FORCE(nn,ww,dd,dxdx,dxdy,dydx,dydy,dstrial(1,:,:),&
+                    dstrial(2,:,:),dstrial(4,:,:),fx,fy)
                 !*********************************************************************************
                 ! COMPUTE LOCAL INTERNAL FORCES
                 !*********************************************************************************

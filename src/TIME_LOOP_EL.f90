@@ -499,7 +499,6 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
     !********************************************************************************************
     !     ALL STEPS
     !********************************************************************************************	
-    
     do its = 0,nts 
 
         fk = 0.d0; fd = 0.d0; sism = 0.d0;
@@ -678,7 +677,6 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         write(*,*) "===================================================================="
         write(*,*) "DEBUG: NODE",cs(cs(2)+1),cs(cs(2)+1)+nnt
         write(*,*) "FK_EL",fk(cs(cs(2)+1)),fk(cs(cs(2)+1)+nnt)
-        write(*,*) "dt",dt,"dt2",dt2
         write(*,*) "U0",u0(cs(cs(2)+1)),u0(cs(cs(2)+1)+nnt)
         write(*,*) "U1",u1(cs(cs(2)+1)),u1(cs(cs(2)+1)+nnt)
         write(*,*) "U2",u2(cs(cs(2)+1)),u2(cs(cs(2)+1)+nnt)
@@ -714,18 +712,21 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         !********************************************************************************************
 
         if (nnode_dirX.gt.0) then
+            write(*,*) "MODIFIED DIRX"
             do i = 1,nnode_dirX
                 in = inode_dirX(i)
                 u2(in) = 0.0d0; u1(in) = 0.d0; v1(in) = 0.d0;
             enddo
         endif
 
-        if (nnode_dirY.gt.0) then
-            do i = 1,nnode_dirY
-                in = inode_dirY(i) + nnt
-                u2(in) = 0.0d0; u1(in) = 0.d0; v1(in) = 0.d0;
-            enddo
-        endif
+!        if (nnode_dirY.gt.0) then
+!            write(*,*) "MODIFIED DIRY"
+!            do i = 1,nnode_dirY
+!                in = inode_dirY(i) + nnt
+!                write(*,*) "in node: ",in
+!                u2(in) = 0.0d0; u1(in) = 0.d0; v1(in) = 0.d0;
+!            enddo
+!        endif
 
         call system_clock(COUNT=finish)
 
@@ -762,6 +763,7 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
                     if (dabs(u1(in+nnt)).lt.(1.0d-99)) then
                         u1(in+nnt)=0.0
                     endif
+            write(*,*) "MODIFIED drm"
                     !open(unit_uDRM,file=file_uDRM,position='append')
                     write(unit_uDRM(i),'(3E16.8)') &          !DRM Scandella 16.11.2005
                         tt1,u1(in),u1(in+nnt)             !DRM Scandella 16.11.2005
@@ -782,7 +784,6 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
             u1 = u2
         endif    
         write(*,*) "FK_EL",fk(cs(cs(2)+1)),fk(cs(cs(2)+1)+nnt)
-        write(*,*) "dt",dt,"dt2",dt2
         write(*,*) "U0",u0(cs(cs(2)+1)),u0(cs(cs(2)+1)+nnt)
         write(*,*) "U1",u1(cs(cs(2)+1)),u1(cs(cs(2)+1)+nnt)
         write(*,*) "U2",u2(cs(cs(2)+1)),u2(cs(cs(2)+1)+nnt)
