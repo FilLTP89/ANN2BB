@@ -416,7 +416,6 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
     !********************************************************************************************
     call ALLOINIT_NL_ALL(ne,sdeg_mat,nm,nnt,cs_nnz,cs,prop_mat,u1,u2,vel,acc,v1,fk,fe,fd,&
         snl,option_out_var,disout,update_index_el_az,nodal_counter)  
-    allocate(u_predictor(2*nnt)) 
     dt2 = dt*dt
     number_of_threads = 1                                                !PARALLEL Kiana 06.10.2015
     call OMP_set_num_threads(number_of_threads)                          !PARALLEL Kiana 06.10.2015
@@ -493,7 +492,8 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
                 fn,dt,0.d0)
         enddo                                                                                          !DRM Scandella 02.11.2005 
     endif                                                                                            !DRM Scandella 02.11.2005  
-
+    allocate(u_predictor(2*nnt))
+    
     !********************************************************************************************
     !     ALL STEPS
     !********************************************************************************************	
@@ -637,11 +637,12 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         !*******************************************************************************************
         call system_clock(COUNT=clock_start,COUNT_RATE=clock(2)) 
         
+        
         !u_predictor=u1+v1*dt+acc*0.5d0*dt2
-        u_predictor=u1
-        fk(:) = 0.d0
+        
+        fk(:) = 0.0d0
         call MAKE_INTERNAL_FORCES_NL(nnt,ne,nm,cs_nnz,cs,sdeg_mat,snl,&
-            alfa1,alfa2,beta1,beta2,gamma1,gamma2,u_predictor,fk,mvec,dt)
+            alfa1,alfa2,beta1,beta2,gamma1,gamma2,u1,fk,mvec,dt)
         call system_clock(COUNT=clock_finish)
         time_fk = float(clock_finish - clock_start) / float(clock(2))
 

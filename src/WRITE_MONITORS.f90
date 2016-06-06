@@ -441,8 +441,10 @@ module write_output
 
             return
         end subroutine WRITE_MONITOR_EL
-        
-        ! nonlinear output 
+       
+        !******************************************************************************************
+        ! NONLINEAR OUTPUT 
+        !******************************************************************************************
         subroutine WRITE_MONITOR_NL(unit_disp,unit_vel,unit_acc,unit_strain,unit_stress,unit_omega,&
             option_out_var,nmonit,ndt_monitor,node_m,nm,ne,nnt,cs,cs_nnz,sdeg_mat,snl,its,tt1,&
             dis,vel,acc,nodal_counter,disout)
@@ -471,6 +473,14 @@ module write_output
             real*8                                        :: sxx_out,syy_out,szz_out,sxy_out
             real*8                                        :: exx_out,eyy_out,gxy_out
             real*8                                        :: epxx_out,epyy_out,epzz_out,gpxy_out
+           
+
+            disout%stress(:,:) = 0.0d0
+            disout%strain(:,:) = 0.0d0
+            disout%plastic_strain(:,:) = 0.0d0 
+            !***********************************************************************************
+            ! DISPLACEMENT
+            !***********************************************************************************
             
             if (option_out_var(1).eq.1) then   
                 do i = 1,nmonit
@@ -481,6 +491,10 @@ module write_output
                 enddo
             endif
 
+            !***********************************************************************************
+            ! VELOCITY
+            !***********************************************************************************
+            
             if (option_out_var(2).eq.1) then   
                 do i = 1,nmonit
                     in = node_m(i)
@@ -489,6 +503,10 @@ module write_output
                     write(unit_vel(i),'(3ES16.6)') tt1,vel(in),vel(in+nnt)
                 enddo
             endif
+            
+            !***********************************************************************************
+            ! ACCELERATION
+            !***********************************************************************************
 
             if (option_out_var(3).eq.1) then   
                 do i = 1,nmonit
@@ -498,7 +516,11 @@ module write_output
                     write(unit_acc(i),'(3ES16.6)') tt1,acc(in),acc(in+nnt)
                 enddo
             endif
-            ! STRESS OUTPUT
+
+            !***********************************************************************************
+            ! STRESS 
+            !***********************************************************************************
+            
             if (option_out_var(4).eq.1) then
 
                 call UPDATE_OUT_STRESS(ne,nnt,cs_nnz,cs,nm,sdeg_mat,snl,disout)
@@ -515,7 +537,12 @@ module write_output
                     write(unit_stress(i),'(5ES16.8)') tt1,sxx_out,syy_out,sxy_out,szz_out
                 enddo
             endif
-            ! STRAIN OUTPUT
+            
+            
+            !***********************************************************************************
+            ! STRAIN 
+            !***********************************************************************************
+            
             if (option_out_var(5).eq.1) then
 
                 call UPDATE_OUT_STRAIN(ne,nnt,cs_nnz,cs,nm,sdeg_mat,snl,disout)
@@ -530,7 +557,11 @@ module write_output
                     write(unit_strain(i),'(4ES16.8)') tt1,exx_out,eyy_out,gxy_out 
                 enddo
             endif
-            ! PLASTIC STRAIN OUTPUT 
+
+            !***********************************************************************************
+            ! PLASTIC STRAIN 
+            !***********************************************************************************
+            
             if (option_out_var(5).eq.2) then
 
                 call UPDATE_OUT_PLASTIC_STRAIN(ne,nnt,cs_nnz,cs,nm,sdeg_mat,snl,disout)
@@ -547,7 +578,11 @@ module write_output
                     write(unit_strain(i),'(5ES16.8)') tt1,epxx_out,epyy_out,gpxy_out,epzz_out 
                 enddo
             endif
-            ! STRAIN-PLASTIC STRAIN OUTPUT 
+            
+            !***********************************************************************************
+            ! STRAIN & PLASTIC STRAIN 
+            !***********************************************************************************
+            
             if (option_out_var(5).eq.3) then
 
                 call UPDATE_OUT_STRAIN(ne,nnt,cs_nnz,cs,nm,sdeg_mat,snl,disout)
