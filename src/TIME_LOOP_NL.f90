@@ -649,15 +649,6 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         !*******************************************************************************************
         ! SOLVE SYSTEM
         !*******************************************************************************************
-        write(*,*) "DEBUG: NODE",cs(cs(2)+1),cs(cs(2)+1)+nnt
-        write(*,*) "FK_NL",fk(cs(cs(2)+1)),fk(cs(cs(2)+1)+nnt)
-        write(*,*) "U0",u0(cs(cs(2)+1)),u0(cs(cs(2)+1)+nnt)
-        write(*,*) "U1",u1(cs(cs(2)+1)),u1(cs(cs(2)+1)+nnt)
-        write(*,*) "U2",u2(cs(cs(2)+1)),u2(cs(cs(2)+1)+nnt)
-        write(*,*) "VEL",vel(cs(cs(2)+1)),vel(cs(cs(2)+1)+nnt)
-        write(*,*) "V1",v1(cs(cs(2)+1)),v1(cs(cs(2)+1)+nnt)
-        write(*,*) "ACC",acc(cs(cs(2)+1)),acc(cs(cs(2)+1)+nnt)
-        write(*,*) "--------------------------------------------------------------------"
 
         call system_clock(COUNT=clock_start,COUNT_RATE=clock(2)) 
         u2 = 2.0d0 * u1 - u0 + dt2*(fe - fk - fd)
@@ -690,7 +681,6 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         !********************************************************************************************
 
         if (nnode_dirX.gt.0) then
-            write(*,*) "MODIFIED DIRX"
             do i = 1,nnode_dirX
                 in = inode_dirX(i)
                 u2(in) = 0.0d0; u1(in) = 0.d0; v1(in) = 0.d0;
@@ -736,11 +726,9 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
                 do i = 1,nnode_TOT                          !DRM Scandella 16.11.2005
                     in = node_TOT(i)                          !DRM Scandella 16.11.2005
                     if (dabs(u1(in)).lt.(1.0d-99)) then
-            write(*,*) "MODIFIED drm"
                         u1(in)=0.0
                     endif
                     if (dabs(u1(in+nnt)).lt.(1.0d-99)) then
-            write(*,*) "MODIFIED drm"
                         u1(in+nnt)=0.0
                     endif
                     !open(unit_uDRM,file=file_uDRM,position='append')
@@ -764,15 +752,6 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
             u1 = u2
         endif    
 
-        write(*,*) "FK_NL",fk(cs(cs(2)+1)),fk(cs(cs(2)+1)+nnt)
-        write(*,*) "U0",u0(cs(cs(2)+1)),u0(cs(cs(2)+1)+nnt)
-        write(*,*) "U1",u1(cs(cs(2)+1)),u1(cs(cs(2)+1)+nnt)
-        write(*,*) "U2",u2(cs(cs(2)+1)),u2(cs(cs(2)+1)+nnt)
-        write(*,*) "VEL",vel(cs(cs(2)+1)),vel(cs(cs(2)+1)+nnt)
-        write(*,*) "V1",v1(cs(cs(2)+1)),v1(cs(cs(2)+1)+nnt)
-        write(*,*) "ACC",acc(cs(cs(2)+1)),acc(cs(cs(2)+1)+nnt)
-        write(*,*) "===================================================================="
-        !read(*,*) 
     enddo
     write(*,'(A)') '*************************************************************'
 

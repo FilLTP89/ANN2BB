@@ -7,9 +7,9 @@ module nonlinear2d
     real*8, parameter                   :: zero=0.d0,one=1.0d0
     real*8, parameter                   :: half=0.5d0,two=2.0d0,three=3.0d0
     !
-    real*8, parameter :: FTOL = 0.000001D0
-    real*8, parameter :: LTOL = 0.000001D0
-    real*8, parameter :: STOL = 1.0D0
+    real*8, parameter :: FTOL = 0.001D0
+    real*8, parameter :: LTOL = 0.001D0
+    real*8, parameter :: STOL = 0.000001D0
     !
     real*8, parameter, dimension(4,4)   :: MM = reshape((/ &
         one , zero, zero, zero, &
@@ -125,7 +125,6 @@ module nonlinear2d
                             syld_,st_epl,alpha_epl)
                         ! PLASTIC CORRECTION
                         if (st_epl) then
-                            write(*,*) "alpha_epl",alpha_epl
                             dstrain_(:) = (one-alpha_epl)*dstrain_(:)
                             call plastic_corrector(dstrain_,dstrial_,center_,radius_,syld_,&
                                 biso_,rinf_,ckin_,kkin_,mu_,lambda_,dpstrain_)
@@ -361,7 +360,6 @@ module nonlinear2d
             ! ON-LOCUS STRESS STATE 
             dtrial=stress0+dtrial*alpha_epl
             call mises_yld_locus(dtrial,center,radius,syld,FS,gradFS)
-            write(*,*) "plasticity",plasticity
         end subroutine check_plasticity
         
         subroutine plastic_corrector(dEps_alpha,stress,center,syld, &
@@ -387,10 +385,6 @@ module nonlinear2d
             deltaTmin = 0.001d0
             flag_fail =.true.
             do while (Ttot.lt.one)
-                write(*,*) "BEFORE------"
-                write(*,*) "flag_fail",flag_fail
-                write(*,*) "deltaTk",deltaTk
-                write(*,*) "Ttot",Ttot
                 Resk  = zero
                 dS1   = zero
                 dX1   = zero
@@ -429,20 +423,17 @@ module nonlinear2d
                 Resk = half*max(epsilon(Resk),err0/err1,err2/err3)
                 
                 if (Resk.le.STOL) then
-                    write(*,*) "RESK",Resk,"< STOL",STOL 
                     stress = S1
                     center = X1
                     radius = R1
                     dEpl   = dEpl+dEpl1
 
                     call mises_yld_locus (stress, center,radius,syld,FM,gradFM)
-                    write(*,*) "before drift - FM:",FM
                     if (FM.gt.FTOL) then
                         call drift_corr(stress,center,radius,syld,&
                                 biso,Rinf,Ckin,kkin,lambda,mu,dEpl)
                     endif
                     qq = min(0.9d0*sqrt(STOL/Resk),1.1d0)
-                    write(*,*) "qq",qq
                     if (flag_fail) then
                         qq = min(qq,one)
                         write(*,*) "qq",qq
@@ -450,21 +441,14 @@ module nonlinear2d
                     flag_fail=.false.
                     Ttot=Ttot+deltaTk
                     deltaTk=qq*deltaTk
-                    write(*,*) "deltaT",deltaTk
                     deltaTk=max(qq*deltaTk,deltaTmin)
-                    write(*,*) "deltaT",deltaTk
                     deltaTk=min(deltaTk,one-Ttot)
-                    write(*,*) "deltaT",deltaTk
                 else
                     qq=max(0.9d0*sqrt(STOL/Resk),0.1d0)
                     deltaTk=max(qq*deltaTk,deltaTmin)
                     flag_fail=.true.
 
                 end if
-                write(*,*) "BEFORE------"
-                write(*,*) "flag_fail",flag_fail
-                write(*,*) "deltaTk",deltaTk
-                write(*,*) "Ttot",Ttot
             end do
         end subroutine plastic_corrector
 
@@ -651,9 +635,7 @@ module nonlinear2d
                     gradF0 = gradF1
                 endif
             enddo
-            if (abs(F1).le.FTOL) then
-                write(*,*) "drift corrected!",F1
-            else 
+            if (abs(F1).gt.FTOL) then
                 write(*,*) "DRIFT NOT CORRECTED"
                 read(*,*)
             endif 
