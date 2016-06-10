@@ -10,6 +10,8 @@ module nonlinear2d
     real*8, parameter :: FTOL = 0.001D0
     real*8, parameter :: LTOL = 0.001D0
     real*8, parameter :: STOL = 0.000001D0
+    real*8, parameter :: PSI  = 5.0D0
+    real*8, parameter :: OMEGA= 1.0D6
     !
     real*8, parameter, dimension(4,4)   :: MM = reshape((/ &
         one , zero, zero, zero, &
@@ -55,7 +57,7 @@ module nonlinear2d
             real*8,     dimension(:,:,:), allocatable   :: dstrain,dstrial
             !
             real*8, dimension(4)                        :: stress_,dstrial_,center_
-            real*8, dimension(4)                        :: dstrain_,dpstrain_ 
+            real*8, dimension(4)                        :: dstrain_,dpstrain_,pstrain_
             real*8                                      :: radius_,syld_ 
             real*8                                      :: lambda_,mu_     
             real*8                                      :: ckin_,kkin_  
@@ -99,23 +101,22 @@ module nonlinear2d
                 do iq = 1,nn
                     do ip = 1,nn
                         ! STARTING POINT
-                        stress_ = snl(ie)%stress(:,ip,iq)
-                        center_ = snl(ie)%center(:,ip,iq)
-                        radius_ = snl(ie)%radius(ip,iq)
-                        lambda_ = snl(ie)%lambda(ip,iq)
-                        mu_     = snl(ie)%mu(ip,iq)
-                        syld_   = snl(ie)%syld(ip,iq)
-                        ckin_   = snl(ie)%ckin(ip,iq)
-                        kkin_   = snl(ie)%kkin(ip,iq)
-                        biso_   = snl(ie)%biso(ip,iq)
-                        rinf_   = snl(ie)%rinf(ip,iq)
+                        stress_  = snl(ie)%stress(:,ip,iq)
+                        center_  = snl(ie)%center(:,ip,iq)
+                        radius_  = snl(ie)%radius(ip,iq)
+                        pstrain_ = snl(ie)%plastic_strain(:,ip,iq)
+                        lambda_  = snl(ie)%lambda(ip,iq)
+                        syld_    = snl(ie)%syld(ip,iq)
+                        ckin_    = snl(ie)%ckin(ip,iq)
+                        kkin_    = snl(ie)%kkin(ip,iq)
+                        biso_    = snl(ie)%biso(ip,iq)
+                        rinf_    = snl(ie)%rinf(ip,iq)
+                        mu_      = snl(ie)%mu(ip,iq)
                         
-
                         ! STRAIN INCREMENT
                         dstrain_(:)   = zero
                         dstrain_(1:2) = dstrain(1:2,ip,iq)
                         dstrain_(4)   = dstrain(3,ip,iq)
-                        dpstrain_(:)  = zero
                         ! TRIAL STRESS INCREMENT
                         dstrial_(:)   = zero
                         dstrial_(:)   = dstrial(:,ip,iq)
@@ -127,7 +128,7 @@ module nonlinear2d
                         if (st_epl) then
                             dstrain_(:) = (one-alpha_epl)*dstrain_(:)
                             call plastic_corrector(dstrain_,dstrial_,center_,radius_,syld_,&
-                                biso_,rinf_,ckin_,kkin_,mu_,lambda_,dpstrain_)
+                                biso_,rinf_,ckin_,kkin_,mu_,lambda_,pstrain_)
                         endif
                         ! STRESS VECTOR
                         snl(ie)%stress(:,ip,iq) = dstrial_(:)
@@ -136,8 +137,7 @@ module nonlinear2d
                         ! RADIUS
                         snl(ie)%radius(ip,iq)   = radius_
                         ! PLASTIC STRAIN VECTOR
-                        snl(ie)%plastic_strain(:,ip,iq) = snl(ie)%plastic_strain(:,ip,iq) + &
-                            dpstrain_(:)
+                        snl(ie)%plastic_strain(:,ip,iq) = pstrain_(:)
                         
                     enddo
                 enddo
@@ -363,20 +363,22 @@ module nonlinear2d
         end subroutine check_plasticity
         
         subroutine plastic_corrector(dEps_alpha,stress,center,syld, &
-            radius,biso,Rinf,Ckin,kkin,mu,lambda,dEpl)
+            radius,biso,Rinf,Ckin,kkin,mu,lambda,plastic_strain)
             !
             implicit none
             !
-            real*8, dimension(4), intent(inout) :: dEps_alpha,stress,center,dEpl 
-            real*8,               intent(inout) :: radius 
             real*8,               intent(in)    :: syld,biso,Rinf,Ckin,kkin,mu,lambda
+            !
+            real*8, dimension(4), intent(inout) :: dEps_alpha,plastic_strain 
+            real*8, dimension(4), intent(inout) :: stress,center
+            real*8,               intent(inout) :: radius 
             real*8, dimension(4,4)              :: DEL
             real*8, dimension(4), parameter     :: A = (/1.0,1.0,1.0,0.5/)
             real*8                              :: Ttot,deltaTk,qq,R1,R2,dR1,dR2,err0,err1,err2,err3
             real*8                              :: hard0,hard1,hard2,deltaTmin
             real(8)                             :: FM,Resk
             logical                             :: flag_fail
-            real*8, dimension(4)                :: gradFM,S1,S2,X1,X2
+            real*8, dimension(4)                :: gradFM,S1,S2,X1,X2,Epl1
             real*8, dimension(4)                :: dS1,dS2,dX1,dX2,dEpl1,dEpl2
             
             call stiff_matrix(lambda,mu,DEL)
@@ -394,25 +396,26 @@ module nonlinear2d
                 dR2   = zero
                 dEpl1 = zero
                 dEpl2 = zero
-                
+                Epl1  = zero
+
                 ! FIRST ORDER COMPUTATION
                 
                 call ep_integration(dEps_alpha*deltaTk,stress,center,radius,syld,&
-                    mu,lambda,biso,Rinf,Ckin,kkin,dS1,dX1,dR1,dEpl1,hard1)
+                    mu,lambda,biso,Rinf,Ckin,kkin,dS1,dX1,dR1,dEpl1,hard1,plastic_strain)
 
                 S1 = stress + dS1
                 X1 = center + dX1 
                 R1 = radius + dR1
-                
+                Epl1 = plastic_strain + dEpl1 
                 ! SECOND ORDER COMPUTATION
                 call ep_integration(dEps_alpha*deltaTk,S1,X1,R1,syld,mu,lambda,&
-                    biso,Rinf,Ckin,kkin,dS2,dX2,dR2,dEpl2,hard2)
+                    biso,Rinf,Ckin,kkin,dS2,dX2,dR2,dEpl2,hard2,Epl1)
                 
                 ! TEMPORARY VARIABLES
                 S1 = stress + half*(dS1+dS2)
                 X1 = center + half*(dX1+dX2)
                 R1 = radius + half*(dR1+dR2)
-                dEpl1 =       half*(dEpl1+dEpl2)
+                Epl1 = plastic_strain + half*(dEpl1+dEpl2)
                 
                 ! ERROR
                 call tau_mises(dS2-dS1,err0)
@@ -426,12 +429,12 @@ module nonlinear2d
                     stress = S1
                     center = X1
                     radius = R1
-                    dEpl   = dEpl+dEpl1
+                    plastic_strain = Epl1
 
                     call mises_yld_locus (stress, center,radius,syld,FM,gradFM)
                     if (FM.gt.FTOL) then
                         call drift_corr(stress,center,radius,syld,&
-                                biso,Rinf,Ckin,kkin,lambda,mu,dEpl)
+                                biso,Rinf,Ckin,kkin,lambda,mu,plastic_strain)
                     endif
                     qq = min(0.9d0*sqrt(STOL/Resk),1.1d0)
                     if (flag_fail) then
@@ -453,12 +456,12 @@ module nonlinear2d
         end subroutine plastic_corrector
 
         subroutine ep_integration(dStrain,Stress,center,radius,syld,mu,lambda,biso,Rinf,&
-            Ckin,kapakin,dStress,dcenter,dradius,dEplast,hard)
+            Ckin,kapakin,dStress,dcenter,dradius,dEplast,hard,plastic_strain)
             !
             implicit none
             ! intent IN
             real*8              , intent(in)    :: radius,syld,mu,lambda,biso,Rinf,Ckin,kapakin
-            real*8, dimension(4), intent(in)    :: dStrain,Stress,center
+            real*8, dimension(4), intent(in)    :: dStrain,Stress,center,plastic_strain
             ! intent INOUT
             real*8, dimension(4), intent(inout) :: dStress,dcenter,dEplast
             real*8,               intent(inout) :: dradius
@@ -477,11 +480,11 @@ module nonlinear2d
 
             ! PLASTIC MULTIPLIER
             call compute_plastic_modulus(dStrain,Stress,center,radius,mu,lambda,syld, &
-                biso,Rinf,Ckin,kapakin,dPlast,hard)
+                biso,Rinf,Ckin,kapakin,dPlast,hard,plastic_strain)
             
             ! INCREMENTS
             call hardening_increments(Stress,radius,center,syld, &
-                biso,Rinf,Ckin,kapakin,dradius,dcenter)
+                biso,Rinf,Ckin,kapakin,dradius,dcenter,plastic_strain)
             
             dradius = dPlast*dradius
             dcenter = dPlast*dcenter
@@ -502,25 +505,28 @@ module nonlinear2d
 
 
         subroutine compute_plastic_modulus(dEps,stress,center,radius,mu,lambda, &
-            syld,biso,Rinf,Ckin,kkin,dPlastMult,hard)
+            syld,biso,Rinf,Ckin,kkin,dPlastMult,hard,plastic_strain)
             !
             implicit none
             ! intent IN
             real*8,                 intent(in) :: mu,lambda,syld   
             real*8,                 intent(in) :: radius,biso,Rinf,Ckin,kkin
             real*8, dimension(4),   intent(in) :: dEps,stress,center
+            real*8, dimension(4),   intent(in) :: plastic_strain
             ! intent OUT
             real*8,                 intent(out):: dPlastMult,hard
             !
             real*8                             :: Ah,FM
             real*8, dimension(4)               :: gradF,tempv
             real*8, dimension(4,4)             :: DEL
-!            integer*4                          :: j,k
-            
+            real*8                             :: PHI,PlastM
+
             call stiff_matrix(lambda,mu,DEL)
             call mises_yld_locus(stress,center,radius,syld,FM,gradF)
             
-            hard = Ckin+biso*(Rinf-radius)
+            PlastM = sqrt(two/three*dot_product(plastic_strain,plastic_strain))
+            PHI = 1+(PSI-1)*exp(-OMEGA*PlastM)
+            hard = PHI*Ckin+biso*(Rinf-radius)
             hard = hard-kkin*dot_product(center,gradF)
             
             dPlastMult = zero 
@@ -542,18 +548,19 @@ module nonlinear2d
 
 
         subroutine hardening_increments(stress, radius, center, syld, &
-            biso, rinf, ckin, kkin, dradius, dcenter)
+            biso, rinf, ckin, kkin, dradius, dcenter, plastic_strain)
 
             ! INCREMENTS OF INTRINSIC STATIC VARIABLES
 
             real*8,               intent(in) :: syld,radius
             real*8,               intent(in) :: biso,rinf,ckin,kkin
             real*8, dimension(4), intent(in) :: stress,center
+            real*8, dimension(4), intent(in) :: plastic_strain
             !
             real*8,               intent(out):: dradius
             real*8, dimension(4), intent(out):: dcenter
             
-            real*8                           :: FM
+            real*8                           :: FM,PlastM,PHI
             real*8, dimension(4)             :: gradFM
             !real*8, dimension(4), parameter  :: A = (/1.0,1.0,1.0,0.5/)
             !integer*4                        :: k
@@ -562,20 +569,22 @@ module nonlinear2d
             dradius = biso*(rinf-radius)
 
             ! INCREMENT IN KINEMATIC HARDENING VARIABLES (Xij)
+            PlastM = sqrt(two/three*dot_product(plastic_strain,plastic_strain))
+            PHI = 1+(PSI-1)*exp(-OMEGA*PlastM)
             call mises_yld_locus (stress,center,radius,syld,FM,gradFM)
-            dcenter = (ckin*two/three)*matmul(MM1,gradFM)-center*kkin
+            dcenter = (PHI*ckin*two/three)*matmul(MM1,gradFM)-center*kkin
             !dX_ij(:)=2*A(:)*gradF_mises(:)*C_lmc/3-X_ij(:)*kapa_lmc
 
         end subroutine hardening_increments
 
         subroutine drift_corr(stress,center,radius,syld, &
-            biso,Rinf,Ckin,kkin,lambda,mu,dEplastic)
+            biso,Rinf,Ckin,kkin,lambda,mu,plastic_strain)
 
             ! DRIFT CORRECTION (RADIAL RETURN)
-            real*8, dimension(4), intent(inout) :: stress,center,dEplastic
+            real*8, dimension(4), intent(inout) :: stress,center,plastic_strain
             real*8,               intent(inout) :: radius
             real*8,               intent(in)    :: lambda,mu,syld,biso,Rinf,Ckin,kkin
-            real*8                              :: F0,F1,beta,hard,radiust
+            real*8                              :: F0,F1,beta,hard,radiust,PlastM,PHI
             real*8, dimension(4)                :: tempv,gradF0,gradF1,dstress,stresst,centert
             !real*8, dimension(4),     parameter :: A = (/1.0,1.0,1.0,0.5/)
             real*8, dimension(4,4)              :: DEL
@@ -584,10 +593,12 @@ module nonlinear2d
             ! INITIAL PLASTIC CONDITION
             call mises_yld_locus(stress,center,radius,syld,F0,gradF0)
             call stiff_matrix(lambda,mu,DEL)
+            PlastM = sqrt(two/three*dot_product(plastic_strain,plastic_strain))
+            PHI = 1+(PSI-1)*exp(-OMEGA*PlastM)
             do counter=1,5 
                 ! COMPUTE HARDENING INCREMENTS
                 hard = biso*(Rinf-radius)
-                hard = hard + Ckin
+                hard = hard + PHI*Ckin
                 hard = hard - kkin*dot_product(gradF0,center)
                 ! COMPUTE BETA FOR DRIFT CORRECTION
                 beta  = zero
@@ -610,7 +621,7 @@ module nonlinear2d
 !                    end do
 !                end do
                 stresst = stress+dstress
-                centert = center+beta*((two*ckin/three)*matmul(MM,gradF0)-center*kkin)
+                centert = center+beta*((two*PHI*ckin/three)*matmul(MM,gradF0)-center*kkin)
                 radiust = radius+beta*(Rinf-radius)*biso
                 
                 ! CHECK DRIFT
@@ -626,7 +637,7 @@ module nonlinear2d
                 stress = stresst
                 center = centert
                 radius = radiust
-                dEplastic = dEplastic+beta*matmul(MM1,gradF0)
+                plastic_strain = plastic_strain+beta*matmul(MM1,gradF0)
 
                 if (abs(F1).le.FTOL_DRIFT) then
                     exit
