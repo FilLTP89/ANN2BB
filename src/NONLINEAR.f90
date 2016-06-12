@@ -9,7 +9,7 @@ module nonlinear2d
     !
     real*8, parameter :: FTOL = 0.001D0
     real*8, parameter :: LTOL = 0.001D0
-    real*8, parameter :: STOL = 0.000001D0
+    real*8, parameter :: STOL = 0.001D0
     real*8, parameter :: PSI  = 5.0D0
     real*8, parameter :: OMEGA= 1.0D6
     !
