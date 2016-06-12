@@ -648,7 +648,6 @@ module nonlinear2d
             enddo
             if (abs(F1).gt.FTOL) then
                 write(*,*) "DRIFT NOT CORRECTED"
-                read(*,*)
             endif 
             return
         end subroutine drift_corr
