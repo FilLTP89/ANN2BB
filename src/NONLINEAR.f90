@@ -10,8 +10,8 @@ module nonlinear2d
     real*8, parameter :: FTOL = 0.00001D0
     real*8, parameter :: LTOL = 0.00001D0
     real*8, parameter :: STOL = 0.1D0
-    real*8, parameter :: PSI  = one!5.0D0
-    real*8, parameter :: OMEGA= zero!1.0D6
+    real*8, parameter :: PSI  = 5.0D0
+    real*8, parameter :: OMEGA= 1.0D6
     !
     real*8, parameter, dimension(4,4)   :: MM = reshape((/ &
         one , zero, zero, zero, &
@@ -182,7 +182,7 @@ module nonlinear2d
             ! intent OUT
             real*8, intent(out), dimension(4,4) :: DEL
             !
-            DEL(:,:) = 0.0d0
+            DEL(:,:) = zero
             DEL(1,1) = lambda+2*mu
             DEL(2,2) = lambda+2*mu
             DEL(3,3) = lambda+2*mu
@@ -220,9 +220,9 @@ module nonlinear2d
             call tau_mises(dev-center,tau_eq)
             FM = tau_eq - syld - radius
             ! COMPUTE MISES FUNCTION GRADIENT
-            gradFM(1) = three/two*(dev(1)-center(1))/tau_eq
-            gradFM(2) = three/two*(dev(2)-center(2))/tau_eq
-            gradFM(3) = 1.5*(dev(3)-center(3))/tau_eq
+            gradFM(1) = three*half*(dev(1)-center(1))/tau_eq
+            gradFM(2) = three*half*(dev(2)-center(2))/tau_eq
+            gradFM(3) = three*half*(dev(3)-center(3))/tau_eq
             !gradFM(3) = zero
             gradFM(4) = three*(dev(4)-center(4))/tau_eq
             !  
@@ -255,7 +255,7 @@ module nonlinear2d
             real*8                              :: J2M2
             
             ! COMPUTE OCTAHEDRAL SHEAR STRESS 
-            temp = three/two*matmul(MM,dev)
+            temp = three*half*matmul(MM,dev)
             J2M2 = dot_product(dev,temp)
             J2M  = sqrt(J2M2)
             !
@@ -315,7 +315,8 @@ module nonlinear2d
             call mises_yld_locus(stress1,center,radius,syld,FT,gradFT)
             
             ! CHECK LOAD DIRECTION 
-            checkload = dot_product(gradFS,dtrial)/sum(gradFS**2)/sum(dtrial**2)
+            checkload = dot_product(gradFS,dtrial)/&
+                (dot_product(gradFS,gradFS)*dot_product(dtrial,dtrial))
             
             ! CHECK PLASTICITiY 
             if (abs(FS).le.FTOL) then ! FS = 0
@@ -335,6 +336,9 @@ module nonlinear2d
                         call gotoFpegasus(stress0,dtrial,center,radius,syld,10,alpha_epl)
                         st_elp    = .true.
                         plasticity=3
+                    else
+                        write(*,*) "ERROR: MOVING ON THE SURFACE"
+                        read(*,*)                                                               
                     endif
                 
                 end if
@@ -356,6 +360,7 @@ module nonlinear2d
                 alpha_epl  = zero
                 st_elp = .true.
                 plasticity=6
+                stop
             end if
             ! ON-LOCUS STRESS STATE 
             dtrial=stress0+dtrial*alpha_epl
@@ -385,7 +390,7 @@ module nonlinear2d
             deltaTk = one
             Ttot    = zero
             deltaTmin = 0.0001d0
-            flag_fail =.true.
+            flag_fail =.false.
             do while (Ttot.lt.one)
                 write(*,*) "Ttot (BEFORE)",Ttot
                 Resk  = zero
@@ -441,7 +446,6 @@ module nonlinear2d
                     qq = min(0.9d0*sqrt(STOL/Resk),1.1d0)
                     if (flag_fail) then
                         qq = min(qq,one)
-                        write(*,*) "qq",qq
                     endif
                     flag_fail=.false.
                     Ttot=Ttot+deltaTk
@@ -528,7 +532,7 @@ module nonlinear2d
             call mises_yld_locus(stress,center,radius,syld,FM,gradF)
             
             PlastM = sqrt(two/three*dot_product(plastic_strain,plastic_strain))
-            PHI = 1+(PSI-1)*exp(-OMEGA*PlastM)
+            PHI  = one+(PSI-one)*exp(-OMEGA*PlastM)
             hard = PHI*Ckin+biso*(Rinf-radius)
             hard = hard-kkin*dot_product(center,gradF)
             
@@ -540,6 +544,7 @@ module nonlinear2d
             tempv = matmul(DEL,dEps)
             dPlastMult = dot_product(gradF,tempv)
             dPlastMult = max(0.0d0,dPlastMult/(hard+Ah))
+            return
         end subroutine compute_plastic_modulus
 
 
@@ -589,10 +594,10 @@ module nonlinear2d
             ! INITIAL PLASTIC CONDITION
             call mises_yld_locus(stress,center,radius,syld,F0,gradF0)
             call stiff_matrix(lambda,mu,DEL)
-            PlastM = sqrt(two/three*dot_product(plastic_strain,plastic_strain))
-            PHI = 1+(PSI-1)*exp(-OMEGA*PlastM)
             do counter=1,5 
                 ! COMPUTE HARDENING INCREMENTS
+                PlastM = sqrt(two/three*dot_product(plastic_strain,plastic_strain))
+                PHI = 1+(PSI-1)*exp(-OMEGA*PlastM)
                 hard = biso*(Rinf-radius)
                 hard = hard + PHI*Ckin
                 hard = hard - kkin*dot_product(gradF0,center)
