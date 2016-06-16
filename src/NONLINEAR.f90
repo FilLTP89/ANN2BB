@@ -322,8 +322,9 @@ module nonlinear2d
         !****************************************************************************
         
         subroutine check_plasticity (dtrial, stress0, center, radius, syld, &
-            st_elp, alpha_epl)
-            !     
+            st_epl, alpha_epl) 
+            ! ***** CRITICAL STATE EXTENSION *****
+            ! st_epl,alpha_epl,dstrain)    
             implicit none
             ! intent IN
             real*8,                 intent(in)      :: radius,syld
@@ -332,7 +333,7 @@ module nonlinear2d
             real*8, dimension(4),   intent(inout)   :: dtrial
             ! intent OUT
             real*8,                 intent(out)     :: alpha_epl
-            logical,                intent(out)     :: st_elp
+            logical,                intent(out)     :: st_epl
             !
             integer*4                               :: k
             real*8                                  :: FS,FT,checkload
@@ -340,7 +341,8 @@ module nonlinear2d
             integer*4                               :: plasticity
             !
             ! PREDICTION STRESS
-            stress1= dtrial+stress0
+            call update_stress(stress0,stress1,dtrial)
+            !stress1= dtrial+stress0
             ! 
             ! CHECK MISES FUNCTION
             call mises_yld_locus(stress0,center,radius,syld,FS,gradFS)
@@ -355,18 +357,18 @@ module nonlinear2d
                 !
                 if (checkload.ge.-LTOL) then ! PLASTIC LOADING
                     alpha_epl = zero
-                    st_elp    = .true.
+                    st_epl    = .true.
                     plasticity = 1
                 else ! GENERALIZED UNLOADING
                     
                     if (FT.lt.-FTOL) then ! ELASTIC UNLOADING
                         alpha_epl = one
-                        st_elp    = .false.
+                        st_epl    = .false.
                         plasticity = 2
                     
                     elseif(FT.gt.FTOL) then ! PLASTIC UNLOADING
                         call gotoFpegasus(stress0,dtrial,center,radius,syld,10,alpha_epl)
-                        st_elp    = .true.
+                        st_epl    = .true.
                         plasticity=3
                     else
                         write(*,*) "ERROR: MOVING ON THE SURFACE"
@@ -379,18 +381,18 @@ module nonlinear2d
 
                 if (FT.le.FTOL) then ! ELASTIC LOADING
                     alpha_epl = one
-                    st_elp    = .false.
+                    st_epl    = .false.
                     plasticity=4
                 else ! ELASTO-PLASTIC LOADING
                     call gotoFpegasus(stress0,dtrial,center,radius,syld,1,alpha_epl)
-                    st_elp    = .true.
+                    st_epl    = .true.
                     plasticity=5
                 end if
 
             elseif (FS.gt.FTOL) then
                 write(*,*) "ERROR FS:",FS,">FTOL"
                 alpha_epl  = zero
-                st_elp = .true.
+                st_epl = .true.
                 plasticity=6
                 stop
             end if
@@ -696,10 +698,12 @@ module nonlinear2d
             return
         end subroutine update_stress
         !
-        subroutine gotoFpegasus(start0,dtrial,center,radius,s0,nsub,alpha)!dstrain
+        subroutine gotoFpegasus(start0,dtrial,center,radius,s0,nsub,alpha)
+            ! ***** CRITICAL STATE EXTENSION *****
+            ! dstrain,lambda,mu)
             implicit none
             ! intent IN
-            real*8, dimension(4), intent(in)    :: start0,dtrial,center!dstrain
+            real*8, dimension(4), intent(in)    :: start0,dtrial,center
             real*8,               intent(in)    :: radius,s0
             integer*4,            intent(in)    :: nsub
             ! intent OUT
@@ -708,7 +712,9 @@ module nonlinear2d
             real*8                              :: dalpha,alpha0,alpha1,F0,F1,FM,Fsave
             integer*4                           :: counter0,counter1
             logical                             :: flagxit
-
+            ! ***** CRITICAL STATE EXTENSION *****
+            ! real*8, dimension(4), intent(in) :: dstrain
+            ! real*8, intent(in) :: lambda,mu
             alpha0  = zero
             alpha1  = one
             call update_stress(start0,stress0,alpha0*dtrial)
@@ -727,8 +733,11 @@ module nonlinear2d
                     dalpha = (alpha1-alpha0)/nsub
                     flagxit=.false.
                     do counter1=1,nsub
-                        alpha=alpha0+dalpha
-                        stress=start0+alpha*dtrial
+                        alpha  = alpha0+dalpha
+                        call update_stress(start0,stress,alpha*dtrial)
+                        !stress = start0+alpha*dtrial
+                        ! ***** CRITICAL STATE EXTENSION *****
+                        ! call update_stress(start0,stress,alpha*dstrain,lambda,mu)
                         call mises_yld_locus(stress,center,radius,s0,FM,gradF)
                         if (FM.gt.FTOL) then
                             alpha1=alpha
@@ -749,10 +758,21 @@ module nonlinear2d
                         exit ! exit loop counter0=1,3
                     endif
                 end do
-                stress0 = start0+alpha0*dtrial
-                stress1 = start0+alpha1*dtrial
+                
+                call update_stress(start0,stress0,alpha0*dtrial)
+                call update_stress(start0,stress1,alpha1*dtrial)  
+                !stress0 = start0+alpha0*dtrial
+                !stress1 = start0+alpha1*dtrial
+                ! ***** CRITICAL STATE EXTENSION *****
+                ! call update_stress(start0,stress0,alpha0*dstrain,lambda,mu)
+                ! call update_stress(start0,stress1,alpha1*dstrain,lambda,mu)
                 call mises_yld_locus(stress0,center,radius,s0,F0,gradF)
                 call mises_yld_locus(stress1,center,radius,s0,F1,gradF)
+                if ((F0.lt.-FTOL).and.(F1.gt.FTOL)) then
+                    write(*,*) "LOAD REVERSAL OK"
+                else
+                    write(*,*) "LOAD REVERSAL FAILED"
+                endif
             end if
             
             ! ORIGINAL PEGASUS ALGORITHM
