@@ -197,6 +197,38 @@ module nonlinear2d
             return
         end subroutine STIFF_MATRIX
         
+        !*********************************************************************************
+        ! CRITICAL STATE STIFFNESS MATRIX 
+        !*********************************************************************************
+        
+        subroutine STIFF_MATRIX_CRITICAL(stress0,dstrain,lambda,mu,DEL)
+            implicit none
+            ! intent IN
+            real*8, intent(in) :: lambda,mu
+            real*8, dimension(4) :: stress0,dstrain
+            ! intent OUT
+            real*8, intent(out), dimension(4,4) :: DEL
+            !
+            real*8 :: p0,devol,B,k,nu,spec_vol,mu_crit,lambda_crit
+           
+            spec_vol = one+0.7d0
+            ! pressure 
+            p0 = dot_product(stress0,m)/three
+            ! volumetric strain increment
+            devol = dot_product(dstrain,m)
+            ! Bulk's modulus
+            B = p0/devol*(exp(spec_vol*devol/k)-one)
+            ! Poisson's ratio
+            nu = half*lambda/(lambda+mu)
+            ! NEW shear modulus
+            mu_crit = three*half*(one-two*nu)*B/(one+nu)
+            ! NEW lambda 
+            lambda_crit = two*mu_crit*nu/(one-two*nu)
+            call STIFF_MATRIX(lambda_crit,mu_crit,DEL)
+            !
+            return
+        end subroutine STIFF_MATRIX_CRITICAL
+        
         !****************************************************************************
         ! MISES YIELDING LOCUS AND GRADIENT
         !****************************************************************************
@@ -642,10 +674,32 @@ module nonlinear2d
             return
         end subroutine drift_corr
 
-        subroutine gotoFpegasus(start0,dtrial,center,radius,s0,nsub,alpha)
+        subroutine update_stress(stress0,stress1,dincrement,lambda,mu)
             implicit none
             ! intent IN
-            real*8, dimension(4), intent(in)    :: start0,dtrial,center
+            real*8, optional,     intent(in) :: lambda,mu
+            real*8, dimension(4), intent(in) :: stress0,dincrement
+            ! intent INOUT
+            real*8, dimension(4), intent(inout) :: stress1
+            !
+            real*8, dimension(4,4)           :: DEL
+            !
+            stress1 = zero
+            if (present(mu).and.present(lambda)) then 
+                ! dincrement = dstrain
+                call STIFF_MATRIX_CRITICAL(stress0,dincrement,lambda,mu,DEL)
+                stress1 = stress0 + matmul(DEL,dincrement)
+            else
+                ! dincrement = dstress
+                stress1 = stress0 + dincrement
+            endif
+            return
+        end subroutine update_stress
+        !
+        subroutine gotoFpegasus(start0,dtrial,center,radius,s0,nsub,alpha)!dstrain
+            implicit none
+            ! intent IN
+            real*8, dimension(4), intent(in)    :: start0,dtrial,center!dstrain
             real*8,               intent(in)    :: radius,s0
             integer*4,            intent(in)    :: nsub
             ! intent OUT
@@ -657,10 +711,16 @@ module nonlinear2d
 
             alpha0  = zero
             alpha1  = one
-            stress0 = start0+alpha0*dtrial
-            stress1 = start0+alpha1*dtrial
+            call update_stress(start0,stress0,alpha0*dtrial)
+            call update_stress(start0,stress1,alpha1*dtrial)
+            ! ***** CRITICAL STATE EXTENSION *****
+            !call update_stress(start0,stress0,alpha0*dstrain,lambda,mu)
+            !call update_stress(start0,stress1,alpha1*dstrain,lambda,mu)
+            
             call mises_yld_locus(stress0,center,radius,s0,F0,gradF)
             call mises_yld_locus(stress1,center,radius,s0,F1,gradF)
+            
+            ! LOAD REVERSAL
             if (nsub.gt.1)then
                 Fsave=F0
                 do counter0=1,4
@@ -687,25 +747,34 @@ module nonlinear2d
                     end do
                     if (flagxit) then
                         exit ! exit loop counter0=1,3
-                        write(*,*) "LOAD REVERSAL-STARTING ALPHAS",alpha0,alpha1
                     endif
                 end do
+                stress0 = start0+alpha0*dtrial
+                stress1 = start0+alpha1*dtrial
+                call mises_yld_locus(stress0,center,radius,s0,F0,gradF)
+                call mises_yld_locus(stress1,center,radius,s0,F1,gradF)
             end if
+            
+            ! ORIGINAL PEGASUS ALGORITHM
             do counter0=1,10
                 alpha  = alpha1 - F1*(alpha1 - alpha0)/(F1-F0)
-                stress = start0 + alpha*dtrial
+                !stress = start0 + alpha*dtrial
+                call update_stress(start0,stress,alpha*dtrial)
+                ! ***** CRITICAL STATE EXTENSION *****
+                !call update_stress(start0,stress,alpha*dstrain,lambda,mu)
+                
                 call mises_yld_locus(stress,center,radius,s0,FM,gradF)
                 if (abs(FM).le.FTOL) then
                     exit
                 else
-                    if(FM*F1.lt.zero) then
-                        alpha0=alpha1
-                        F0=F1
+                    if(FM*F0.lt.zero) then
+                        alpha1=alpha0
+                        F1=F0
                     else
-                        F0=F0*half
+                        F1=F1*F0/(F0+FM)
                     endif
-                    F1=FM
-                    alpha1=alpha
+                    F0=FM
+                    alpha0=alpha
                 endif
             end do
 
