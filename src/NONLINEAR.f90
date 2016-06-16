@@ -10,8 +10,8 @@ module nonlinear2d
     real*8, parameter :: FTOL = 0.00001D0
     real*8, parameter :: LTOL = 0.00001D0
     real*8, parameter :: STOL = 0.1D0
-    real*8, parameter :: PSI  = 5.0D0
-    real*8, parameter :: OMEGA= 1.0D6
+    real*8, parameter :: PSI  = one!5.0D0
+    real*8, parameter :: OMEGA= zero!1.0D6
     !
     real*8, parameter, dimension(4,4)   :: MM = reshape((/ &
         one , zero, zero, zero, &
@@ -626,9 +626,12 @@ module nonlinear2d
             integer*4                           :: counter,k,j
             real*8, parameter :: FTOL_DRIFT =   0.000001D0 
             ! INITIAL PLASTIC CONDITION
-            call mises_yld_locus(stress,center,radius,syld,F0,gradF0)
             call stiff_matrix(lambda,mu,DEL)
+            ! ***** CRITICAL STATE EXTENSION *****
+            ! call STIFF_MATRIX_CRITICAL(stress0,dincrement,lambda,mu,DEL)
             do counter=1,5 
+                ! MISES FUNCTION
+                call mises_yld_locus(stress,center,radius,syld,F0,gradF0)
                 ! COMPUTE HARDENING INCREMENTS
                 PlastM = sqrt(two/three*dot_product(plastic_strain,plastic_strain))
                 PHI = 1+(PSI-1)*exp(-OMEGA*PlastM)
@@ -644,8 +647,9 @@ module nonlinear2d
                 ! STRESS-STRAIN-HARDENING CORRECTION
                 dstress = zero
                 dstress = -beta*tempv
-                stresst = stress+dstress
-                centert = center+beta*((two*PHI*ckin/three)*matmul(MM,gradF0)-center*kkin)
+                !stresst = stress+dstress
+                call update_stress(stress,stresst,dstress)
+                centert = center+beta*((two*PHI*ckin/three)*matmul(MM1,gradF0)-center*kkin)
                 radiust = radius+beta*(Rinf-radius)*biso
                 
                 ! CHECK DRIFT
@@ -653,7 +657,8 @@ module nonlinear2d
                 if (abs(F1).gt.abs(F0)) then
                     beta    = F0/dot_product(gradF0,gradF0)
                     dstress = -beta*gradF0
-                    stresst = stress+dstress
+                    !stresst = stress+dstress
+                    call update_stress(stress,stresst,dstress)
                     centert = center
                     radiust = radius
                     call mises_yld_locus(stresst,centert,radiust,syld,F1,gradF1)
@@ -665,9 +670,6 @@ module nonlinear2d
 
                 if (abs(F1).le.FTOL_DRIFT) then
                     exit
-                else
-                    F0     = F1
-                    gradF0 = gradF1
                 endif
             enddo
             if (abs(F1).gt.FTOL) then
