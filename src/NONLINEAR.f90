@@ -7,9 +7,9 @@ module nonlinear2d
     real*8, parameter                   :: zero=0.d0,one=1.0d0
     real*8, parameter                   :: half=0.5d0,two=2.0d0,three=3.0d0
     !
-    real*8, parameter :: FTOL = 0.00001D0
-    real*8, parameter :: LTOL = 0.00001D0
-    real*8, parameter :: STOL = 0.1D0
+    real*8, parameter :: FTOL = 0.0001D0
+    real*8, parameter :: LTOL = 0.000001D0
+    real*8, parameter :: STOL = 0.00001D0
     real*8, parameter :: PSI  = one!5.0D0
     real*8, parameter :: OMEGA= zero!1.0D6
     !
@@ -321,10 +321,10 @@ module nonlinear2d
         ! CHECK PLASTIC CONSISTENCY (KKT CONDITIONS)
         !****************************************************************************
         
-        subroutine check_plasticity (dtrial, stress0, center, radius, syld, &
+        subroutine check_plasticity_old (dtrial, stress0, center, radius, syld, &
             st_epl, alpha_epl) 
             ! ***** CRITICAL STATE EXTENSION *****
-            ! st_epl,alpha_epl,dstrain)    
+            ! st_epl,alpha_epl,dstrain,lambda,mu)    
             implicit none
             ! intent IN
             real*8,                 intent(in)      :: radius,syld
@@ -338,11 +338,14 @@ module nonlinear2d
             integer*4                               :: k
             real*8                                  :: FS,FT,checkload
             real*8, dimension(4)                    :: gradFS, gradFT, stress1
-            integer*4                               :: plasticity
+            ! real*8, dimension(4), intent(in) :: dstrain
+            ! real*8,               intent(in) :: lambda,mu
             !
             ! PREDICTION STRESS
             call update_stress(stress0,stress1,dtrial)
             !stress1= dtrial+stress0
+            ! ***** CRITICAL STATE EXTENSION *****
+            ! call update_stress(stress0,stress1,dstrain,lambda,mu)
             ! 
             ! CHECK MISES FUNCTION
             call mises_yld_locus(stress0,center,radius,syld,FS,gradFS)
@@ -358,48 +361,124 @@ module nonlinear2d
                 if (checkload.ge.-LTOL) then ! PLASTIC LOADING
                     alpha_epl = zero
                     st_epl    = .true.
-                    plasticity = 1
                 else ! GENERALIZED UNLOADING
                     
                     if (FT.lt.-FTOL) then ! ELASTIC UNLOADING
                         alpha_epl = one
                         st_epl    = .false.
-                        plasticity = 2
-                    
                     elseif(FT.gt.FTOL) then ! PLASTIC UNLOADING
                         call gotoFpegasus(stress0,dtrial,center,radius,syld,10,alpha_epl)
+                        ! ***** CRITICAL STATE EXTENSION *****
+                        ! call gotoFpegasus(stress0,dtrial,center,radius,syld,10,alpha_epl,dstrain,lambda,mu)
                         st_epl    = .true.
-                        plasticity=3
                     else
                         write(*,*) "ERROR: MOVING ON THE SURFACE"
                         read(*,*)                                                               
                     endif
-                
                 end if
-
             elseif (FS.lt.-FTOL) then ! FS<0
-
                 if (FT.le.FTOL) then ! ELASTIC LOADING
                     alpha_epl = one
                     st_epl    = .false.
-                    plasticity=4
-                else ! ELASTO-PLASTIC LOADING
+                elseif(FT.gt.FTOL) then ! ELASTO-PLASTIC LOADING
                     call gotoFpegasus(stress0,dtrial,center,radius,syld,1,alpha_epl)
                     st_epl    = .true.
-                    plasticity=5
                 end if
-
             elseif (FS.gt.FTOL) then
                 write(*,*) "ERROR FS:",FS,">FTOL"
                 alpha_epl  = zero
                 st_epl = .true.
-                plasticity=6
                 stop
             end if
             ! ON-LOCUS STRESS STATE 
             dtrial=stress0+dtrial*alpha_epl
             call mises_yld_locus(dtrial,center,radius,syld,FS,gradFS)
+        end subroutine check_plasticity_old
+        
+        subroutine check_plasticity(dtrial, stress0, center, radius, syld, &
+            st_epl, alpha_epl) 
+            ! ***** CRITICAL STATE EXTENSION *****
+            ! st_epl,alpha_epl,dstrain,lambda,mu)    
+            implicit none
+            ! intent IN
+            real*8,                 intent(in)      :: radius,syld
+            real*8, dimension(4),   intent(in)      :: center,stress0
+            ! intent INOUT
+            real*8, dimension(4),   intent(inout)   :: dtrial
+            ! intent OUT
+            real*8,                 intent(out)     :: alpha_epl
+            logical,                intent(out)     :: st_epl
+            !
+            logical                                 :: flagxit
+            real*8                                  :: FS,FT,checkload
+            real*8, dimension(4)                    :: gradFS, gradFT, stress1
+            ! real*8, dimension(4), intent(in) :: dstrain
+            ! real*8,               intent(in) :: lambda,mu
+
+            !
+            ! PREDICTION STRESS
+            call update_stress(stress0,stress1,dtrial)
+            !stress1= dtrial+stress0
+            ! ***** CRITICAL STATE EXTENSION *****
+            ! call update_stress(stress0,stress1,dstrain,lambda,mu)
+            ! 
+            ! CHECK MISES FUNCTION
+            call mises_yld_locus(stress0,center,radius,syld,FS,gradFS)
+            call mises_yld_locus(stress1,center,radius,syld,FT,gradFT)
+           
+            alpha_epl = -one
+            if (FT.le.FTOL) then
+                alpha_epl = one
+                st_epl = .false.
+                flagxit = .true.
+            endif
+
+            if ((FS.lt.-FTOL).and.(FT.gt.FTOL)) then
+                write(*,*) "due"
+                st_epl = .true.
+                call gotoFpegasus(stress0,dtrial,center,radius,syld,1,alpha_epl)
+                ! ***** CRITICAL STATE EXTENSION *****
+                ! call gotoFpegasus(stress0,dtrial,center,radius,syld,1,alpha_epl,dstrain,lambda,mu)
+                flagxit = .true.
+            endif
+
+            if ((abs(FS).le.FTOL).and.(FT.gt.FTOL)) then
+                write(*,*) "tre"
+
+                ! CHECK LOAD DIRECTION 
+                checkload = dot_product(gradFS,dtrial)/&
+                    sqrt(dot_product(gradFS,gradFS)*dot_product(dtrial,dtrial))
+
+                if (checkload.ge.-LTOL) then! PLASTIC LOADING  
+                    write(*,*) "load"
+                    alpha_epl = zero
+                else! PLASTIC UNLOADING  
+                    write(*,*) "unload"
+                    call gotoFpegasus(stress0,dtrial,center,radius,syld,10,alpha_epl)
+                    ! ***** CRITICAL STATE EXTENSION *****
+                    ! call gotoFpegasus(stress0,dtrial,center,radius,syld,10,alpha_epl,dstrain,lambda,mu)
+                endif
+                st_epl = .true.
+                flagxit = .true.
+            endif
+            
+            if (.not.flagxit)then
+                write(*,*) "ERROR IN FINDING INTERSECTION"
+                stop
+            endif
+            
+            ! ON-LOCUS STRESS STATE 
+            !dtrial=stress0+dtrial*alpha_epl
+            call update_stress(stress0,stress1,alpha_epl*dtrial)
+            dtrial = stress1
+            ! ***** CRITICAL STATE EXTENSION *****
+            ! call update_stress(stress0,dtrial,alpha_epl*dstrain,lambda,mu)
+            call mises_yld_locus(dtrial,center,radius,syld,FS,gradFS)
         end subroutine check_plasticity
+        
+        !****************************************************************************
+        ! CORRECT STRESS STATE
+        !****************************************************************************
         
         subroutine plastic_corrector(dEps_alpha,stress,center,syld, &
             radius,biso,Rinf,Ckin,kkin,mu,lambda,plastic_strain)
@@ -423,10 +502,9 @@ module nonlinear2d
             call stiff_matrix(lambda,mu,DEL)
             deltaTk = one
             Ttot    = zero
-            deltaTmin = 0.0001d0
-            flag_fail =.false.
+            deltaTmin = 0.0001D0
+            flag_fail =.true.
             do while (Ttot.lt.one)
-                write(*,*) "Ttot (BEFORE)",Ttot
                 Resk  = zero
                 dS1   = zero
                 dX1   = zero
@@ -463,7 +541,7 @@ module nonlinear2d
                 
                 call tau_mises(dX1-dX2,err2)
                 call tau_mises(X1,err3)
-                Resk = half*max(epsilon(Resk),err0/err1,err2/err3)
+                Resk = max(epsilon(Resk),half*err0/err1,half*err2/err3)
                 
                 if (Resk.le.STOL) then
                     stress = S1
@@ -472,7 +550,7 @@ module nonlinear2d
                     plastic_strain = Epl1
 
                     call mises_yld_locus (stress, center,radius,syld,FM,gradFM)
-                    if (FM.gt.FTOL) then
+                    if (abs(FM).gt.FTOL) then
                         write(*,*) "DRIFT"
                         call drift_corr(stress,center,radius,syld,&
                                 biso,Rinf,Ckin,kkin,lambda,mu,plastic_strain)
@@ -490,72 +568,70 @@ module nonlinear2d
                     qq=max(0.9d0*sqrt(STOL/Resk),0.1d0)
                     deltaTk=max(qq*deltaTk,deltaTmin)
                     flag_fail=.true.
-
+                    write(*,*) "FAILED"
                 end if
-                write(*,*) "Ttot (AFTER)",Ttot
             end do
         end subroutine plastic_corrector
 
-        subroutine ep_integration(dStrain,Stress,center,radius,syld,mu,lambda,biso,Rinf,&
-            Ckin,kapakin,dStress,dcenter,dradius,dEplast,hard,plastic_strain)
+        !****************************************************************************
+        ! ELASTO-PLASTIC INTEGRATOR
+        !****************************************************************************
+        
+        subroutine ep_integration(dstrain,stress,center,radius,syld,mu,lambda,biso,rinf,&
+            ckin,kkin,dStress,dcenter,dradius,dpstrain,hard,pstrain)
             !
             implicit none
             ! intent IN
-            real*8              , intent(in)    :: radius,syld,mu,lambda,biso,Rinf,Ckin,kapakin
-            real*8, dimension(4), intent(in)    :: dStrain,Stress,center,plastic_strain
+            real*8              , intent(in)    :: radius,syld,mu,lambda,biso,rinf,ckin,kkin
+            real*8, dimension(4), intent(in)    :: dstrain,stress,center,pstrain
             ! intent INOUT
-            real*8, dimension(4), intent(inout) :: dStress,dcenter,dEplast
+            real*8, dimension(4), intent(inout) :: dstress,dcenter,dpstrain
             real*8,               intent(inout) :: dradius
             ! intent OUT
             real*8,               intent(out)   :: hard
             !
             real*8, dimension(4)                :: gradF
-            !real*8, dimension(4), parameter     :: A = (/1.0,1.0,1.0,0.5/)
             real*8, dimension(4,4)              :: DEL
-            real*8                              :: Fmises,dPlast
-            integer*4                           :: j,k
+            real*8                              :: FM,dPlast
             
             ! PREDICTION
-            call mises_yld_locus (Stress,center,radius,syld,Fmises,gradF)
+            call mises_yld_locus (stress,center,radius,syld,FM,gradF)
             call stiff_matrix(lambda,mu,DEL)
+            ! ***** CRITICAL STATE EXTENSION *****
+            ! call stiff_matrix_critical(stress,dstrain,lambda,mu,DEL)
 
             ! PLASTIC MULTIPLIER
-            call compute_plastic_modulus(dStrain,Stress,center,radius,mu,lambda,syld, &
-                biso,Rinf,Ckin,kapakin,dPlast,hard,plastic_strain)
+            call compute_plastic_modulus(dstrain,stress,center,radius,mu,lambda,syld, &
+                biso,rinf,ckin,kkin,dPlast,hard,pstrain)
             
             ! INCREMENTS
-            call hardening_increments(Stress,radius,center,syld, &
-                biso,Rinf,Ckin,kapakin,dradius,dcenter,plastic_strain)
+            call hardening_increments(stress,radius,center,syld, &
+                biso,Rinf,ckin,kkin,dradius,dcenter,pstrain)
             
             dradius = dPlast*dradius
             dcenter = dPlast*dcenter
-!            do k=1,4 
-!                dEplast(k)=dEplast(k)+dPlast*gradF(k)*A(k)
-!            end do
-            dEplast = dPlast*matmul(MM1,gradF)
-            dstress = matmul(DEL,dstrain-dEplast) 
-!            do j = 1,4 ! stress increment
-!                do k = 1,4
-!                    dstress(j)=DEL(k,j)*(dstrain(j)-A(k)*dPlast*gradF(k))  
-!                end do
-!            end do
+            dpstrain = dPlast*matmul(MM1,gradF)
+            dstress = matmul(DEL,dstrain-dpstrain) 
             
             return
 
         end subroutine ep_integration
+        
+        !****************************************************************************
+        ! PLASTIC MULTIPLIER
+        !****************************************************************************
 
-
-        subroutine compute_plastic_modulus(dEps,stress,center,radius,mu,lambda, &
-            syld,biso,Rinf,Ckin,kkin,dPlastMult,hard,plastic_strain)
+        subroutine compute_plastic_modulus(dstrain,stress,center,radius,mu,lambda, &
+            syld,biso,rinf,ckin,kkin,dPlastM,hard,pstrain)
             !
             implicit none
             ! intent IN
             real*8,                 intent(in) :: mu,lambda,syld   
             real*8,                 intent(in) :: radius,biso,Rinf,Ckin,kkin
-            real*8, dimension(4),   intent(in) :: dEps,stress,center
-            real*8, dimension(4),   intent(in) :: plastic_strain
+            real*8, dimension(4),   intent(in) :: dstrain,stress,center
+            real*8, dimension(4),   intent(in) :: pstrain
             ! intent OUT
-            real*8,                 intent(out):: dPlastMult,hard
+            real*8,                 intent(out):: dPlastM,hard
             !
             real*8                             :: Ah,FM
             real*8, dimension(4)               :: gradF,tempv
@@ -563,55 +639,61 @@ module nonlinear2d
             real*8                             :: PHI,PlastM
 
             call stiff_matrix(lambda,mu,DEL)
+            ! ***** CRITICAL STATE EXTENSION *****
+            ! call stiff_matrix_critical(stress,dEps,lambda,mu,DEL)
             call mises_yld_locus(stress,center,radius,syld,FM,gradF)
             
-            PlastM = sqrt(two/three*dot_product(plastic_strain,plastic_strain))
+            PlastM = sqrt(two/three*dot_product(pstrain,pstrain))
             PHI  = one+(PSI-one)*exp(-OMEGA*PlastM)
-            hard = PHI*Ckin+biso*(Rinf-radius)
+            hard = PHI*Ckin+biso*(rinf-radius)
             hard = hard-kkin*dot_product(center,gradF)
             
-            dPlastMult = zero 
+            dPlastM = zero 
             
             tempv = matmul(MM1,gradF)
             tempv = matmul(DEL,tempv)
             Ah    = dot_product(tempv,gradF)
-            tempv = matmul(DEL,dEps)
-            dPlastMult = dot_product(gradF,tempv)
-            dPlastMult = max(0.0d0,dPlastMult/(hard+Ah))
+            tempv = matmul(DEL,dstrain)
+            dPlastM = dot_product(gradF,tempv)
+            dPlastM = max(zero,dPlastM/(hard+Ah))
             return
         end subroutine compute_plastic_modulus
 
+        !****************************************************************************
+        ! HARDENING INCREMENTS
+        !****************************************************************************
 
-        subroutine hardening_increments(stress, radius, center, syld, &
-            biso, rinf, ckin, kkin, dradius, dcenter, plastic_strain)
+        subroutine hardening_increments(stress,radius,center,syld, &
+            biso,rinf,ckin,kkin,dradius,dcenter,pstrain)
 
             ! INCREMENTS OF INTRINSIC STATIC VARIABLES
 
             real*8,               intent(in) :: syld,radius
             real*8,               intent(in) :: biso,rinf,ckin,kkin
             real*8, dimension(4), intent(in) :: stress,center
-            real*8, dimension(4), intent(in) :: plastic_strain
+            real*8, dimension(4), intent(in) :: pstrain
             !
             real*8,               intent(out):: dradius
             real*8, dimension(4), intent(out):: dcenter
-            
+            ! 
             real*8                           :: FM,PlastM,PHI
             real*8, dimension(4)             :: gradFM
-            !real*8, dimension(4), parameter  :: A = (/1.0,1.0,1.0,0.5/)
-            !integer*4                        :: k
 
             ! INCREMENT IN ISOTROPIC HARDENING VARIABLES (R)
             dradius = biso*(rinf-radius)
 
             ! INCREMENT IN KINEMATIC HARDENING VARIABLES (Xij)
-            PlastM = sqrt(two/three*dot_product(plastic_strain,plastic_strain))
+            PlastM = sqrt(two/three*dot_product(pstrain,pstrain))
             PHI = 1+(PSI-1)*exp(-OMEGA*PlastM)
             call mises_yld_locus (stress,center,radius,syld,FM,gradFM)
             dcenter = (PHI*ckin*two/three)*matmul(MM1,gradFM)-center*kkin
-            !dX_ij(:)=2*A(:)*gradF_mises(:)*C_lmc/3-X_ij(:)*kapa_lmc
-
+            return
         end subroutine hardening_increments
 
+        !****************************************************************************
+        ! DRIFT CORRECTION
+        !****************************************************************************
+        
         subroutine drift_corr(stress,center,radius,syld, &
             biso,Rinf,Ckin,kkin,lambda,mu,plastic_strain)
 
@@ -621,10 +703,9 @@ module nonlinear2d
             real*8,               intent(in)    :: lambda,mu,syld,biso,Rinf,Ckin,kkin
             real*8                              :: F0,F1,beta,hard,radiust,PlastM,PHI
             real*8, dimension(4)                :: tempv,gradF0,gradF1,dstress,stresst,centert
-            !real*8, dimension(4),     parameter :: A = (/1.0,1.0,1.0,0.5/)
             real*8, dimension(4,4)              :: DEL
             integer*4                           :: counter,k,j
-            real*8, parameter :: FTOL_DRIFT =   0.000001D0 
+            real*8, parameter :: FTOL_DRIFT =   0.0001D0 
             ! INITIAL PLASTIC CONDITION
             call stiff_matrix(lambda,mu,DEL)
             ! ***** CRITICAL STATE EXTENSION *****
@@ -678,6 +759,10 @@ module nonlinear2d
             return
         end subroutine drift_corr
 
+        !****************************************************************************
+        ! UPDATE STRESS
+        !****************************************************************************
+        
         subroutine update_stress(stress0,stress1,dincrement,lambda,mu)
             implicit none
             ! intent IN
@@ -699,7 +784,11 @@ module nonlinear2d
             endif
             return
         end subroutine update_stress
-        !
+        
+        !****************************************************************************
+        ! FIND INTERSECTION
+        !****************************************************************************
+        
         subroutine gotoFpegasus(start0,dtrial,center,radius,s0,nsub,alpha)
             ! ***** CRITICAL STATE EXTENSION *****
             ! dstrain,lambda,mu)
