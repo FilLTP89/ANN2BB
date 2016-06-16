@@ -7,9 +7,9 @@ module nonlinear2d
     real*8, parameter                   :: zero=0.d0,one=1.0d0
     real*8, parameter                   :: half=0.5d0,two=2.0d0,three=3.0d0
     !
-    real*8, parameter :: FTOL = 0.0001D0
+    real*8, parameter :: FTOL = 0.000001D0
     real*8, parameter :: LTOL = 0.000001D0
-    real*8, parameter :: STOL = 0.00001D0
+    real*8, parameter :: STOL = 0.0001D0
     real*8, parameter :: PSI  = one!5.0D0
     real*8, parameter :: OMEGA= zero!1.0D6
     !
@@ -498,13 +498,15 @@ module nonlinear2d
             logical                             :: flag_fail
             real*8, dimension(4)                :: gradFM,S1,S2,X1,X2,Epl1
             real*8, dimension(4)                :: dS1,dS2,dX1,dX2,dEpl1,dEpl2
-            
+            integer*4                           :: counter
+
+            counter = 0
             call stiff_matrix(lambda,mu,DEL)
             deltaTk = one
             Ttot    = zero
             deltaTmin = 0.0001D0
             flag_fail =.true.
-            do while (Ttot.lt.one)
+            do while ((Ttot.lt.one).and.(counter.le.5))
                 Resk  = zero
                 dS1   = zero
                 dX1   = zero
@@ -560,6 +562,7 @@ module nonlinear2d
                         qq = min(qq,one)
                     endif
                     flag_fail=.false.
+                    counter = 0
                     Ttot=Ttot+deltaTk
                     deltaTk=qq*deltaTk
                     deltaTk=max(qq*deltaTk,deltaTmin)
@@ -568,7 +571,8 @@ module nonlinear2d
                     qq=max(0.9d0*sqrt(STOL/Resk),0.1d0)
                     deltaTk=max(qq*deltaTk,deltaTmin)
                     flag_fail=.true.
-                    write(*,*) "FAILED"
+                    write(*,*) "FAILED",Resk,qq
+                    counter = counter+1
                 end if
             end do
         end subroutine plastic_corrector
