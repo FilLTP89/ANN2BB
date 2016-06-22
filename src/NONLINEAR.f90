@@ -7,8 +7,8 @@ module nonlinear2d
     real*8, parameter                   :: zero=0.d0,one=1.0d0
     real*8, parameter                   :: half=0.5d0,two=2.0d0,three=3.0d0
     !
-    real*8, parameter :: FTOL = 0.000001D0
-    real*8, parameter :: LTOL = 0.000001D0
+    real*8, parameter :: FTOL = 0.0001D0
+    real*8, parameter :: LTOL = 0.0000001D0
     real*8, parameter :: STOL = 0.0001D0
     real*8, parameter :: PSI  = one!5.0D0
     real*8, parameter :: OMEGA= zero!1.0D6
@@ -506,7 +506,7 @@ module nonlinear2d
             Ttot    = zero
             deltaTmin = 0.0001D0
             flag_fail =.true.
-            do while ((Ttot.lt.one).and.(counter.le.5))
+            do while ((Ttot.lt.one).and.(counter.le.10))
                 Resk  = zero
                 dS1   = zero
                 dX1   = zero

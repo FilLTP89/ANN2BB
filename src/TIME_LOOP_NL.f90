@@ -296,7 +296,7 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         end subroutine DEALLOCATE_ALL 
     end interface
    
-    tagstep = 0
+    !tagstep = 0
     pi = 4.d0*datan(1.d0)
     IN_TOT = IN_TOT -1
 
@@ -684,14 +684,18 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         if (nnode_dirX.gt.0) then
             do i = 1,nnode_dirX
                 in = inode_dirX(i)
-                u2(in) = 0.0d0; u1(in) = 0.d0; v1(in) = 0.d0;
+                u2(in) = 0.0d0;
+                u1(in) = 0.d0; 
+                v1(in) = 0.d0;
             enddo
         endif
 
         if (nnode_dirY.gt.0) then
             do i = 1,nnode_dirY
                 in = inode_dirY(i) + nnt
-                u2(in) = 0.0d0; u1(in) = 0.d0; v1(in) = 0.d0;
+                u1(in) = 0.0d0; 
+                u2(in) = 0.d0; 
+                v1(in) = 0.d0;
             enddo
         endif
 
@@ -712,10 +716,6 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         !********************************************************************************************
         condition = (nmonit.ge.1).and.(int(real(its)/ndt_monitor).eq.(real(its)/ndt_monitor)) 
         if (condition) then
-            write(*,*) "node_TOT",node_TOT
-            write(*,*) "nnode_TOT",nnode_TOT
-            write(*,*) "tagstep",tagstep
-            write(*,*) "unit_uDRM",unit_uDRM
             call WRITE_MONITOR_NL(unit_disp,unit_vel,unit_acc,unit_strain,unit_stress,unit_omega,&
                 unit_uDRM,option_out_var,nmonit,ndt_monitor,node_m,nm,ne,nnt,cs,cs_nnz,sdeg_mat,snl,&
                 its,tt1,node_TOT,nnode_TOT,tagstep,u1,vel,acc,nodal_counter,disout)

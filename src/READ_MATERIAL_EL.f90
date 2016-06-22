@@ -91,9 +91,9 @@
 subroutine READ_MATERIAL_EL(file_mat,nm,propm, typem, tagm, &
     ndX,valdX,fdX,tagdX,ndY,valdY,fdY,tagdY,nnX,valnX,fnX,tagnX,nnY,valnY,fnY,tagnY,    &
     npX,valpX,fpX,npY,valpY,fpY,nplX,valplX,fplX,tagplX,nplY,valplY,fplY,tagplY,        &
-    nsism,valsism,fsism,tagsism,na,taga,nMDRM,nBDRM,tag_MDRM,tag_BDRM,tagstep,          & !DRM Scandella 27.09.2005
+    nsism,valsism,fsism,tagsism,na,taga,nMDRM,nBDRM,tag_MDRM,tag_BDRM,tagstep,          &
     nPDRM,valPDRM,fPDRM,nf,func_type,func_indx,func_data,tag_func, & 
-    nf_drm,func_type_drm,func_indx_drm,func_data_drm,tag_func_drm,  & !DRM Scandella 11.04.2006
+    nf_drm,func_type_drm,func_indx_drm,func_data_drm,tag_func_drm, &
     fmax, ntest, ftest,nb_dg,lab_dg,lab_dg_yn,NLFLAG)
 
     implicit none
@@ -268,30 +268,25 @@ subroutine READ_MATERIAL_EL(file_mat,nm,propm, typem, tagm, &
         elseif (keyword.eq.'ABSO') then
             ia = ia + 1
             read(input_line(ileft:iright),*)taga(ia)
-
-        elseif (keyword.eq.'SDRM') then                           ! DRM Scandella 20.10.2005  
-            read(input_line(ileft:iright),*) tagstep               ! DRM Scandella 20.10.2005 
-        elseif (keyword.eq.'MDRM') then                           ! DRM Scandella 27.09.2005   
-            iMDRM = iMDRM + 1                                      ! DRM Scandella 27.09.2005
-            read(input_line(ileft:iright),*)tag_MDRM(iMDRM)        ! DRM Scandella 27.09.2005  
-        !
-        elseif (keyword.eq.'BDRM') then                           ! DRM Scandella 27.09.2005 
-            iBDRM = iBDRM + 1                                      ! DRM Scandella 27.09.2005    
-            read(input_line(ileft:iright),*)tag_BDRM(iBDRM)        ! DRM Scandella 27.09.2005
-
-        elseif (keyword.eq.'PDRM') then                           ! DRM Scandella 20.10.2005 
-            iPDRM = iPDRM + 1                                      ! DRM Scandella 20.10.2005    
-            read(input_line(ileft:iright),*)fPDRM(iPDRM),&         ! DRM Scandella 20.10.2005 
-                valPDRM(iPDRM,1),valPDRM(iPDRM,2),valPDRM(iPDRM,3)! DRM Scandella 20.10.2005
-
+        elseif (keyword.eq.'SDRM') then 
+            read(input_line(ileft:iright),*) tagstep
+            write(*,*) "tagstep",tagstep
+        elseif (keyword.eq.'MDRM') then                    
+            iMDRM = iMDRM + 1                              
+            read(input_line(ileft:iright),*)tag_MDRM(iMDRM)
+        elseif (keyword.eq.'BDRM') then                    
+            iBDRM = iBDRM + 1                                
+            read(input_line(ileft:iright),*)tag_BDRM(iBDRM)
+        elseif (keyword.eq.'PDRM') then                    
+            iPDRM = iPDRM + 1                                
+            read(input_line(ileft:iright),*)fPDRM(iPDRM),& 
+                valPDRM(iPDRM,1),valPDRM(iPDRM,2),valPDRM(iPDRM,3)
         elseif (keyword.eq.'DGIC') then 
             idg = idg + 1
             read(input_line(ileft:iright),*) lab_dg(idg), lab_dg_yn(idg)            
-
         elseif (keyword.eq.'TEST') then                                        
             itest = itest + 1                                                        
             read(input_line(ileft:iright),*) ftest(itest)            
-
         elseif (keyword.eq.'FUNC') then
             ifunc = ifunc + 1
             read(input_line(ileft:iright),*) tag_func(ifunc),&
@@ -338,15 +333,15 @@ subroutine READ_MATERIAL_EL(file_mat,nm,propm, typem, tagm, &
                 read(input_line(ileft:iright),*)trash,trash,trash,&                 
                     (func_data(j), j = func_indx(ifunc),func_indx(ifunc +1) -1)     
             endif
-        elseif (keyword.eq.'FDRM') then                                                           !DRM Scandella 11.04.2006
-            ifunc_drm = ifunc_drm + 1                                                              !DRM Scandella 11.04.2006 
-            read(input_line(ileft:iright),*)tag_func_drm(ifunc_drm),&                              !DRM Scandella 11.04.2006
-                func_type_drm(ifunc_drm)                                                          !DRM Scandella 11.04.2006 
-            if (func_type_drm(ifunc_drm).eq.50) then                                               !DRM Scandella 11.04.2006
-                read(input_line(ileft:iright),*)trash,trash,func_nd_drm                             !DRM Scandella 11.04.2006
-                func_indx_drm(ifunc_drm +1) = func_indx_drm(ifunc_drm) + 3*func_nd_drm              !DRM Scandella 11.04.2006
-                read(input_line(ileft:iright),*)trash,trash,trash,&                                 !DRM Scandella 11.04.2006
-                    (func_data_drm(j), j = func_indx_drm(ifunc_drm),func_indx_drm(ifunc_drm +1) -1)!DRM Scandella 11.04.2006
+        elseif (keyword.eq.'FDRM') then
+            ifunc_drm = ifunc_drm + 1 
+            read(input_line(ileft:iright),*)tag_func_drm(ifunc_drm),&
+                func_type_drm(ifunc_drm) 
+            if (func_type_drm(ifunc_drm).eq.50) then
+                read(input_line(ileft:iright),*)trash,trash,func_nd_drm
+                func_indx_drm(ifunc_drm +1) = func_indx_drm(ifunc_drm) + 3*func_nd_drm
+                read(input_line(ileft:iright),*)trash,trash,trash,& 
+                    (func_data_drm(j), j = func_indx_drm(ifunc_drm),func_indx_drm(ifunc_drm +1) -1)
             endif
 
         elseif (keyword.eq.'FMAX') then

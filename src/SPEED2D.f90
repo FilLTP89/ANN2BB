@@ -213,6 +213,7 @@ program SPEED2D
     !*****************************************************************************************      
     !  START
     !*****************************************************************************************      
+
     call system_clock(COUNT=clock_start,COUNT_RATE=clock(2))
 
     write(*,'(A)')''
@@ -241,7 +242,7 @@ program SPEED2D
     write(*,'(A)') 
     write(*,'(A)')'*******************************************************'
     write(*,'(A)')'------------------READING HEADER FILE------------------'
-    write(*,'(A,A36)') 'Header File: ',head_file
+    write(*,'(A,A36)') '* Header File: ',head_file
 
     inquire(file=head_file,exist=filefound); 
     if(filefound .eqv. .FALSE.) then
@@ -257,10 +258,9 @@ program SPEED2D
     if (nsnaps.gt.0) allocate(tsnap(nsnaps),itersnap(nsnaps));
 
     time_degree = 0;
-    call READ_HEADER(head_file, grid_file, mat_file, out_file,&
-        deltat, xtime, opt_out_var, &
-        nsnaps, tsnap, ndt_mon, depth_search_mon_lst, num_lst,&        
-        file_mon_lst,time_degree, test, dg_const, dg_pen, NLFLAG)     
+    call READ_HEADER(head_file,grid_file,mat_file,out_file,deltat,xtime,&
+        opt_out_var,nsnaps,tsnap,ndt_mon,depth_search_mon_lst,num_lst,&        
+        file_mon_lst,time_degree,test,dg_const,dg_pen, NLFLAG)     
 
     !*****************************************************************************************      
     !  READ MATE FILE
@@ -273,47 +273,40 @@ program SPEED2D
 
     write(*,'(A)')    
     write(*,'(A)')'*******************************************************'
-    write(*,'(A,A20)')'-----------------READING MATERIAL FILE-----------------'
-    write(*,'(A,A20)')'Material File : ',mat_file
+    write(*,'(A)')'-----------------READING MATERIAL FILE-----------------'
+    write(*,'(A,A36)')' * Material File : ',mat_file
 
-    inquire(file=mat_file,exist=filefound); 
+   inquire(file=mat_file,exist=filefound); 
     if(filefound .eqv. .FALSE.) then
         read(*,*);
         stop
     endif
 
 
-    call READ_DIME_MAT_EL(mat_file,nmat, &
-        nload_dirX_el,nload_dirY_el, &
-        nload_neuX_el,nload_neuY_el, &
-        nload_poiX_el,nload_poiY_el, &
-        nload_plaX_el,nload_plaY_el, &
-        nload_sism_el,nload_abc_el,nload_MDRM_el,  &
-        nload_BDRM_el,nload_PDRM_el, &  !DRM Scandella 17.10.2005
-        nfunc,nfunc_data,n_test,&
-        nfunc_drm,nfunc_data_drm,&                     !DRM Scandella 11.04.2006 
-        nload_dg_el)
+    call READ_DIME_MAT_EL(mat_file,nmat,nload_dirX_el,nload_dirY_el,nload_neuX_el,nload_neuY_el, &
+        nload_poiX_el,nload_poiY_el,nload_plaX_el,nload_plaY_el,nload_sism_el,nload_abc_el,nload_MDRM_el,  &
+        nload_BDRM_el,nload_PDRM_el,nfunc,nfunc_data,n_test,nfunc_drm,nfunc_data_drm,nload_dg_el)
 
-    write(*,'(A,I8)')'Materials      : ',nmat
-    write(*,'(A,I8)')'Dichlet X B.C. : ',nload_dirX_el
-    write(*,'(A,I8)')'Dichlet Y B.C. : ',nload_dirY_el
-    write(*,'(A,I8)')'Neumann X B.C. : ',nload_neuX_el
-    write(*,'(A,I8)')'Neumann Y B.C. : ',nload_neuY_el
-    write(*,'(A,I8)')'DG Interfaces  : ',nload_dg_el
-    write(*,'(A,I8)')'Absorbing B.C. : ',nload_abc_el
-    if (nload_MDRM_el.ne.0) then                                        ! DRM Scandella 10.05.2007  
-        write(*,'(A,I8)')'Domain DRM     : ',nload_MDRM_el                  ! DRM Scandella 27.09.2005
-        write(*,'(A,I8)')'Internal B. DRM: ',nload_BDRM_el                  ! DRM Scandella 27.09.2005
-        write(*,'(A,I8)')'DRM loaded points: ',nload_PDRM_el                ! DRM Scandella 17.10.2005
-    endif                                                               ! DRM Scandella 10.05.2007
-    write(*,'(A,I8)')'Point Loads X  : ',nload_poiX_el
-    write(*,'(A,I8)')'Point Loads Y  : ',nload_poiY_el
-    write(*,'(A,I8)')'Plane Loads X  : ',nload_plaX_el
-    write(*,'(A,I8)')'Plane Loads Y  : ',nload_plaY_el
-    write(*,'(A,I8)')'Moment Loads  :  ',nload_sism_el
-    if (nload_PDRM_el.ne.0) then                                        ! DRM Scandella 10.05.2007  
-        write(*,'(A,I8)')'Functions DRM:      ',nfunc_drm                   ! DRM Scandella 11.04.2006 
-    endif                                                               ! DRM Scandella 10.05.2007
+    write(*,'(A,I8)')' * Materials      : ',nmat
+    write(*,'(A,I8)')' * Dichlet X B.C. : ',nload_dirX_el
+    write(*,'(A,I8)')' * Dichlet Y B.C. : ',nload_dirY_el
+    write(*,'(A,I8)')' * Neumann X B.C. : ',nload_neuX_el
+    write(*,'(A,I8)')' * Neumann Y B.C. : ',nload_neuY_el
+    write(*,'(A,I8)')' * DG Interfaces  : ',nload_dg_el
+    write(*,'(A,I8)')' * Absorbing B.C. : ',nload_abc_el
+    if (nload_MDRM_el.ne.0) then                                
+        write(*,'(A,I8)')' * Domain DRM     : ',nload_MDRM_el   
+        write(*,'(A,I8)')' * Internal B. DRM: ',nload_BDRM_el   
+        write(*,'(A,I8)')' * DRM loaded points: ',nload_PDRM_el 
+    endif                                                       
+    write(*,'(A,I8)')' * Point Loads X  : ',nload_poiX_el
+    write(*,'(A,I8)')' * Point Loads Y  : ',nload_poiY_el
+    write(*,'(A,I8)')' * Plane Loads X  : ',nload_plaX_el
+    write(*,'(A,I8)')' * Plane Loads Y  : ',nload_plaY_el
+    write(*,'(A,I8)')' * Moment Loads  :  ',nload_sism_el
+    if (nload_PDRM_el.ne.0) then                         
+        write(*,'(A,I8)')' * Functions DRM:      ',nfunc_drm
+    endif
     if (nmat.le.0) then
         write(*,*)'Error ! nmat = 0';   
         read(*,*)
@@ -379,6 +372,7 @@ program SPEED2D
 
     if (n_test.gt.0) allocate (fun_test(n_test))
 
+    tagstep = 0
 
     call READ_MATERIAL_EL(mat_file,nmat,prop_mat,sdeg_mat,tag_mat,&
         nload_dirX_el,val_dirX_el,fun_dirX_el,tag_dirX_el, &
@@ -828,20 +822,17 @@ program SPEED2D
         !     Number of DRM elements nodes without DRM boundary nodes and duplicates (nnode_EL_eff) !DRM Scandella 16.11.2005 
         call DIME_EL_DRM_NODE(nnode_MDRM,node_MDRM,nnode_EL_eff)                !DRM Scandella 16.11.2005 
 
-        nnode_TOT_eff = nnode_BD_eff+nnode_EL_eff                               !DRM Scandella 16.11.2005 
 
-        allocate (node_TOT_eff(nnode_TOT_eff))                                  !DRM Scandella 16.11.2005 
-        allocate (val_TOT_eff(nnode_TOT_eff))                                   !DRM Scandella 12.04.2006 
-        allocate (xx_TOT_eff(nnode_TOT_eff))                                    !DRM Scandella 16.11.2005 
-        allocate (yy_TOT_eff(nnode_TOT_eff))                                    !DRM Scandella 16.11.2005 
+        nnode_TOT_eff = nnode_BD_eff+nnode_EL_eff                                
 
+        allocate (node_TOT_eff(nnode_TOT_eff))
+        allocate (val_TOT_eff(nnode_TOT_eff)) 
+        allocate (xx_TOT_eff(nnode_TOT_eff))  
+        allocate (yy_TOT_eff(nnode_TOT_eff))  
 
-
-        !     DRM elements nodes without DRM boundary nodes and duplicates (node_TOT_eff)         !DRM Scandella 16.11.2005 
-        call EXTRACT_TOT_DRM_NODE(nnode_dom,nnode_MDRM,node_MDRM,nnode_BD_eff,node_BD_eff,& !DRM Scandella 16.11.2005 
-            xx_spx,yy_spx,&                                           !DRM Scandella 16.11.2005 
-            nnode_EL_eff,nnode_TOT_eff,node_TOT_eff,&                 !DRM Scandella 16.11.2005 
-            xx_TOT_eff,yy_TOT_eff)                                    !DRM Scandella 16.11.2005 
+        !     DRM elements nodes without DRM boundary nodes and duplicates (node_TOT_eff) 
+        call EXTRACT_TOT_DRM_NODE(nnode_dom,nnode_MDRM,node_MDRM,nnode_BD_eff,node_BD_eff,& 
+            xx_spx,yy_spx,nnode_EL_eff,nnode_TOT_eff,node_TOT_eff,xx_TOT_eff,yy_TOT_eff)                     
 
 
         write(21,'(A,I6)')'# Number of DRM boundary lines =', n_boun_DRM                    !DRM Scandella 16.11.2005 
@@ -1593,9 +1584,6 @@ program SPEED2D
     write(*,'(A)') '-------------------------------------------------------'
     write(*,'(A)')'             Beginning of the time-loop                 '
     write(*,'(A)')
-
-    write(*,*) "============================="
-    write(*,*) "CHECK"
 
     if (.not.NLFLAG) then
         call TIME_LOOP_EL(nnod,xx_spx,yy_spx,con_nnz,con_spx,&                                                         ! 5
