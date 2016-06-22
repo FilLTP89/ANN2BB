@@ -7,9 +7,9 @@ module nonlinear2d
     real*8, parameter                   :: zero=0.d0,one=1.0d0
     real*8, parameter                   :: half=0.5d0,two=2.0d0,three=3.0d0
     !
-    real*8, parameter :: FTOL = 0.0001D0
-    real*8, parameter :: LTOL = 0.0000001D0
-    real*8, parameter :: STOL = 0.0001D0
+    real*8, parameter :: FTOL = 0.001D0
+    real*8, parameter :: LTOL = 0.000000001D0
+    real*8, parameter :: STOL = 0.1D0
     real*8, parameter :: PSI  = one!5.0D0
     real*8, parameter :: OMEGA= zero!1.0D6
     !
@@ -321,80 +321,6 @@ module nonlinear2d
         ! CHECK PLASTIC CONSISTENCY (KKT CONDITIONS)
         !****************************************************************************
         
-        subroutine check_plasticity_old (dtrial, stress0, center, radius, syld, &
-            st_epl, alpha_epl) 
-            ! ***** CRITICAL STATE EXTENSION *****
-            ! st_epl,alpha_epl,dstrain,lambda,mu)    
-            implicit none
-            ! intent IN
-            real*8,                 intent(in)      :: radius,syld
-            real*8, dimension(4),   intent(in)      :: center,stress0
-            ! intent INOUT
-            real*8, dimension(4),   intent(inout)   :: dtrial
-            ! intent OUT
-            real*8,                 intent(out)     :: alpha_epl
-            logical,                intent(out)     :: st_epl
-            !
-            integer*4                               :: k
-            real*8                                  :: FS,FT,checkload
-            real*8, dimension(4)                    :: gradFS, gradFT, stress1
-            ! real*8, dimension(4), intent(in) :: dstrain
-            ! real*8,               intent(in) :: lambda,mu
-            !
-            ! PREDICTION STRESS
-            call update_stress(stress0,stress1,dtrial)
-            !stress1= dtrial+stress0
-            ! ***** CRITICAL STATE EXTENSION *****
-            ! call update_stress(stress0,stress1,dstrain,lambda,mu)
-            ! 
-            ! CHECK MISES FUNCTION
-            call mises_yld_locus(stress0,center,radius,syld,FS,gradFS)
-            call mises_yld_locus(stress1,center,radius,syld,FT,gradFT)
-            
-            ! CHECK LOAD DIRECTION 
-            checkload = dot_product(gradFS,dtrial)/&
-                (dot_product(gradFS,gradFS)*dot_product(dtrial,dtrial))
-            
-            ! CHECK PLASTICITiY 
-            if (abs(FS).le.FTOL) then ! FS = 0
-                !
-                if (checkload.ge.-LTOL) then ! PLASTIC LOADING
-                    alpha_epl = zero
-                    st_epl    = .true.
-                else ! GENERALIZED UNLOADING
-                    
-                    if (FT.lt.-FTOL) then ! ELASTIC UNLOADING
-                        alpha_epl = one
-                        st_epl    = .false.
-                    elseif(FT.gt.FTOL) then ! PLASTIC UNLOADING
-                        call gotoFpegasus(stress0,dtrial,center,radius,syld,10,alpha_epl)
-                        ! ***** CRITICAL STATE EXTENSION *****
-                        ! call gotoFpegasus(stress0,dtrial,center,radius,syld,10,alpha_epl,dstrain,lambda,mu)
-                        st_epl    = .true.
-                    else
-                        write(*,*) "ERROR: MOVING ON THE SURFACE"
-                        read(*,*)                                                               
-                    endif
-                end if
-            elseif (FS.lt.-FTOL) then ! FS<0
-                if (FT.le.FTOL) then ! ELASTIC LOADING
-                    alpha_epl = one
-                    st_epl    = .false.
-                elseif(FT.gt.FTOL) then ! ELASTO-PLASTIC LOADING
-                    call gotoFpegasus(stress0,dtrial,center,radius,syld,1,alpha_epl)
-                    st_epl    = .true.
-                end if
-            elseif (FS.gt.FTOL) then
-                write(*,*) "ERROR FS:",FS,">FTOL"
-                alpha_epl  = zero
-                st_epl = .true.
-                stop
-            end if
-            ! ON-LOCUS STRESS STATE 
-            dtrial=stress0+dtrial*alpha_epl
-            call mises_yld_locus(dtrial,center,radius,syld,FS,gradFS)
-        end subroutine check_plasticity_old
-        
         subroutine check_plasticity(dtrial, stress0, center, radius, syld, &
             st_epl, alpha_epl) 
             ! ***** CRITICAL STATE EXTENSION *****
@@ -435,7 +361,6 @@ module nonlinear2d
             endif
 
             if ((FS.lt.-FTOL).and.(FT.gt.FTOL)) then
-                write(*,*) "due"
                 st_epl = .true.
                 call gotoFpegasus(stress0,dtrial,center,radius,syld,1,alpha_epl)
                 ! ***** CRITICAL STATE EXTENSION *****
@@ -444,17 +369,13 @@ module nonlinear2d
             endif
 
             if ((abs(FS).le.FTOL).and.(FT.gt.FTOL)) then
-                write(*,*) "tre"
-
                 ! CHECK LOAD DIRECTION 
                 checkload = dot_product(gradFS,dtrial)/&
                     sqrt(dot_product(gradFS,gradFS)*dot_product(dtrial,dtrial))
 
                 if (checkload.ge.-LTOL) then! PLASTIC LOADING  
-                    write(*,*) "load"
                     alpha_epl = zero
                 else! PLASTIC UNLOADING  
-                    write(*,*) "unload"
                     call gotoFpegasus(stress0,dtrial,center,radius,syld,10,alpha_epl)
                     ! ***** CRITICAL STATE EXTENSION *****
                     ! call gotoFpegasus(stress0,dtrial,center,radius,syld,10,alpha_epl,dstrain,lambda,mu)
@@ -499,14 +420,13 @@ module nonlinear2d
             logical                             :: flag_fail
             real*8, dimension(4)                :: gradFM,S1,S2,X1,X2,Epl1
             real*8, dimension(4)                :: dS1,dS2,dX1,dX2,dEpl1,dEpl2
-            integer*4                           :: counter
-            counter = 1
+            
             call stiff_matrix(lambda,mu,DEL)
             deltaTk = one
             Ttot    = zero
-            deltaTmin = 0.0001D0
+            deltaTmin = 0.00001D0
             flag_fail =.true.
-            do while ((Ttot.lt.one).and.(counter.le.10))
+            do while (Ttot.lt.one)
                 Resk  = zero
                 dS1   = zero
                 dX1   = zero
@@ -553,7 +473,6 @@ module nonlinear2d
 
                     call mises_yld_locus (stress, center,radius,syld,FM,gradFM)
                     if (abs(FM).gt.FTOL) then
-                        write(*,*) "DRIFT"
                         call drift_corr(stress,center,radius,syld,&
                                 biso,Rinf,Ckin,kkin,lambda,mu,pstrain)
                     endif
@@ -562,7 +481,6 @@ module nonlinear2d
                         qq = min(qq,one)
                     endif
                     flag_fail=.false.
-                    counter = 1
                     Ttot=Ttot+deltaTk
                     deltaTk=qq*deltaTk
                     deltaTk=max(deltaTk,deltaTmin)
@@ -571,14 +489,8 @@ module nonlinear2d
                     qq=max(0.9d0*sqrt(STOL/Resk),0.1d0)
                     deltaTk=max(qq*deltaTk,deltaTmin)
                     flag_fail=.true.
-                    write(*,*) "FAILED",Resk,qq
-                    counter = counter+1
                 end if
             end do
-            if (counter.eq.10)then
-                write(*,*) "FAILED CORRECTION"
-                stop
-            endif
             !
             return
             !
@@ -718,7 +630,7 @@ module nonlinear2d
             real*8, dimension(4)                :: tempv,gradF0,gradF1,dstress,stresst,centert
             real*8, dimension(4,4)              :: DEL
             integer*4                           :: counter,k,j
-            real*8, parameter :: FTOL_DRIFT =   0.0001D0 
+            real*8, parameter :: FTOL_DRIFT =   0.0000001D0 
             ! INITIAL PLASTIC CONDITION
             call stiff_matrix(lambda,mu,DEL)
             ! ***** CRITICAL STATE EXTENSION *****
@@ -763,11 +675,10 @@ module nonlinear2d
 
                 if (abs(F1).le.FTOL_DRIFT) then
                     exit
+                else
+                    write(*,*) "DRIFT NOT CORRECTED",F1
                 endif
             enddo
-            if (abs(F1).gt.FTOL) then
-                write(*,*) "DRIFT NOT CORRECTED"
-            endif
             !
             return
             !
@@ -834,7 +745,7 @@ module nonlinear2d
             ! LOAD REVERSAL
             if (nsub.gt.1)then
                 Fsave=F0
-                do counter0=1,4
+                do counter0=1,5
                     dalpha = (alpha1-alpha0)/nsub
                     flagxit=.false.
                     do counter1=1,nsub
@@ -873,10 +784,9 @@ module nonlinear2d
                 ! call update_stress(start0,stress1,alpha1*dstrain,lambda,mu)
                 call mises_yld_locus(stress0,center,radius,s0,F0,gradF)
                 call mises_yld_locus(stress1,center,radius,s0,F1,gradF)
-                if ((F0.lt.-FTOL).and.(F1.gt.FTOL)) then
-                    write(*,*) "LOAD REVERSAL OK"
-                else
-                    write(*,*) "LOAD REVERSAL FAILED"
+
+                if ((F0.ge.-FTOL).or.(F1.le.FTOL))then
+                    write(*,*) "ciao"
                 endif
             end if
             
@@ -902,12 +812,10 @@ module nonlinear2d
                     alpha0=alpha
                 endif
             end do
-
-            if (FM.gt.FTOL) then
-                write(*,*) "WARNING: F=",FM,">FTOL!!!!!!"
-            endif
+            ! 
+            return
+            !
         end subroutine gotoFpegasus
-        
 end module nonlinear2d
 !! mode: f90
 !! show-trailing-whitespace: t
