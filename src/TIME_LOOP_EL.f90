@@ -745,33 +745,10 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         condition = (nmonit.ge.1).and.(int(real(its)/ndt_monitor).eq.(real(its)/ndt_monitor)) 
         if (condition) then
             call WRITE_MONITOR_EL(cs_nnz,cs,ne,nm,sdeg_mat,prop_mat,nmonit,option_out_var, &
-                unit_disp,unit_vel,unit_acc,unit_strain,unit_stress,unit_omega,node_m,nnt, &
-                tt1,u1,vel,acc,nodal_counter,alfa1,alfa2,beta1,beta2,gamma1,gamma2)
+                unit_disp,unit_vel,unit_acc,unit_strain,unit_stress,unit_omega,unit_uDRM,&
+                node_m,nnt,tt1,node_TOT,nnode_TOT,tagstep,u1,vel,acc,nodal_counter,alfa1,alfa2,&
+                beta1,beta2,gamma1,gamma2)
         endif
-
-        !-----DRM---------------------------------------------------------------------------------------------------
-        !Write out displacement in DRM nodes for I step
-
-        if ((nnode_TOT.ne.0).and.(tagstep.eq.1)) then  !DRM Scandella 16.11.2005
-            if (int(real(its)/ndt_monitor).eq.(real(its)/ndt_monitor)) then  !DRM Scandella 24.01.2006
-                do i = 1,nnode_TOT                          !DRM Scandella 16.11.2005
-                    in = node_TOT(i)                          !DRM Scandella 16.11.2005
-
-                    if (dabs(u1(in)).lt.(1.0d-99)) then
-                        u1(in)=0.0
-                    endif
-                    if (dabs(u1(in+nnt)).lt.(1.0d-99)) then
-                        u1(in+nnt)=0.0
-                    endif
-            write(*,*) "MODIFIED drm"
-                    !open(unit_uDRM,file=file_uDRM,position='append')
-                    write(unit_uDRM(i),'(3E16.8)') &          !DRM Scandella 16.11.2005
-                        tt1,u1(in),u1(in+nnt)             !DRM Scandella 16.11.2005
-                    !close(unit_uDRM)
-                enddo 
-            endif                                        !DRM Scandella 24.01.2006
-        endif                                           !DRM Scandella 16.11.2005
-
 
         !*******************************************************************************************
         ! UPDATE

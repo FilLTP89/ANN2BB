@@ -295,7 +295,8 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
             integer*4                                                  :: ie 
         end subroutine DEALLOCATE_ALL 
     end interface
-    
+   
+    tagstep = 0
     pi = 4.d0*datan(1.d0)
     IN_TOT = IN_TOT -1
 
@@ -687,14 +688,12 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
             enddo
         endif
 
-!        if (nnode_dirY.gt.0) then
-!            write(*,*) "MODIFIED DIRY"
-!            do i = 1,nnode_dirY
-!                in = inode_dirY(i) + nnt
-!                write(*,*) "in node: ",in
-!                u2(in) = 0.0d0; u1(in) = 0.d0; v1(in) = 0.d0;
-!            enddo
-!        endif
+        if (nnode_dirY.gt.0) then
+            do i = 1,nnode_dirY
+                in = inode_dirY(i) + nnt
+                u2(in) = 0.0d0; u1(in) = 0.d0; v1(in) = 0.d0;
+            enddo
+        endif
 
         call system_clock(COUNT=finish)
 
@@ -713,31 +712,14 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         !********************************************************************************************
         condition = (nmonit.ge.1).and.(int(real(its)/ndt_monitor).eq.(real(its)/ndt_monitor)) 
         if (condition) then
+            write(*,*) "node_TOT",node_TOT
+            write(*,*) "nnode_TOT",nnode_TOT
+            write(*,*) "tagstep",tagstep
+            write(*,*) "unit_uDRM",unit_uDRM
             call WRITE_MONITOR_NL(unit_disp,unit_vel,unit_acc,unit_strain,unit_stress,unit_omega,&
-                option_out_var,nmonit,ndt_monitor,node_m,nm,ne,nnt,cs,cs_nnz,sdeg_mat,snl,its,tt1,&
-                u1,vel,acc,nodal_counter,disout)
+                unit_uDRM,option_out_var,nmonit,ndt_monitor,node_m,nm,ne,nnt,cs,cs_nnz,sdeg_mat,snl,&
+                its,tt1,node_TOT,nnode_TOT,tagstep,u1,vel,acc,nodal_counter,disout)
         endif
-        
-        !-----DRM---------------------------------------------------------------------------------------------------
-        !Write out displacement in DRM nodes for I step
-
-        if ((nnode_TOT.ne.0).and.(tagstep.eq.1)) then  !DRM Scandella 16.11.2005
-            if (int(real(its)/ndt_monitor).eq.(real(its)/ndt_monitor)) then  !DRM Scandella 24.01.2006
-                do i = 1,nnode_TOT                          !DRM Scandella 16.11.2005
-                    in = node_TOT(i)                          !DRM Scandella 16.11.2005
-                    if (dabs(u1(in)).lt.(1.0d-99)) then
-                        u1(in)=0.0
-                    endif
-                    if (dabs(u1(in+nnt)).lt.(1.0d-99)) then
-                        u1(in+nnt)=0.0
-                    endif
-                    !open(unit_uDRM,file=file_uDRM,position='append')
-                    write(unit_uDRM(i),'(3E16.8)') &          !DRM Scandella 16.11.2005
-                        tt1,u1(in),u1(in+nnt)             !DRM Scandella 16.11.2005
-                    !close(unit_uDRM)
-                enddo 
-            endif                                        !DRM Scandella 24.01.2006
-        endif                                           !DRM Scandella 16.11.2005
 
 
         !********************************************************************************************

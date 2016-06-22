@@ -12,10 +12,12 @@ module write_output
         
         subroutine MAKE_MONITOR_FILES(nnt,nmonit,option_out_var,nnode_TOT,tagstep,&
                 unit_disp,unit_vel,unit_acc,unit_stress,unit_strain,unit_omega,unit_uDRM)
-
+            !
             implicit none
-
+            ! intent IN
             integer*4 ,                   intent(in)    :: nnt,nmonit,nnode_TOT,tagstep
+            integer*4, dimension(6)     , intent(in)    :: option_out_var    
+            ! intent OUT
             integer*4, dimension(nmonit), intent(inout) :: unit_disp
             integer*4, dimension(nmonit), intent(inout) :: unit_vel
             integer*4, dimension(nmonit), intent(inout) :: unit_acc
@@ -23,7 +25,7 @@ module write_output
             integer*4, dimension(nmonit), intent(inout) :: unit_strain
             integer*4, dimension(nmonit), intent(inout) :: unit_omega
             integer*4, dimension(nnode_TOT), intent(inout) :: unit_uDRM
-            integer*4, dimension(6)     , intent(in)    :: option_out_var    
+            !
             character*70                                :: file_disp
             character*70                                :: file_vel
             character*70                                :: file_acc
@@ -32,6 +34,7 @@ module write_output
             character*70                                :: file_omega 
             character*70                                :: file_uDRM
             integer*4                                   :: i 
+            !
             if (nmonit.ge.1) then
                 if (option_out_var(1).eq.1) then  
                     file_disp = 'monitorXXXXX.d'  
@@ -178,7 +181,6 @@ module write_output
 
             !---DRM---------------------------------------------------------------------
             !Open output files for DRM I step                     !DRM Scandella 25.11.2005
-
             if ((nnode_TOT.ne.0).and.(tagstep.eq.1)) then   !DRM Scandella 25.11.2005 
                 file_uDRM = 'monDRMXXXXX.d'                  !DRM Scandella 25.11.2005 
                 do i = 1,nnode_TOT                           !DRM Scandella 25.11.2005 
@@ -210,30 +212,34 @@ module write_output
         !****************************************************************************
         
         subroutine WRITE_MONITOR_EL(cs_nnz,cs,ne,nm,sdeg_mat,prop_mat,nmonit,option_out_var, &
-            unit_disp,unit_vel,unit_acc,unit_strain,unit_stress,unit_omega,node_m,nnt,         &
-            tt1,dis,vel,acc,nodal_counter,alfa1,alfa2,beta1,beta2,gamma1,gamma2)
+            unit_disp,unit_vel,unit_acc,unit_strain,unit_stress,unit_omega,unit_uDRM,node_m,nnt,         &
+            tt1,node_TOT,nnode_TOT,tagstep,dis,vel,acc,nodal_counter,alfa1,alfa2,beta1,beta2, &
+            gamma1,gamma2)
             ! 
             implicit none
             ! intent IN
-            real*8,                         intent(in)      :: tt1
-            integer*4,                      intent(in)      :: nmonit,nnt,nm,ne,cs_nnz
-            integer*4,  dimension(nm),      intent(in)      :: sdeg_mat
-            integer*4,  dimension(0:cs_nnz),intent(in)      :: cs
-            real*8,     dimension(nm,8)  ,  intent(in)      :: prop_mat
-            real*8,     dimension(ne)    ,  intent(in)      :: alfa1,beta1,gamma1
-            real*8,     dimension(ne)    ,  intent(in)      :: alfa2,beta2,gamma2 
-            integer*4,  dimension(6),       intent(in)      :: option_out_var
-            integer*4,  dimension(nnt),     intent(in)      :: nodal_counter
-            integer*4,  dimension(nmonit),  intent(in)      :: node_m
+            real*8,                        intent(in)  :: tt1
+            integer*4,                     intent(in)  :: nmonit,nnt,nm,ne,tagstep
+            integer*4,                     intent(in)  :: nnode_TOT,cs_nnz
+            integer*4, dimension(nm),      intent(in)  :: sdeg_mat
+            integer*4, dimension(0:cs_nnz),intent(in)  :: cs
+            real*8,    dimension(nm,8)  ,  intent(in)  :: prop_mat
+            real*8,    dimension(ne)    ,  intent(in)  :: alfa1,beta1,gamma1
+            real*8,    dimension(ne)    ,  intent(in)  :: alfa2,beta2,gamma2 
+            integer*4, dimension(6),       intent(in)  :: option_out_var
+            integer*4, dimension(nnt),     intent(in)  :: nodal_counter
+            integer*4, dimension(nmonit),  intent(in)  :: node_m
+            integer*4, dimension(nnode_TOT),intent(in) :: node_TOT
             ! intent INOUT
-            real*8,     dimension(2*nnt) ,  intent(inout)   :: dis,vel,acc
-            integer*4,  dimension(nmonit),  intent(inout)   :: unit_disp
-            integer*4,  dimension(nmonit),  intent(inout)   :: unit_vel
-            integer*4,  dimension(nmonit),  intent(inout)   :: unit_acc
-            integer*4,  dimension(nmonit),  intent(inout)   :: unit_stress
-            integer*4,  dimension(nmonit),  intent(inout)   :: unit_strain
-            integer*4,  dimension(nmonit),  intent(inout)   :: unit_omega
-            integer*4                                       :: ii,jj,i,ie,im,is,in,nn
+            real*8,    dimension(2*nnt) ,  intent(inout) :: dis,vel,acc
+            integer*4, dimension(nmonit),  intent(inout) :: unit_disp
+            integer*4, dimension(nmonit),  intent(inout) :: unit_vel
+            integer*4, dimension(nmonit),  intent(inout) :: unit_acc
+            integer*4, dimension(nmonit),  intent(inout) :: unit_stress
+            integer*4, dimension(nmonit),  intent(inout) :: unit_strain
+            integer*4, dimension(nmonit),  intent(inout) :: unit_omega
+            integer*4, dimension(nmonit),  intent(inout) :: unit_uDRM
+            integer*4                                    :: ii,jj,i,ie,im,is,in,nn
             !
             real*8, dimension(:),   allocatable :: ct,ww,dxdx_el,dxdy_el,dydx_el,dydy_el
             real*8, dimension(:,:), allocatable :: dd,ux_el,uy_el
@@ -439,25 +445,47 @@ module write_output
                 enddo
             endif
 
+            !***********************************************************************************
+            ! DRM
+            !***********************************************************************************
+            
+            if ((nnode_TOT.ne.0).and.(tagstep.eq.1)) then  
+                do i = 1,nnode_TOT                                  
+                    in = node_TOT(i)                                
+                    if (dabs(dis(in)).lt.(1.0d-99)) then
+                        dis(in)=0.0
+                    endif
+                    if (dabs(dis(in+nnt)).lt.(1.0d-99)) then
+                        dis(in+nnt)=0.0
+                    endif
+                    write(unit_uDRM(i),'(3E16.8)') &                
+                        tt1,dis(in),dis(in+nnt)                       
+                enddo 
+            endif
+            !
             return
+            !
         end subroutine WRITE_MONITOR_EL
        
         !******************************************************************************************
         ! NONLINEAR OUTPUT 
         !******************************************************************************************
+
         subroutine WRITE_MONITOR_NL(unit_disp,unit_vel,unit_acc,unit_strain,unit_stress,unit_omega,&
-            option_out_var,nmonit,ndt_monitor,node_m,nm,ne,nnt,cs,cs_nnz,sdeg_mat,snl,its,tt1,&
-            dis,vel,acc,nodal_counter,disout)
+            unit_uDRM,option_out_var,nmonit,ndt_monitor,node_m,nm,ne,nnt,cs,cs_nnz,sdeg_mat,snl,&
+            its,tt1,node_TOT,nnode_TOT,tagstep,dis,vel,acc,nodal_counter,disout)
             !
             implicit none
             ! intent IN
             real*8,                         intent(in)  :: tt1,ndt_monitor
-            integer*4,                      intent(in)  :: nm,ne,nnt,cs_nnz,nmonit,its
+            integer*4,                      intent(in)  :: nm,ne,nnt,cs_nnz,tagstep
+            integer*4,                      intent(in)  :: nmonit,its,nnode_TOT
             integer*4, dimension(6),        intent(in)  :: option_out_var
             integer*4, dimension(nm),       intent(in)  :: sdeg_mat
             integer*4, dimension(nnt),      intent(in)  :: nodal_counter
             integer*4, dimension(nmonit),   intent(in)  :: node_m
             integer*4, dimension(0:cs_nnz), intent(in)  :: cs
+            integer*4, dimension(nnode_TOT),intent(in)  :: node_TOT
             type(nl_element), dimension(ne),intent(in)  :: snl
             ! intent INOUT
             integer*4, dimension(nmonit), intent(inout) :: unit_disp
@@ -466,6 +494,7 @@ module write_output
             integer*4, dimension(nmonit), intent(inout) :: unit_stress
             integer*4, dimension(nmonit), intent(inout) :: unit_strain
             integer*4, dimension(nmonit), intent(inout) :: unit_omega
+            integer*4, dimension(nmonit), intent(inout) :: unit_uDRM
             real*8,    dimension(2*nnt) , intent(inout) :: dis,vel,acc
             type(nodepatched),            intent(inout) :: disout
             !
@@ -607,6 +636,27 @@ module write_output
                         epxx_out,epyy_out,gpxy_out,epzz_out 
                 enddo
             endif
+
+            !***********************************************************************************
+            ! DRM
+            !***********************************************************************************
+            
+            if ((nnode_TOT.gt.0).and.(tagstep.eq.1)) then  
+                do i = 1,nnode_TOT                                  
+                    in = node_TOT(i)                                
+                    if (dabs(dis(in)).lt.(1.0d-99)) then
+                        dis(in)=0.0
+                    endif
+                    if (dabs(dis(in+nnt)).lt.(1.0d-99)) then
+                        dis(in+nnt)=0.0
+                    endif
+                    write(unit_uDRM(i),'(3E16.8)') &                
+                        tt1,dis(in),dis(in+nnt)                       
+                enddo 
+            endif                                           
+            !
+            return
+            !
         end subroutine WRITE_MONITOR_NL
         !
         subroutine UPDATE_OUT_STRESS(ne,nnt,cs_nnz,cs,nm,sdeg_mat,snl,disout)
