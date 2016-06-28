@@ -7,7 +7,7 @@ module nonlinear2d
     real*8, parameter                   :: zero=0.d0,one=1.0d0
     real*8, parameter                   :: half=0.5d0,two=2.0d0,three=3.0d0
     !
-    real*8, parameter :: FTOL = 0.001D0
+    real*8, parameter :: FTOL = 0.01D0
     real*8, parameter :: LTOL = 0.000000001D0
     real*8, parameter :: STOL = 0.1D0
     real*8, parameter :: PSI  = one!5.0D0
@@ -68,6 +68,22 @@ module nonlinear2d
             integer*4                                   :: ie,ip,iq,il,im,nn,is,in
             logical                                     :: st_epl
             !
+            integer*4                                   :: number_of_threads
+            !
+            number_of_threads = 2;
+
+            call OMP_set_num_threads(number_of_threads)
+
+            !call OMP_get_num_threads()
+
+
+!$OMP PARALLEL &
+!$OMP PRIVATE(ie, im, nn, iq, ip, is, in, ct,ww,dd,dxdx,dxdy,dydx,dydy,dstrain,dstrial) &
+!$OMP PRIVATE(stress_,dstrial_,dstrain_,pstrain_,center_,radius_,lambda_,mu_,ckin_,kkin_,rinf_,biso_,syld_) &
+!$OMP PRIVATE(alpha_epl,st_epl,fx,fy)
+
+
+!$OMP DO 
             do ie = 1,ne
                 im = cs(cs(ie-1) + 0)
                 nn = sdeg_mat(im)+1
@@ -166,7 +182,8 @@ module nonlinear2d
                 ! DEALLOCATE ELEMENT-WISE VARIABLES
                 call DEALLOCATE_LOC(ct,ww,dd,dxdx,dxdy,dydx,dydy,dstrain,dstrial,fx,fy)
             enddo
-
+!$OMP END DO
+!$OMP END PARALLEL 
             return
             !
         end subroutine MAKE_INTERNAL_FORCES_NL
@@ -630,7 +647,7 @@ module nonlinear2d
             real*8, dimension(4)                :: tempv,gradF0,gradF1,dstress,stresst,centert
             real*8, dimension(4,4)              :: DEL
             integer*4                           :: counter,k,j
-            real*8, parameter :: FTOL_DRIFT =   0.0000001D0 
+            real*8, parameter :: FTOL_DRIFT =   FTOL 
             ! INITIAL PLASTIC CONDITION
             call stiff_matrix(lambda,mu,DEL)
             ! ***** CRITICAL STATE EXTENSION *****
@@ -675,8 +692,6 @@ module nonlinear2d
 
                 if (abs(F1).le.FTOL_DRIFT) then
                     exit
-                else
-                    write(*,*) "DRIFT NOT CORRECTED",F1
                 endif
             enddo
             !

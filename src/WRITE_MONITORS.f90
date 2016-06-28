@@ -39,7 +39,7 @@ module write_output
                 if (option_out_var(1).eq.1) then  
                     file_disp = 'monitorXXXXX.d'  
                     do i = 1,nmonit
-                        unit_disp(i)=50000+i
+                        unit_disp(i)=100000+i
                         if (i.lt.10) then
                             write(file_disp(8:11),'(a4)')'0000'
                             write(file_disp(12:12),'(i1)')i
@@ -62,7 +62,7 @@ module write_output
                 if (option_out_var(2).eq.1) then  
                     file_vel = 'monitorXXXXX.v' 
                     do i = 1,nmonit
-                        unit_vel(i)=100000+i
+                        unit_vel(i)=150000+i
                         if (i.lt.10) then
                             write(file_vel(8:11),'(a4)')'0000'
                             write(file_vel(12:12),'(i1)')i
@@ -110,7 +110,7 @@ module write_output
                 if (option_out_var(4).eq.1) then
                     file_stress = 'monitorXXXXX.s'
                     do i = 1,nmonit
-                        unit_stress(i)=300000+i
+                        unit_stress(i)=250000+i
                         if (i.lt.10) then
                             write(file_stress(8:11),'(a4)')'0000'
                             write(file_stress(12:12),'(i1)')i
@@ -126,14 +126,16 @@ module write_output
                         else if (i.le.99999) then
                             write(file_stress(8:12),'(i5)')'i'     
                         endif         
+                        write(*,*) "unit_stress",unit_stress(i),file_stress
                         open(unit_stress(i),file=file_stress)
                     enddo
+
                 endif
 
                 if (option_out_var(5).gt.0) then  
                     file_strain = 'monitorXXXXX.e'
                     do i = 1,nmonit
-                        unit_strain(i)=400000+i
+                        unit_strain(i)=300000+i
                         if (i.lt.10) then
                             write(file_strain(8:11),'(a4)')'0000'
                             write(file_strain(12:12),'(i1)')i
@@ -157,7 +159,7 @@ module write_output
                 if (option_out_var(6).eq.1) then  
                     file_omega = 'monitorXXXXX.w'
                     do i = 1,nmonit
-                        unit_omega(i)=500000+i
+                        unit_omega(i)=350000+i
                         if (i.lt.10) then
                             write(file_omega(8:11),'(a4)')'0000'
                             write(file_omega(12:12),'(i1)')i
@@ -184,7 +186,7 @@ module write_output
             if ((nnode_TOT.ne.0).and.(tagstep.eq.1)) then   !DRM Scandella 25.11.2005 
                 file_uDRM = 'monDRMXXXXX.d'                  !DRM Scandella 25.11.2005 
                 do i = 1,nnode_TOT                           !DRM Scandella 25.11.2005 
-                    unit_uDRM(i)=600000+i                    !DRM Scandella 25.11.2005
+                    unit_uDRM(i)=400000+i                    !DRM Scandella 25.11.2005
                     if (i.lt.10) then                      !DRM Scandella 25.11.2005 
                         write(file_uDRM(7:10),'(a4)')'0000'     !DRM Scandella 25.11.2005
                         write(file_uDRM(11:11),'(i1)')i     !DRM Scandella 25.11.2005
@@ -504,9 +506,6 @@ module write_output
             real*8                                        :: epxx_out,epyy_out,epzz_out,gpxy_out
            
 
-            disout%stress(:,:) = 0.0d0
-            disout%strain(:,:) = 0.0d0
-            disout%plastic_strain(:,:) = 0.0d0 
             !***********************************************************************************
             ! DISPLACEMENT
             !***********************************************************************************
@@ -516,7 +515,7 @@ module write_output
                     in = node_m(i)
                     if (dabs(dis(in)).lt.(1.0d-99))     dis(in)= 0.d0
                     if (dabs(dis(in+nnt)).lt.(1.0d-99)) dis(in+nnt)=0.d0
-                    write(unit_disp(i),'(3ES16.6)') tt1,dis(in),dis(in+nnt)
+                    write(unit_disp(i),'(3E16.6)') tt1,dis(in),dis(in+nnt)
                 enddo
             endif
 
@@ -529,7 +528,7 @@ module write_output
                     in = node_m(i)
                     if (dabs(vel(in)).lt.(1.0d-99))     vel(in)= 0.d0
                     if (dabs(vel(in+nnt)).lt.(1.0d-99)) vel(in+nnt)=0.d0
-                    write(unit_vel(i),'(3ES16.6)') tt1,vel(in),vel(in+nnt)
+                    write(unit_vel(i),'(3E16.6)') tt1,vel(in),vel(in+nnt)
                 enddo
             endif
             
@@ -542,7 +541,7 @@ module write_output
                     in = node_m(i)
                     if (dabs(acc(in)).lt.(1.0d-99))     acc(in)= 0.d0
                     if (dabs(acc(in+nnt)).lt.(1.0d-99)) acc(in+nnt)=0.d0
-                    write(unit_acc(i),'(3ES16.6)') tt1,acc(in),acc(in+nnt)
+                    write(unit_acc(i),'(3E16.6)') tt1,acc(in),acc(in+nnt)
                 enddo
             endif
 
@@ -551,6 +550,7 @@ module write_output
             !***********************************************************************************
             
             if (option_out_var(4).eq.1) then
+                disout%stress(:,:) = 0.0d0
 
                 call UPDATE_OUT_STRESS(ne,nnt,cs_nnz,cs,nm,sdeg_mat,snl,disout)
                 do i = 1,nmonit
@@ -563,7 +563,7 @@ module write_output
                     if (dabs(disout%stress(2,in)).lt.(1.0d-99)) syy_out=0.d0
                     if (dabs(disout%stress(3,in)).lt.(1.0d-99)) szz_out=0.d0
                     if (dabs(disout%stress(4,in)).lt.(1.0d-99)) sxy_out=0.d0
-                    write(unit_stress(i),'(5ES16.8)') tt1,sxx_out,syy_out,sxy_out,szz_out
+                    write(unit_stress(i),'(5E16.8)') tt1,sxx_out,syy_out,sxy_out,szz_out
                 enddo
             endif
             
@@ -573,6 +573,7 @@ module write_output
             !***********************************************************************************
             
             if (option_out_var(5).eq.1) then
+                disout%strain(:,:) = 0.0d0
 
                 call UPDATE_OUT_STRAIN(ne,nnt,cs_nnz,cs,nm,sdeg_mat,snl,disout)
                 do i = 1,nmonit
@@ -583,7 +584,8 @@ module write_output
                     if (dabs(disout%strain(1,in)).lt.(1.0d-99)) exx_out=0.d0
                     if (dabs(disout%strain(2,in)).lt.(1.0d-99)) eyy_out=0.d0
                     if (dabs(disout%strain(3,in)).lt.(1.0d-99)) gxy_out=0.d0
-                    write(unit_strain(i),'(4ES16.8)') tt1,exx_out,eyy_out,gxy_out 
+                    write(*,*) "strain-time",tt1,"monitor",in,i
+                    write(unit_strain(i),'(4E16.8)') tt1,exx_out,eyy_out,gxy_out 
                 enddo
             endif
 
@@ -592,6 +594,7 @@ module write_output
             !***********************************************************************************
             
             if (option_out_var(5).eq.2) then
+                disout%plastic_strain(:,:) = 0.0d0 
 
                 call UPDATE_OUT_PLASTIC_STRAIN(ne,nnt,cs_nnz,cs,nm,sdeg_mat,snl,disout)
                 do i = 1,nmonit
@@ -604,7 +607,8 @@ module write_output
                     if (dabs(disout%plastic_strain(2,in)).lt.(1.0d-99)) epyy_out=0.d0
                     if (dabs(disout%plastic_strain(4,in)).lt.(1.0d-99)) gpxy_out=0.d0
                     if (dabs(disout%plastic_strain(3,in)).lt.(1.0d-99)) epzz_out=0.d0
-                    write(unit_strain(i),'(5ES16.8)') tt1,epxx_out,epyy_out,gpxy_out,epzz_out 
+                    write(*,*) "pstrain-time",tt1,"monitor",in,i
+                    write(unit_strain(i),'(5E16.8)') tt1,epxx_out,epyy_out,gpxy_out,epzz_out 
                 enddo
             endif
             
@@ -613,6 +617,8 @@ module write_output
             !***********************************************************************************
             
             if (option_out_var(5).eq.3) then
+                disout%strain(:,:) = 0.0d0
+                disout%plastic_strain(:,:) = 0.0d0 
 
                 call UPDATE_OUT_STRAIN(ne,nnt,cs_nnz,cs,nm,sdeg_mat,snl,disout)
                 call UPDATE_OUT_PLASTIC_STRAIN(ne,nnt,cs_nnz,cs,nm,sdeg_mat,snl,disout)
@@ -632,7 +638,8 @@ module write_output
                     if (dabs(disout%plastic_strain(2,in)).lt.(1.0d-99)) epyy_out=0.d0
                     if (dabs(disout%plastic_strain(4,in)).lt.(1.0d-99)) gpxy_out=0.d0
                     if (dabs(disout%plastic_strain(3,in)).lt.(1.0d-99)) epzz_out=0.d0
-                    write(unit_strain(i),'(8F16.8)') tt1,exx_out,eyy_out,gxy_out,&
+                    write(*,*) "bstrain-time",tt1,"monitor",in,i
+                    write(unit_strain(i),'(8E16.8)') tt1,exx_out,eyy_out,gxy_out,&
                         epxx_out,epyy_out,gpxy_out,epzz_out 
                 enddo
             endif

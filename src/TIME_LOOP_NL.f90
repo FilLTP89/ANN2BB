@@ -716,6 +716,7 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         !********************************************************************************************
         condition = (nmonit.ge.1).and.(int(real(its)/ndt_monitor).eq.(real(its)/ndt_monitor)) 
         if (condition) then
+            
             call WRITE_MONITOR_NL(unit_disp,unit_vel,unit_acc,unit_strain,unit_stress,unit_omega,&
                 unit_uDRM,option_out_var,nmonit,ndt_monitor,node_m,nm,ne,nnt,cs,cs_nnz,sdeg_mat,snl,&
                 its,tt1,node_TOT,nnode_TOT,tagstep,u1,vel,acc,nodal_counter,disout)
