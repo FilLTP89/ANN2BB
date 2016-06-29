@@ -1,0 +1,10 @@
+%% *SPECTRAL SCALING*
+fprintf('---------------------\n5. SPECTRAL MATCHING\n---------------------\n');
+%% *MATCHING*
+fprintf('--> Matching\n');
+spm = syn2ann_sm(hbs,trs);
+%% *PGA-PGV-PGD & ARIAS INTENSITY*
+fprintf('--> Peak Values and Arias\n');
+for j_ = 1:hbs.mon.nc
+    spm.(hbs.mon.cp{j_}) = syn2ann_thp(spm.(hbs.mon.cp{j_}));
+end

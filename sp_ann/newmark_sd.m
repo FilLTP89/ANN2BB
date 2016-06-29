@@ -24,28 +24,19 @@ function [varargout] = newmark_sd(varargin)
     zeta = varargin{4};
     ntm = numel(ag);
     nTn = numel(vTn);
-    
-    %%
     % _newmark coefficients_
     beta = 0.25;
     gamma = 0.5;
-    %%
     % _spectral displacement_
     sd  = -ones(nTn,1);
-    %%
     % _spectral velocity_
     sv  = -ones(nTn,1);
-    %%
     % _spectral acceleration_
     sa  = -ones(nTn,1);
-    
     %% NEWMARK INTEGRATION
-    
     for j_ = 1:nTn % natural periods
-        %%
         % _natural circular frequency of sdof system_
         wn = 2*pi/vTn(j_);
-        %%
         % _initial conditions_
         y   = zeros(ntm,1);
         yp  = zeros(ntm,1);
@@ -75,18 +66,18 @@ function [varargout] = newmark_sd(varargin)
         sv(j_) = max(abs(yp));
         sa(j_) = max(abs(ypp));
     end
-    %%
     % _pseudo-spectral displacement_
     psa = sd.*((2*pi./vTn).^2);
-    %%
     % _pseudo-spectral velocity_
     psv = sd.*(2*pi./vTn);
+    % add pga 
+    psa(vTn==0) = max(abs(ag));
+    sd(vTn==0) = 0.0;
     %% OUTPUT
     varargout{1} = sd;
     varargout{2} = sv;
     varargout{3} = sa;
     varargout{4} = psa;
     varargout{5} = psv;
-    
     return
 end

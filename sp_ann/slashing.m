@@ -1,5 +1,1 @@
-if isunix
-    pslash='/'; 
-elseif ispc 
-    pslash='\';
-end
+pslash=filesep;

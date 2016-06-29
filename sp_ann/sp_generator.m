@@ -6,74 +6,12 @@
 %% NOTES
 % _sp_generator_: function to produce non-stationary accelerograms
 % according to the approach by Sabetta & Pugliese, 1996.
-%% INPUT:  
-% * _mon    = monitor structure_
-% * mon.pt = path to monitor files    (string)
-% * mon.fn = monitor metadata filename(string)
-% * mon.tp = type of monitor          (string: 'S'(speed),'H'(hisada))
-% * mon.id = monitor identity         (integer)
-% * mon.dep = epicentral distance     (real vector)
-% * mon.stn = monitor names           (string vector)
-% * mon.na = number of monitors       (integer)
-% * mon.rc = monitor record           (string: 'a'(acceleration),'v'(velocity),'d'(displacement))
-% * mon.nr = number of records        (integer)
-% * mon.cp = motion component         (integer: 1,2,3)
-% * mon.nc = number of components     (integer)
-%%        
-% * _str    = extra metadata file      (string)
-%% OUTPUT: 
-% * _sps    = structure of sp synthetics
-%%
-% * _sps.mtd     = metadata structure_
-% * sps.mtd.mw  = moment magnitude (real)
-% * sps.mtd.dtm = time step        (real)
-% * sps.mtd.scc = site conditions (0=rock; 1=shallow all.; 2=deep alluvium)
-% * sps.mtd.sst = st. dev. of GMPE (0=median value,1=84th percentile)
-% * sps.mtd.scl = scale factor [1=cm/s/s]
-% * sps.mtd.ivd = flag for output in velocity and displacement
-%%
-% * _sps.mon = monitor structure_
-% * sps.mon.pt = path to monitor files    (string)
-% * sps.mon.fn = monitor metadata filename(string)
-% * sps.mon.tp = type of monitor          (string: 'S'(speed),'H'(hisada))
-% * sps.mon.id = monitor identity         (integer)
-% * sps.mon.dep = epicentral distance     (real vector)
-% * sps.mon.stn = monitor names           (string vector)
-% * sps.mon.na = number of monitors       (integer)
-% * sps.mon.rc = monitor record           (string: 'a'(acceleration),'v'(velocity),'d'(displacement))
-% * sps.mon.nr = number of records        (integer)
-% * sps.mon.cp = motion component         (integer: 1,2,3)
-% * sps.mon.nc = number of components     (integer)
-% * sps.mon.na  = number of accelerograms to be generated
-% * sps.mon.nc  = number of motion components (integer)
-% * sps.mon.cp(mon.nc,1)  = motion components (string vector)
-% * sps.mon.dtm(mon.na,1) = time-steps        (real vector)
-% * sps.mon.vtm(mon.na,1) = time-vectors      (real cell vector)
-% * sps.mon.ntm(mon.na,1) = time step number  (real vector)
-%%
-% * _sps.syn(mon.na,1)     = structure vectors (cell vector)_
-% * sps.syn{i}.tha.x      = x-acceleration    (real vector)
-% * sps.syn{i}.tha.y      = y-acceleration    (real vector)
-% * sps.syn{i}.tha.z      = z-acceleration    (real vector)
-% * sps.syn{i}.pga.x(1)   = x-time-pga        (real vector)
-% * sps.syn{i}.pga.x(2)   = x-pga             (real vector)
-% * sps.syn{i}.pga.y(1)   = y-time-pga        (real vector)
-% * sps.syn{i}.pga.y(2)   = y-pga             (real vector)
-% * sps.syn{i}.pga.z(1)   = z-time-pga        (real vector)
-% * sps.syn{i}.pga.z(2)   = z-pga             (real vector)
-% * sps.syn{i}.pgv.x(1)   = x-time-pgv        (real vector)
-% * sps.syn{i}.pgv.x(2)   = x-pgv             (real vector)
-% * sps.syn{i}.pgv.y(1)   = y-time-pgv        (real vector)
-% * sps.syn{i}.pgv.y(2)   = y-pgv             (real vector)
-% * sps.syn{i}.pgv.z(1)   = z-time-pgv        (real vector)
-% * sps.syn{i}.pgv.z(2)   = z-pgv             (real vector)
-% * sps.syn{i}.pgd.x(1)   = x-time-pgd        (real vector)
-% * sps.syn{i}.pgd.x(2)   = x-pgd             (real vector)
-% * sps.syn{i}.pgd.y(1)   = y-time-pgd        (real vector)
-% * sps.syn{i}.pgd.y(2)   = y-pgd             (real vector)
-% * sps.syn{i}.pgd.z(1)   = z-time-pgd        (real vector)
-% * sps.syn{i}.pgd.z(2)   = z-pgd             (real vector)
-%% N.B.: 
+%% INPUT:
+% * _mon (monitor structure)_
+% * _str (string: extra metadata file)
+%% OUTPUT:
+% * _sps (structure of sp synthetics)_
+%% N.B.:
 % it has been verified that with ssc = 2 the method of sabetta
 % gives as output acceleration THs with an average response spectrum
 % compliant with the (median+isig/2) spectrum given by the GMPE
@@ -89,14 +27,12 @@
 %   pages =   {337--352},
 % }
 function [varargout] = sp_generator(varargin)
-    %% SET-UP
-    %%
+    %% *SET-UP*
     % _parsing monitor metadata_
     sps.mon    = varargin{1};
-    sps.mon.fn = varargin{2};
-    %%
-    % PARSING EXTRA METADATA
-    str = importdata(sps.mon.fn);
+    sps.mtd.fn = varargin{2};
+    %% *PARSING EXTRA METADATA*
+    str = importdata(sps.mtd.fn);
     % earthquake magnitude
     sps.mtd.mw  = str(1,1);
     % time-step
@@ -109,28 +45,45 @@ function [varargout] = sp_generator(varargin)
     sps.mtd.scl = str(5,1);
     % output flag
     sps.mtd.ivd = str(6,1);
-    %% SABETTA & PUGLIESE SYNTHETICS
+    [s1,s2] = size(sps.mon.cp(:));
+    [~,idx] = max([s1,s2]);
+    %% *SABETTA & PUGLIESE SYNTHETICS*
+    sps.mon.dtm = repmat(sps.mtd.dtm,sps.mon.na,1);
+    [sps.mon.vtm,tha] = arrayfun(@(x) sabetta(sps.mtd.mw,x,sps.mtd.scc,...
+        sps.mtd.sst,sps.mtd.dtm,1,sps.mtd.scl),sps.mon.dep(:),'UniformOutput',0);
+    sps.mon.ntm = cellfun(@(x) numel(x),sps.mon.vtm);
+    bpf_out = cell(1,3);
+    [bpf_out{:}] = cellfun(@(x) band_pass_filter(sps.mtd.dtm,x,sps.mon.lfr,sps.mon.hfr),tha,'UniformOutput',0);
     
-    sps.syn = cell(sps.mon.na,1);
-    for i_ = 1:sps.mon.na % number of components
-        [vtm,tha]=sabetta(sps.mtd.mw,sps.mon.dep(i_),sps.mtd.scc,...
-            sps.mtd.sst,sps.mtd.dtm,1,sps.mtd.scl);
-        for j_ = 1:sps.mon.nc
-            eval(sprintf(['[sps.syn{i_}.tha.%s,sps.syn{i_}.thv.%s,',...
-                'sps.syn{i_}.thd.%s] = band_pass_filter(sps.mtd.dtm,',...
-                'tha);'],sps.mon.cp{j_},sps.mon.cp{j_},sps.mon.cp{j_}));
-            eval(sprintf(['[sps.syn{i_}.pga.%s(1),sps.syn{i_}.pga.%s(2),'...
-                'sps.syn{i_}.pgv.%s(1),sps.syn{i_}.pgv.%s(2),',...
-                'sps.syn{i_}.pgd.%s(1),sps.syn{i_}.pgd.%s(2)] = ',...
-                'PGAVD_eval(sps.mtd.dtm,sps.syn{i_}.tha.%s,',...
-                'sps.syn{i_}.thv.%s,sps.syn{i_}.thd.%s);'],...
-                sps.mon.cp{j_},sps.mon.cp{j_},sps.mon.cp{j_},sps.mon.cp{j_},...
-                sps.mon.cp{j_},sps.mon.cp{j_},sps.mon.cp{j_},sps.mon.cp{j_},...
-                sps.mon.cp{j_}));
-        end
-        sps.mon.dtm(i_) = sps.mtd.dtm;
-        sps.mon.vtm(i_) = {vtm};
-        sps.mon.ntm(i_) = numel(vtm);
+    tha = arrayfun(@(x) cell2struct(repmat(x,sps.mon.nc,1),(sps.mon.cp(:)),1),...
+        bpf_out{1}(:),'UniformOutput',0);
+    thv = arrayfun(@(x) cell2struct(repmat(x,sps.mon.nc,1),(sps.mon.cp(:)),1),...
+        bpf_out{2}(:),'UniformOutput',0);
+    thd = arrayfun(@(x) cell2struct(repmat(x,sps.mon.nc,1),(sps.mon.cp(:)),1),...
+        bpf_out{3}(:),'UniformOutput',0);
+    
+    for i_=1:sps.mon.na
+        sps.syn{i_} = struct('tha',tha{i_},'thv',thv{i_},'thd',thd{i_});
+        
+%         [vtm_pga,pga,vtm_pgv,pgv,vtm_pgd,pgd] = cellfun(@(a,v,d) ...
+%             cellfun(@(x) PGAVD_eval(sps.mtd.dtm,a.(x),v.(x),d.(x)),...
+%             sps.mon.cp,'UniformOutput',0),...
+%             {sps.syn{i_}.tha},{sps.syn{i_}.thv},{sps.syn{i_}.thd},'UniformOutput',0);
+%         
+%         sps.syn{i_}.pga = cell2struct(vtm_pga{1},sps.mon.cp(:),idx);
+%         a = cell2struct(pga{1},sps.mon.cp(:),idx);
+%         sps.syn{i_}.pga = cell2struct(cellfun(@(x) cat(1,sps.syn{i_}.pga.(x),a.(x)),...
+%             sps.mon.cp,'UniformOutput',0),sps.mon.cp(:),idx);
+%         
+%         sps.syn{i_}.pgv = cell2struct(vtm_pgv{1},sps.mon.cp(:),idx);
+%         v = cell2struct(pgv{1},sps.mon.cp(:),idx);
+%         sps.syn{i_}.pgv = cell2struct(cellfun(@(x) cat(1,sps.syn{i_}.pgv.(x),v.(x)),...
+%             sps.mon.cp,'UniformOutput',0),sps.mon.cp(:),idx);
+%         
+%         sps.syn{i_}.pgd = cell2struct(vtm_pgd{1},sps.mon.cp(:),idx);
+%         d = cell2struct(pgd{1},sps.mon.cp(:),idx);
+%         sps.syn{i_}.pgd = cell2struct(cellfun(@(x) cat(1,sps.syn{i_}.pgd.(x),d.(x)),...
+%             sps.mon.cp,'UniformOutput',0),sps.mon.cp(:),idx);
     end
     %% OUTPUT
     varargout{1} = sps;

@@ -15,69 +15,68 @@
 % * _tha (band-pass filtered acceleration time-history column vector)_
 % * _thv (velocity time-history column vector)_
 % * _thd (displacement time-history column vector)_
-function [varargout] = band_pass_filter(varargin)
-    
+function [varargout] = dis2acc(varargin)
     %% SET-UP
     % _time-step_
     dtm = varargin{1};
-    %%
     % _accelerogram_
     thd = varargin{2}(:);
-    %%
     % _default corner frequency (high-pass filter)_
     lfr =.01;
-    %%
     % _default cutoff frequency (low-pass filter)_
     hfr = 25;
-    %%
     % _default butterworth order_
-    bfo = 2;
-    %%
+    bfo = 4;
     % custom corner frequency (high-pass filter)_
     if nargin>=3
         lfr=varargin{3};
     end
-    %%
     % custom cutoff frequency (low-pass filter)_
     if nargin>=4
         hfr=varargin{4};
     end
-    %%
     % Nyquist frequency
     fNy = 0.5/dtm;
-    if hfr>fNy
-        hfr = fNy;
+    if ~isempty(hfr)
+        if hfr>fNy
+            hfr = fNy;
+        end
     end
-    
     %% BUTTERWORTH FILTER
-    
-    if nargin>3 || nargin<3
-        % BP filter definition
-        [bfb,bfa] = butter(bfo,[lfr hfr]./fNy,'bandpass');
-%         fprintf('\nBP FILTER: f(corner): %.2f Hz - f(cut-off): %.2f Hz\n',...
-%             lfr,hfr);
-    else
-        % LF filter definition
-        [bfb,bfa] = butter(bfo,lfr./fNy,'high');
-%         fprintf('\nLF FILTER: f(corner): %.2f Hz\n',lfr);
+    [bfb,bfa,flag] = create_butter_filter(bfo,lfr,hfr,fNy);
+    %% PROCESSING
+    if flag
+        %% PROCESSING DISPLACEMENT
+        % _pad definition_
+        ntm = numel(thd);
+        npd = ceil(40/dtm);
+        ntm_pad = ntm + 2*npd;
+        thd_pad = zeros(ntm_pad,1);
+        % _padding_
+        thd_pad(:) = padarray(thd,npd,'both');
+        % _base-line correction_
+        thd_pad = detrend(thd_pad);
+        % _applying cosinus taper_
+        thd_pad = cos_taper(thd_pad);
+        % _acasual filtering_
+        thd = filtfilt(bfb,bfa,thd_pad);
     end
-    
-    %% PROCESSING DISPLACEMENT
-    % _acasual filtering_
-    thd=filtfilt(bfb,bfa,thd);
-    %%
-    % _detrending _
-    thd=detrend(thd);
-    %%
-    % _applying cosinus taper_
-    thd=cos_taper(thd);
-    
     %% BACK TO ACCELERATION
-    thv=[0;diff(thd)/dtm];
-    tha=[0;diff(thv)/dtm];
+    % _time differentiation_
+    thv = [0;diff(thd)/dtm];
+    tha = [0;diff(thv)/dtm];
+    % _time integration_
+    thv = cumtrapz(tha)*dtm;
+    thd = cumtrapz(thv)*dtm;
     %% OUTPUT
-    varargout{1} = tha(:);
-    varargout{2} = thv(:);
-    varargout{3} = thd(:);
+    if flag
+        varargout{1} = tha(npd+1:ntm+npd,1);
+        varargout{2} = thv(npd+1:ntm+npd,1);
+        varargout{3} = thd(npd+1:ntm+npd,1);
+    else
+        varargout{1} = tha(:);
+        varargout{2} = thv(:);
+        varargout{3} = thd(:);
+    end
     return
 end

@@ -165,8 +165,7 @@ function [varargout] = sabetta(varargin)
     end
     %%
     % _scaling_
-    tha = tha.*scl;
-    
+    tha = detrend(tha).*scl;
     
     varargout{1} = vtm(:);
     varargout{2} = tha;

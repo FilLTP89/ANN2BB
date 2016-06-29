@@ -27,7 +27,8 @@ function [varargout] = PGAVD_eval(varargin)
     
     %% PEAK GROUND ACCELERATION
     [pga,idx] = max(abs(tha));
-    vtm_pga     = vtm(idx);
+    vtm_pga   = vtm(idx);
+    pga       = tha(idx);
     
     %% PEAK GROUND VELOCITY
     if nargin>=3
@@ -38,6 +39,7 @@ function [varargout] = PGAVD_eval(varargin)
     
     [pgv,idx] = max(abs(thv));
     vtm_pgv   = vtm(idx);
+    pgv       = thv(idx);
     
     %% PEAK GROUND DISPLACEMENT
     if nargin==4
@@ -47,6 +49,7 @@ function [varargout] = PGAVD_eval(varargin)
     end
     [pgd,idx] = max(abs(thd));
     vtm_pgd   = vtm(idx);
+    pgd       = thd(idx);
     
     %% OUTPUT
     varargout{1} = vtm_pga;

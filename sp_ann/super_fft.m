@@ -23,64 +23,61 @@
 %% N.B.:
 % nfr should be odd number to be able to transpose the
 % conjugate part [size(fsr)=nfr (odd)]
+% REFERENCES:
+% Frequency domain representation returned as a vector, matrix, or 
+% multidimensional array. If X is of type single, then fft natively computes 
+% in single precision, and Y is also of type single. Otherwise, Y is 
+% returned as a type double.
+% The size of Y is as follows:
+% 
+%     For Y = fft(X) or Y = fft(X,[],dim), the size of Y is equal to the size of X.
+% 
+%     For Y = fft(X,n,dim), the value of size(Y,dim) is equal to n, 
+%     while the size of all other dimensions remains as in X.
+% 
+% If X is real, then Y is conjugate symmetric, and the number of unique 
+% points in Y is ceil((n+1)/2).
+
 function [varargout]=super_fft(varargin)
-    
     %% SET-UP
-    %%
     % _time step_
     dtm = varargin{1};
-    %%
     % _acceleration_
     thr=varargin{2}(:);
-    %%
     % _Konno-Ohmachi Smoothing flag_
     kos = varargin{3};
-    
     %% FREQUENCY VECTOR_
     % _nfr definition_
-    
     if nargin>3
         nfr=varargin{4};
     else
-        nfr=2^nextpow2(numel(thr))+1;
+        nfr=2^nextpow2(numel(thr));
     end
-    %%
     % _frequency vector_
-    dfr=1/dtm/(nfr-1);     
-    vfr=(0:nfr-1)*dfr;    
+    dfr=1/dtm/(nfr-1);
+    vfr=(0:nfr-1)*dfr;
     vfr = vfr(:);
-    
     %% FOURIER RESPONSE
-    
-    %%
     % _fft complete response_
     % fsr=fft(thr,nfr)./numel(thr);
     fsr = fft(thr,nfr).*dtm;
-    
-    %%
     % _amplitude of fft response_
     amp = abs(fsr);
-    %%
     % _Konno-Ohmachi smoothing_
     if kos
         amp=smooth_KO(amp,40);
     end
     amp = amp(:);
-    
-    %%
     % _phase angle of fft (to be unwrapped)_
     ang = unwrap(angle(fsr));
-    
     %% POWER SPECTRAL DENSITY
     psd=(fsr).*(conj(fsr))/nfr;
-    
     %% MAIN PERIOD
     idx0 = find(vfr>=.1,1,'first');
     idx1 = find(vfr<=40,1,'last');
     nTm1 = sum(amp(idx0:idx1).^2./vfr(idx0:idx1));
     nTm2 = sum(amp(idx0:idx1).^2);
     nTm = nTm1/nTm2;
-    
     %% OUTPUT
     varargout{1}=vfr(:);
     varargout{2}=amp(:);

@@ -16,11 +16,12 @@ function [varargout] = fpplot(varargin)
     %% SET-UP
     % _plot style_
     plot_set_up;
+    warning off
     %%
     % _figure parameters_
     % figure position
     def.pfg = [0 0 16 16];
-    def.vfg = 'on';
+    def.vfg = 'off';
     %%
     % _axes parameters
     % plot dimension
@@ -40,6 +41,9 @@ function [varargout] = fpplot(varargin)
     % scale
     def.scl = {'lin'};
     exp.scl = ['lin','slx','sly','log'];
+    % marker
+    def.mrk = {'none'};
+    
     % x-label
     def.xlb = {''};
     % y-label
@@ -48,7 +52,9 @@ function [varargout] = fpplot(varargin)
     def.tit = {''};
     % legend
     def.leg = '';
-    fxlm=0;fylm=0;fxtk=0;fytk=0;fpax=0;
+    % grid
+    def.grd = {'off'};
+    fxlm=0;fylm=0;fxtk=0;fytk=0;fpax=0;flst=0;
     %%
     % _parser parameters_
     inp = inputParser;
@@ -73,6 +79,9 @@ function [varargout] = fpplot(varargin)
     addParameter(inp,'ypl',def.ypl,@iscell);
     addParameter(inp,'zpl',def.zpl,@iscell);
     addParameter(inp,'pax',def.pax,@iscell);
+    addParameter(inp,'lst',@iscell);
+    addParameter(inp,'mrk',def.mrk,@iscell);
+    addParameter(inp,'grd',def.grd,@iscell);
     
     %% PARSE INPUTS
     % _parse input_
@@ -81,18 +90,23 @@ function [varargout] = fpplot(varargin)
     
     % number of entities to be plotted
     spn = numel(inp.Results.xpl);
+    try any(validatestring('vfg',inp.UsingDefaults));
+        vfg = def.vfg;
+    catch
+        vfg = inp.Results.vfg;
+    end
     %%
     % _input checkout_
-    try any(validatestring('nfg',inp.UsingDefaults))
-        hfg = figure('position',inp.Results.pfg,'visible',inp.Results.vfg);
+    try any(validatestring('nfg',inp.UsingDefaults));
+        hfg = figure('position',inp.Results.pfg,'visible',vfg);
     catch
         hfg = figure('name',inp.Results.nfg,'position',inp.Results.pfg,...
-            'visible',inp.Results.vfg);
+            'visible',vfg);
     end
     if spn>1
         %%
         % _subplot indexes_
-        try any(validatestring('pax',inp.UsingDefaults))
+        try any(validatestring('pax',inp.UsingDefaults));
             fpax=1;
             pax = num2cell(repmat(def.pax{1},spn,1),spn);
         catch
@@ -100,7 +114,7 @@ function [varargout] = fpplot(varargin)
         end
         %%
         % _subplot grid_
-        try any(validatestring('spg',inp.UsingDefaults))
+        try any(validatestring('spg',inp.UsingDefaults));
             if fpax
                 spg = def.spg;
             else
@@ -111,8 +125,17 @@ function [varargout] = fpplot(varargin)
             spg = inp.Results.spg;
         end
         %%
+        % _grid_
+        try any(validatestring('grd',inp.UsingDefaults));
+            grd = num2cell(repmat(def.grd(1),spn,1));
+        catch
+            grd = repmat(inp.Results.grd(1),spn,1);
+        end
+        
+        %%
         % _x-limits_
         try any(validatestring('xlm',inp.UsingDefaults));
+            fxlm = 0;
         catch
             xlm = inp.Results.xlm;
             fxlm = 1;
@@ -123,6 +146,7 @@ function [varargout] = fpplot(varargin)
         %%
         % _y-limits_
         try any(validatestring('ylm',inp.UsingDefaults));
+            fylm=0;
         catch
             ylm = inp.Results.ylm;
             fylm = 1;
@@ -149,6 +173,29 @@ function [varargout] = fpplot(varargin)
             if numel(ytk)==1
                 ytk = repmat(ytk,spn,1);
             end
+        end
+        %%
+        % _plot linestyle_
+        try any(validatestring('lst',inp.UsingDefaults));
+            
+        catch
+            flst=1;
+            lst = inp.Results.lst;
+            if numel(lst)==1
+                lst = repmat(lst,spn,1);
+            end
+        end
+        
+        %%
+        % _plot markers_
+        try any(validatestring('mrk',inp.UsingDefaults));
+            fmrk=1;
+            mrk = num2cell(repmat(def.mrk{1},spn,1),spn);
+        catch
+            mrk = inp.Results.mrk;
+        end
+        if numel(mrk)==1
+            mrk = repmat(mrk,spn,1);
         end
         %%
         % _x-label_
@@ -183,7 +230,7 @@ function [varargout] = fpplot(varargin)
         %%
         % _subplot indexes_
         try any(validatestring('scl',inp.UsingDefaults));
-            scl = num2cell(repmat(def.scl{1},spn,1),spn);
+            scl = repmat(def.scl(1),spn,1);
         catch
             scl = inp.Results.scl;
         end
@@ -194,6 +241,37 @@ function [varargout] = fpplot(varargin)
         spg = def.spg;
         pax = def.pax;
         scl = def.scl;
+        %%
+        % _x-limits_
+        try any(validatestring('xlm',inp.UsingDefaults));
+            fxlm=0;
+        catch
+            xlm = inp.Results.xlm;
+            fxlm = 1;
+        end
+        %%
+        % _y-limits_
+        try any(validatestring('ylm',inp.UsingDefaults));
+            fylm=0;
+        catch
+            ylm = inp.Results.ylm;
+            fylm = 1;
+        end
+        %%
+        % _x-tick_
+        try any(validatestring('xtk',inp.UsingDefaults));
+        catch
+            xtk = inp.Results.xtk;
+            fxtk = 1;
+        end
+        %%
+        % _y-tick_
+        try any(validatestring('ytk',inp.UsingDefaults));
+        catch
+            ytk = inp.Results.ytk;
+            fytk = 1;
+        end
+        %%
         try any(validatestring('xlb',inp.UsingDefaults));
             xlb = def.xlb;
         catch
@@ -209,108 +287,157 @@ function [varargout] = fpplot(varargin)
         catch
             tit = inp.Results.tit;
         end
+        try any(validatestring('grd',inp.UsingDefaults));
+            grd = def.grd;
+        catch
+            grd = inp.Results.grd;
+        end
+        
+        try any(validatestring('mrk',inp.UsingDefaults));
+            mrk = def.mrk;
+        catch
+            mrk = inp.Results.mrk;
+        end
+        try any(validatestring('lst',inp.UsingDefaults));
+        catch
+            lst = inp.Results.lst;
+            flst = 1;
+        end
+        
     end
     
     %% PLOT FIGURE
     flg = zeros(spn,1);
     paxt = cell2mat(pax);
     n_ = 0;
+    flag_modify=-ones(spn,1);
+    
     for m_ = 1:spn
         %%
         % _plot_
         if ismember(pax{m_},paxt(1:m_-1))
             idx = find(paxt(1:m_-1)==pax{m_},1,'first');
             haxt = hax(idx);
-            hpl(idx,end+1)=plot(haxt,inp.Results.xpl{m_},inp.Results.ypl{m_});
+            if flst
+                hpl(idx,end+1)=plot(haxt,inp.Results.xpl{m_},inp.Results.ypl{m_},...
+                    'marker',mrk{m_},'linestyle',lst{m_});
+            else
+                hpl(idx,end+1)=plot(haxt,inp.Results.xpl{m_},inp.Results.ypl{m_},...
+                    'marker',mrk{m_});
+            end
+            flag_modify(m_)=0;
         else
             n_=n_+1;
             haxt = subplot(spg(1),spg(2),pax{m_},'parent',hfg);
             hold(haxt,'all');
             hax(n_) = haxt;
-            hpl(n_,1)=plot(haxt,inp.Results.xpl{m_},inp.Results.ypl{m_});
+            if flst
+                hpl(n_,1)=plot(haxt,inp.Results.xpl{m_},inp.Results.ypl{m_},...
+                    'marker',mrk{m_},'linestyle',lst{m_});
+            else
+                hpl(n_,1)=plot(haxt,inp.Results.xpl{m_},inp.Results.ypl{m_},...
+                    'marker',mrk{m_});
+            end
+            
+            flag_modify(m_)=1;
         end
         
     end
     %% AXES SET UP
     for mm_ = 1:numel(paxt)
-        m_ = pax{mm_};
-        %%
-        % _axes labels_
-        xlabel(hax(m_),xlb{m_});
-        ylabel(hax(m_),ylb{m_});
-        %%
-        % _xlim_
-        if fxlm
-            xlim(hax(m_),xlm{m_});
-            if ~fxtk
-                xtkt=get(hax(m_),'xtick'); xtkt=xtkt(:);
-                if xlm{m_}(1)<xtkt
-                    xtkt=[xlm{m_}(1);xtkt];
+        if logical(flag_modify(mm_))
+            m_ = pax{mm_};
+            %%
+            % _axes labels_
+            xlabel(hax(m_),xlb{m_});
+            ylabel(hax(m_),ylb{m_});
+            %%
+            % _xlim_
+            if fxlm
+                xlim(hax(m_),xlm{m_});
+                if ~fxtk
+                    xtkt=get(hax(m_),'xtick'); xtkt=xtkt(:);
+                    if xlm{m_}(1)<xtkt
+                        xtkt=[xlm{m_}(1);xtkt];
+                    end
+                    if xlm{m_}(end)>xtkt
+                        xtkt=[xtkt;xlm{m_}(end)];
+                    end
+                    set(hax(m_),'xtick',xtkt);
                 end
-                if xlm{m_}(end)>xtkt
-                    xtkt=[xtkt;xlm{m_}(end)];
+            else
+                if fxtk
+                    xlim(hax(m_),[xtk{m_}(1),xtk{m_}(end)]);
+                else
+                    [xlm,~]=get_axis_lim(inp.Results.xpl,inp.Results.ypl,1,1);
+                    if all(~isnan(xlm))
+                        xlim(hax(m_),xlm);
+                    end
                 end
-                set(hax(m_),'xtick',xtkt);
             end
-        else
+            %%
+            % _ylim_
+            if fylm
+                ylim(hax(m_),ylm{m_});
+                if ~fxtk
+                    ytkt=get(hax(m_),'xtick'); ytkt=ytkt(:);
+                    if ylm{m_}(1)<ytkt
+                        ytkt=[ylm{m_}(1);ytkt];
+                    end
+                    if ylm{m_}(end)>ytkt
+                        ytkt=[ytkt;ylm{m_}(end)];
+                    end
+                    set(hax(m_),'ytick',ytkt);
+                end
+            else
+                if fytk
+                    ylim(hax(m_),[ytk{m_}(1),ytk{m_}(end)]);
+                else
+                    [~,ylm]=get_axis_lim(inp.Results.xpl,inp.Results.ypl,1,1);
+                    if all(~isnan(ylm))
+                        ylim(hax(m_),ylm);
+                    end
+                end
+            end
+            %%
+            % _xtick_
             if fxtk
-                xlim(hax(m_),[xtk{m_}(1),xtk{m_}(end)]);
+                set(hax(m_),'xtick',xtk{m_});
             end
-        end
-        %%
-        % _ylim_
-        if fylm
-            ylim(hax(m_),ylm{m_});
-            if ~fxtk
-                ytkt=get(hax(m_),'xtick'); ytkt=ytkt(:);
-                if ylm{m_}(1)<ytkt
-                    ytkt=[ylm{m_}(1);ytkt];
-                end
-                if ylm{m_}(end)>ytkt
-                    ytkt=[ytkt;ylm{m_}(end)];
-                end
-                set(hax(m_),'ytick',ytkt);
-            end
-        else
+            %%
+            % _ytick_
             if fytk
-                ylim(hax(m_),[ytk{m_}(1),ytk{m_}(end)]);
+                set(hax(m_),'ytick',ytk{m_});
             end
+            %%
+            % _title_
+            title(hax(m_),tit{m_});
+            %%
+            % _axes scale_
+            switch scl{m_}
+                case 'lin'
+                    set(hax(m_),'xscale','lin','yscale','lin');
+                case 'slx'
+                    set(hax(m_),'xscale','log','yscale','lin');
+                case 'sly'
+                    set(hax(m_),'xscale','lin','yscale','log');
+                case 'log'
+                    set(hax(m_),'xscale','log','yscale','log');
+            end
+            %%
+            % _format axes_
+            format_figures(hax(m_));
+            %%
+            % _axes grid
+            grid(hax(m_),grd{m_});
         end
-        %%
-        % _xtick_
-        if fxtk
-            set(hax(m_),'xtick',xtk{m_});
-        end
-        %%
-        % _ytick_
-        if fytk
-            set(hax(m_),'ytick',ytk{m_});
-        end
-        %%
-        % _title_
-        title(hax(m_),tit{m_});
-        %%
-        % _axes scale_
-        switch scl{m_}
-            case 'lin'
-                set(hax(m_),'xscale','lin','yscale','lin');
-            case 'slx'
-                set(hax(m_),'xscale','log','yscale','lin');
-            case 'sly'
-                set(hax(m_),'xscale','lin','yscale','log');
-            case 'log'
-                set(hax(m_),'xscale','log','yscale','log');
-        end
-        %%
-        % _format axes_
-        format_figures(hax(m_));
     end
     %%
     % _legend_
-    try any(validatestring('leg',inp.UsingDefaults))
+    try any(validatestring('leg',inp.UsingDefaults));
     catch
         for m_ = 1:numel(hax)
-            legend(hax(m_),hpl(m_,:),inp.Results.leg);
+            legend(hax(m_),hpl(m_,:),inp.Results.leg{m_});
         end
     end
     %%
