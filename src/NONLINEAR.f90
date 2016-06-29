@@ -7,7 +7,7 @@ module nonlinear2d
     real*8, parameter                   :: zero=0.d0,one=1.0d0
     real*8, parameter                   :: half=0.5d0,two=2.0d0,three=3.0d0
     !
-    real*8, parameter :: FTOL = 0.01D0
+    real*8, parameter :: FTOL = 0.00001D0
     real*8, parameter :: LTOL = 0.000000001D0
     real*8, parameter :: STOL = 0.1D0
     real*8, parameter :: PSI  = 5.0d0!one
@@ -68,7 +68,7 @@ module nonlinear2d
             integer*4                                   :: ie,ip,iq,il,im,nn,is,in
             logical                                     :: st_epl
             !
-            integer*4                                   :: number_of_threads
+            integer*4                                   :: nnn,number_of_threads
             !
             number_of_threads = 1;
 
@@ -116,6 +116,8 @@ module nonlinear2d
                 
                 do iq = 1,nn
                     do ip = 1,nn
+                        is = nn*(iq -1) + ip
+                        nnn = cs(cs(ie -1) + is)
                         ! STARTING POINT
                         stress_  = snl(ie)%stress(:,ip,iq)
                         center_  = snl(ie)%center(:,ip,iq)
@@ -139,7 +141,7 @@ module nonlinear2d
                         
                         ! CHECK PLASTICITY
                         call check_plasticity(dstrial_,stress_,center_,radius_,&
-                            syld_,st_epl,alpha_epl)
+                            syld_,st_epl,alpha_epl,dt,nnn)
                         ! PLASTIC CORRECTION
                         if (st_epl) then
                             dstrain_(:) = (one-alpha_epl)*dstrain_(:)
@@ -271,8 +273,8 @@ module nonlinear2d
             ! COMPUTE MISES FUNCTION GRADIENT
             gradFM(1) = three*half*(dev(1)-center(1))/tau_eq
             gradFM(2) = three*half*(dev(2)-center(2))/tau_eq
-            !gradFM(3) = three*half*(dev(3)-center(3))/tau_eq
-            gradFM(3) = zero
+            gradFM(3) = three*half*(dev(3)-center(3))/tau_eq
+            !gradFM(3) = zero
             gradFM(4) = three*(dev(4)-center(4))/tau_eq
             !  
             return
@@ -339,12 +341,12 @@ module nonlinear2d
         !****************************************************************************
         
         subroutine check_plasticity(dtrial, stress0, center, radius, syld, &
-            st_epl, alpha_epl) 
+            st_epl, alpha_epl,tt1,nnn) 
             ! ***** CRITICAL STATE EXTENSION *****
             ! st_epl,alpha_epl,dstrain,lambda,mu)    
             implicit none
             ! intent IN
-            real*8,                 intent(in)      :: radius,syld
+            real*8,                 intent(in)      :: radius,syld,tt1
             real*8, dimension(4),   intent(in)      :: center,stress0
             ! intent INOUT
             real*8, dimension(4),   intent(inout)   :: dtrial
@@ -355,6 +357,7 @@ module nonlinear2d
             logical                                 :: flagxit
             real*8                                  :: FS,FT,checkload
             real*8, dimension(4)                    :: gradFS, gradFT, stress1
+            integer*4, intent(in) :: nnn
             ! ***** CRITICAL STATE EXTENSION *****
             ! real*8, dimension(4), intent(in) :: dstrain
             ! real*8,               intent(in) :: lambda,mu
@@ -391,7 +394,10 @@ module nonlinear2d
 
                 if (checkload.ge.-LTOL) then! PLASTIC LOADING  
                     alpha_epl = zero
-                else! PLASTIC UNLOADING  
+                    if (nnn.eq.891)then
+                        write(*,*) "CIAO"
+                    endif
+                elseif (checkload.lt.-LTOL)then! PLASTIC UNLOADING  
                     call gotoFpegasus(stress0,dtrial,center,radius,syld,10,alpha_epl)
                     ! ***** CRITICAL STATE EXTENSION *****
                     ! call gotoFpegasus(stress0,dtrial,center,radius,syld,10,alpha_epl,dstrain,lambda,mu)
@@ -406,17 +412,15 @@ module nonlinear2d
             endif
             
             ! ON-LOCUS STRESS STATE 
-            !dtrial=stress0+dtrial*alpha_epl
-            if (alpha_epl == -one)then
-                write(*,*) "ERROR ALPHA",alpha_epl
-                read(*,*)
-            endif
             call update_stress(stress0,stress1,alpha_epl*dtrial)
             dtrial = stress1
             ! ***** CRITICAL STATE EXTENSION *****
             ! call update_stress(stress0,dtrial,alpha_epl*dstrain,lambda,mu)
             call mises_yld_locus(dtrial,center,radius,syld,FS,gradFS)
             !
+            if ((tt1.gt.1.173).and.(nnn.eq.891))then
+                write(*,*) "alpha",alpha_epl
+            endif
             return
         end subroutine check_plasticity
         
@@ -762,8 +766,6 @@ module nonlinear2d
             
             call mises_yld_locus(stress0,center,radius,s0,F0,gradF)
             call mises_yld_locus(stress1,center,radius,s0,F1,gradF)
-            write(*,*) "start0",F0
-            write(*,*) "start1",F1
             stress = zero
             ! LOAD REVERSAL
             if (nsub.gt.1)then
@@ -807,16 +809,11 @@ module nonlinear2d
                 ! call update_stress(start0,stress1,alpha1*dstrain,lambda,mu)
                 call mises_yld_locus(stress0,center,radius,s0,F0,gradF)
                 call mises_yld_locus(stress1,center,radius,s0,F1,gradF)
-                write(*,*) "LOAD REVERSAL"
-
-                write(*,*) "start0",F0
-                write(*,*) "start1",F1
             end if
             
             ! ORIGINAL PEGASUS ALGORITHM
             do counter0=1,10
                 alpha  = alpha1 - F1*(alpha1 - alpha0)/(F1-F0)
-                !stress = start0 + alpha*dtrial
                 call update_stress(start0,stress,alpha*dtrial)
                 ! ***** CRITICAL STATE EXTENSION *****
                 !call update_stress(start0,stress,alpha*dstrain,lambda,mu)
