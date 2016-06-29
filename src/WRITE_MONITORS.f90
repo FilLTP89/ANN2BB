@@ -466,7 +466,7 @@ module write_output
                     in = node_m(i)
                     if (dabs(acc(in)).lt.(1.0d-99))     acc(in)= 0.d0
                     if (dabs(acc(in+nnt)).lt.(1.0d-99)) acc(in+nnt)=0.d0
-                    write(unit_acc(i),'(3E16.6)') tt1,acc(in),acc(in+nnt)
+                    write(unit_acc(i),'(3E16.8)') tt1,acc(in),acc(in+nnt)
                 enddo
             endif
 
@@ -509,7 +509,6 @@ module write_output
                     if (dabs(disout%strain(1,in)).lt.(1.0d-99)) exx_out=0.d0
                     if (dabs(disout%strain(2,in)).lt.(1.0d-99)) eyy_out=0.d0
                     if (dabs(disout%strain(3,in)).lt.(1.0d-99)) gxy_out=0.d0
-                    write(*,*) "strain-time",tt1,"monitor",in,i
                     write(unit_strain(i),'(4E16.8)') tt1,exx_out,eyy_out,gxy_out 
                 enddo
             endif
@@ -532,7 +531,6 @@ module write_output
                     if (dabs(disout%plastic_strain(2,in)).lt.(1.0d-99)) epyy_out=0.d0
                     if (dabs(disout%plastic_strain(4,in)).lt.(1.0d-99)) gpxy_out=0.d0
                     if (dabs(disout%plastic_strain(3,in)).lt.(1.0d-99)) epzz_out=0.d0
-                    write(*,*) "pstrain-time",tt1,"monitor",in,i
                     write(unit_strain(i),'(5E16.8)') tt1,epxx_out,epyy_out,gpxy_out,epzz_out 
                 enddo
             endif
@@ -563,7 +561,6 @@ module write_output
                     if (dabs(disout%plastic_strain(2,in)).lt.(1.0d-99)) epyy_out=0.d0
                     if (dabs(disout%plastic_strain(4,in)).lt.(1.0d-99)) gpxy_out=0.d0
                     if (dabs(disout%plastic_strain(3,in)).lt.(1.0d-99)) epzz_out=0.d0
-                    write(*,*) "bstrain-time",tt1,"monitor",in,i
                     write(unit_strain(i),'(8E16.8)') tt1,exx_out,eyy_out,gxy_out,&
                         epxx_out,epyy_out,gpxy_out,epzz_out 
                 enddo

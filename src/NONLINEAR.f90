@@ -70,7 +70,7 @@ module nonlinear2d
             !
             integer*4                                   :: number_of_threads
             !
-            number_of_threads = 2;
+            number_of_threads = 1;
 
             call OMP_set_num_threads(number_of_threads)
 
@@ -271,8 +271,8 @@ module nonlinear2d
             ! COMPUTE MISES FUNCTION GRADIENT
             gradFM(1) = three*half*(dev(1)-center(1))/tau_eq
             gradFM(2) = three*half*(dev(2)-center(2))/tau_eq
-            gradFM(3) = three*half*(dev(3)-center(3))/tau_eq
-            !gradFM(3) = zero
+            !gradFM(3) = three*half*(dev(3)-center(3))/tau_eq
+            gradFM(3) = zero
             gradFM(4) = three*(dev(4)-center(4))/tau_eq
             !  
             return
@@ -362,7 +362,6 @@ module nonlinear2d
             !
             ! PREDICTION STRESS
             call update_stress(stress0,stress1,dtrial)
-            !stress1= dtrial+stress0
             ! ***** CRITICAL STATE EXTENSION *****
             ! call update_stress(stress0,stress1,dstrain,lambda,mu)
             ! 
@@ -408,11 +407,17 @@ module nonlinear2d
             
             ! ON-LOCUS STRESS STATE 
             !dtrial=stress0+dtrial*alpha_epl
+            if (alpha_epl == -one)then
+                write(*,*) "ERROR ALPHA",alpha_epl
+                read(*,*)
+            endif
             call update_stress(stress0,stress1,alpha_epl*dtrial)
             dtrial = stress1
             ! ***** CRITICAL STATE EXTENSION *****
             ! call update_stress(stress0,dtrial,alpha_epl*dstrain,lambda,mu)
             call mises_yld_locus(dtrial,center,radius,syld,FS,gradFS)
+            !
+            return
         end subroutine check_plasticity
         
         !****************************************************************************
@@ -596,6 +601,7 @@ module nonlinear2d
             tempv = matmul(DEL,dstrain)
             dPlastM = dot_product(gradF,tempv)
             dPlastM = max(zero,dPlastM/(hard+Ah))
+            !
             return
         end subroutine compute_plastic_modulus
 
@@ -756,8 +762,8 @@ module nonlinear2d
             
             call mises_yld_locus(stress0,center,radius,s0,F0,gradF)
             call mises_yld_locus(stress1,center,radius,s0,F1,gradF)
-            write(*,*) "start0",start0,stress0,F0
-            write(*,*) "start1",dtrial,stress1,F1
+            write(*,*) "start0",F0
+            write(*,*) "start1",F1
             stress = zero
             ! LOAD REVERSAL
             if (nsub.gt.1)then
@@ -802,6 +808,9 @@ module nonlinear2d
                 call mises_yld_locus(stress0,center,radius,s0,F0,gradF)
                 call mises_yld_locus(stress1,center,radius,s0,F1,gradF)
                 write(*,*) "LOAD REVERSAL"
+
+                write(*,*) "start0",F0
+                write(*,*) "start1",F1
             end if
             
             ! ORIGINAL PEGASUS ALGORITHM
