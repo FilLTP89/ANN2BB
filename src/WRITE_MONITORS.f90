@@ -33,152 +33,40 @@ module write_output
             character*70                                :: file_strain 
             character*70                                :: file_omega 
             character*70                                :: file_uDRM
-            integer*4                                   :: i 
+            integer*4                                   :: i,last_number
             !
             if (nmonit.ge.1) then
+                last_number = 0
+                ! DISPLACEMENT
                 if (option_out_var(1).eq.1) then  
                     file_disp = 'monitorXXXXX.d'  
-                    do i = 1,nmonit
-                        unit_disp(i)=100000+i
-                        if (i.lt.10) then
-                            write(file_disp(8:11),'(a4)')'0000'
-                            write(file_disp(12:12),'(i1)')i
-                        else if (i.le.99) then
-                            write(file_disp(8:10),'(a3)')'000'
-                            write(file_disp(11:12),'(i2)')i
-                        else if (i.le.999) then
-                            write(file_disp(8:9),'(a2)')'00'
-                            write(file_disp(10:12),'(i3)')i
-                        else if (i.le.9999) then
-                            write(file_disp(8:8),'(a1)')'0'
-                            write(file_disp(9:12),'(i4)')i    
-                        else if (i.le.99999) then
-                            write(file_disp(8:12),'(i5)')'i'     
-                        endif
-                        open(unit_disp(i),file=file_disp)
-                    enddo
+                    call MAKE_MONITOR_NAME(nmonit,file_disp,unit_disp,last_number)
                 endif
-
+                ! VELOCITY
                 if (option_out_var(2).eq.1) then  
                     file_vel = 'monitorXXXXX.v' 
-                    do i = 1,nmonit
-                        unit_vel(i)=150000+i
-                        if (i.lt.10) then
-                            write(file_vel(8:11),'(a4)')'0000'
-                            write(file_vel(12:12),'(i1)')i
-                        else if (i.le.99) then
-                            write(file_vel(8:10),'(a3)')'000'
-                            write(file_vel(11:12),'(i2)')i
-                        else if (i.le.999) then
-                            write(file_vel(8:9),'(a2)')'00'
-                            write(file_vel(10:12),'(i3)')i
-                        else if (i.le.9999) then
-                            write(file_vel(8:8),'(a1)')'0'
-                            write(file_vel(9:12),'(i4)')i    
-                        else if (i.le.99999) then
-                            write(file_vel(8:12),'(i5)')'i'     
-                        endif
-                        open(unit_vel(i),file=file_vel)
-                    enddo
+                    call MAKE_MONITOR_NAME(nmonit,file_vel,unit_vel,last_number)
                 endif
-
-
+                ! ACCELERATION
                 if (option_out_var(3).eq.1) then  
-
                     file_acc = 'monitorXXXXX.a' 
-                    do i = 1,nmonit
-                        unit_acc(i)=200000+i
-                        if (i.lt.10) then
-                            write(file_acc(8:11),'(a4)')'0000'
-                            write(file_acc(12:12),'(i1)')i
-                        else if (i.le.99) then
-                            write(file_acc(8:10),'(a3)')'000'
-                            write(file_acc(11:12),'(i2)')i
-                        else if (i.le.999) then
-                            write(file_acc(8:9),'(a2)')'00'
-                            write(file_acc(10:12),'(i3)')i
-                        else if (i.le.9999) then
-                            write(file_acc(8:8),'(a1)')'0'
-                            write(file_acc(9:12),'(i4)')i    
-                        else if (i.le.99999) then
-                            write(file_acc(8:12),'(i5)')'i'     
-                        endif
-                        open(unit_acc(i),file=file_acc)
-                    enddo 
+                    call MAKE_MONITOR_NAME(nmonit,file_acc,unit_acc,last_number)
                 endif
-
+                ! STRESS
                 if (option_out_var(4).eq.1) then
                     file_stress = 'monitorXXXXX.s'
-                    do i = 1,nmonit
-                        unit_stress(i)=250000+i
-                        if (i.lt.10) then
-                            write(file_stress(8:11),'(a4)')'0000'
-                            write(file_stress(12:12),'(i1)')i
-                        else if (i.le.99) then
-                            write(file_stress(8:10),'(a3)')'000'
-                            write(file_stress(11:12),'(i2)')i
-                        else if (i.le.999) then
-                            write(file_stress(8:9),'(a2)')'00'
-                            write(file_stress(10:12),'(i3)')i
-                        else if (i.le.9999) then
-                            write(file_stress(8:8),'(a1)')'0'
-                            write(file_stress(9:12),'(i4)')i    
-                        else if (i.le.99999) then
-                            write(file_stress(8:12),'(i5)')'i'     
-                        endif         
-                        write(*,*) "unit_stress",unit_stress(i),file_stress
-                        open(unit_stress(i),file=file_stress)
-                    enddo
-
+                    call MAKE_MONITOR_NAME(nmonit,file_stress,unit_stress,last_number)
                 endif
-
+                ! STRAIN
                 if (option_out_var(5).gt.0) then  
                     file_strain = 'monitorXXXXX.e'
-                    do i = 1,nmonit
-                        unit_strain(i)=300000+i
-                        if (i.lt.10) then
-                            write(file_strain(8:11),'(a4)')'0000'
-                            write(file_strain(12:12),'(i1)')i
-                        else if (i.le.99) then
-                            write(file_strain(8:10),'(a3)')'000'
-                            write(file_strain(11:12),'(i2)')i
-                        else if (i.le.999) then
-                            write(file_strain(8:9),'(a2)')'00'
-                            write(file_strain(10:12),'(i3)')i
-                        else if (i.le.9999) then
-                            write(file_strain(8:8),'(a1)')'0'
-                            write(file_strain(9:12),'(i4)')i    
-                        else if (i.le.99999) then
-                            write(file_strain(8:12),'(i5)')'i'     
-                        endif                   
-                        open(unit_strain(i),file=file_strain)
-                    enddo
+                    call MAKE_MONITOR_NAME(nmonit,file_strain,unit_strain,last_number)
                 endif
-
-
+                ! OMEGA
                 if (option_out_var(6).eq.1) then  
                     file_omega = 'monitorXXXXX.w'
-                    do i = 1,nmonit
-                        unit_omega(i)=350000+i
-                        if (i.lt.10) then
-                            write(file_omega(8:11),'(a4)')'0000'
-                            write(file_omega(12:12),'(i1)')i
-                        else if (i.le.99) then
-                            write(file_omega(8:10),'(a3)')'000'
-                            write(file_omega(11:12),'(i2)')i
-                        else if (i.le.999) then
-                            write(file_omega(8:9),'(a2)')'00'
-                            write(file_omega(10:12),'(i3)')i
-                        else if (i.le.9999) then
-                            write(file_omega(8:8),'(a1)')'0'
-                            write(file_omega(9:12),'(i4)')i    
-                        else if (i.le.99999) then
-                            write(file_omega(8:12),'(i5)')'i'     
-                        endif                   
-                        open(unit_omega(i),file=file_omega)
-                    enddo
+                    call MAKE_MONITOR_NAME(nmonit,file_omega,unit_omega,last_number)
                 endif
-
             endif
 
             !---DRM---------------------------------------------------------------------
@@ -186,7 +74,7 @@ module write_output
             if ((nnode_TOT.ne.0).and.(tagstep.eq.1)) then   !DRM Scandella 25.11.2005 
                 file_uDRM = 'monDRMXXXXX.d'                  !DRM Scandella 25.11.2005 
                 do i = 1,nnode_TOT                           !DRM Scandella 25.11.2005 
-                    unit_uDRM(i)=400000+i                    !DRM Scandella 25.11.2005
+                    unit_uDRM(i)=700000+i                    !DRM Scandella 25.11.2005
                     if (i.lt.10) then                      !DRM Scandella 25.11.2005 
                         write(file_uDRM(7:10),'(a4)')'0000'     !DRM Scandella 25.11.2005
                         write(file_uDRM(11:11),'(i1)')i     !DRM Scandella 25.11.2005
@@ -208,7 +96,44 @@ module write_output
             endif                                           !DRM Scandella 25.11.2005
             return
         end  subroutine MAKE_MONITOR_FILES
-        
+       
+        subroutine MAKE_MONITOR_NAME(nmonit,file_name,file_unit,last_number)
+            !
+            implicit none
+            ! intent IN
+            integer*4, intent(in) :: nmonit
+            ! integer INOUT 
+            integer*4, intent(inout) :: last_number
+            character*70, intent(inout) :: file_name
+            ! intent OUT
+            integer*4, dimension(nmonit), intent(out) :: file_unit
+            !
+            integer*4 :: i
+            !
+            last_number = last_number+100000
+            
+            do i = 1,nmonit
+                file_unit(i)=last_number+i
+                if (i.lt.10) then
+                    write(file_name(8:11),'(a4)')'0000'
+                    write(file_name(12:12),'(i1)')i
+                else if (i.le.99) then
+                    write(file_name(8:10),'(a3)')'000'
+                    write(file_name(11:12),'(i2)')i
+                else if (i.le.999) then
+                    write(file_name(8:9),'(a2)')'00'
+                    write(file_name(10:12),'(i3)')i
+                else if (i.le.9999) then
+                    write(file_name(8:8),'(a1)')'0'
+                    write(file_name(9:12),'(i4)')i    
+                else if (i.le.99999) then
+                    write(file_name(8:12),'(i5)')'i'     
+                endif
+                open(file_unit(i),file=file_name,status="REPLACE")
+            enddo
+            !
+            return
+        end subroutine MAKE_MONITOR_NAME
         !****************************************************************************
         ! WRITE MONITORS - ELASTIC CASE
         !****************************************************************************

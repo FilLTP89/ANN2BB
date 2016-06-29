@@ -724,7 +724,7 @@ subroutine TIME_LOOP_EL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         total_fe = total_fe + time_fe
         total_fk = total_fk + time_fk
         total_fd = total_fd + time_fd
-        total_u = total_u + time_u
+        total_u  = total_u + time_u
         !********************************************************************************************
         !     WRITE OUTPUT FILE
         !********************************************************************************************

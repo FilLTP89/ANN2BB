@@ -10,8 +10,8 @@ module nonlinear2d
     real*8, parameter :: FTOL = 0.01D0
     real*8, parameter :: LTOL = 0.000000001D0
     real*8, parameter :: STOL = 0.1D0
-    real*8, parameter :: PSI  = one!5.0D0
-    real*8, parameter :: OMEGA= zero!1.0D6
+    real*8, parameter :: PSI  = 5.0d0!one
+    real*8, parameter :: OMEGA= 1.0d6!zero
     !
     real*8, parameter, dimension(4,4)   :: MM = reshape((/ &
         one , zero, zero, zero, &
@@ -756,7 +756,9 @@ module nonlinear2d
             
             call mises_yld_locus(stress0,center,radius,s0,F0,gradF)
             call mises_yld_locus(stress1,center,radius,s0,F1,gradF)
-            
+            write(*,*) "start0",start0,stress0,F0
+            write(*,*) "start1",dtrial,stress1,F1
+            stress = zero
             ! LOAD REVERSAL
             if (nsub.gt.1)then
                 Fsave=F0
@@ -799,10 +801,7 @@ module nonlinear2d
                 ! call update_stress(start0,stress1,alpha1*dstrain,lambda,mu)
                 call mises_yld_locus(stress0,center,radius,s0,F0,gradF)
                 call mises_yld_locus(stress1,center,radius,s0,F1,gradF)
-
-                if ((F0.ge.-FTOL).or.(F1.le.FTOL))then
-                    write(*,*) "ciao"
-                endif
+                write(*,*) "LOAD REVERSAL"
             end if
             
             ! ORIGINAL PEGASUS ALGORITHM
