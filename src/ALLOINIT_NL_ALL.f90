@@ -61,7 +61,7 @@ subroutine ALLOINIT_NL_ALL(ne,sdeg_mat,nm,nnt,cs_nnz,cs,prop_mat,u1,u2,vel,acc,v
         allocate(snl(ie)%stress(4,nn,nn))
         allocate(snl(ie)%strain(3,nn,nn))
         allocate(snl(ie)%center(4,nn,nn))
-        allocate(snl(ie)%plastic_strain(4,nn,nn))
+        allocate(snl(ie)%pstrain(4,nn,nn))
         ! initialization
         snl(ie)%lambda = prop_mat(im,2)
         snl(ie)%mu     = prop_mat(im,3)
@@ -71,11 +71,11 @@ subroutine ALLOINIT_NL_ALL(ne,sdeg_mat,nm,nnt,cs_nnz,cs,prop_mat,u1,u2,vel,acc,v
         snl(ie)%rinf   = prop_mat(im,8)
         snl(ie)%biso   = prop_mat(im,9)
         !
-        snl(ie)%radius(:,:)             = 0.0d0
-        snl(ie)%stress(:,:,:)           = 0.0d0
-        snl(ie)%strain(:,:,:)           = 0.0d0
-        snl(ie)%center(:,:,:)           = 0.0d0
-        snl(ie)%plastic_strain(:,:,:)   = 0.0d0
+        snl(ie)%radius(:,:)    = 0.0d0
+        snl(ie)%stress(:,:,:)  = 0.0d0
+        snl(ie)%strain(:,:,:)  = 0.0d0
+        snl(ie)%center(:,:,:)  = 0.0d0
+        snl(ie)%pstrain(:,:,:) = 0.0d0
     enddo
     
     ! current displacement/velocity/acceleration vectors
@@ -114,9 +114,9 @@ subroutine ALLOINIT_NL_ALL(ne,sdeg_mat,nm,nnt,cs_nnz,cs,prop_mat,u1,u2,vel,acc,v
     endif
     if (option_out_var(5).gt.0) then
         allocate(disout%strain(3,nnt))
-        allocate(disout%plastic_strain(4,nnt))
+        allocate(disout%pstrain(4,nnt))
         disout%strain(:,:) = 0.0d0
-        disout%plastic_strain(:,:) = 0.0d0
+        disout%pstrain(:,:) = 0.0d0
     endif
     return
 end subroutine ALLOINIT_NL_ALL

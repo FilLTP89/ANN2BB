@@ -52,7 +52,7 @@ subroutine DEALLOCATE_ALL(ne,u1,u2,vel,acc,fk,fe,fd,snl,disout,update_index_el_a
         deallocate(snl(ie)%stress)
         deallocate(snl(ie)%strain)
         deallocate(snl(ie)%center)
-        deallocate(snl(ie)%plastic_strain)
+        deallocate(snl(ie)%pstrain)
 
     enddo
     deallocate(snl)
@@ -72,7 +72,7 @@ subroutine DEALLOCATE_ALL(ne,u1,u2,vel,acc,fk,fe,fd,snl,disout,update_index_el_a
     if (allocated(nodal_counter)) deallocate(nodal_counter) 
     if (allocated(disout%stress)) deallocate(disout%stress)
     if (allocated(disout%strain)) deallocate(disout%strain)
-    if (allocated(disout%plastic_strain)) deallocate(disout%plastic_strain)
+    if (allocated(disout%pstrain)) deallocate(disout%pstrain)
     return
 end subroutine DEALLOCATE_ALL
 !! mode: f90

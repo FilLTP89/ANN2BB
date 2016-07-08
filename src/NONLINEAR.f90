@@ -70,20 +70,20 @@ module nonlinear2d
             !
             integer*4                                   :: nnn,number_of_threads
             !
-            number_of_threads = 1;
+            !number_of_threads = 1;
 
-            call OMP_set_num_threads(number_of_threads)
+            !call OMP_set_num_threads(number_of_threads)
 
             !call OMP_get_num_threads()
 
 
-!$OMP PARALLEL &
-!$OMP PRIVATE(ie, im, nn, iq, ip, is, in, ct,ww,dd,dxdx,dxdy,dydx,dydy,dstrain,dstrial) &
-!$OMP PRIVATE(stress_,dstrial_,dstrain_,pstrain_,center_,radius_,lambda_,mu_,ckin_,kkin_,rinf_,biso_,syld_) &
-!$OMP PRIVATE(alpha_epl,st_epl,fx,fy)
+!! $OMP PARALLEL &
+!! $OMP PRIVATE(ie, im, nn, iq, ip, is, in, ct,ww,dd,dxdx,dxdy,dydx,dydy,dstrain,dstrial) &
+!! $OMP PRIVATE(stress_,dstrial_,dstrain_,pstrain_,center_,radius_,lambda_,mu_,ckin_,kkin_,rinf_,biso_,syld_) &
+!! $OMP PRIVATE(alpha_epl,st_epl,fx,fy)
 
 
-!$OMP DO 
+!! $OMP DO 
             do ie = 1,ne
                 im = cs(cs(ie-1) + 0)
                 nn = sdeg_mat(im)+1
@@ -122,7 +122,7 @@ module nonlinear2d
                         stress_  = snl(ie)%stress(:,ip,iq)
                         center_  = snl(ie)%center(:,ip,iq)
                         radius_  = snl(ie)%radius(ip,iq)
-                        pstrain_ = snl(ie)%plastic_strain(:,ip,iq)
+                        pstrain_ = snl(ie)%pstrain(:,ip,iq)
                         lambda_  = snl(ie)%lambda(ip,iq)
                         syld_    = snl(ie)%syld(ip,iq)
                         ckin_    = snl(ie)%ckin(ip,iq)
@@ -155,7 +155,7 @@ module nonlinear2d
                         ! RADIUS
                         snl(ie)%radius(ip,iq)   = radius_
                         ! PLASTIC STRAIN VECTOR
-                        snl(ie)%plastic_strain(:,ip,iq) = pstrain_(:)
+                        snl(ie)%pstrain(:,ip,iq) = pstrain_(:)
                         
                     enddo
                 enddo
@@ -184,8 +184,8 @@ module nonlinear2d
                 ! DEALLOCATE ELEMENT-WISE VARIABLES
                 call DEALLOCATE_LOC(ct,ww,dd,dxdx,dxdy,dydx,dydy,dstrain,dstrial,fx,fy)
             enddo
-!$OMP END DO
-!$OMP END PARALLEL 
+!! $OMP END DO
+!! $OMP END PARALLEL 
             return
             !
         end subroutine MAKE_INTERNAL_FORCES_NL
@@ -274,8 +274,8 @@ module nonlinear2d
             gradFM(1) = three*half*(dev(1)-center(1))/tau_eq
             gradFM(2) = three*half*(dev(2)-center(2))/tau_eq
             gradFM(3) = three*half*(dev(3)-center(3))/tau_eq
-            !gradFM(3) = zero
-            gradFM(4) = three*(dev(4)-center(4))/tau_eq
+            gradFM(3) = zero
+            !gradFM(4) = three*(dev(4)-center(4))/tau_eq
             !  
             return
             !
@@ -462,6 +462,9 @@ module nonlinear2d
                 dR2   = zero
                 dEpl1 = zero
                 dEpl2 = zero
+                S1    = zero
+                X1    = zero
+                R1    = zero
                 Epl1  = zero
 
                 ! FIRST ORDER COMPUTATION

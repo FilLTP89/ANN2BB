@@ -518,19 +518,19 @@ module write_output
             !***********************************************************************************
             
             if (option_out_var(5).eq.2) then
-                disout%plastic_strain(:,:) = 0.0d0 
+                disout%pstrain(:,:) = 0.0d0 
 
                 call UPDATE_OUT_PLASTIC_STRAIN(ne,nnt,cs_nnz,cs,nm,sdeg_mat,snl,disout)
                 do i = 1,nmonit
                     in = node_m(i) 
-                    epxx_out = disout%plastic_strain(1,in) / nodal_counter(in)
-                    epyy_out = disout%plastic_strain(2,in) / nodal_counter(in)
-                    gpxy_out = disout%plastic_strain(4,in) / nodal_counter(in)
-                    epzz_out = disout%plastic_strain(3,in) / nodal_counter(in)
-                    if (dabs(disout%plastic_strain(1,in)).lt.(1.0d-99)) epxx_out=0.d0
-                    if (dabs(disout%plastic_strain(2,in)).lt.(1.0d-99)) epyy_out=0.d0
-                    if (dabs(disout%plastic_strain(4,in)).lt.(1.0d-99)) gpxy_out=0.d0
-                    if (dabs(disout%plastic_strain(3,in)).lt.(1.0d-99)) epzz_out=0.d0
+                    epxx_out = disout%pstrain(1,in) / nodal_counter(in)
+                    epyy_out = disout%pstrain(2,in) / nodal_counter(in)
+                    gpxy_out = disout%pstrain(4,in) / nodal_counter(in)
+                    epzz_out = disout%pstrain(3,in) / nodal_counter(in)
+                    if (dabs(disout%pstrain(1,in)).lt.(1.0d-99)) epxx_out=0.d0
+                    if (dabs(disout%pstrain(2,in)).lt.(1.0d-99)) epyy_out=0.d0
+                    if (dabs(disout%pstrain(4,in)).lt.(1.0d-99)) gpxy_out=0.d0
+                    if (dabs(disout%pstrain(3,in)).lt.(1.0d-99)) epzz_out=0.d0
                     write(unit_strain(i),'(5E16.8)') tt1,epxx_out,epyy_out,gpxy_out,epzz_out 
                 enddo
             endif
@@ -541,7 +541,7 @@ module write_output
             
             if (option_out_var(5).eq.3) then
                 disout%strain(:,:) = 0.0d0
-                disout%plastic_strain(:,:) = 0.0d0 
+                disout%pstrain(:,:) = 0.0d0 
 
                 call UPDATE_OUT_STRAIN(ne,nnt,cs_nnz,cs,nm,sdeg_mat,snl,disout)
                 call UPDATE_OUT_PLASTIC_STRAIN(ne,nnt,cs_nnz,cs,nm,sdeg_mat,snl,disout)
@@ -550,17 +550,17 @@ module write_output
                     exx_out = disout%strain(1,in) / nodal_counter(in)
                     eyy_out = disout%strain(2,in) / nodal_counter(in)
                     gxy_out = disout%strain(3,in) / nodal_counter(in)
-                    epxx_out = disout%plastic_strain(1,in) / nodal_counter(in)
-                    epyy_out = disout%plastic_strain(2,in) / nodal_counter(in)
-                    gpxy_out = disout%plastic_strain(4,in) / nodal_counter(in)
-                    epzz_out = disout%plastic_strain(3,in) / nodal_counter(in)
+                    epxx_out = disout%pstrain(1,in) / nodal_counter(in)
+                    epyy_out = disout%pstrain(2,in) / nodal_counter(in)
+                    gpxy_out = disout%pstrain(4,in) / nodal_counter(in)
+                    epzz_out = disout%pstrain(3,in) / nodal_counter(in)
                     if (dabs(disout%strain(1,in)).lt.(1.0d-99)) exx_out=0.d0
                     if (dabs(disout%strain(2,in)).lt.(1.0d-99)) eyy_out=0.d0
                     if (dabs(disout%strain(3,in)).lt.(1.0d-99)) gxy_out=0.d0
-                    if (dabs(disout%plastic_strain(1,in)).lt.(1.0d-99)) epxx_out=0.d0
-                    if (dabs(disout%plastic_strain(2,in)).lt.(1.0d-99)) epyy_out=0.d0
-                    if (dabs(disout%plastic_strain(4,in)).lt.(1.0d-99)) gpxy_out=0.d0
-                    if (dabs(disout%plastic_strain(3,in)).lt.(1.0d-99)) epzz_out=0.d0
+                    if (dabs(disout%pstrain(1,in)).lt.(1.0d-99)) epxx_out=0.d0
+                    if (dabs(disout%pstrain(2,in)).lt.(1.0d-99)) epyy_out=0.d0
+                    if (dabs(disout%pstrain(4,in)).lt.(1.0d-99)) gpxy_out=0.d0
+                    if (dabs(disout%pstrain(3,in)).lt.(1.0d-99)) epzz_out=0.d0
                     write(unit_strain(i),'(8E16.8)') tt1,exx_out,eyy_out,gxy_out,&
                         epxx_out,epyy_out,gpxy_out,epzz_out 
                 enddo
@@ -669,8 +669,8 @@ module write_output
                         is = nn*(j -1) +i
                         in = cs(cs(ie -1) + is)
                         
-                        disout%plastic_strain(:,in) = disout%plastic_strain(:,in) + &
-                            snl(ie)%plastic_strain(:,i,j)
+                        disout%pstrain(:,in) = disout%pstrain(:,in) + &
+                            snl(ie)%pstrain(:,i,j)
                     enddo
                 enddo
             enddo

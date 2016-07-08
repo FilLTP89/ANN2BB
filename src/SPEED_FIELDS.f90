@@ -6,7 +6,7 @@ module fields
         real*8, dimension(:,:,:), allocatable    :: stress
         real*8, dimension(:,:,:), allocatable    :: strain
         real*8, dimension(:,:,:), allocatable    :: center
-        real*8, dimension(:,:,:), allocatable    :: plastic_strain
+        real*8, dimension(:,:,:), allocatable    :: pstrain
         ! elastic parameters
         real*8, dimension(:,:), allocatable      :: lambda,mu
         ! nonlinear parameters
@@ -19,7 +19,7 @@ module fields
         ! nl stored variables
         real*8, dimension(:,:), allocatable    :: stress
         real*8, dimension(:,:), allocatable    :: strain
-        real*8, dimension(:,:), allocatable    :: plastic_strain
+        real*8, dimension(:,:), allocatable    :: pstrain
     end type nodepatched 
     !
     contains
@@ -197,8 +197,9 @@ module fields
                     dstrial(4,i,j) = sxy(i,j)
                 enddo
             enddo
-
+            !
             return
+            !
         end subroutine ALLOINIT_LOC_NL
         
         !****************************************************************************
