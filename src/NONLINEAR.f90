@@ -70,20 +70,20 @@ module nonlinear2d
             !
             integer*4                                   :: nnn,number_of_threads
             !
-            !number_of_threads = 1;
+            number_of_threads = 3;
 
-            !call OMP_set_num_threads(number_of_threads)
+            call OMP_set_num_threads(number_of_threads)
 
             !call OMP_get_num_threads()
 
 
-!! $OMP PARALLEL &
-!! $OMP PRIVATE(ie, im, nn, iq, ip, is, in, ct,ww,dd,dxdx,dxdy,dydx,dydy,dstrain,dstrial) &
-!! $OMP PRIVATE(stress_,dstrial_,dstrain_,pstrain_,center_,radius_,lambda_,mu_,ckin_,kkin_,rinf_,biso_,syld_) &
-!! $OMP PRIVATE(alpha_epl,st_epl,fx,fy)
+!$OMP PARALLEL &
+!$OMP PRIVATE(ie, im, nn, iq, ip, is, in, ct,ww,dd,dxdx,dxdy,dydx,dydy,dstrain,dstrial) &
+!$OMP PRIVATE(stress_,dstrial_,dstrain_,pstrain_,center_,radius_,lambda_,mu_,ckin_,kkin_,rinf_,biso_,syld_) &
+!$OMP PRIVATE(alpha_epl,st_epl,fx,fy)
 
 
-!! $OMP DO 
+!$OMP DO 
             do ie = 1,ne
                 im = cs(cs(ie-1) + 0)
                 nn = sdeg_mat(im)+1
@@ -184,8 +184,8 @@ module nonlinear2d
                 ! DEALLOCATE ELEMENT-WISE VARIABLES
                 call DEALLOCATE_LOC(ct,ww,dd,dxdx,dxdy,dydx,dydy,dstrain,dstrial,fx,fy)
             enddo
-!! $OMP END DO
-!! $OMP END PARALLEL 
+!$OMP END DO
+!$OMP END PARALLEL 
             return
             !
         end subroutine MAKE_INTERNAL_FORCES_NL
