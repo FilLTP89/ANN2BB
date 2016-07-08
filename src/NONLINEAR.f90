@@ -7,11 +7,11 @@ module nonlinear2d
     real*8, parameter                   :: zero=0.d0,one=1.0d0
     real*8, parameter                   :: half=0.5d0,two=2.0d0,three=3.0d0
     !
-    real*8, parameter :: FTOL = 0.00001D0
+    real*8, parameter :: FTOL = 0.01D0
     real*8, parameter :: LTOL = 0.000000001D0
-    real*8, parameter :: STOL = 0.1D0
-    real*8, parameter :: PSI  = 5.0d0!one
-    real*8, parameter :: OMEGA= 1.0d6!zero
+    real*8, parameter :: STOL = 0.01D0
+    real*8, parameter :: PSI  = one!5.0d0!one
+    real*8, parameter :: OMEGA= zero!1.0d6!zero
     !
     real*8, parameter, dimension(4,4)   :: MM = reshape((/ &
         one , zero, zero, zero, &
@@ -108,57 +108,57 @@ module nonlinear2d
                 dstrain(:,:,:) = dstrain(:,:,:) - snl(ie)%strain(:,:,:)
                 dstrial(:,:,:) = dstrial(:,:,:) - snl(ie)%stress(:,:,:)!
                 snl(ie)%strain(:,:,:) = snl(ie)%strain(:,:,:)+dstrain(:,:,:)
-                !snl(ie)%stress(:,:,:) = snl(ie)%stress(:,:,:)+dstrial(:,:,:) 
+                snl(ie)%stress(:,:,:) = snl(ie)%stress(:,:,:)+dstrial(:,:,:) 
                 
                 !*********************************************************************************
                 ! COMPUTE STRESS
                 !*********************************************************************************
                 
-                do iq = 1,nn
-                    do ip = 1,nn
-                        is = nn*(iq -1) + ip
-                        nnn = cs(cs(ie -1) + is)
-                        ! STARTING POINT
-                        stress_  = snl(ie)%stress(:,ip,iq)
-                        center_  = snl(ie)%center(:,ip,iq)
-                        radius_  = snl(ie)%radius(ip,iq)
-                        pstrain_ = snl(ie)%pstrain(:,ip,iq)
-                        lambda_  = snl(ie)%lambda(ip,iq)
-                        syld_    = snl(ie)%syld(ip,iq)
-                        ckin_    = snl(ie)%ckin(ip,iq)
-                        kkin_    = snl(ie)%kkin(ip,iq)
-                        biso_    = snl(ie)%biso(ip,iq)
-                        rinf_    = snl(ie)%rinf(ip,iq)
-                        mu_      = snl(ie)%mu(ip,iq)
-                        
-                        ! STRAIN INCREMENT
-                        dstrain_(:)   = zero
-                        dstrain_(1:2) = dstrain(1:2,ip,iq)
-                        dstrain_(4)   = dstrain(3,ip,iq)
-                        ! TRIAL STRESS INCREMENT
-                        dstrial_(:)   = zero
-                        dstrial_(:)   = dstrial(:,ip,iq)
-                        
-                        ! CHECK PLASTICITY
-                        call check_plasticity(dstrial_,stress_,center_,radius_,&
-                            syld_,st_epl,alpha_epl,dt,nnn)
-                        ! PLASTIC CORRECTION
-                        if (st_epl) then
-                            dstrain_(:) = (one-alpha_epl)*dstrain_(:)
-                            call plastic_corrector(dstrain_,dstrial_,center_,radius_,syld_,&
-                                biso_,rinf_,ckin_,kkin_,mu_,lambda_,pstrain_)
-                        endif
-                        ! STRESS VECTOR
-                        snl(ie)%stress(:,ip,iq) = dstrial_(:)
-                        ! CENTER
-                        snl(ie)%center(:,ip,iq) = center_(:)
-                        ! RADIUS
-                        snl(ie)%radius(ip,iq)   = radius_
-                        ! PLASTIC STRAIN VECTOR
-                        snl(ie)%pstrain(:,ip,iq) = pstrain_(:)
-                        
-                    enddo
-                enddo
+!                do iq = 1,nn
+!                    do ip = 1,nn
+!                        is = nn*(iq -1) + ip
+!                        nnn = cs(cs(ie -1) + is)
+!                        ! STARTING POINT
+!                        stress_  = snl(ie)%stress(:,ip,iq)
+!                        center_  = snl(ie)%center(:,ip,iq)
+!                        radius_  = snl(ie)%radius(ip,iq)
+!                        pstrain_ = snl(ie)%pstrain(:,ip,iq)
+!                        lambda_  = snl(ie)%lambda(ip,iq)
+!                        syld_    = snl(ie)%syld(ip,iq)
+!                        ckin_    = snl(ie)%ckin(ip,iq)
+!                        kkin_    = snl(ie)%kkin(ip,iq)
+!                        biso_    = snl(ie)%biso(ip,iq)
+!                        rinf_    = snl(ie)%rinf(ip,iq)
+!                        mu_      = snl(ie)%mu(ip,iq)
+!                        
+!                        ! STRAIN INCREMENT
+!                        dstrain_(:)   = zero
+!                        dstrain_(1:2) = dstrain(1:2,ip,iq)
+!                        dstrain_(4)   = dstrain(3,ip,iq)
+!                        ! TRIAL STRESS INCREMENT
+!                        dstrial_(:)   = zero
+!                        dstrial_(:)   = dstrial(:,ip,iq)
+!                        
+!                        ! CHECK PLASTICITY
+!                        call check_plasticity(dstrial_,stress_,center_,radius_,&
+!                            syld_,st_epl,alpha_epl,dt,nnn)
+!                        ! PLASTIC CORRECTION
+!                        if (st_epl) then
+!                            dstrain_(:) = (one-alpha_epl)*dstrain_(:)
+!                            call plastic_corrector(dstrain_,dstrial_,center_,radius_,syld_,&
+!                                biso_,rinf_,ckin_,kkin_,mu_,lambda_,pstrain_)
+!                        endif
+!                        ! STRESS VECTOR
+!                        snl(ie)%stress(:,ip,iq) = dstrial_(:)
+!                        ! CENTER
+!                        snl(ie)%center(:,ip,iq) = center_(:)
+!                        ! RADIUS
+!                        snl(ie)%radius(ip,iq)   = radius_
+!                        ! PLASTIC STRAIN VECTOR
+!                        snl(ie)%pstrain(:,ip,iq) = pstrain_(:)
+!                        
+!                    enddo
+!                enddo
                
                 !*********************************************************************************
                 ! COMPUTE LOCAL INTERNAL FORCES
@@ -273,9 +273,8 @@ module nonlinear2d
             ! COMPUTE MISES FUNCTION GRADIENT
             gradFM(1) = three*half*(dev(1)-center(1))/tau_eq
             gradFM(2) = three*half*(dev(2)-center(2))/tau_eq
-            gradFM(3) = three*half*(dev(3)-center(3))/tau_eq
             gradFM(3) = zero
-            !gradFM(4) = three*(dev(4)-center(4))/tau_eq
+            gradFM(4) = three*(dev(4)-center(4))/tau_eq
             !  
             return
             !
@@ -361,7 +360,8 @@ module nonlinear2d
             ! ***** CRITICAL STATE EXTENSION *****
             ! real*8, dimension(4), intent(in) :: dstrain
             ! real*8,               intent(in) :: lambda,mu
-
+            flagxit = .false.
+            st_epl = .false.
             !
             ! PREDICTION STRESS
             call update_stress(stress0,stress1,dtrial)
@@ -372,7 +372,7 @@ module nonlinear2d
             call mises_yld_locus(stress0,center,radius,syld,FS,gradFS)
             call mises_yld_locus(stress1,center,radius,syld,FT,gradFT)
            
-            alpha_epl = -one
+            alpha_epl = zero 
             if (FT.le.FTOL) then
                 alpha_epl = one
                 st_epl = .false.
@@ -394,9 +394,6 @@ module nonlinear2d
 
                 if (checkload.ge.-LTOL) then! PLASTIC LOADING  
                     alpha_epl = zero
-                    if (nnn.eq.891)then
-                        write(*,*) "CIAO"
-                    endif
                 elseif (checkload.lt.-LTOL)then! PLASTIC UNLOADING  
                     call gotoFpegasus(stress0,dtrial,center,radius,syld,10,alpha_epl)
                     ! ***** CRITICAL STATE EXTENSION *****
@@ -408,7 +405,7 @@ module nonlinear2d
             
             if (.not.flagxit)then
                 write(*,*) "ERROR IN FINDING INTERSECTION"
-                stop
+                read(*,*)
             endif
             
             ! ON-LOCUS STRESS STATE 
@@ -418,9 +415,6 @@ module nonlinear2d
             ! call update_stress(stress0,dtrial,alpha_epl*dstrain,lambda,mu)
             call mises_yld_locus(dtrial,center,radius,syld,FS,gradFS)
             !
-            if ((tt1.gt.1.173).and.(nnn.eq.891))then
-                write(*,*) "alpha",alpha_epl
-            endif
             return
         end subroutine check_plasticity
         
