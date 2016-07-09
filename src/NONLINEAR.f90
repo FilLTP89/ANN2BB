@@ -7,9 +7,9 @@ module nonlinear2d
     real*8, parameter                   :: zero=0.d0,one=1.0d0
     real*8, parameter                   :: half=0.5d0,two=2.0d0,three=3.0d0
     !
-    real*8, parameter :: FTOL = 0.001D0
-    real*8, parameter :: LTOL = 0.000000001D0
-    real*8, parameter :: STOL = 0.001D0
+    real*8, parameter :: FTOL = 0.00010D0
+    real*8, parameter :: LTOL = 0.0000001D0
+    real*8, parameter :: STOL = 1.0D0
     real*8, parameter :: PSI  = one!5.0d0!one
     real*8, parameter :: OMEGA= zero!1.0d6!zero
     !
@@ -373,7 +373,10 @@ module nonlinear2d
             call mises_yld_locus(stress0,center,radius,syld,FS,gradFS)
             call mises_yld_locus(stress1,center,radius,syld,FT,gradFT)
            
-            alpha_epl = one 
+            alpha_epl = one
+            if (FS.gt.FTOL)then
+                FS=FTOL
+            endif
             if (FT.le.FTOL) then
                 alpha_epl = one
                 st_epl = .false.
@@ -404,14 +407,8 @@ module nonlinear2d
                 flagxit = .true.
             endif
             
-            if (.not.flagxit)then
-                write(*,*) "ERROR IN FINDING INTERSECTION"
-
-            endif
-            
             ! ON-LOCUS STRESS STATE 
-            call update_stress(stress0,stress1,alpha_epl*dtrial)
-            dtrial = stress1
+            dtrial = stress0+alpha_epl*dtrial
             ! ***** CRITICAL STATE EXTENSION *****
             ! call update_stress(stress0,dtrial,alpha_epl*dstrain,lambda,mu)
             call mises_yld_locus(dtrial,center,radius,syld,FS,gradFS)
@@ -652,7 +649,7 @@ module nonlinear2d
             real*8,               intent(inout) :: radius
             real*8,               intent(in)    :: lambda,mu,syld,biso,Rinf,Ckin,kkin
             real*8                              :: F0,F1,beta,hard,radiust,PlastM,PHI
-            real*8, dimension(4)                :: tempv,gradF0,gradF1,dstress,stresst,centert
+            real*8, dimension(4)                :: tempv,gradF0,gradF1,dstress,stresst,centert,pstraint
             real*8, dimension(4,4)              :: DEL
             integer*4                           :: counter,k,j
             real*8, parameter :: FTOL_DRIFT =   0.000001D0 
@@ -660,12 +657,12 @@ module nonlinear2d
             call stiff_matrix(lambda,mu,DEL)
             ! ***** CRITICAL STATE EXTENSION *****
             ! call STIFF_MATRIX_CRITICAL(stress0,dincrement,lambda,mu,DEL)
-            do counter=1,5 
+            do counter=1,10 
                 ! MISES FUNCTION
                 call mises_yld_locus(stress,center,radius,syld,F0,gradF0)
                 ! COMPUTE HARDENING INCREMENTS
                 PlastM = sqrt(two/three*dot_product(pstrain,pstrain))
-                PHI = 1+(PSI-1)*exp(-OMEGA*PlastM)
+                PHI = one+(PSI-one)*exp(-OMEGA*PlastM)
                 hard = biso*(Rinf-radius)
                 hard = hard + PHI*Ckin
                 hard = hard - kkin*dot_product(gradF0,center)
@@ -681,7 +678,7 @@ module nonlinear2d
                 call update_stress(stress,stresst,dstress)
                 centert = center+beta*((two*PHI*ckin/three)*matmul(MM1,gradF0)-center*kkin)
                 radiust = radius+beta*(Rinf-radius)*biso
-                
+                pstraint = pstrain+beta*matmul(MM1,gradF0)
                 ! CHECK DRIFT
                 call mises_yld_locus(stresst,centert,radiust,syld,F1,gradF1)
                 if (abs(F1).gt.abs(F0)) then
@@ -691,13 +688,14 @@ module nonlinear2d
                     call update_stress(stress,stresst,dstress)
                     centert = center
                     radiust = radius
+                    pstraint = pstrain
                     call mises_yld_locus(stresst,centert,radiust,syld,F1,gradF1)
                 endif
                 stress = stresst
                 center = centert
                 radius = radiust
-                pstrain = pstrain+beta*matmul(MM1,gradF0)
-
+                pstrain = pstraint 
+                
                 if (abs(F1).le.FTOL_DRIFT) then
                     exit
                 endif
@@ -768,7 +766,7 @@ module nonlinear2d
             ! LOAD REVERSAL
             if (nsub.gt.1)then
                 Fsave=F0
-                do counter0=1,5
+                do counter0=1,3
                     dalpha = (alpha1-alpha0)/nsub
                     flagxit=.false.
                     do counter1=1,nsub
@@ -797,16 +795,13 @@ module nonlinear2d
                         exit ! exit loop counter0=1,3
                     endif
                 end do
-                
-!                call update_stress(start0,stress0,alpha0*dtrial)
-!                call update_stress(start0,stress1,alpha1*dtrial)  
-                !stress0 = start0+alpha0*dtrial
-                !stress1 = start0+alpha1*dtrial
+                call update_stress(start0,stress0,alpha0*dtrial)
+                call update_stress(start0,stress1,alpha1*dtrial)  
                 ! ***** CRITICAL STATE EXTENSION *****
                 ! call update_stress(start0,stress0,alpha0*dstrain,lambda,mu)
                 ! call update_stress(start0,stress1,alpha1*dstrain,lambda,mu)
-!                call mises_yld_locus(stress0,center,radius,s0,F0,gradF)
-!                call mises_yld_locus(stress1,center,radius,s0,F1,gradF)
+                call mises_yld_locus(stress0,center,radius,s0,F0,gradF)
+                call mises_yld_locus(stress1,center,radius,s0,F1,gradF)
             end if
             
             ! ORIGINAL PEGASUS ALGORITHM
