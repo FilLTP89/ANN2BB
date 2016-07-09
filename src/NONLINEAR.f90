@@ -7,9 +7,9 @@ module nonlinear2d
     real*8, parameter                   :: zero=0.d0,one=1.0d0
     real*8, parameter                   :: half=0.5d0,two=2.0d0,three=3.0d0
     !
-    real*8, parameter :: FTOL = 0.01D0
+    real*8, parameter :: FTOL = 0.001D0
     real*8, parameter :: LTOL = 0.000000001D0
-    real*8, parameter :: STOL = 0.01D0
+    real*8, parameter :: STOL = 0.001D0
     real*8, parameter :: PSI  = one!5.0d0!one
     real*8, parameter :: OMEGA= zero!1.0d6!zero
     !
@@ -156,7 +156,7 @@ module nonlinear2d
                         ! RADIUS
                         snl(ie)%radius(ip,iq)   = radius_
                         ! PLASTIC STRAIN VECTOR
-                        snl(ie)%pstrain(:,ip,iq) = pstrain_(:)!(/alpha_epl,stat,zero,zero/)
+                        snl(ie)%pstrain(:,ip,iq) = pstrain_(:)
                         
                     enddo
                 enddo
@@ -265,17 +265,17 @@ module nonlinear2d
             !
             real*8, dimension(4)                :: dev
             real*8                              :: tau_eq
-            integer*4                           :: k
             ! COMPUTE TENSOR COMPONENTS 
             call tensor_components (stress, dev)
             ! COMPUTE MISES FUNCTION
-            call tau_mises(dev-center,tau_eq)
+            dev(:) = dev(:) - center(:)
+            call tau_mises(dev,tau_eq)
             FM = tau_eq - syld - radius
             ! COMPUTE MISES FUNCTION GRADIENT
-            gradFM(1) = three*half*(dev(1)-center(1))/tau_eq
-            gradFM(2) = three*half*(dev(2)-center(2))/tau_eq
+            gradFM(1) = three*half*dev(1)/tau_eq
+            gradFM(2) = three*half*dev(2)/tau_eq
             gradFM(3) = zero
-            gradFM(4) = three*(dev(4)-center(4))/tau_eq
+            gradFM(4) = three*dev(4)/tau_eq
             !  
             return
             !
@@ -406,6 +406,7 @@ module nonlinear2d
             
             if (.not.flagxit)then
                 write(*,*) "ERROR IN FINDING INTERSECTION"
+
             endif
             
             ! ON-LOCUS STRESS STATE 
@@ -654,7 +655,7 @@ module nonlinear2d
             real*8, dimension(4)                :: tempv,gradF0,gradF1,dstress,stresst,centert
             real*8, dimension(4,4)              :: DEL
             integer*4                           :: counter,k,j
-            real*8, parameter :: FTOL_DRIFT =   FTOL 
+            real*8, parameter :: FTOL_DRIFT =   0.000001D0 
             ! INITIAL PLASTIC CONDITION
             call stiff_matrix(lambda,mu,DEL)
             ! ***** CRITICAL STATE EXTENSION *****
@@ -797,15 +798,15 @@ module nonlinear2d
                     endif
                 end do
                 
-                call update_stress(start0,stress0,alpha0*dtrial)
-                call update_stress(start0,stress1,alpha1*dtrial)  
+!                call update_stress(start0,stress0,alpha0*dtrial)
+!                call update_stress(start0,stress1,alpha1*dtrial)  
                 !stress0 = start0+alpha0*dtrial
                 !stress1 = start0+alpha1*dtrial
                 ! ***** CRITICAL STATE EXTENSION *****
                 ! call update_stress(start0,stress0,alpha0*dstrain,lambda,mu)
                 ! call update_stress(start0,stress1,alpha1*dstrain,lambda,mu)
-                call mises_yld_locus(stress0,center,radius,s0,F0,gradF)
-                call mises_yld_locus(stress1,center,radius,s0,F1,gradF)
+!                call mises_yld_locus(stress0,center,radius,s0,F0,gradF)
+!                call mises_yld_locus(stress1,center,radius,s0,F1,gradF)
             end if
             
             ! ORIGINAL PEGASUS ALGORITHM
