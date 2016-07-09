@@ -7,7 +7,7 @@ module nonlinear2d
     real*8, parameter                   :: zero=0.d0,one=1.0d0
     real*8, parameter                   :: half=0.5d0,two=2.0d0,three=3.0d0
     !
-    real*8, parameter :: FTOL = 0.00010D0
+    real*8, parameter :: FTOL = 0.010D0
     real*8, parameter :: LTOL = 0.0000001D0
     real*8, parameter :: STOL = 1.0D0
     real*8, parameter :: PSI  = one!5.0d0!one
@@ -71,20 +71,20 @@ module nonlinear2d
             integer*4                                   :: nnn,number_of_threads
             real*8:: stat
             !
-            number_of_threads =1;
-
-            call OMP_set_num_threads(number_of_threads)
+!            number_of_threads =1;
+!
+!            call OMP_set_num_threads(number_of_threads)
 
             !call OMP_get_num_threads()
 
 
-!$OMP PARALLEL &
-!$OMP PRIVATE(ie, im, nn, iq, ip, is, in, ct,ww,dd,dxdx,dxdy,dydx,dydy,dstrain,dstrial) &
-!$OMP PRIVATE(stress_,dstrial_,dstrain_,pstrain_,center_,radius_,lambda_,mu_,ckin_,kkin_,rinf_,biso_,syld_) &
-!$OMP PRIVATE(alpha_epl,st_epl,fx,fy)
+!!$OMP PARALLEL &
+!!$OMP PRIVATE(ie, im, nn, iq, ip, is, in, ct,ww,dd,dxdx,dxdy,dydx,dydy,dstrain,dstrial) &
+!!$OMP PRIVATE(stress_,dstrial_,dstrain_,pstrain_,center_,radius_,lambda_,mu_,ckin_,kkin_,rinf_,biso_,syld_) &
+!!$OMP PRIVATE(alpha_epl,st_epl,fx,fy)
 
 
-!$OMP DO 
+!!$OMP DO 
             do ie = 1,ne
                 im = cs(cs(ie-1) + 0)
                 nn = sdeg_mat(im)+1
@@ -185,8 +185,8 @@ module nonlinear2d
                 ! DEALLOCATE ELEMENT-WISE VARIABLES
                 call DEALLOCATE_LOC(ct,ww,dd,dxdx,dxdy,dydx,dydy,dstrain,dstrial,fx,fy)
             enddo
-!$OMP END DO
-!$OMP END PARALLEL 
+!!$OMP END DO
+!!$OMP END PARALLEL 
             return
             !
         end subroutine MAKE_INTERNAL_FORCES_NL
@@ -362,7 +362,8 @@ module nonlinear2d
             ! real*8, dimension(4), intent(in) :: dstrain
             ! real*8,               intent(in) :: lambda,mu
             flagxit = .false.
-            st_epl = .false.
+            st_epl = .true.
+            alpha_epl = zero
             !
             ! PREDICTION STRESS
             call update_stress(stress0,stress1,dtrial)
@@ -373,10 +374,6 @@ module nonlinear2d
             call mises_yld_locus(stress0,center,radius,syld,FS,gradFS)
             call mises_yld_locus(stress1,center,radius,syld,FT,gradFT)
            
-            alpha_epl = one
-            if (FS.gt.FTOL)then
-                FS=FTOL
-            endif
             if (FT.le.FTOL) then
                 alpha_epl = one
                 st_epl = .false.
