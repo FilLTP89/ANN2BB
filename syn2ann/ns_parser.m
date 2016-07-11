@@ -18,17 +18,24 @@ function [varargout] = ns_parser(varargin)
     %% SET-UP
     % _monitor structure_
     mon = varargin{1};
+    bhr = varargin{2};
     %%
     % _parsing metadata_
     mtd = importdata(mon.fn);
-    idm = find(strcmpi('Monitor ID',mtd.textdata(1,:))==1)-2;
-    idd = find(strcmpi('Repi (km)',mtd.textdata(1,:))==1)-2;
-    ids = find(strcmpi('Station code',mtd.textdata(1,:))==1);
+    idm = find(strcmpi('Monitor ID',mtd.textdata(1,:))==1);
+    idd = find(strcmpi('Repi (km)',mtd.textdata(1,:))==1);
+    ids = strcmpi('Station code',mtd.textdata(1,:));
+    
     for i_ = 1:mon.na
-        idn = round(mtd.data(:,idm))==mon.id(i_);
-        idn = idn(2:end-1);
-        mon.dep(i_) = mtd.data(idn,idd);
-        mon.st(i_) = mtd.textdata(idn,ids);
+        idn = find(round(mtd.data(:,idm-1))==mon.id(i_)==1);
+        mon.dep(i_) = mtd.data(idn,idd-1);
+        mon.st(i_) = mtd.textdata(idn+1,ids);
+        if strcmpi(mon.st(i_),bhr.nm(i_))
+            fprintf('monitor %u matched to record %s!\n',mon.id(i_),bhr.nm{i_});
+        else
+            warning('monitor and record do not match');
+            keyboard
+        end
     end
     nss.mon = mon;
     %%
@@ -37,7 +44,10 @@ function [varargout] = ns_parser(varargin)
         case 's'
             %%
             % _speed simulations_
+            
             for i_ = 1:mon.na % number of monitors
+                fprintf('monitor: \n');
+                disp(mon.id(i_));
                 % file name
                 str = speed_monitor_name(mon.id(i_),mon.rc{1},mon.pt);
                 % read monitor file
@@ -48,39 +58,37 @@ function [varargout] = ns_parser(varargin)
                 nss.mon.dtm(i_) = diff(nss.mon.vtm{i_}(1:2));
                 % time-step number
                 nss.mon.ntm(i_) = numel(nss.mon.vtm{i_});
-                
+                % name of the stations
+                fprintf('components: \n');
                 for j_ = 1:mon.nc
-                    nss.syn{i_}.(strcat('th',mon.rc{1})).(mon.cp{j_}) = str(:,mon.ci(j_)+1);
+                    cpp = mon.cp{j_};
+                    disp(cpp);
+                    nss.syn{i_}.(strcat('th',mon.rc{1})).(cpp) = str(:,mon.ci(j_)+1);
                     switch mon.rc{1}
                         case 'v'
-                        [nss.syn{i_}.tha.(mon.cp{j_}),...
-                            nss.syn{i_}.thv.(mon.cp{j_}),...
-                            nss.syn{i_}.thd.(mon.cp{j_})] = ...
-                            vel2acc(nss.mon.dtm(i_),...
-                            nss.syn{i_}.thv.(mon.cp{j_}),mon.lfr,mon.hfr);
-                    case 'd'
-                       [nss.syn{i_}.tha.(mon.cp{j_}),...
-                            nss.syn{i_}.thv.(mon.cp{j_}),...
-                            nss.syn{i_}.thd.(mon.cp{j_})] = ...
-                            dis2acc(nss.mon.dtm(i_),...
-                            nss.syn{i_}.thd.(mon.cp{j_}),mon.lfr,mon.hfr);
+                            [nss.syn{i_}.tha.(cpp),...
+                                nss.syn{i_}.thv.(cpp),...
+                                nss.syn{i_}.thd.(cpp)] = ...
+                                vel2acc(nss.mon.dtm(i_),...
+                                nss.syn{i_}.thv.(cpp),mon.lfr,mon.hfr);
+                        case 'd'
+                            [nss.syn{i_}.tha.(cpp),...
+                                nss.syn{i_}.thv.(cpp),...
+                                nss.syn{i_}.thd.(cpp)] = ...
+                                dis2acc(nss.mon.dtm(i_),...
+                                nss.syn{i_}.thd.(cpp),mon.lfr,mon.hfr);
                     end
-%                     [nss.syn{i_}.AT5.(nss.mon.cp{j_}),....
-%                         nss.syn{i_}.AI5.(nss.mon.cp{j_}),...
-%                         nss.syn{i_}.Ain.(nss.mon.cp{j_})] = ...
-%                         arias_intensity(nss.syn{i_}.tha.(nss.mon.cp{j_}),...
-%                         nss.mon.dtm(i_),I1);
                 end
             end
-                
         case 'h'
             %%
             % _hisada simulations_
             for i_ = 1:mon.na % number of monitors
                 flag = 1;
-                for k_ = 1:mon.nc % number of components
+                for j_ = 1:mon.nc % number of components
+                    cpp = mon.cp{j_};
                     % file name
-                    str = hisada_monitor_name(mon.id(i_),mon.cp{k_},mon.pt);
+                    str = hisada_monitor_name(mon.id(i_),cpp,mon.pt);
                     % read monitor file
                     str = importdata(str);
                     if flag    % time-vector
@@ -91,33 +99,18 @@ function [varargout] = ns_parser(varargin)
                         nss.mon.ntm(i_) = numel(nss.mon.vtm{i_});
                         flag = 0;
                     end
-                    nss.syn{i_}.(strcat('th',mon.rc{1})).(mon.cp{k_}) = ...
+                    nss.syn{i_}.(strcat('th',mon.rc{1})).(cpp) = ...
                         str(:,2);
-                    [nss.syn{i_}.tha.(mon.cp{k_}),nss.syn{i_}.thv.(mon.cp{k_}),...
-                        nss.syn{i_}.thd.(mon.cp{k_})] = ...
+                    [nss.syn{i_}.tha.(cpp),...
+                        nss.syn{i_}.thv.(cpp),...
+                        nss.syn{i_}.thd.(cpp)] = ...
                         vel2acc(nss.mon.dtm(i_),...
-                        nss.syn{i_}.thv.(mon.cp{k_}),mon.lfr,mon.hfr);
-%                     [nss.syn{i_}.AT5.(nss.mon.cp{j_}),....
-%                         nss.syn{i_}.AI5.(nss.mon.cp{j_}),...
-%                         nss.syn{i_}.Ain.(nss.mon.cp{j_})] = ...
-%                         arias_intensity(nss.syn{i_}.tha.(nss.mon.cp{j_}),...
-%                         nss.mon.dtm(i_),I1);
+                        nss.syn{i_}.thv.(cpp),mon.lfr,mon.hfr);
                 end
             end
     end
     nss.mon.rc  = {'a';'v';'d'};
     nss.mon.nr  = numel(nss.mon.rc);
-%     %%
-%     % _compute PGA/PGV/PGD from numerical simulations
-%     for i_ = 1:mon.na % number of monitors
-%         for j_ = 1:mon.nc % number of components
-%             [nss.syn{i_}.pga.(mon.cp{j_})(1),nss.syn{i_}.pga.(mon.cp{j_})(2),...
-%                 nss.syn{i_}.pgv.(mon.cp{j_})(1),nss.syn{i_}.pgv.(mon.cp{j_})(2),...
-%                 nss.syn{i_}.pgd.(mon.cp{j_})(1),nss.syn{i_}.pgd.(mon.cp{j_})(2)] = ...
-%                 PGAVD_eval(nss.mon.dtm(i_),nss.syn{i_}.tha.(mon.cp{j_}),...
-%                 nss.syn{i_}.thv.(mon.cp{j_}),nss.syn{i_}.thd.(mon.cp{j_}));
-%         end
-%     end
     %% OUTPUT
     varargout{1} = mon;
     varargout{2} = nss;

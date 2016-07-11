@@ -18,6 +18,7 @@ end
 ann.cp = fieldnames(ann);
 [~,~,ib] = intersect(hbs.mon.cp,ann.cp,'stable');
 ann.cp = ann.cp(ib);
+
 % _ apply trained ANN on hybrid accelerograms_
 fprintf('--> Apply\n');
-trs = ann2hbs_train(hbs,ann);
+trs = ann2hbs_train_noPGV(hbs,ann);

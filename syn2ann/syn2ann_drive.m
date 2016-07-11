@@ -13,7 +13,8 @@
 % synthetics2ann_spectral_matching.m_
 
 %% *SET-UP*
-syn2ann_setup;
+syn2ann_setup_emilia;
+% syn2ann_setup_kknpp;
 
 %% *RECORDS*
 syn2ann_records;
@@ -35,4 +36,7 @@ syn2ann_scaling;
 
 %% PLOT RESULTS
 cd(wd);
-syn2ann_plot_res;
+syn2ann_plot_res_MRN;
+% syn2ann_plot_res_MIR08;
+% syn2ann_plot_res_AQK;
+% syn2ann_plot_res_AQU;

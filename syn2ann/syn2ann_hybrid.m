@@ -1,16 +1,20 @@
 %% *LF-HF HYBRIDIZATION*
 fprintf('---------------------\n4. HYBRIDIZATION\n---------------------\n');
 %% *RESAMPLING*
-[nss.hyb,sps.hyb] = lfhf_rsmpl(nss.org,sps.org);
+[nss.org,sps.org] = lfhf_rsmpl(nss.org,sps.org);
 %% *PAD LF/HF*
-[nss.hyb,sps.hyb] = lfhf_pad(nss.hyb,sps.hyb);
+[nss.org,sps.org] = lfhf_pad(nss.org,sps.org);
+%% *TUKEY LF/HF*
+[nss.org,sps.org] = lfhf_taper(nss.org,sps.org);
 %% *ALIGN LF/HF*
-[nss.hyb,sps.hyb] = lfhf_shift(nss.hyb,sps.hyb);
-nss.hyb = syn2ann_spp(nss.hyb);
-sps.hyb = syn2ann_spp(sps.hyb);
+[nss.org,sps.org] = lfhf_shift(nss.org,sps.org);
+nss.org = syn2ann_thp(nss.org);
+sps.org = syn2ann_thp(sps.org);
+nss.org = syn2ann_spp(nss.org);
+sps.org = syn2ann_spp(sps.org);
 %% *SPECTRAL MASHUP LF/HF*
 fprintf('--> Generation\n');
-[nss.hyb,sps.hyb,hbs] = lfhf_mashup(nss.hyb,sps.hyb);
+[nss.hyb,sps.hyb,hbs] = lfhf_mashup(nss.org,sps.org);
 %% *PGA-PGV-PGD & ARIAS INTENSITY*
 fprintf('--> Peak Values and Arias\n');
 nss.hyb = syn2ann_thp(nss.hyb);

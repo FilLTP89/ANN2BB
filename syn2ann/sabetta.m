@@ -35,20 +35,19 @@ function [varargout] = sabetta(varargin)
     if nargin > 1
         mw  = varargin{1};
         dep = varargin{2};
-        scc = varargin{3};
-        sst = varargin{4};
+        scc = varargin{3}; % site conditions (0=rock; 1=shallow all.; 2=deep alluvium); 
+        sst = varargin{4}; % st. dev. of GMPE (0=median value,1=84th percentile)
         dtm = varargin{5};
-        na  = varargin{6};
-        scl = varargin{7};
+        scl = varargin{6};
     else
         mw  = varargin{1}.mw;
         dep = varargin{1}.dep;
         scc = varargin{1}.scc;
         sst = varargin{1}.sst;
         dtm = varargin{1}.dtm;
-        na  = varargin{1}.na;
         scl = varargin{1}.scl;
     end
+    
     %%
     % _site conditions_
     
@@ -136,38 +135,35 @@ function [varargout] = sabetta(varargin)
     nfr   = length(frq);
     ind_f = 1:nfr;
     
-    
     %% SYNTHETIC ACCELEROGRAMS
-    tha = zeros(ntm,na);
+    tha = zeros(ntm,1);
     % Ccos_vel = zeros(1,nfr);
     % Ccos_dis = zeros(1,nfr);
-    % thv = zeros(nt,na);
-    % thd = zeros(nt,na);
-    for k_ = 1:na % number of synthetics
-        R=random('unif',0,2*pi,1,nfr);
-        for i_=1:ntm
-            % PS in cm^2 / s^3
-            PS  = (Pa(i_)./(ind_f.*sqrt(2*pi).*delta)).*exp(-(log(frq) -...
-                ln_beta(i_)).^2./(2*delta^2));
-            % Ccos in cm / s^2
-            Ccos = sqrt(2.*PS).*cos(2.*pi.*frq.*vtm(i_) + R);
-            %         % Ccos_vel in cm / s
-            %         Ccos_vel(1:nfr) = Ccos(1:nfr)./(2*pi.*f);
-            %         % Ccos_dis in cm
-            %          Ccos_dis(1:nfr) = Ccos(1:nfr)./(2*pi.*f).^2;
-            % acc in cm/s/s
-            tha(i_,k_) = sum(Ccos);
-            %         % thv in cm/s
-            %         thv(i,k) = sum(Ccos_vel(1:nfr));
-            %         % thd in cm
-            %         thd(i,k) = sum(Ccos_dis(1:nfr));
-        end
+    
+%     sR = rng(0);
+    R=random('unif',0,2*pi,1,nfr);
+    for i_=1:ntm
+        % PS in cm^2 / s^3
+        PS  = (Pa(i_)./(ind_f.*sqrt(2*pi).*delta)).*exp(-(log(frq) -...
+            ln_beta(i_)).^2./(2*delta^2));
+        % Ccos in cm / s^2
+        Ccos = sqrt(2.*PS).*cos(2.*pi.*frq.*vtm(i_) + R);
+        %         % Ccos_vel in cm / s
+        %         Ccos_vel(1:nfr) = Ccos(1:nfr)./(2*pi.*f);
+        %         % Ccos_dis in cm
+        %          Ccos_dis(1:nfr) = Ccos(1:nfr)./(2*pi.*f).^2;
+        % acc in cm/s/s
+        tha(i_) = sum(Ccos);
+        %         % thv in cm/s
+        %         thv(i,k) = sum(Ccos_vel(1:nfr));
+        %         % thd in cm
+        %         thd(i,k) = sum(Ccos_dis(1:nfr));
     end
     %%
     % _scaling_
     tha = detrend(tha).*scl;
     
     varargout{1} = vtm(:);
-    varargout{2} = tha;
+    varargout{2} = tha(:);
     return
 end

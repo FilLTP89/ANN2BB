@@ -22,11 +22,12 @@ function [varargout] = syn2ann_spp(varargin)
     % maximum natural period
     Tn_max   = 5;
     % natural period step
-    dTn      = 0.005;
+    dTn      = 0.05;
     sas.mon.vTn  = (Tn_min:dTn:Tn_max)';
     sas.mon.nT   = numel(sas.mon.vTn);
     sas.mon.zeta = 0.05;
     % _fourier spectra parameters_
+    sas.mon.vfr = cell(sas.mon.na,1);
     for i_ = 1:sas.mon.na
         % Nyquist frequency
         fr_max      = 1/2/sas.mon.dtm(i_);

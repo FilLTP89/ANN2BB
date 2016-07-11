@@ -303,6 +303,12 @@ function [varargout] = fpplot(varargin)
             lst = inp.Results.lst;
             flst = 1;
         end
+        %%
+        % _subplot indexes_
+        try any(validatestring('scl',inp.UsingDefaults));
+        catch
+            scl = inp.Results.scl;
+        end
         
     end
     
@@ -437,7 +443,8 @@ function [varargout] = fpplot(varargin)
     try any(validatestring('leg',inp.UsingDefaults));
     catch
         for m_ = 1:numel(hax)
-            legend(hax(m_),hpl(m_,:),inp.Results.leg{m_});
+            idx = ~strcmpi(inp.Results.leg{m_},'');
+            legend(hax(m_),hpl(m_,idx),inp.Results.leg{m_}(idx));
         end
     end
     %%

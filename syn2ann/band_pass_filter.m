@@ -26,7 +26,7 @@ function [varargout] = band_pass_filter(varargin)
     % _default cutoff frequency (low-pass filter)_
     hfr = 25;
     % _default butterworth order_
-    bfo = 4;
+    bfo = 2;
     % custom corner frequency (high-pass filter)_
     if nargin>=3
         lfr=varargin{3};
@@ -55,7 +55,8 @@ function [varargout] = band_pass_filter(varargin)
         % _base-line correction_
         tha = detrend(tha);
         % _applying cosinus taper_
-        tha = cos_taper(tha);
+%         tha = cos_taper(tha);
+        tha = taper_fun(tha,5,1,1);
         % _padding_
         tha_pad(:) = padarray(tha,npd,'both');
         % _acausal Butterworth filtering_
@@ -119,24 +120,26 @@ function [varargout] = integr_diff_avd(varargin)
         % _base-line correction_
         thd = detrend(thd);
         % _applying cosinus taper_
-        thd = cos_taper(thd);
+%         thd = cos_taper(thd);
+        thd = taper_fun(thd,5,1,1);
         % _acasual filtering_
         thd = filtfilt(bfb,bfa,thd);
+        %% BACK TO ACCELERATION
+        % _time differentiation_
+        thv = [diff(thd)/dtm;0];
+        tha = [diff(thv)/dtm;0];
+        % _time integration_
+        thv = cumtrapz(tha)*dtm;
+        thd = cumtrapz(thv)*dtm;
     else
         %% COMPUTING/PROCESSING VELOCITY
         % _time integration_
         thv = cumtrapz(tha)*dtm;
-        %% COMPUTING/PROCESSING VELOCITY
+        %% COMPUTING/PROCESSING DISPLACEMENT
         % _time integration_
         thd = cumtrapz(thv)*dtm;
     end
-    %% BACK TO ACCELERATION
-    % _time differentiation_
-    thv = [0;diff(thd)/dtm];
-    tha = [0;diff(thv)/dtm];
-    % _time integration_
-    thv = cumtrapz(tha)*dtm;
-    thd = cumtrapz(thv)*dtm;
+    
     %% OUTPUT
     varargout{1} = tha(:);
     varargout{2} = thv(:);
