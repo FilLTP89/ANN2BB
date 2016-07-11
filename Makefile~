@@ -12,6 +12,8 @@ FC_PC=gfortran
 LD_PC_FLAGS=-O3 -fopenmp -lgomp
 FC_PC_FLAGS=-O3 -g -c  -ffree-form -ffree-line-length-none -fopenmp -fbounds-check -J build 
 
+#Depenencies
+
 # Make all instructions
 .PHONY: all
 all: dir $(BUILDDIR)/$(EXEC) 
@@ -27,9 +29,6 @@ $(OBJS):$(BUILDDIR)/%.o: $(SRCDIR)/%.f90 $(BUILDDIR)/MODULES.o
 	$(FC_PC) $(FC_PC_FLAGS) $< -o $@
 
 $(OBJS):$(BUILDDIR)/%.o: $(SRCDIR)/%.f90 $(BUILDDIR)/SPEED_FIELDS.o
-	$(FC_PC) $(FC_PC_FLAGS) $< -o $@
-
-$(OBJS):$(BUILDDIR)/%.o: $(SRCDIR)/%.f90 $(BUILDDIR)/SEISMIC_FORCES.o
 	$(FC_PC) $(FC_PC_FLAGS) $< -o $@
 
 $(OBJS) : $(BUILDDIR)/%.o : $(SRCDIR)/%.f90 $(BUILDDIR)/NONLINEAR.o

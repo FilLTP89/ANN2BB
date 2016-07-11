@@ -68,7 +68,7 @@ module nonlinear2d
             integer*4                                   :: ie,ip,iq,il,im,nn,is,in
             logical                                     :: st_epl
             !
-            integer*4                                   :: nnn,number_of_threads
+            integer*4                                   :: number_of_threads
             real*8:: stat
             !
 !            number_of_threads =1;
@@ -96,19 +96,19 @@ module nonlinear2d
                     fx,fy,displ,alfa1(ie),alfa2(ie),beta1(ie),beta2(ie),gamma1(ie),gamma2(ie),&
                     snl(ie)%lambda,snl(ie)%mu)
                 ! VELOCITY FORMULATION
-!                dstrain = dstrain*dt
-!                dstrial = dstrial*dt
-!                snl(ie)%strain(:,:,:) = snl(ie)%strain(:,:,:)+dstrain(:,:,:)
-!                snl(ie)%stress(:,:,:) = snl(ie)%stress(:,:,:)+dstrial(:,:,:) 
+                dstrain = dstrain*dt
+                dstrial = dstrial*dt
+                snl(ie)%strain(:,:,:) = snl(ie)%strain(:,:,:)+dstrain(:,:,:)
+                !snl(ie)%stress(:,:,:) = snl(ie)%stress(:,:,:)+dstrial(:,:,:) 
                 
 !                ! DISPLACEMENT FORMULATION (ELASTIC)
 !                snl(ie)%strain(:,:,:) = dstrain
 !                snl(ie)%stress(:,:,:) = dstrial
 
                 ! DISPLACEMENT FORMULATION (PLASTIC)
-                dstrain(:,:,:) = dstrain(:,:,:) - snl(ie)%strain(:,:,:)
-                dstrial(:,:,:) = dstrial(:,:,:) - snl(ie)%stress(:,:,:)!
-                snl(ie)%strain(:,:,:) = snl(ie)%strain(:,:,:)+dstrain(:,:,:)
+!                dstrain(:,:,:) = dstrain(:,:,:) - snl(ie)%strain(:,:,:)
+!                dstrial(:,:,:) = dstrial(:,:,:) - snl(ie)%stress(:,:,:)!
+!                snl(ie)%strain(:,:,:) = snl(ie)%strain(:,:,:)+dstrain(:,:,:)
 !                snl(ie)%stress(:,:,:) = snl(ie)%stress(:,:,:)+dstrial(:,:,:) 
                 
                 !*********************************************************************************
@@ -118,7 +118,6 @@ module nonlinear2d
                 do iq = 1,nn
                     do ip = 1,nn
                         is = nn*(iq -1) + ip
-                        nnn = cs(cs(ie -1) + is)
                         ! STARTING POINT
                         stress_  = snl(ie)%stress(:,ip,iq)
                         center_  = snl(ie)%center(:,ip,iq)
@@ -142,7 +141,7 @@ module nonlinear2d
                         
                         ! CHECK PLASTICITY
                         call check_plasticity(dstrial_,stress_,center_,radius_,&
-                            syld_,st_epl,alpha_epl,dt,nnn)
+                            syld_,st_epl,alpha_epl)
                         ! PLASTIC CORRECTION
                         if (st_epl) then
                             dstrain_(:) = (one-alpha_epl)*dstrain_(:)
@@ -341,12 +340,12 @@ module nonlinear2d
         !****************************************************************************
         
         subroutine check_plasticity(dtrial, stress0, center, radius, syld, &
-            st_epl, alpha_epl,tt1,nnn) 
+            st_epl, alpha_epl) 
             ! ***** CRITICAL STATE EXTENSION *****
             ! st_epl,alpha_epl,dstrain,lambda,mu)    
             implicit none
             ! intent IN
-            real*8,                 intent(in)      :: radius,syld,tt1
+            real*8,                 intent(in)      :: radius,syld
             real*8, dimension(4),   intent(in)      :: center,stress0
             ! intent INOUT
             real*8, dimension(4),   intent(inout)   :: dtrial
@@ -357,7 +356,6 @@ module nonlinear2d
             logical                                 :: flagxit
             real*8                                  :: FS,FT,checkload
             real*8, dimension(4)                    :: gradFS, gradFT, stress1
-            integer*4, intent(in) :: nnn
             ! ***** CRITICAL STATE EXTENSION *****
             ! real*8, dimension(4), intent(in) :: dstrain
             ! real*8,               intent(in) :: lambda,mu
