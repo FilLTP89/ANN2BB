@@ -7,7 +7,7 @@ module nonlinear2d
     real*8, parameter                   :: zero=0.d0,one=1.0d0
     real*8, parameter                   :: half=0.5d0,two=2.0d0,three=3.0d0
     !
-    real*8, parameter :: FTOL = 0.010D0
+    real*8, parameter :: FTOL = 0.00010D0
     real*8, parameter :: LTOL = 0.0000001D0
     real*8, parameter :: STOL = 1.0D0
     real*8, parameter :: PSI  = one!5.0d0!one
@@ -96,9 +96,9 @@ module nonlinear2d
                     fx,fy,displ,alfa1(ie),alfa2(ie),beta1(ie),beta2(ie),gamma1(ie),gamma2(ie),&
                     snl(ie)%lambda,snl(ie)%mu)
                 ! VELOCITY FORMULATION
-                dstrain = dstrain*dt
-                dstrial = dstrial*dt
-                snl(ie)%strain(:,:,:) = snl(ie)%strain(:,:,:)+dstrain(:,:,:)
+!                dstrain = dstrain*dt
+!                dstrial = dstrial*dt
+                !snl(ie)%strain(:,:,:) = snl(ie)%strain(:,:,:)+dstrain(:,:,:)
                 !snl(ie)%stress(:,:,:) = snl(ie)%stress(:,:,:)+dstrial(:,:,:) 
                 
 !                ! DISPLACEMENT FORMULATION (ELASTIC)
@@ -106,9 +106,9 @@ module nonlinear2d
 !                snl(ie)%stress(:,:,:) = dstrial
 
                 ! DISPLACEMENT FORMULATION (PLASTIC)
-!                dstrain(:,:,:) = dstrain(:,:,:) - snl(ie)%strain(:,:,:)
-!                dstrial(:,:,:) = dstrial(:,:,:) - snl(ie)%stress(:,:,:)!
-!                snl(ie)%strain(:,:,:) = snl(ie)%strain(:,:,:)+dstrain(:,:,:)
+                dstrain(:,:,:) = dstrain(:,:,:) - snl(ie)%strain(:,:,:)
+                dstrial(:,:,:) = dstrial(:,:,:) - snl(ie)%stress(:,:,:)!
+                snl(ie)%strain(:,:,:) = snl(ie)%strain(:,:,:)+dstrain(:,:,:)
 !                snl(ie)%stress(:,:,:) = snl(ie)%stress(:,:,:)+dstrial(:,:,:) 
                 
                 !*********************************************************************************
