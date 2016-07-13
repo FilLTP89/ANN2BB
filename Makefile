@@ -20,7 +20,7 @@ FC_PC_FLAGS = -O3 -g -c -ffree-form -ffree-line-length-none -fopenmp -fbounds-ch
 # Dependencies
 $(EOBJS) : $(COBJS)
 
-$(OBJS) : $(BUILDDIR)/%.o: $(SRCDIR)/%.f90 $(EOBJS) $(COBJS)
+$(OBJS) : $(BUILDDIR)/%.o: $(SRCDIR)/%.f90
 	$(FC_PC) -o $@ $(FC_PC_FLAGS) $^
 	@echo 'OBJECT' 
 	@echo '$@' 
