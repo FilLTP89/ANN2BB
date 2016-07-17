@@ -90,24 +90,24 @@ for i_ = 1:numel(nm)
         fullfile(sp,'lfhf_filter'));
     fprintf('%s\n',bhr.nm{nm(i_)});
     for j_ = 1:numel(cpp)
-%         %% *POST-PROCESS - ORIGINAL VS FILTERED RECORDS*
-%         fn = fullfile(sp,sprintf('%s_rec_org_flt',st));
-%         syn2ann_plot_compare(ones(5,1),{rec.org},nm(i_),{'ORIGINAL'},(cpp{j_}),fn,0);
-%         
-%         %% *POST-PROCESS - NUMERICAL SIMULATIONS VS RECORDS*
-%         fn = fullfile(sp,sprintf('%s_sim_rec_org',st));
-%         syn2ann_plot_compare(ones(5,1),{rec.org,nss.org},nm(i_),...
-%             {'RECORDED';'SIMULATED'},(cpp{j_}),fn,[0,1]);
+        %% *POST-PROCESS - ORIGINAL VS FILTERED RECORDS*
+        fn = fullfile(sp,sprintf('%s_rec_org_flt',st));
+        syn2ann_plot_compare(ones(5,1),{rec.org},nm(i_),{'ORIGINAL'},(cpp{j_}),fn,0);
         
-%         %% *POST-PROCESS - BB HYBRIDIZATION*
-%         fn = fullfile(sp,sprintf('%s_sim_sp96_hyb',st));
-%         syn2ann_plot_compare([0 0 1 1 1],{nss.hyb;sps.hyb;hbs},nm(i_),...
-%             {'SIMULATED';'SP96';'HYBRID'},(cpp{j_}),fn,ones(3,1));
-%         syn2ann_plot_compare([1 0 0 0 0],{nss.hyb;sps.hyb;hbs},nm(i_),...
-%             {'SIMULATED';'SP96';'HYBRID'},(cpp{j_}),fn,ones(3,1));
-%         syn2ann_plot_compare([0 1 0 0 0],{nss.org;sps.org;nss.hyb;sps.hyb;hbs},nm(i_),...
-%             {'';'';'SIMULATED';'SP96';'HYBRID'},(cpp{j_}),fn,ones(3,1),...
-%             {'none','none','none','none','none'},{'--','--','-','-','-'});
+        %% *POST-PROCESS - NUMERICAL SIMULATIONS VS RECORDS*
+        fn = fullfile(sp,sprintf('%s_sim_rec_org',st));
+        syn2ann_plot_compare(ones(5,1),{rec.org,nss.org},nm(i_),...
+            {'RECORDED';'SIMULATED'},(cpp{j_}),fn,[0,1]);
+        
+        %% *POST-PROCESS - BB HYBRIDIZATION*
+        fn = fullfile(sp,sprintf('%s_sim_sp96_hyb',st));
+        syn2ann_plot_compare([0 0 1 1 1],{nss.hyb;sps.hyb;hbs},nm(i_),...
+            {'SIMULATED';'SP96';'HYBRID'},(cpp{j_}),fn,ones(3,1));
+        syn2ann_plot_compare([1 0 0 0 0],{nss.hyb;sps.hyb;hbs},nm(i_),...
+            {'SIMULATED';'SP96';'HYBRID'},(cpp{j_}),fn,ones(3,1));
+        syn2ann_plot_compare([0 1 0 0 0],{nss.org;sps.org;nss.hyb;sps.hyb;hbs},nm(i_),...
+            {'';'';'SIMULATED';'SP96';'HYBRID'},(cpp{j_}),fn,ones(3,1),...
+            {'none','none','none','none','none'},{'--','--','-','-','-'});
         %% *POST-PROCESS - HYBRIDS vs ANN*
         fn = fullfile(sp,sprintf('%s_hyb_ann',st));
         syn2ann_plot_compare([1 0 0 0 0],{hbs;trs.(cpp{j_})},nm(i_),...
@@ -118,10 +118,10 @@ for i_ = 1:numel(nm)
         syn2ann_plot_compare([1 0 0 0 0],{spm.(cpp{j_}),trs.(cpp{j_})},nm(i_),...
             {'MATCHED';'SIMULATED ANN'},(cpp{j_}),fn,[0,0],{'none';'o'},{'-','none'});
         
-%         %% *POST-PROCESS - SPECTRAL MATCHING vs RECORDS*
-%         fn = fullfile(sp,sprintf('%s_spm_rec',st));
-%         syn2ann_plot_compare([1 1 1 1 1],{rec.org,spm.(cpp{j_})},nm(i_),...
-%             {'RECORDED';'MATCHED'},(cpp{j_}),fn,[0,1]);
+        %% *POST-PROCESS - SPECTRAL MATCHING vs RECORDS*
+        fn = fullfile(sp,sprintf('%s_spm_rec',st));
+        syn2ann_plot_compare([1 1 1 1 1],{rec.org,spm.(cpp{j_})},nm(i_),...
+            {'RECORDED';'MATCHED'},(cpp{j_}),fn,[0,1]);
         
         %         %% *POST-PROCESS - HYBRIDS VS RECORDS*
         %         fn = fullfile(sp,sprintf('%s_hyb_rec',st));

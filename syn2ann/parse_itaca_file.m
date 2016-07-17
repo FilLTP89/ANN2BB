@@ -8,21 +8,23 @@
 %% INPUT:
 % * fn (file name)
 %% OUTPUT:
+% * dtm (time-step)
+% * ntm (number of time-steps)
+% * vtm (time-vector)
 % * th (structure of parsed th)
 
 function [varargout] = parse_itaca_file(varargin)
-    
-    %% SET-UP
+    %% *SET-UP*
     fn = varargin{1};
     nlin = 56;
-    scale = 1/100; % cm/s
+    scale = 1/100; % cm/s2
     
     fid = fopen(fn);
     if fid==-1
+        keyboard
         error('file does not exist');
     end
-    
-    %% READ HEADER
+    %% *READ HEADER*
     for j=1:4
         tline = fgetl(fid);
     end
@@ -50,20 +52,19 @@ function [varargout] = parse_itaca_file(varargin)
     if isempty(time_shift) == 1
         time_shift = 0;
     end
-    nsample_shift = round(time_shift/dtm);
     
-    %% READ DATA
+    nsample_shift = round(time_shift/dtm);
+    %% *READ DATA*
     frewind(fid);
     th = textscan(fid,'','HeaderLines',nlin); fclose(fid);
     th = cell2mat(th).*scale;
     th = th(nsample_shift+1:end);
     ntm = numel(th);
     vtm = dtm*(0:ntm-1)';
-    
+    %% *OUTPUT*
     varargout{1} = dtm;
     varargout{2} = ntm;
     varargout{3} = vtm;
     varargout{4} = th;
-    
     return
 end

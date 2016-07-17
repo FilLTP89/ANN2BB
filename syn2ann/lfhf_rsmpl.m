@@ -29,22 +29,22 @@ function [varargout] = lfhf_rsmpl(varargin)
                 [new_dtm,sps.syn{j_}.tha,new_ntm,new_vtm] = ...
                     structfun(@(v) seismo_rsmpl(sps.mon.dtm(j_),v,...
                     fac),sps.syn{j_}.tha,'UniformOutput',0);
-                
-                sps.mon.ntm(j_) = new_ntm;
-                sps.mon.dtm(j_) = new_dtm;
-                sps.mon.vtm{j_} = new_vtm;
+                sps.mon.ntm(j_) = new_ntm.(sps.mon.cp{1});
+                sps.mon.dtm(j_) = new_dtm.(sps.mon.cp{1});
+                sps.mon.vtm{j_} = new_vtm.(sps.mon.cp{1});
             else
                 fac = nss.mon.dtm(j_)/dtm(j_);
                 [new_dtm,nss.syn{j_}.tha,new_ntm,new_vtm] = ...
                     structfun(@(v) seismo_rsmpl(nss.mon.dtm(j_),v,...
                     fac),nss.syn{j_}.tha,'UniformOutput',0);
                 
-                nss.mon.dtm(j_) = new_dtm;
-                nss.mon.ntm(j_) = new_ntm;
-                nss.mon.vtm{j_} = new_vtm;
+                nss.mon.dtm(j_) = new_dtm.(sps.mon.cp{1});
+                nss.mon.ntm(j_) = new_ntm.(sps.mon.cp{1});
+                nss.mon.vtm{j_} = new_vtm.(sps.mon.cp{1});
             end
         end
     end
+    
     varargout{1} = nss;
     varargout{2} = sps;
     return

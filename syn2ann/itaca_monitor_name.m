@@ -11,13 +11,11 @@
 % * dv (borehole device)
 % * cp (motion direction)
 % * rc (motion component)
-
+% * ni (network)
 %% OUTPUT: 
 % * str(monitor file name)
-
 function [varargout] = itaca_monitor_name(varargin)
-    
-    %% SET-UP
+    %% *SET-UP*
     st = varargin{1};
     ev = varargin{2};
     dv = varargin{3};
@@ -33,9 +31,8 @@ function [varargout] = itaca_monitor_name(varargin)
         case 'D'
             rc = 'DIS';
     end
-    
-    %% FILE NAME
-    str = strcat(upper(ni),'.',upper(st),upper(dv),'..HN',upper(cp),'.D.',...
+    %% *FILE NAME*
+    str = strcat(upper(ni{1}),'.',upper(st),upper(dv),'..',upper(ni{2}),upper(cp),'.D.',...
         upper(ev),'.C.',upper(rc),'.ASC');
    
     if nargin>6

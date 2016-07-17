@@ -3,7 +3,11 @@ function ismat=ismatfile(str)
     try
         ismat=~isempty(whos('-file',str));
     catch
-        ismat=false;
+        try 
+            ismat=~isempty(whos('-file',str(1:end-4)));
+        catch
+            ismat=false;
+        end
     end
     
     return

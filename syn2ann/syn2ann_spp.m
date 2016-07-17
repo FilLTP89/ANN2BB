@@ -16,48 +16,53 @@ function [varargout] = syn2ann_spp(varargin)
     %% *SET-UP*
     % _numerical simulations structure_
     sas = varargin{1};
-    % _response spectra parameters_
-    % minimum natural period
-    Tn_min   = 0;
-    % maximum natural period
-    Tn_max   = 5;
-    % natural period step
-    dTn      = 0.05;
-    sas.mon.vTn  = (Tn_min:dTn:Tn_max)';
-    sas.mon.nT   = numel(sas.mon.vTn);
-    sas.mon.zeta = 0.05;
-    % _fourier spectra parameters_
-    sas.mon.vfr = cell(sas.mon.na,1);
-    for i_ = 1:sas.mon.na
-        % Nyquist frequency
-        fr_max      = 1/2/sas.mon.dtm(i_);
-        % fft points
-        sas.mon.nfr(i_) = 2^nextpow2(sas.mon.ntm(i_));
-        % frequency period step
-        sas.mon.dfr(i_) = 1/sas.mon.dtm(i_)/(sas.mon.nfr(i_)-1);
-        % Nyquist frequency index
-        sas.mon.nNy(i_) = floor(fr_max/sas.mon.dfr(i_))+1;
-        % frequency vector
-        sas.mon.vfr{i_} = sas.mon.dfr(i_)*(0:sas.mon.nfr(i_)-1)';
+    out_sel=1:2;
+    if nargin>1
+        out_sel=varargin{2};
     end
     %% *SD and PSA SPECTRA*
-    for i_ = 1:sas.mon.na
-        for j_ = 1:sas.mon.nc
-            [sas.syn{i_}.rsd.(sas.mon.cp{j_}),...
-                ~,~,sas.syn{i_}.psa.(sas.mon.cp{j_}),~] = ...
-                newmark_sd(sas.syn{i_}.tha.(sas.mon.cp{j_}),...
-                sas.mon.dtm(i_),sas.mon.vTn,...
-                sas.mon.zeta);
+    if any(out_sel==1)
+        % minimum natural period
+        Tn_min   = 0;
+        % maximum natural period
+        Tn_max   = 5;
+        % natural period step
+        dTn      = 0.005;
+        sas.mon.vTn  = (Tn_min:dTn:Tn_max)';
+        sas.mon.nT   = numel(sas.mon.vTn);
+        sas.mon.zeta = 0.05;
+        for i_ = 1:sas.mon.na
+            for j_ = 1:sas.mon.nc
+                [sas.syn{i_}.rsd.(sas.mon.cp{j_}),...
+                    ~,~,sas.syn{i_}.psa.(sas.mon.cp{j_}),~] = ...
+                    newmark_sd(sas.syn{i_}.tha.(sas.mon.cp{j_}),...
+                    sas.mon.dtm(i_),sas.mon.vTn,...
+                    sas.mon.zeta);
+            end
         end
     end
     %% *FOURIER SPECTRUM*
-    for i_ = 1:sas.mon.na
-        for j_ = 1:sas.mon.nc
-            sas.syn{i_}.fsa.(sas.mon.cp{j_}) = ...
-                sas.mon.dtm(i_)*fft(sas.syn{i_}.tha.(sas.mon.cp{j_}),...
-                sas.mon.nfr(i_));
+    if any(out_sel==2)
+        
+        sas.mon.vfr = cell(sas.mon.na,1);
+ 
+        for i_ = 1:sas.mon.na
+            % frequency vector
+            sas.mon.vfr{i_} = super_fft(sas.mon.dtm(i_),...
+                sas.syn{i_}.tha.(sas.mon.cp{1}),0,1);
+            % number of frequency-points
+            sas.mon.nfr(i_) = numel(sas.mon.vfr{i_});
+            % frequency step
+            sas.mon.dfr(i_) = mean(diff(sas.mon.vfr{i_}));
+            % Nyquist frequency index
+            sas.mon.nNy(i_) = floor(0.5/sas.mon.dtm(i_)/sas.mon.dfr(i_)+0.5);
+            for j_ = 1:sas.mon.nc
+                sas.syn{i_}.fsa.(sas.mon.cp{j_}) = super_fft(sas.mon.dtm(i_),...
+                    sas.syn{i_}.tha.(sas.mon.cp{j_}),0,4);
+            end
         end
     end
+    
     %% OUTPUT
     varargout{1} = sas;
     return

@@ -22,12 +22,14 @@ syn2ann_records;
 %% *NUMERICAL SIMULATIONS*
 syn2ann_numerical;
 
-%% *SABETTA & PUGLIESE SYNTHETICS*
-syn2ann_sp96;
-
-%% *LF-HF HYBRIDIZATION*
-syn2ann_hybrid;
-
+if hybrid_flag
+    %% *SABETTA & PUGLIESE SYNTHETICS*
+    syn2ann_sp96;
+    %% *LF-HF HYBRIDIZATION*
+    syn2ann_hybrid;
+else
+    syn2ann_justnum;
+end
 %% *ANN - DATABASE*
 syn2ann_ann;
 
@@ -37,6 +39,10 @@ syn2ann_scaling;
 %% PLOT RESULTS
 cd(wd);
 syn2ann_plot_res_MRN;
-% syn2ann_plot_res_MIR08;
-% syn2ann_plot_res_AQK;
-% syn2ann_plot_res_AQU;
+syn2ann_plot_res_MIR08;
+syn2ann_plot_res_AQK;
+syn2ann_plot_res_AQU;
+
+%% *SET-UP*
+hybrid_flag=false;
+syn2ann_drive_num;

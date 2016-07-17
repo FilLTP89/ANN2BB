@@ -6,6 +6,7 @@ function  [varargout] = spectral_scaling_corr(varargin)
     dt  = varargin{1};
     tha = varargin{2};
     tar_psa = varargin{3};
+    Tc = varargin{4};
     tol_upp=0.3;
     tol_low=0.1;
     
@@ -60,7 +61,7 @@ function  [varargout] = spectral_scaling_corr(varargin)
     ltg_pad=2000;
     %
     T_corr_ini=0.01;
-    T_corr_fin=0.8;
+    T_corr_fin=Tc;
     %
     target=tar_psa;
     pga_target = tar_psa(1,2); %g
@@ -246,6 +247,7 @@ function  [varargout] = spectral_scaling_corr(varargin)
     vel_pro(length(t))=0;
     acc_pro=diff(vel_pro)/dt;
     acc_pro(length(t))=0;
+    save('cor.mat');
     %% OUTPUT
     varargout{1}=dt;
     varargout{2}=acc_pro;

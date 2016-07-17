@@ -126,8 +126,8 @@ function [varargout] = integr_diff_avd(varargin)
         thd = filtfilt(bfb,bfa,thd);
         %% BACK TO ACCELERATION
         % _time differentiation_
-        thv = [diff(thd)/dtm;0];
-        tha = [diff(thv)/dtm;0];
+        thv = [0;diff(thd)/dtm];
+        tha = [0;diff(thv)/dtm];
         % _time integration_
         thv = cumtrapz(tha)*dtm;
         thd = cumtrapz(thv)*dtm;

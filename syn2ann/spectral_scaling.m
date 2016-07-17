@@ -28,23 +28,24 @@ function [varargout] = spectral_scaling(varargin)
     tar_psa = varargin{3};      % target psa
     tar_vTn = varargin{4};      % target natural periods
     tar_nT = numel(tar_vTn);   % number of target natural periods
-    pga_target=tar_psa(1);
     % _selected period_
-    vTn_corner = varargin{5};
+    tar_vTn_idx = varargin{5};
     %
     % _spectral matching set up_
     %
     fac = 1;                    % resampling factor
     scl = 1;                    % scaling factor
-    lfr = 0.1;                   % corner frequency
-    hfr = [];                   % cutoff frequency
-    nit = 10;                    % number of iterations
-    tol_upp=0.3; % (1+tol_upp) is the upper spec. tol.
-    tol_low=0.1; % (1-tol_low) is the lower spec. tol.
+    lfr = 0.05;                  % corner frequency
+    hfr = 40;                   % cutoff frequency
+    nit = 10;                   % number of iterations
+    pga_target = tar_psa(1);
+    %     tol_upp = 0.3; % (1+tol_upp) is the upper spec. tol.
+    %     tol_low = 0.1; % (1-tol_low) is the lower spec. tol.
     %
     % _resampling_
     %
     [obj_dtm,obj_tha,obj_ntm,~] = seismo_rsmpl(inp_dtm,inp_tha,fac,scl);
+    obj_tha=detrend(obj_tha, 'linear');
     obj_vtm = obj_dtm*(0:obj_ntm-1);
     inp_nfr = 2^nextpow2(obj_ntm);
     inp_dfr = 1/inp_dtm/(inp_nfr-1);
@@ -69,53 +70,32 @@ function [varargout] = spectral_scaling(varargin)
         tar_vTn_new(1,1)=2*obj_dtm;
         tar_vTn_new = [0;tar_vTn_new];
     end
-    tar_vTn_new = tar_vTn_new(tar_vTn_new<=4);
+    tar_vTn_new = tar_vTn_new(tar_vTn_new<=5);
     idx_min = tar_vTn_new < min(tar_vTn);
     idx_max = tar_vTn_new > max(tar_vTn);
     if ~isempty(idx_min)
         tar_vTn_new(idx_min)=[];
     end
-     if ~isempty(idx_max)
+    if ~isempty(idx_max)
         tar_vTn_new(idx_max)=[];
     end
     tar_psa_new = interp1(tar_vTn,tar_psa,tar_vTn_new,'linear');
-
     
-    if nargin>5
-        sp = varargin{6};
-        col = jet(nit+1);
-        xpl = cell(nit+1,1);
-        xpl{nit+1} = tar_vTn;
-        ypl = cell(nit+1,1);
-        ypl{nit+1} = tar_psa./9.81;
-        set(0,'defaultaxescolororder',jet(nit+1));
-        mrk = cell(nit+1,1);
-        lst = cell(nit+1,1);
-        mrk(nit+1) = {'p'};
-        mrk(1:end-1) = {'none'};
-        lst(end) = {'none'};
-        lst(1:end-1) = {'-'};
-        leg = cell(nit+1,1);
-        leg(end) = {'TARGET'};
-    end
-    
-    tar_psa = tar_psa_new;
-    tar_vTn = tar_vTn_new;
+    %     tar_psa = tar_psa_new;
+    %     tar_vTn = tar_vTn_new;
     obj_vfr = [0;flip(1./tar_vTn(2:end));0.5/obj_dtm];
     obj_vTn = tar_vTn(:);
-    vfr_cor = [1/vTn_corner,min(1/tar_vTn(2),0.5/obj_dtm)];
+    vfr_cor = [1/tar_vTn(tar_vTn_idx(end));0.5/obj_dtm];
+    vfr_cor = (inp_vfr>=vfr_cor(1) & inp_vfr<=vfr_cor(end));
+    vfr_hfc = inp_vfr>=40;
     %% *SPECTRAL MATCHING*
+    obj_psa = tar_psa;
     for i_ = 1:nit % spectral matching iterations
         %
         % _psa response spectra at target periods_
         %
-        [obj_psd,~,~,obj_psa,~] = ...
-            newmark_sd(obj_tha(:,1),obj_dtm,tar_vTn,0.05);
-        if nargin>5
-            xpl{i_} = tar_vTn;
-            ypl{i_} = obj_psa./9.81;
-            leg(i_) = {sprintf('it-%u',i_)};
-        end
+        [obj_psd(tar_vTn_idx),~,~,obj_psa(tar_vTn_idx),~] = ...
+            newmark_sd(obj_tha(:,1),obj_dtm,tar_vTn(tar_vTn_idx),0.05);
         %
         % _psa response spectral ratio at target periods_
         %
@@ -129,71 +109,56 @@ function [varargout] = spectral_scaling(varargin)
         %
         obj_rra = interp1(obj_vfr(:,1),obj_rra(:,1),inp_vfr(:,1),'linear');
         %
+        % _constrain high frequencies_
+        %
+        obj_rra(vfr_hfc) = obj_psa(1,1)./tar_psa(1,1);
+        %
         % _fourier spectra_
         %
-        [~,~,~,obj_fsa,~,~] = super_fft(obj_dtm,obj_tha(:),0);
-        obj_fsa=obj_fsa(1:obj_nfs)./obj_dtm;
-        for j_ = 1:obj_nfs
-            if inp_vfr(j_)>=vfr_cor(1)&&inp_vfr(j_)<=vfr_cor(2)
-                obj_fsa(j_)=obj_fsa(j_)./obj_rra(j_);
-            end
-        end
-        obj_fsa(obj_nfs+1,1)  = 0.;
-        obj_fsa(obj_nfs+2:2*obj_nfs,1) = flip(conj(obj_fsa(2:obj_nfs,1)));
+        obj_fsa = super_fft(obj_dtm,obj_tha(:),0,4);
+        obj_fsa(vfr_cor) = obj_fsa(vfr_cor)./obj_rra(vfr_cor);
         %
         % _new accelerogram_
         %
-        obj_tha = (real(ifft(obj_fsa(:))));
-        obj_tha = obj_tha(~isnan(obj_tha(1:obj_ntm)));
-    end
-    if nargin>5
-        fpplot('xpl',xpl,'ypl',ypl,'xlb',{'T [s]'},'ylb',{'PSA [g]'},...
-            'tit',{'PSEUDO-ACCELERATION SPECTRUM (5%)'},...
-            'mrk',mrk,'lst',lst,'xlm',{[0,1]},...
-            'xtk',{0:.25:5},'ytk',{0:.25:2},'leg',{leg});
-        saveas(gcf,sp,'epsc');
+        obj_tha = detrend(super_ifft(obj_dtm,obj_ntm,obj_fsa));
     end
     %
     % _correct PGA on time history_
-    % CS 03.05.2016 + 23.06.2016
-    [pga,ipga] = max(abs(obj_tha));
-    dt_cor = 0.05;
-    npun_cor = round(dt_cor./(obj_vtm(2)-obj_vtm(1)));
-    if mod(npun_cor,2)==0
-        npun_cor = npun_cor+1;
-    end
-    x = [ obj_vtm(ipga-(npun_cor-1)/2),obj_vtm(ipga),obj_vtm(ipga+(npun_cor-1)/2)];
-    y = [obj_tha(ipga-(npun_cor-1)/2),pga_target.*sign(obj_tha(ipga)),...
-        obj_tha(ipga+(npun_cor-1)/2)];
-    xi = obj_vtm(ipga-npun_cor/2:ipga+npun_cor/2-1);
-    yi_c = interp1(x,y,xi,'cubic');
-    obj_tha(ipga-(npun_cor-1)/2:ipga+(npun_cor-1)/2) = ...
-        yi_c;
-    if (max(abs(obj_tha))-pga_target)>1e-3
-        % repeat the same operation as before
+    %
+    try
         [pga,ipga] = max(abs(obj_tha));
+        dt_cor = 0.05;
+        npun_cor = round(dt_cor./(obj_vtm(2)-obj_vtm(1)));
+        if mod(npun_cor,2)==0
+            npun_cor = npun_cor+1;
+        end
         x = [ obj_vtm(ipga-(npun_cor-1)/2),obj_vtm(ipga),obj_vtm(ipga+(npun_cor-1)/2)];
         y = [obj_tha(ipga-(npun_cor-1)/2),pga_target.*sign(obj_tha(ipga)),...
             obj_tha(ipga+(npun_cor-1)/2)];
         xi = obj_vtm(ipga-npun_cor/2:ipga+npun_cor/2-1);
-        yi_c = interp1(x,y,xi,'cubic');
-        %      yi_p = interp1(x,y,xi,'pchip');
-        %      yi_l = interp1(x,y,xi,'linear');
-        
+        yi_c = interp1(x,y,xi,'pchip');
         obj_tha(ipga-(npun_cor-1)/2:ipga+(npun_cor-1)/2) = ...
             yi_c;
+        if (max(abs(obj_tha))-pga_target)>1e-3
+            % repeat the same operation as before
+            [pga,ipga] = max(abs(obj_tha));
+            x = [ obj_vtm(ipga-(npun_cor-1)/2),obj_vtm(ipga),obj_vtm(ipga+(npun_cor-1)/2)];
+            y = [obj_tha(ipga-(npun_cor-1)/2),pga_target.*sign(obj_tha(ipga)),...
+                obj_tha(ipga+(npun_cor-1)/2)];
+            xi = obj_vtm(ipga-npun_cor/2:ipga+npun_cor/2-1);
+            yi_c = interp1(x,y,xi,'pchip');
+            
+            obj_tha(ipga-(npun_cor-1)/2:ipga+(npun_cor-1)/2) = ...
+                yi_c;
+        end
+        
+        % check final PGA
+        if abs((max(abs(obj_tha))-pga_target)/(pga_target))>5e-2
+            disp('Check PGA adjustment!');
+        end
+    catch
     end
-    
-    % CS 23.06.2016
-    % check final PGA
-    if abs((max(abs(obj_tha))-pga_target)/(pga_target))>5e-2
-        disp('Check PGA adjustment!');
-    end
-    % _filtering
-    %
     [obj_tha,obj_thv,obj_thd] = band_pass_filter(obj_dtm,obj_tha,lfr,hfr);
-    obj_vfr = obj_vfr(2:end,1);
-    
     %% OUTPUT
     varargout{1} = obj_dtm;
     varargout{2} = obj_tha;

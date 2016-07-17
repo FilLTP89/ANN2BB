@@ -54,7 +54,7 @@ function [varargout] = vel2acc(varargin)
         ntm_pad = ntm + 2*npd;
         thv_pad = zeros(ntm_pad,1);
         % _padding_
-        thv_pad(:) = padarray(thv,npd,'both');
+        thv_pad(:) = padarray(thv,[npd,1],'both');
         % _base-line correction_
         thv_pad = detrend(thv_pad);
         % _acasual filtering_
@@ -68,13 +68,13 @@ function [varargout] = vel2acc(varargin)
         thd_pad = cos_taper(thd_pad);
         % _acasual filtering_
         thd = filtfilt(bfb,bfa,thd_pad);
+        thv = [0;diff(thd)/dtm];
     else
         % _time integration_
         thd = cumtrapz(thv)*dtm;
     end
     %% BACK TO ACCELERATION
     % _time differentiation_
-    thv = [0;diff(thd)/dtm];
     tha = [0;diff(thv)/dtm];
     % _time integration_
     thv = cumtrapz(tha)*dtm;
