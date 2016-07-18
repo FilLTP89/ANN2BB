@@ -23,8 +23,14 @@ syn2ann_records;
 syn2ann_numerical;
 
 if hybrid_flag
-    %% *SABETTA & PUGLIESE SYNTHETICS*
-    syn2ann_sp96;
+    switch lower(hybrid_type)
+        case 'sp96'
+            %% *SABETTA & PUGLIESE SYNTHETICS*
+            syn2ann_sp96;
+        case 'exsim'
+            %% *SABETTA & PUGLIESE SYNTHETICS*
+            syn2ann_exsim;
+    end
     %% *LF-HF HYBRIDIZATION*
     syn2ann_hybrid;
 else
