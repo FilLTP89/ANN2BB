@@ -12,7 +12,7 @@
 % * _dt (sampling time step)_
 % * _thr (input signal)_
 % * _K0_smooth (flag for Konno-Ohmachi smoothing (K0_smooth=1) or not (K0_smooth=0))_
-% * _nfr (number of points for FFT computation (optional))_
+% * _out_sel (flags to select outputs)_
 %% OUTPUT:
 % * _vfr (frequency column vector)_
 % * _amp (FS amplitude column vector)_

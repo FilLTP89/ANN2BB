@@ -6,7 +6,8 @@
 %% NOTES
 % _PGAVD_eval_: function to evaluate peak ground
 % acceleration/velocity/displacement and time steps
-%% INPUT:  dtm (sampling time step)
+%% INPUT:  
+% * _dtm (sampling time step)_
 % * _tha (input acceleration)_
 % * _thv (input velocity)_
 % * _thd (input displacement)_

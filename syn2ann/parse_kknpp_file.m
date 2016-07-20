@@ -17,6 +17,7 @@ function [varargout] = parse_kknpp_file(varargin)
     %% *SET-UP*
     fn = varargin{1};
     cp = varargin{2};
+    
     if ~ismatfile(fn)
         keyboard
         error('file extension not-valid');
@@ -24,9 +25,15 @@ function [varargout] = parse_kknpp_file(varargin)
     scale = 1; % m/s2
     %% *READ DATA*
     data = load(fn);
+    
     dtm = data.f^-1;
     for i_ = 1:numel(cp)
-       th.(cp{i_}) = data.(upper(cp{i_}))*scale;
+        if any(strcmpi(fieldnames(data),'Z'))
+            if strcmpi(cp{i_}(1),'U')
+                data.U=data.Z;
+            end
+        end
+        th.(cp{i_}) = data.(upper(cp{i_}(1)))*scale;
     end
     ntm = numel(th.(cp{i_}));
     vtm = (0:ntm-1)*dtm;

@@ -27,7 +27,7 @@ function [varargout] = vel2acc(varargin)
     % _default cutoff frequency (low-pass filter)_
     hfr = 25;
     % _default butterworth order_
-    bfo = 4;
+    bfo = 2;
     % custom corner frequency (high-pass filter)_
     if nargin>=3
         lfr=varargin{3};
@@ -54,7 +54,7 @@ function [varargout] = vel2acc(varargin)
         ntm_pad = ntm + 2*npd;
         thv_pad = zeros(ntm_pad,1);
         % _padding_
-        thv_pad(:) = padarray(thv,[npd,1],'both');
+        thv_pad(:) = padarray(thv,npd,'both');
         % _base-line correction_
         thv_pad = detrend(thv_pad);
         % _acasual filtering_

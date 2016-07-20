@@ -28,7 +28,7 @@ function [Lat,Lon]=utm2wgs(xx,yy,utmzone)
 % Source: DMA Technical Manual 8358.2, Fairfax, VA
 
 %% Argument checking
-error(nargchk(3,3,nargin));         % 3 arguments are required
+narginchk(3,3);         % 3 arguments are required
 n1=length(xx);
 n2=length(yy);
 n3=size(utmzone,1);
