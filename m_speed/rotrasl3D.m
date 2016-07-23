@@ -1,5 +1,5 @@
 
-function [i,j] = rotrasl3D_v2(str,dip,L,W)
+function [i,j] = rotrasl3D(str,dip,L,W)
 
 %=================== function rotrasl3D ============================%
 %

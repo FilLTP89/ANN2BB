@@ -1,44 +1,45 @@
+
+% _Editor: Filippo Gatti
+% CentraleSupélec - Laboratoire MSSMat
+% DICA - Politecnico di Milano
+% Copyright 2016_
+% -------------------------------------------------------------------------
+% [x,y,utmzone] = deg2utm(LAT,LON)
+%
+% Description: Function to convert lat/lon vectors into UTM coordinates (WGS84).
+% Some code has been extracted from UTM.m function by Gabriel Ruiz Martinez.
+%
+% Inputs:
+%    LAT: Latitude vector.   Degrees.  +ddd.ddddd  WGS84
+%    LON: Longitude vector.  Degrees.  +ddd.ddddd  WGS84
+%
+% Outputs:
+%    x, y , utmzone.   See example
+%
+% Example 1:
+%    LAT=[40.3154333; 46.283900; 37.577833; 28.645650; 38.855550; 25.061783];
+%    LON=[-3.4857166; 7.8012333; -119.95525; -17.759533; -94.7990166; 121.640266];
+%    [x,y,utmzone] = deg2utm(LAT,LON);
+%    fprintf('%7.0f ',x)
+%       458731  407653  239027  230253  343898  362850
+%    fprintf('%7.0f ',y)
+%      4462881 5126290 4163083 3171843 4302285 2772478
+%    utmzone =
+%       30 T
+%       32 T
+%       11 S
+%       28 R
+%       15 S
+%       51 R
+%
+% Example 2: If you have LAT/LON coordinates in Degrees, Minutes and Seconds
+%    LatDMS=[40 18 55.56; 46 17 2.04];
+%    LonDMS=[-3 29  8.58;  7 48 4.44];
+%    LAT=dms2deg(mat2dms(LatDMS)); %convert into degrees
+%    LON=dms2deg(mat2dms(LonDMS)); %convert into degrees
+%    [x,y,utmzone] = deg2utm(LAT,LON)
+%
 function  [varargout] = deg2utm(varargin)
-    % -------------------------------------------------------------------------
-    % [x,y,utmzone] = deg2utm(LAT,LON)
-    %
-    % Description: Function to convert lat/lon vectors into UTM coordinates (WGS84).
-    % Some code has been extracted from UTM.m function by Gabriel Ruiz Martinez.
-    %
-    % Inputs:
-    %    LAT: Latitude vector.   Degrees.  +ddd.ddddd  WGS84
-    %    LON: Longitude vector.  Degrees.  +ddd.ddddd  WGS84
-    %
-    % Outputs:
-    %    x, y , utmzone.   See example
-    %
-    % Example 1:
-    %    LAT=[40.3154333; 46.283900; 37.577833; 28.645650; 38.855550; 25.061783];
-    %    LON=[-3.4857166; 7.8012333; -119.95525; -17.759533; -94.7990166; 121.640266];
-    %    [x,y,utmzone] = deg2utm(LAT,LON);
-    %    fprintf('%7.0f ',x)
-    %       458731  407653  239027  230253  343898  362850
-    %    fprintf('%7.0f ',y)
-    %      4462881 5126290 4163083 3171843 4302285 2772478
-    %    utmzone =
-    %       30 T
-    %       32 T
-    %       11 S
-    %       28 R
-    %       15 S
-    %       51 R
-    %
-    % Example 2: If you have LAT/LON coordinates in Degrees, Minutes and Seconds
-    %    LatDMS=[40 18 55.56; 46 17 2.04];
-    %    LonDMS=[-3 29  8.58;  7 48 4.44];
-    %    LAT=dms2deg(mat2dms(LatDMS)); %convert into degrees
-    %    LON=dms2deg(mat2dms(LonDMS)); %convert into degrees
-    %    [x,y,utmzone] = deg2utm(LAT,LON)
-    %
-    % Editor: Filippo Gatti
-    % Ecole Centrale Paris - Laboratoire MSSMat
-    % Copyright 2015
-    % ===========
     
     %-------------------------------------------------------------------------
     % Check input arguments
@@ -131,7 +132,7 @@ function  [varargout] = deg2utm(varargin)
             eta=eta+ALPHA(ij)*cos(2*ij*xi1)*sinh(2*ij*eta1);
         end
         Easting=500000+sign(lon*180/pi-Smeridian)*k0*AA*eta;
-        Northing=k0*AA*xi; 
+        Northing=k0*AA*xi;
         if Northing<0
             Northing=1e7*(Northing<0)-Northing;
         end
