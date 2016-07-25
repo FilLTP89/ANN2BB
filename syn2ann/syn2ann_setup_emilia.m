@@ -2,10 +2,10 @@
 ccc;
 fprintf('---------------------\n0. SETUP\n---------------------\n');
 %% *WORKDIR*
-% wd = fullfile(filesep,'media','user','DATI','Filippo','PHD_heavyweight',...
-%     'EMILIA_2905');
-wd = fullfile(filesep,'media','filippo','Data','Filippo','PHD_heavyweight',...
+wd = fullfile(filesep,'media','user','DATI','Filippo','PHD_heavyweight',...
     'EMILIA_2905');
+% wd = fullfile(filesep,'media','filippo','Data','Filippo','PHD_heavyweight',...
+%     'EMILIA_2905');
 fprintf('Workdir: %s\n',wd);
 %% *REAL RECORDS: METADATA*
 % _path to record files_
@@ -107,6 +107,8 @@ mtd.scl = 0.01*ones(mon.na,1);
 mon.fa = [1.3,1.3,1.3,1.3]; % in Hz
 mon.fb = [1.5,1.5,1.5,1.5]; % in Hz
 %% *ANN*
-ann.mtd.nl = {'net_075s_gh.mat';'net_075s_gh.mat';'net_075s_ud.mat'};
+ann.mtd.nl.withPGV = {'net_075s_gh_withPGV.mat';'net_075s_gh_withPGV.mat';'net_075s_ud_withPGV.mat'};
+ann.mtd.nl.noPGV = {'net_075s_gh_noPGV.mat';'net_075s_gh_noPGV.mat';'net_075s_ud_noPGV.mat'};
 ann.mtd.tc = {0.75;0.75;0.75};
 hybrid_flag=true;
+hybrid_type='sp96';

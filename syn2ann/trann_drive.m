@@ -13,5 +13,5 @@
 %% *SET-UP*
 trann_setup;
 
-%% *TRAIN-ANN*
+%% *TRAIN-ANN (with PGV)*
 trann_train;

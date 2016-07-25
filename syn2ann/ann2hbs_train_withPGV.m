@@ -4,8 +4,8 @@
 % DICA - Politecnico di Milano
 % Copyright 2016_
 %% NOTES
-% _ann2hbs_train_: function to train ANN network onto hybrid LF/HF
-% synthetics
+% _ann2hbs_train_withPGV_: function to train ANN network onto hybrid LF/HF
+% synthetics, trained on PGD, PGV and PGA(LF) values
 %% INPUT:
 % * _hbs (hybrid synthetics structure)_
 % * _ann (trained Artificial Neural Network (ANN) structure)_
@@ -13,7 +13,7 @@
 % * _trs (trained/simulated ann structure)_
 %% N.B. 
 % Need for _sim.m_
-function [varargout] = ann2hbs_train(varargin)
+function [varargout] = ann2hbs_train_withPGV(varargin)
     %% *SET-UP*
     hbs = varargin{1};
     ann = varargin{2};

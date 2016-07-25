@@ -1,11 +1,22 @@
 %% *SPECTRAL SCALING*
-fprintf('---------------------\n5. SPECTRAL MATCHING\n---------------------\n');
+fprintf('---------------------\n5. SPECTRAL MATCHING (WITH PGV)\n---------------------\n');
 %% *MATCHING*
 fprintf('--> Matching\n');
-spm = syn2ann_sm(hbs,trs);
+spm_withPGV = syn2ann_sm(hbs,trs_withPGV);
 %% *PGA-PGV-PGD & ARIAS INTENSITY*
 fprintf('--> Peak Values and Arias\n');
 for j_ = 1:hbs.mon.nc
-    spm.(hbs.mon.cp{j_}) = syn2ann_thp(spm.(hbs.mon.cp{j_}));
-    spm.(hbs.mon.cp{j_}) = syn2ann_spp(spm.(hbs.mon.cp{j_}),2);
+    spm_withPGV.(hbs.mon.cp{j_}) = syn2ann_thp(spm_withPGV.(hbs.mon.cp{j_}));
+    spm_withPGV.(hbs.mon.cp{j_}) = syn2ann_spp(spm_withPGV.(hbs.mon.cp{j_}),2);
+end
+
+fprintf('---------------------\n5. SPECTRAL MATCHING (NO PGV)\n---------------------\n');
+%% *MATCHING*
+fprintf('--> Matching\n');
+spm_noPGV = syn2ann_sm(hbs,trs_noPGV);
+%% *PGA-PGV-PGD & ARIAS INTENSITY*
+fprintf('--> Peak Values and Arias\n');
+for j_ = 1:hbs.mon.nc
+    spm_noPGV.(hbs.mon.cp{j_}) = syn2ann_thp(spm_noPGV.(hbs.mon.cp{j_}));
+    spm_noPGV.(hbs.mon.cp{j_}) = syn2ann_spp(spm_noPGV.(hbs.mon.cp{j_}),2);
 end

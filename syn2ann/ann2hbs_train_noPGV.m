@@ -5,7 +5,7 @@
 % Copyright 2016_
 %% NOTES
 % _ann2hbs_train_: function to train ANN network onto hybrid LF/HF
-% synthetics
+% synthetics, trained on PGD and PGA(LF) values
 %% INPUT:
 % * _hbs (hybrid synthetics structure)_
 % * _ann (trained Artificial Neural Network (ANN) structure)_

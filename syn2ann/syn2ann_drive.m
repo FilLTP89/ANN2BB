@@ -37,7 +37,8 @@ else
     syn2ann_justnum;
 end
 %% *ANN - DATABASE*
-syn2ann_ann;
+syn2ann_ann_withPGV;
+syn2ann_ann_noPGV;
 
 %% SPECTRAL MATCHING
 syn2ann_scaling;

@@ -6,6 +6,177 @@ function train_ann_noPGV(varargin)
     database = load(ann.dbn);
     nrec = size(database.SIMBAD,2);
     Tn_simbad = 0:0.05:10;
+    
+    nT_simbad = numel(Tn_simbad);
+    
+    % Define spectral periods for input and output layers of the ANN
+    % consider both horizontal components so that nsamples = nrec*2
+    % input
+    
+    if ann.tc == 0.5
+        % ANN with corner period = 0.5 s
+        Tinput = [0.6:0.1:1.0,1.25:0.25:5.0,100];
+        Toutput = [0,0.05,0.1:0.1:0.5];
+    elseif ann.tc == 0.6
+        % ANN with corner period = 0.6 s
+        Tinput = [0.7:0.1:1.0,1.25:0.25:5.0,100];
+        Toutput = [0,0.05,0.1:0.1:0.6];
+        
+    elseif ann.tc == 0.75
+        % ANN with corner period = 0.75 s
+        Tinput = [0.8:0.1:1.0,1.25:0.25:5.0,100]; % last 1 value = PGD
+        Toutput = [0,0.05,0.1:0.1:0.7,0.75];
+        
+    elseif ann.tc == 1.0
+        % ANN with corner period = 1.0 s
+        Tinput = [1.25:0.25:5.0,100]; % last 1 value = PGD
+        Toutput = [0,0.05,0.1:0.1:1.0];
+    end
+    ninput = length(Tinput);
+    moutput = length(Toutput);
+    
+    % Define input and output data for ANN training based on SIMBAD databased
+    % and spectral periods as defined above
+    PGA = -999*ones(nrec,1);
+    PGD = -999*ones(nrec,1);
+    PSA = -999*ones(nrec,nT_simbad);
+    switch ann.cp
+        case {'h1'}
+            for j_ = 1:nrec
+                PGA(j_,1) = database.SIMBAD(j_).pga(1);
+                PGD(j_,1) = database.SIMBAD(j_).pgd(1);
+                PSA(j_,:) = database.SIMBAD(j_).psa_h1(:)';
+            end
+        case {'h2'}
+            for j_ = 1:nrec
+                PGA(j_,1) = database.SIMBAD(j_).pga(2);
+                PGD(j_,1) = database.SIMBAD(j_).pgd(2);
+                PSA(j_,:) = database.SIMBAD(j_).psa_h2(:)';
+            end
+        case 'ud'
+            for j_ = 1:nrec
+                PGA(j_,1) = database.SIMBAD(j_).pga(3);
+                PGD(j_,1) = database.SIMBAD(j_).pgd(3);
+                PSA(j_,:) = database.SIMBAD(j_).psa_v(:)';
+            end
+        case 'gh'
+            for j_ = 1:nrec
+                PGA(j_,1) = geomean(database.SIMBAD(j_).pga(1:2));
+                PGD(j_,1) = geomean(database.SIMBAD(j_).pgd(1:2));
+                PSA(j_,:) = geomean([database.SIMBAD(j_).psa_h1(:)';...
+                    database.SIMBAD(j_).psa_h2(:)'],1);
+            end
+    end
+    
+%     figure
+%     hold all
+%     for i_=1:1
+%         plot(Tn_simbad,PSA(i_,:));
+%     end
+%     xlim(gca,[0,4]);xlabel(gca,'T [s]');ylabel(gca,'PSA [cm/s/s]');
+%     format_figures(gca);rule_fig(gcf);
+    
+    iTi = -999*ones(ninput-1,1);
+    INPUT_SIMBAD = -999*ones(nrec,ninput-1);
+    iTo = -999*ones(moutput,1);
+    TARGET_SIMBAD = -999*ones(nrec,moutput);
+    
+    for k=1:ninput-1
+        iTi(k) = find(abs(Tn_simbad-Tinput(k))<1e-6);
+        INPUT_SIMBAD(1:nrec,k) = PSA(1:nrec,iTi(k));
+    end
+    
+    INPUT_SIMBAD(1:nrec,k+1) = PGD(1:nrec,1);
+    
+    for k=1:moutput
+        iTo(k) = find(abs(Tn_simbad-Toutput(k))<1e-6);
+        TARGET_SIMBAD(1:nrec,k) = PSA(1:nrec,iTo(k));
+    end
+    
+    %=========================================================================%
+    %================== ARTIFICIAL NEURAL NETWORK TRAINING ===================%
+    %=========================================================================%
+    % Network Inputs and Targets
+    inputs = log10(INPUT_SIMBAD)';
+    targets = log10(TARGET_SIMBAD)';
+    
+    % define training set
+    ind1 = load(ann.ftr);
+    % define validation sets
+    ind2 = load(ann.fva);
+    
+    % training set
+    inputs1 = inputs(:,ind1);
+    targets1 = targets(:,ind1);
+    % validation set
+    inputs2 = inputs(:,ind2);
+    targets2 = targets(:,ind2);
+    
+    % Create Network
+    numHiddenNeurons = 30;  % Adjust as desired
+    net = newfit(inputs1,targets1,numHiddenNeurons);
+    net.trainParam.show = 50;
+    net.trainParam.lr = 0.05;
+    net.trainParam.epochs = 500;
+    net.trainParam.goal = 1e-3;
+    net.divideParam.trainRatio = 85/100;  % Adjust as desired
+    net.divideParam.valRatio = 10/100;  % Adjust as desired
+    net.divideParam.testRatio = 5/100;  % Adjust as desired
+    
+    % numNN neural networks are trained and tested
+    numNN = 50;
+    nets = cell(1,numNN);
+    for i=1:numNN
+        disp(['Training ' num2str(i) '/' num2str(numNN)])
+        nets{i} = train(net,inputs1,targets1);
+    end
+    
+    
+    % Next, each network is tested on the second dataset
+    % with both individual performances and the performance for
+    % the average output calculated.
+    
+    perfs = zeros(1,numNN);
+    output2Total = 0;
+    for i=1:numNN
+        neti = nets{i};
+        output2 = sim(neti,inputs2);
+        perfs(i) = mse(output2-targets2);
+        output2Total = output2Total + output2;
+    end
+    output2AverageOutput = output2Total/numNN;
+    perfAveragedOutputs = mse(targets2-output2AverageOutput);
+    
+    
+    %     figure(1)
+    %     plot(perfs,'ok');
+    %     hold on
+    %     plot([1:numNN],[perfAveragedOutputs].*ones(numNN,1),'--r');
+    
+    % save trained network with the best performance
+    [minval,id_min] = min(perfs);
+    net = nets(id_min);
+    net = net{1,1};
+    switch ann.tc
+        case 0.5
+            save(fullfile(wd,sprintf('net_05s_%s_noPGV.mat',ann.cp)),'net');
+        case 0.6
+            save(fullfile(wd,sprintf('net_06s_%s_noPGV',ann.cp)),'net');
+        case 0.75
+            save(fullfile(wd,sprintf('net_075s_%s_noPGV',ann.cp)),'net');
+        case 1.0
+            save(fullfile(wd,sprintf('net_1s_%s_noPGV',ann.cp)),'net');
+    end
+    %     % Plot
+    %     outputs1= sim(net,inputs1);
+    %     % plotperf(tr);
+    %     plotfit(net,inputs1,targets1);
+    %     plotregression(targets1(1,:),outputs1(1,:),'1',targets1(2,:),outputs1(2,:),'2',...
+    %         targets1(3,:),outputs1(3,:),'3',targets1(4,:),outputs1(4,:),'4',...
+    %         targets1(5,:),outputs1(5,:),'5',targets1(6,:),outputs1(6,:),'6');
+    return
+end
+
 %     Tn_simbad = [0.000000;
 %         0.040000;
 %         0.040800;
@@ -163,173 +334,4 @@ function train_ann_noPGV(varargin)
 %         9.600000;
 %         9.800000;
 %         10.000000]';
-    
-    nT_simbad = numel(Tn_simbad);
-    
-    % Define spectral periods for input and output layers of the ANN
-    % consider both horizontal components so that nsamples = nrec*2
-    % input
-    
-    if ann.tc == 0.5
-        % ANN with corner period = 0.5 s
-        Tinput = [0.6:0.1:1.0,1.25:0.25:5.0,100];
-        Toutput = [0,0.05,0.1:0.1:0.5];
-    elseif ann.tc == 0.6
-        % ANN with corner period = 0.6 s
-        Tinput = [0.7:0.1:1.0,1.25:0.25:5.0,100];
-        Toutput = [0,0.05,0.1:0.1:0.6];
-        
-    elseif ann.tc == 0.75
-        % ANN with corner period = 0.75 s
-        Tinput = [0.8:0.1:1.0,1.25:0.25:5.0,100]; % last 1 value = PGD
-        Toutput = [0,0.05,0.1:0.1:0.7,0.75];
-        
-    elseif ann.tc == 1.0
-        % ANN with corner period = 1.0 s
-        Tinput = [1.25:0.25:5.0,100]; % last 1 value = PGD
-        Toutput = [0,0.05,0.1:0.1:1.0];
-    end
-    ninput = length(Tinput);
-    moutput = length(Toutput);
-    
-    % Define input and output data for ANN training based on SIMBAD databased
-    % and spectral periods as defined above
-    PGA = -999*ones(nrec,1);
-    PGD = -999*ones(nrec,1);
-    PSA = -999*ones(nrec,nT_simbad);
-    switch ann.cp
-        case {'h1'}
-            for j_ = 1:nrec
-                PGA(j_,1) = database.SIMBAD(j_).pga(1);
-                PGD(j_,1) = database.SIMBAD(j_).pgd(1);
-                PSA(j_,:) = database.SIMBAD(j_).psa_h1(:)';
-            end
-        case {'h2'}
-            for j_ = 1:nrec
-                PGA(j_,1) = database.SIMBAD(j_).pga(2);
-                PGD(j_,1) = database.SIMBAD(j_).pgd(2);
-                PSA(j_,:) = database.SIMBAD(j_).psa_h2(:)';
-            end
-        case 'ud'
-            for j_ = 1:nrec
-                PGA(j_,1) = database.SIMBAD(j_).pga(3);
-                PGD(j_,1) = database.SIMBAD(j_).pgd(3);
-                PSA(j_,:) = database.SIMBAD(j_).psa_v(:)';
-            end
-        case 'gh'
-            for j_ = 1:nrec
-                PGA(j_,1) = geomean(database.SIMBAD(j_).pga(1:2));
-                PGD(j_,1) = geomean(database.SIMBAD(j_).pgd(1:2));
-                PSA(j_,:) = geomean([database.SIMBAD(j_).psa_h1(:)';...
-                    database.SIMBAD(j_).psa_h2(:)'],1);
-            end
-    end
-    
-%     figure
-%     hold all
-%     for i_=1:1
-%         plot(Tn_simbad,PSA(i_,:));
-%     end
-%     xlim(gca,[0,4]);xlabel(gca,'T [s]');ylabel(gca,'PSA [cm/s/s]');
-%     format_figures(gca);rule_fig(gcf);
-    
-    iTi = -999*ones(ninput-1,1);
-    INPUT_SIMBAD = -999*ones(nrec,ninput-1);
-    iTo = -999*ones(moutput,1);
-    TARGET_SIMBAD = -999*ones(nrec,moutput);
-    
-    for k=1:ninput-1
-        iTi(k) = find(abs(Tn_simbad-Tinput(k))<1e-6);
-        INPUT_SIMBAD(1:nrec,k) = PSA(1:nrec,iTi(k));
-    end
-    
-    INPUT_SIMBAD(1:nrec,k+1) = PGD(1:nrec,1);
-    
-    for k=1:moutput
-        iTo(k) = find(abs(Tn_simbad-Toutput(k))<1e-6);
-        TARGET_SIMBAD(1:nrec,k) = PSA(1:nrec,iTo(k));
-    end
-    
-    %=========================================================================%
-    %================== ARTIFICIAL NEURAL NETWORK TRAINING ===================%
-    %=========================================================================%
-    % Network Inputs and Targets
-    inputs = log10(INPUT_SIMBAD)';
-    targets = log10(TARGET_SIMBAD)';
-    
-    % define training set
-    ind1 = load(ann.ftr);
-    % define validation sets
-    ind2 = load(ann.fva);
-    
-    % training set
-    inputs1 = inputs(:,ind1);
-    targets1 = targets(:,ind1);
-    % validation set
-    inputs2 = inputs(:,ind2);
-    targets2 = targets(:,ind2);
-    
-    % Create Network
-    numHiddenNeurons = 30;  % Adjust as desired
-    net = newfit(inputs1,targets1,numHiddenNeurons);
-    net.trainParam.show = 50;
-    net.trainParam.lr = 0.05;
-    net.trainParam.epochs = 500;
-    net.trainParam.goal = 1e-3;
-    net.divideParam.trainRatio = 85/100;  % Adjust as desired
-    net.divideParam.valRatio = 10/100;  % Adjust as desired
-    net.divideParam.testRatio = 5/100;  % Adjust as desired
-    
-    % numNN neural networks are trained and tested
-    numNN = 50;
-    nets = cell(1,numNN);
-    for i=1:numNN
-        disp(['Training ' num2str(i) '/' num2str(numNN)])
-        nets{i} = train(net,inputs1,targets1);
-    end
-    
-    
-    % Next, each network is tested on the second dataset
-    % with both individual performances and the performance for
-    % the average output calculated.
-    
-    perfs = zeros(1,numNN);
-    output2Total = 0;
-    for i=1:numNN
-        neti = nets{i};
-        output2 = sim(neti,inputs2);
-        perfs(i) = mse(output2-targets2);
-        output2Total = output2Total + output2;
-    end
-    output2AverageOutput = output2Total/numNN;
-    perfAveragedOutputs = mse(targets2-output2AverageOutput);
-    
-    
-    %     figure(1)
-    %     plot(perfs,'ok');
-    %     hold on
-    %     plot([1:numNN],[perfAveragedOutputs].*ones(numNN,1),'--r');
-    
-    % save trained network with the best performance
-    [minval,id_min] = min(perfs);
-    net = nets(id_min);
-    net = net{1,1};
-    switch ann.tc
-        case 0.5
-            save(fullfile(wd,sprintf('net_05s_%s.mat',ann.cp)),'net');
-        case 0.6
-            save(fullfile(wd,sprintf('net_06s_%s',ann.cp)),'net');
-        case 0.75
-            save(fullfile(wd,sprintf('net_075s_%s',ann.cp)),'net');
-        case 1.0
-            save(fullfile(wd,sprintf('net_1s_%s',ann.cp)),'net');
-    end
-    %     % Plot
-    %     outputs1= sim(net,inputs1);
-    %     % plotperf(tr);
-    %     plotfit(net,inputs1,targets1);
-    %     plotregression(targets1(1,:),outputs1(1,:),'1',targets1(2,:),outputs1(2,:),'2',...
-    %         targets1(3,:),outputs1(3,:),'3',targets1(4,:),outputs1(4,:),'4',...
-    %         targets1(5,:),outputs1(5,:),'5',targets1(6,:),outputs1(6,:),'6');
-    return
-end
+

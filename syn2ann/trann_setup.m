@@ -2,9 +2,9 @@
 ccc;
 fprintf('---------------------\n0. SETUP\n---------------------\n');
 %% *WORKDIR*
-% ann.wd = fullfile(filesep,'media','user','DATI','Filippo','PHD_heavyweight',...
-%     'EMILIA_2905','training');
-ann.wd = fullfile(filesep,'media','filippo','Data','Filippo','PHD_heavyweight',...
+%ann.wd = fullfile(filesep,'media','filippo','Data','Filippo','PHD_heavyweight',...
+%    'EMILIA_2905','training');
+ann.wd = fullfile(filesep,'media','user','DATI','Filippo','PHD_heavyweight',...
     'EMILIA_2905','training');
 fprintf('Workdir: %s\n',ann.wd);
 ann.nr = 2;
@@ -15,10 +15,10 @@ ann.mtd(2).cp = 'ud';
 ann.mtd(3).tc = 0.75;
 ann.mtd(3).cp = 'gh';
 
-% dbn = fullfile(filesep,'media','user','DATI','Filippo','PHD_heavyweight',...
-%     'EMILIA_2905','simbad_v04','SIMBAD_v04.mat');
-dbn = fullfile(filesep,'media','filippo','Data','Filippo','PHD_heavyweight',...
+dbn = fullfile(filesep,'media','user','DATI','Filippo','PHD_heavyweight',...
     'EMILIA_2905','simbad_v05','SIMBAD_v05_1.mat');
+%dbn = fullfile(filesep,'media','filippo','Data','Filippo','PHD_heavyweight',...
+%    'EMILIA_2905','simbad_v05','SIMBAD_v05_1.mat');
 ftr = fullfile(ann.wd,'index_train.txt');
 fva = fullfile(ann.wd,'index_val.txt');
 fprintf('Training Database: %s\n',dbn);
