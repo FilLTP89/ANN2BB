@@ -8,10 +8,10 @@
 % from numerical simulations (SPEED/HISADA) to target spectra obtained via
 % Artificial Neural Networks.
 %% N.B.
-% Need for _ccc.m,plot_set_up.m,ns_parser.m,ns_spectra.m,sp_generator.m,
-% sp_spectra.m,lfhf_mashup.m,nn_parser.m,ann2hbs_train.m,
-% synthetics2ann_spectral_matching.m_
-
+% Need for
+% _syn2ann_setup_emilia_num.m, syn2ann_records.m, syn2ann_numerical.m, 
+% syn2ann_sp96.m, syn2ann_exsim.m, syn2ann_hybrid.m, syn2ann_justnum.m,
+% syn2ann_ann.m, syn2ann_scaling.m, syn2ann_plot_res.m
 %% *SET-UP*
 % syn2ann_setup_emilia_num;
 % syn2ann_setup_kknpp;
