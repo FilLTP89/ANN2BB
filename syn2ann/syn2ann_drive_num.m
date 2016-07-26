@@ -19,12 +19,19 @@
 %% *RECORDS*
 % syn2ann_records;
 
+hybrid_flag=false;
 %% *NUMERICAL SIMULATIONS*
 syn2ann_numerical;
 
 if hybrid_flag
-    %% *SABETTA & PUGLIESE SYNTHETICS*
-    syn2ann_sp96;
+    switch lower(hybrid_type)
+        case 'sp96'
+            %% *SABETTA & PUGLIESE SYNTHETICS*
+            syn2ann_sp96;
+        case 'exsim'
+            %% *SABETTA & PUGLIESE SYNTHETICS*
+            syn2ann_exsim;
+    end
     %% *LF-HF HYBRIDIZATION*
     syn2ann_hybrid;
 else
@@ -37,8 +44,4 @@ syn2ann_ann;
 syn2ann_scaling;
 
 %% PLOT RESULTS
-cd(wd);
-syn2ann_plot_res_MRN_num;
-syn2ann_plot_res_MIR08_num;
-syn2ann_plot_res_AQK_num;
-syn2ann_plot_res_AQU_num;
+syn2ann_plot_res;

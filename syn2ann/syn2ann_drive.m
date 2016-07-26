@@ -37,19 +37,13 @@ else
     syn2ann_justnum;
 end
 %% *ANN - DATABASE*
-syn2ann_ann_withPGV;
-syn2ann_ann_noPGV;
+syn2ann_ann;
 
 %% SPECTRAL MATCHING
 syn2ann_scaling;
 
 %% PLOT RESULTS
-cd(wd);
-syn2ann_plot_res_MRN;
-syn2ann_plot_res_MIR08;
-syn2ann_plot_res_AQK;
-syn2ann_plot_res_AQU;
+syn2ann_plot_res;
 
 %% *SET-UP*
-hybrid_flag=false;
 syn2ann_drive_num;
