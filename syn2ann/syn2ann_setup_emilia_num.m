@@ -2,11 +2,14 @@
 ccc;
 fprintf('---------------------\n0. SETUP\n---------------------\n');
 %% *WORKDIR*
-% wd = fullfile(filesep,'media','user','DATI','Filippo','PHD_heavyweight',...
-%     'EMILIA_2905');
-wd = fullfile(filesep,'media','filippo','Data','Filippo','PHD_heavyweight',...
+wd = fullfile(filesep,'media','user','DATI','Filippo','PHD_heavyweight',...
     'EMILIA_2905');
+% wd = fullfile(filesep,'media','filippo','Data','Filippo','PHD_heavyweight',...
+%     'EMILIA_2905');
 fprintf('Workdir: %s\n',wd);
+% _save path_
+sp = fullfile(wd,'images');
+eval(sprintf('!mkdir -p %s',sp));
 %% *REAL RECORDS: METADATA*
 % _path to record files_
 bhr.pt  = fullfile(wd,'records');
@@ -75,7 +78,7 @@ fprintf('--> Monitor File: %s\n',mon.fn);
 mon.tp  = 'S';
 fprintf('--> Type of Simulation: %s\n',mon.tp);
 % _monitor identity_
-mon.id  = [16928];%,15045,1,2];
+mon.id  = [16928,15045,1,2];
 mon.na  = numel(mon.id);
 fprintf('--> N. Monitor: %u\n',mon.na);
 arrayfun(@(x) fprintf('--> Monitor ID: %u \n',x),mon.id);
@@ -104,9 +107,11 @@ mtd.scc = [2,1,2,1];
 mtd.sst = zeros(mon.na,1);
 mtd.scl = 0.01*ones(mon.na,1);
 %% *PARSING EXTRA METADATA*
-mon.fa = [1.3,1.3,1.3,1.3]; % in Hz
-mon.fb = [1.5,1.5,1.5,1.5]; % in Hz
+mon.fa = [1.3,1.3,2.0,2.0]; % in Hz
+mon.fb = [1.5,1.5,2.5,2.5]; % in Hz
 %% *ANN*
-ann.mtd.nl = {'net_075s_gh.mat';'net_075s_gh.mat';'net_075s_ud.mat'};
+ann.mtd.nl.withPGV = {'net_075s_gh_withPGV.mat';'net_075s_gh_withPGV.mat';'net_075s_ud_withPGV.mat'};
+ann.mtd.nl.noPGV = {'net_075s_gh_noPGV.mat';'net_075s_gh_noPGV.mat';'net_075s_ud_noPGV.mat'};
 ann.mtd.tc = {0.75;0.75;0.75};
-hybrid_flag=false;
+hybrid_flag=true;
+hybrid_type='sp96';

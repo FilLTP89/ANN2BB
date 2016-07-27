@@ -45,6 +45,3 @@ syn2ann_scaling;
 
 %% PLOT RESULTS
 syn2ann_plot_res;
-
-%% *SET-UP*
-syn2ann_drive_num;
