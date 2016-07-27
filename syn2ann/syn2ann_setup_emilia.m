@@ -7,6 +7,9 @@ wd = fullfile(filesep,'media','user','DATI','Filippo','PHD_heavyweight',...
 % wd = fullfile(filesep,'media','filippo','Data','Filippo','PHD_heavyweight',...
 %     'EMILIA_2905');
 fprintf('Workdir: %s\n',wd);
+% _save path_
+sp = fullfile(wd,'images');
+eval(sprintf('!mkdir -p %s',sp));
 %% *REAL RECORDS: METADATA*
 % _path to record files_
 bhr.pt  = fullfile(wd,'records');
