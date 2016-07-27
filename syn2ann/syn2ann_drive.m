@@ -47,4 +47,4 @@ syn2ann_scaling;
 syn2ann_plot_res;
 
 %% *SET-UP*
-% syn2ann_drive_num;
+syn2ann_drive_num;
