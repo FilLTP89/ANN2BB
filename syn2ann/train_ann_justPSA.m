@@ -3,87 +3,57 @@ function train_ann_justPSA(varargin)
     ann = varargin{1};
     wd = varargin{2};
     
-    database = load(ann.dbn);
-    nrec = size(database.SIMBAD,2);
-    Tn_simbad = 0:0.05:10;
-    
-    nT_simbad = numel(Tn_simbad);
+    db = load(ann.dbn);
+    nr = size(db.SIMBAD,2);
+    vTn_simbad = 0:0.05:10;
+    nT_simbad = numel(vTn_simbad);
     
     % Define spectral periods for input and output layers of the ANN
-    % consider both horizontal components so that nsamples = nrec*2
+    % consider both horizontal components so that nsamples = nr*2
     % input
+    [inp.vTn,tar.vTn,inp.nT,tar.nT] = trann_define_inout(ann.TnC);
     
-    if ann.tc == 0.5
-        % ANN with corner period = 0.5 s
-        Tinput = [0.6:0.1:1.0,1.25:0.25:5.0];
-        Toutput = [0,0.05,0.1:0.1:0.5];
-    elseif ann.tc == 0.6
-        % ANN with corner period = 0.6 s
-        Tinput = [0.7:0.1:1.0,1.25:0.25:5.0];
-        Toutput = [0,0.05,0.1:0.1:0.6];
-        
-    elseif ann.tc == 0.75
-        % ANN with corner period = 0.75 s
-        Tinput = [0.8:0.1:1.0,1.25:0.25:5.0]; % last 1 value = PGD
-        Toutput = [0,0.05,0.1:0.1:0.7,0.75];
-        
-    elseif ann.tc == 1.0
-        % ANN with corner period = 1.0 s
-        Tinput = [1.25:0.25:5.0]; % last 1 value = PGD
-        Toutput = [0,0.05,0.1:0.1:1.0];
-    end
-    ninput = length(Tinput);
-    moutput = length(Toutput);
-    
-    % Define input and output data for ANN training based on SIMBAD databased
+    % Define input and output data for ANN training based on SIMBAD dbd
     % and spectral periods as defined above
-    PGA = -999*ones(nrec,1);
-    PSA = -999*ones(nrec,nT_simbad);
+    PGA = -999*ones(nr,1);
+    PSA = -999*ones(nr,nT_simbad);
     switch ann.cp
         case {'h1'}
-            for j_ = 1:nrec
-                PGA(j_,1) = database.SIMBAD(j_).pga(1);
-                PSA(j_,:) = database.SIMBAD(j_).psa_h1(:)';
+            for j_ = 1:nr
+                PGA(j_,1) = db.SIMBAD(j_).pga(1);
+                PSA(j_,:) = db.SIMBAD(j_).psa_h1(:)';
             end
         case {'h2'}
-            for j_ = 1:nrec
-                PGA(j_,1) = database.SIMBAD(j_).pga(2);
-                PSA(j_,:) = database.SIMBAD(j_).psa_h2(:)';
+            for j_ = 1:nr
+                PGA(j_,1) = db.SIMBAD(j_).pga(2);
+                PSA(j_,:) = db.SIMBAD(j_).psa_h2(:)';
             end
         case 'ud'
-            for j_ = 1:nrec
-                PGA(j_,1) = database.SIMBAD(j_).pga(3);
-                PSA(j_,:) = database.SIMBAD(j_).psa_v(:)';
+            for j_ = 1:nr
+                PGA(j_,1) = db.SIMBAD(j_).pga(3);
+                PSA(j_,:) = db.SIMBAD(j_).psa_v(:)';
             end
         case 'gh'
-            for j_ = 1:nrec
-                PGA(j_,1) = geomean(database.SIMBAD(j_).pga(1:2));
-                PSA(j_,:) = geomean([database.SIMBAD(j_).psa_h1(:)';...
-                    database.SIMBAD(j_).psa_h2(:)'],1);
+            for j_ = 1:nr
+                PGA(j_,1) = geomean(db.SIMBAD(j_).pga(1:2));
+                PSA(j_,:) = geomean([db.SIMBAD(j_).psa_h1(:)';...
+                    db.SIMBAD(j_).psa_h2(:)'],1);
             end
     end
     
-%     figure
-%     hold all
-%     for i_=1:1
-%         plot(Tn_simbad,PSA(i_,:));
-%     end
-%     xlim(gca,[0,4]);xlabel(gca,'T [s]');ylabel(gca,'PSA [cm/s/s]');
-%     format_figures(gca);rule_fig(gcf);
+    iTi           = -999*ones(inp.nT,1);
+    iTo           = -999*ones(tar.nT,1);
+    INPUT_SIMBAD  = -999*ones(nr,inp.nT);
+    TARGET_SIMBAD = -999*ones(nr,tar.nT);
     
-    iTi           = -999*ones(ninput,1);
-    iTo           = -999*ones(moutput,1);
-    INPUT_SIMBAD  = -999*ones(nrec,ninput);
-    TARGET_SIMBAD = -999*ones(nrec,moutput);
-    
-    for i_ = 1:ninput
-        iTi(i_) = find(abs(Tn_simbad-Tinput(i_))<1e-6);
-        INPUT_SIMBAD(1:nrec,i_) = PSA(1:nrec,iTi(i_));
+    for i_ = 1:inp.nT
+        iTi(i_) = find(abs(vTn_simbad-inp.vTn(i_))<1e-8);
+        INPUT_SIMBAD(1:nr,i_) = PSA(1:nr,iTi(i_));
     end
         
-    for i_=1:moutput
-        iTo(i_) = find(abs(Tn_simbad-Toutput(i_))<1e-6);
-        TARGET_SIMBAD(1:nrec,i_) = PSA(1:nrec,iTo(i_));
+    for i_=1:tar.nT
+        iTo(i_) = find(abs(vTn_simbad-tar.vTn(i_))<1e-8);
+        TARGET_SIMBAD(1:nr,i_) = PSA(1:nr,iTo(i_));
     end
     
     %=========================================================================%
@@ -94,9 +64,9 @@ function train_ann_justPSA(varargin)
     targets = log10(TARGET_SIMBAD)';
     
     % define training set
-    ind_train = randi(nrec,nrec,1);
+    ind_train = randi(nr,nr,1);
     % define validation set
-    ind_val = randi(nrec,round(5*nrec/100),1);
+    ind_val = randi(nr,round(5*nr/100),1);
     
     
     % training set
@@ -149,7 +119,7 @@ function train_ann_justPSA(varargin)
     [~,id_min] = min(perfs);
     net = nets(id_min);
     net = net{1,1};
-    save(fullfile(wd,sprintf('net_%u_%s_justPSA.mat',round(ann.tc*100),ann.cp)),...
+    save(fullfile(wd,sprintf('net_%u_%s_justPSA.mat',round(ann.TnC*100),ann.cp)),...
         'net','ind_train','ind_val');
     %     % Plot
     %     outputs1= sim(net,inputs1);
@@ -161,7 +131,7 @@ function train_ann_justPSA(varargin)
     return
 end
 
-%     Tn_simbad = [0.000000;
+%     vTn_simbad = [0.000000;
 %         0.040000;
 %         0.040800;
 %         0.041700;
