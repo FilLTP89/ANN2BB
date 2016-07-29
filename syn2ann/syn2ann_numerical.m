@@ -3,7 +3,7 @@ fprintf('---------------------\n2. NUMERICAL SIMULATIONS\n---------------------\
 %% *PARSING*
 fprintf('--> Parsing\n');
 % _original_
-mon.lfr = [];
+mon.lfr = 0.05;
 mon.hfr = [];
 [mon,nss.org]= ns_parser(mon,bhr);
 %% *PGA-PGV-PGD & ARIAS INTENSITY*

@@ -22,6 +22,7 @@ function [varargout] = create_butter_filter(varargin)
     fNy = varargin{4};
     
     flag=true;
+    
     if (~isempty(lfr))&&(~isempty(hfr))
         % BP filter definition
         [bfb,bfa] = butter(bfo,[lfr hfr]./fNy,'bandpass');

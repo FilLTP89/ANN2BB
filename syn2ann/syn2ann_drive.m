@@ -9,7 +9,7 @@
 % Artificial Neural Networks.
 %% N.B.
 % Need for
-% _syn2ann_setup_emilia_num.m, syn2ann_records.m, syn2ann_numerical.m, 
+% _syn2ann_setup_emilia_num.m, syn2ann_records.m, syn2ann_numerical.m,
 % syn2ann_sp96.m, syn2ann_exsim.m, syn2ann_hybrid.m, syn2ann_justnum.m,
 % syn2ann_ann.m, syn2ann_scaling.m, syn2ann_plot_res.m
 
@@ -21,26 +21,23 @@ syn2ann_records;
 
 %% *NUMERICAL SIMULATIONS*
 syn2ann_numerical;
-
-if hybrid_flag
-    switch lower(hybrid_type)
-        case 'sp96'
-            %% *SABETTA & PUGLIESE SYNTHETICS*
-            syn2ann_sp96;
-        case 'exsim'
-            %% *SABETTA & PUGLIESE SYNTHETICS*
-            syn2ann_exsim;
-    end
-    %% *LF-HF HYBRIDIZATION*
-    syn2ann_hybrid;
-else
-    syn2ann_justnum;
+switch lower(hybrid_type)
+    case 'sp96'
+        % _SABETTA & PUGLIESE 1996_
+        syn2ann_sp96;
+    case 'exsim'
+        % _EXSIM_
+        syn2ann_exsim;
 end
-%% *ANN - DATABASE*
-syn2ann_ann;
 
-%% SPECTRAL MATCHING
-syn2ann_scaling;
-
-%% PLOT RESULTS
-syn2ann_plot_res;
+%% *LF-HF HYBRIDIZATION*
+syn2ann_hybrid;
+% 
+% %% *ANN - DATABASE*
+% syn2ann_ann;
+% 
+% %% SPECTRAL MATCHING
+% syn2ann_scaling;
+% 
+% %% PLOT RESULTS
+% syn2ann_plot_res;

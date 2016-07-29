@@ -4,7 +4,7 @@
 % DICA - Politecnico di Milano
 % Copyright 2014-15_
 %% NOTES
-% _dis2acc_: function to differentiate displacement record to get velocigram
+% _dis2acc_speed_: function to differentiate displacement record to get velocigram
 % and accelerogram by applying butterworth filter and detrending.
 %% INPUT:
 % * _dtm (sampling time step)_
@@ -15,7 +15,7 @@
 % * _tha (band-pass filtered acceleration time-history column vector)_
 % * _thv (velocity time-history column vector)_
 % * _thd (displacement time-history column vector)_
-function [varargout] = dis2acc(varargin)
+function [varargout] = dis2acc_new(varargin)
     %% SET-UP
     % _time-step_
     dtm = varargin{1};
@@ -48,43 +48,48 @@ function [varargout] = dis2acc(varargin)
     
     %% PROCESSING
     if flag
-        %% PROCESSING DISPLACEMENT
-        % _pad definition_
-        npd = ceil(40/dtm);
-        ntm_pad = ntm + 2*npd;
-        thd_pad = zeros(ntm_pad,1);
-        % _padding_
-        thd_pad(:) = padarray(thd,npd,'both');
-        % _base-line correction_
-        thd_pad = detrend(thd_pad);
-        % _applying cosinus taper_
-        thd_pad = cos_taper(thd_pad);
-        % _acasual filtering_
-        thd = filtfilt(bfb,bfa,thd_pad);
+        %         %% PROCESSING DISPLACEMENT
+        %         % _pad definition_
+        %
+        %         npd = ceil(40/dtm);
+        %         ntm_pad = ntm + 2*npd;
+        %         thd_pad = zeros(ntm_pad,1);
+        %         % _padding_
+        %         thd_pad(:) = padarray(thd,npd,'both');
+        %         % _base-line correction_
+        %         thd_pad = detrend(thd_pad);
+        %         % _applying cosinus taper_
+        %         thd_pad = cos_taper(thd_pad);
+        %         % _acasual filtering_
+        %         thd = filtfilt(bfb,bfa,thd_pad);
     end
     %% BACK TO ACCELERATION
+    thd = filtfilt(bfb,bfa,thd);
     % _time differentiation_
     thv(2:ntm-1,1) = (thd(3:ntm,1)-thd(1:ntm-2,1))./(2*dtm);
-    thv(1,1) = 0.0; 
+    thv(1,1) = 0.0;
     thv(ntm,1) = thv(ntm-1,1);
     tha(2:ntm-1,1) = (thv(3:ntm,1)-thv(1:ntm-2,1))./(2*dtm);
-    tha(1,1) = 0.0; 
+    tha(1,1) = 0.0;
     tha(ntm,1) = tha(ntm-1,1);
     
-%     thv = [0;diff(thd)/dtm];
-%     tha = [0;diff(thv)/dtm];
+    %     thv = [0;diff(thd)/dtm];
+    %     tha = [0;diff(thv)/dtm];
     % _time integration_
-    thv = cumtrapz(tha)*dtm;
-    thd = cumtrapz(thv)*dtm;
+    %     thv = cumtrapz(tha)*dtm;
+    %     thd = cumtrapz(thv)*dtm;
     %% OUTPUT
-    if flag
-        varargout{1} = tha(npd+1:ntm+npd,1);
-        varargout{2} = thv(npd+1:ntm+npd,1);
-        varargout{3} = thd(npd+1:ntm+npd,1);
-    else
-        varargout{1} = tha(:);
-        varargout{2} = thv(:);
-        varargout{3} = thd(:);
-    end
+    %     if flag
+    %         varargout{1} = tha(npd+1:ntm+npd,1);
+    %         varargout{2} = thv(npd+1:ntm+npd,1);
+    %         varargout{3} = thd(npd+1:ntm+npd,1);
+    %     else
+    %         varargout{1} = tha(:);
+    %         varargout{2} = thv(:);
+    %         varargout{3} = thd(:);
+    %     end
+    varargout{1} = tha(:);
+    varargout{2} = thv(:);
+    varargout{3} = thd(:);
     return
 end

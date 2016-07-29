@@ -149,8 +149,7 @@ function train_ann_justPSA(varargin)
     [~,id_min] = min(perfs);
     net = nets(id_min);
     net = net{1,1};
-    save(fullfile(wd,...
-        sprintf('net_%us_%s_justPSA.mat',round(tc*100),ann.cp)),...
+    save(fullfile(wd,sprintf('net_%u_%s_justPSA.mat',round(ann.tc*100),ann.cp)),...
         'net','ind_train','ind_val');
     %     % Plot
     %     outputs1= sim(net,inputs1);

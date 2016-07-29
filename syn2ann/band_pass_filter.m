@@ -44,6 +44,7 @@ function [varargout] = band_pass_filter(varargin)
     end
     %% BUTTERWORTH FILTER
     [bfb,bfa,flag] = create_butter_filter(bfo,lfr,hfr,fNy);
+    
     %% PROCESSING
     if flag
         %% PROCESSING ACCELERATION
@@ -75,74 +76,5 @@ function [varargout] = band_pass_filter(varargin)
         varargout{2} = thv;
         varargout{3} = thd;
     end
-    return
-end
-
-%% *Acceleration Time Integration*
-% _Editor: Filippo Gatti
-% CentraleSupélec - Laboratoire MSSMat
-% DICA - Politecnico di Milano
-% Copyright 2014-15_
-%% NOTES
-% _integr_diff_avd_: function that integrates and differentiate acceleration
-% signal
-%% INPUT:
-% * dtm (sampling time step)
-% * tha (BP filtered input signal)
-% * bfb (Butterworth's filter b coefficient)
-% * bfa (Butterworth's filter a coefficient)
-%% OUTPUT:
-% * tha (acceleration time-history vector (after differentiation))
-% * thv (velocity time-history vector (after differentiation))
-% * thd (displacement time-history vector (after differentiation))
-
-function [varargout] = integr_diff_avd(varargin)
-    %% SET-UP
-    dtm = varargin{1};
-    tha = varargin{2}(:);
-    flag=false;
-    if nargin>2
-        bfb = varargin{3};
-        bfa = varargin{4};
-        flag = true;
-    end
-    if flag
-        %% COMPUTING/PROCESSING VELOCITY
-        % _time integration_
-        thv = cumtrapz(tha)*dtm;
-        % _base-line correction_
-        thv = detrend(thv);
-        % _acasual filtering_
-        thv = filtfilt(bfb,bfa,thv);
-        %% COMPUTING/PROCESSING DISPLACEMENT
-        % _time integration_
-        thd = cumtrapz(thv)*dtm;
-        % _base-line correction_
-        thd = detrend(thd);
-        % _applying cosinus taper_
-%         thd = cos_taper(thd);
-        thd = taper_fun(thd,5,1,1);
-        % _acasual filtering_
-        thd = filtfilt(bfb,bfa,thd);
-        %% BACK TO ACCELERATION
-        % _time differentiation_
-        thv = [0;diff(thd)/dtm];
-        tha = [0;diff(thv)/dtm];
-        % _time integration_
-        thv = cumtrapz(tha)*dtm;
-        thd = cumtrapz(thv)*dtm;
-    else
-        %% COMPUTING/PROCESSING VELOCITY
-        % _time integration_
-        thv = cumtrapz(tha)*dtm;
-        %% COMPUTING/PROCESSING DISPLACEMENT
-        % _time integration_
-        thd = cumtrapz(thv)*dtm;
-    end
-    
-    %% OUTPUT
-    varargout{1} = tha(:);
-    varargout{2} = thv(:);
-    varargout{3} = thd(:);
     return
 end
