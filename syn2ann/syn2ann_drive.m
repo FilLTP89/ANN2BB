@@ -15,7 +15,6 @@
 
 %% *SET-UP*
 syn2ann_setup_emilia;
-% syn2ann_setup_kknpp;
 
 %% *RECORDS*
 syn2ann_records;
