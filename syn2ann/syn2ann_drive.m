@@ -8,48 +8,36 @@
 % from numerical simulations (SPEED/HISADA) to target spectra obtained via
 % Artificial Neural Networks.
 %% N.B.
-% Need for _ccc.m,plot_set_up.m,ns_parser.m,ns_spectra.m,sp_generator.m,
-% sp_spectra.m,lfhf_mashup.m,nn_parser.m,ann2hbs_train.m,
-% synthetics2ann_spectral_matching.m_
+% Need for
+% _syn2ann_setup_emilia_num.m, syn2ann_records.m, syn2ann_numerical.m,
+% syn2ann_sp96.m, syn2ann_exsim.m, syn2ann_hybrid.m, syn2ann_justnum.m,
+% syn2ann_ann.m, syn2ann_scaling.m, syn2ann_plot_res.m
 
 %% *SET-UP*
 syn2ann_setup_emilia;
-% syn2ann_setup_kknpp;
 
 %% *RECORDS*
 syn2ann_records;
 
 %% *NUMERICAL SIMULATIONS*
 syn2ann_numerical;
-
-if hybrid_flag
-    switch lower(hybrid_type)
-        case 'sp96'
-            %% *SABETTA & PUGLIESE SYNTHETICS*
-            syn2ann_sp96;
-        case 'exsim'
-            %% *SABETTA & PUGLIESE SYNTHETICS*
-            syn2ann_exsim;
-    end
-    %% *LF-HF HYBRIDIZATION*
-    syn2ann_hybrid;
-else
-    syn2ann_justnum;
+switch lower(hybrid_type)
+    case 'sp96'
+        % _SABETTA & PUGLIESE 1996_
+        syn2ann_sp96;
+    case 'exsim'
+        % _EXSIM_
+        syn2ann_exsim;
 end
-%% *ANN - DATABASE*
-syn2ann_ann_withPGV;
-syn2ann_ann_noPGV;
 
-%% SPECTRAL MATCHING
-syn2ann_scaling;
+%% *LF-HF HYBRIDIZATION*
+syn2ann_hybrid;
 
-%% PLOT RESULTS
-cd(wd);
-syn2ann_plot_res_MRN;
-syn2ann_plot_res_MIR08;
-syn2ann_plot_res_AQK;
-syn2ann_plot_res_AQU;
-
-%% *SET-UP*
-hybrid_flag=false;
-syn2ann_drive_num;
+% %% *ANN - DATABASE*
+syn2ann_ann;
+% 
+% %% *SPECTRAL MATCHING*
+% syn2ann_scaling;
+% 
+% %% *PLOT RESULTS*
+% syn2ann_plot_res;

@@ -20,16 +20,7 @@ function syn2ann_plot_compare(varargin)
     spg = [spg,1];
     pax = num2cell([1:spg(1),1:spg(1)]');
     
-    switch spg(1)
-        case 1
-            clr = [0 0 1];
-        case 2
-            clr = [0 0 1;1 0 0];
-        case 3
-            clr = [0 0 1;1 0 0;0 1 0];
-        case 5
-            clr = [0 0 .8;.8 0 0;0 0 1;1 0 0;0 1 0];
-    end
+    clr = [rgb('Blue');rgb('DeepSkyBlue');rgb('Red');rgb('DarkOrange');rgb('Black')];
     set(0,'defaultaxescolororder',clr);
     
     if flags(1)

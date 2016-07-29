@@ -4,8 +4,8 @@
 % DICA - Politecnico di Milano
 % Copyright 2016_
 %% NOTES
-% _ann2hbs_train_withPGV_: function to train ANN network onto hybrid LF/HF
-% synthetics, trained on PGD, PGV and PSA(LF) values
+% _ann2hbs_train_: function to train ANN network onto hybrid LF/HF
+% synthetics, trained PSA(LF) values
 %% INPUT:
 % * _hbs (hybrid synthetics structure)_
 % * _ann (trained Artificial Neural Network (ANN) structure)_
@@ -13,7 +13,7 @@
 % * _trs (trained/simulated ann structure)_
 %% N.B. 
 % Need for _sim.m_
-function [varargout] = ann2hbs_train_withPGV(varargin)
+function [varargout] = ann2hbs_train_justPSA(varargin)
     %% *SET-UP*
     hbs = varargin{1};
     ann = varargin{2};
@@ -49,10 +49,8 @@ function [varargout] = ann2hbs_train_withPGV(varargin)
         cpp = hbs.mon.cp{j_};
         for i_ = 1:hbs.mon.na
             psa(i_,:) = hbs.syn{i_}.psa.(cpp)(:)';
-            pgv(i_) = hbs.syn{i_}.pgv.(cpp)(2);
-            pgd(i_) = hbs.syn{i_}.pgd.(cpp)(2);
         end
-        inn{j_} = [psa(:,trs.(cpp).iid),abs(pgv),abs(pgd)];
+        inn{j_} = [psa(:,trs.(cpp).iid)];
     end
     
     %% TRAIN NETWORK
@@ -67,7 +65,7 @@ function [varargout] = ann2hbs_train_withPGV(varargin)
             try
                 out = 10.^(sim(ann.(hbs.mon.cp{j_}).net,inp(i_,:)'));
                 out = out./100;
-                trs.(hbs.mon.cp{j_}).syn{i_}.psa.(hbs.mon.cp{j_}) = [out(:);inn{j_}(i_,1:end-2)'];
+                trs.(hbs.mon.cp{j_}).syn{i_}.psa.(hbs.mon.cp{j_}) = [out(:);inn{j_}(i_,1:end-1)'];
             catch
                 keyboard
             end
