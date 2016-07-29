@@ -1,67 +1,94 @@
 function train_ann_justPSA(varargin)
     %% *SET-UP*
-    ann = varargin{1};
-    wd = varargin{2};
-    
+    wd  = varargin{1};
+    ann = varargin{2};
+    % _load database_
     db = load(ann.dbn);
-    nr = size(db.SIMBAD,2);
-    vTn_simbad = 0:0.05:10;
-    nT_simbad = numel(vTn_simbad);
-    
-    % Define spectral periods for input and output layers of the ANN
-    % consider both horizontal components so that nsamples = nr*2
-    % input
+    nr = size(db,2);
+    % _reference natural periods_
+    db.vTn = (0:0.05:10)';
+    db.nT  = numel(db.vTn);
+    % _define input/target natural periods_
     [inp.vTn,tar.vTn,inp.nT,tar.nT] = trann_define_inout(ann.TnC);
+    % _check input/target natural periods with database_
+    [inp.idx,tar.idx] = trann_check_vTn(inp,tar,db,1e-8);
     
-    % Define input and output data for ANN training based on SIMBAD dbd
-    % and spectral periods as defined above
+    
+    %% *DEFINE PGA/PSA*
     PGA = -999*ones(nr,1);
-    PSA = -999*ones(nr,nT_simbad);
-    switch ann.cp
-        case {'h1'}
-            for j_ = 1:nr
-                PGA(j_,1) = db.SIMBAD(j_).pga(1);
-                PSA(j_,:) = db.SIMBAD(j_).psa_h1(:)';
+    PSA = -999*ones(nr,db.nT);
+    
+    
+    switch upper(ann.cl)
+        case 'ALL'
+            switch ann.cp
+                case {'h1'}
+                    for j_ = 1:nr
+                        PGA(j_,1) = db.SIMBAD(j_).pga(1);
+                        PSA(j_,:) = db.SIMBAD(j_).psa_h1(:)';
+                    end
+                case {'h2'}
+                    for j_ = 1:nr
+                        PGA(j_,1) = db.SIMBAD(j_).pga(2);
+                        PSA(j_,:) = db.SIMBAD(j_).psa_h2(:)';
+                    end
+                case 'ud'
+                    for j_ = 1:nr
+                        PGA(j_,1) = db.SIMBAD(j_).pga(3);
+                        PSA(j_,:) = db.SIMBAD(j_).psa_v(:)';
+                    end
+                case 'gh'
+                    for j_ = 1:nr
+                        PGA(j_,1) = geomean(db.SIMBAD(j_).pga(1:2));
+                        PSA(j_,:) = geomean([db.SIMBAD(j_).psa_h1(:)';...
+                            db.SIMBAD(j_).psa_h2(:)'],1);
+                    end
             end
-        case {'h2'}
-            for j_ = 1:nr
-                PGA(j_,1) = db.SIMBAD(j_).pga(2);
-                PSA(j_,:) = db.SIMBAD(j_).psa_h2(:)';
+            
+        case 'AB'
+%             [~,~,ia] = intersect('A',db.SIMBAD(:),,'stable');
+%             [~,~,ib] = intersect(hbs.mon.cp,ann_justPSA.cp,'stable');
+            switch ann.cp
+                case {'h1'}
+                    for j_ = 1:nr
+                        PGA(j_,1) = db.SIMBAD(j_).pga(1);
+                        PSA(j_,:) = db.SIMBAD(j_).psa_h1(:)';
+                    end
+                case {'h2'}
+                    for j_ = 1:nr
+                        PGA(j_,1) = db.SIMBAD(j_).pga(2);
+                        PSA(j_,:) = db.SIMBAD(j_).psa_h2(:)';
+                    end
+                case 'ud'
+                    for j_ = 1:nr
+                        PGA(j_,1) = db.SIMBAD(j_).pga(3);
+                        PSA(j_,:) = db.SIMBAD(j_).psa_v(:)';
+                    end
+                case 'gh'
+                    for j_ = 1:nr
+                        PGA(j_,1) = geomean(db.SIMBAD(j_).pga(1:2));
+                        PSA(j_,:) = geomean([db.SIMBAD(j_).psa_h1(:)';...
+                            db.SIMBAD(j_).psa_h2(:)'],1);
+                    end
             end
-        case 'ud'
-            for j_ = 1:nr
-                PGA(j_,1) = db.SIMBAD(j_).pga(3);
-                PSA(j_,:) = db.SIMBAD(j_).psa_v(:)';
-            end
-        case 'gh'
-            for j_ = 1:nr
-                PGA(j_,1) = geomean(db.SIMBAD(j_).pga(1:2));
-                PSA(j_,:) = geomean([db.SIMBAD(j_).psa_h1(:)';...
-                    db.SIMBAD(j_).psa_h2(:)'],1);
-            end
+            
+        case 'CD'
     end
     
-    iTi           = -999*ones(inp.nT,1);
-    iTo           = -999*ones(tar.nT,1);
-    INPUT_SIMBAD  = -999*ones(nr,inp.nT);
-    TARGET_SIMBAD = -999*ones(nr,tar.nT);
     
-    for i_ = 1:inp.nT
-        iTi(i_) = find(abs(vTn_simbad-inp.vTn(i_))<1e-8);
-        INPUT_SIMBAD(1:nr,i_) = PSA(1:nr,iTi(i_));
-    end
-        
+    inp.simbad  = -999*ones(nr,inp.nT);
+    tar.simbad  = -999*ones(nr,tar.nT);
     for i_=1:tar.nT
         iTo(i_) = find(abs(vTn_simbad-tar.vTn(i_))<1e-8);
-        TARGET_SIMBAD(1:nr,i_) = PSA(1:nr,iTo(i_));
+        inp(1:nr,i_) = PSA(1:nr,inp.vTn(i_,1));
+        tar_simbad(1:nr,i_) = PSA(1:nr,iTo(i_));
     end
     
-    %=========================================================================%
-    %================== ARTIFICIAL NEURAL NETWORK TRAINING ===================%
-    %=========================================================================%
     % Network Inputs and Targets
-    inputs  = log10(INPUT_SIMBAD)';
-    targets = log10(TARGET_SIMBAD)';
+%     inp.   = log10(inp_simbad)';
+%     targets = log10(tar_simbad)';
+    keyboard
+    %% *ARTIFICIAL NEURAL NETWORK TRAINING*
     
     % define training set
     ind_train = randi(nr,nr,1);
@@ -108,8 +135,8 @@ function train_ann_justPSA(varargin)
         perfs(i) = mse(output2-targets2);
         output2Total = output2Total + output2;
     end
-%     output2AverageOutput = output2Total/numNN;
-%     perfAveragedOutputs = mse(targets2-output2AverageOutput);
+    %     output2AverageOutput = output2Total/numNN;
+    %     perfAveragedOutputs = mse(targets2-output2AverageOutput);
     %     figure(1)
     %     plot(perfs,'ok');
     %     hold on
