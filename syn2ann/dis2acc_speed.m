@@ -48,6 +48,7 @@ function [varargout] = dis2acc_new(varargin)
     
     %% PROCESSING
     if flag
+        disp('TIME INTEGRATION--->FILTER')
         %         %% PROCESSING DISPLACEMENT
         %         % _pad definition_
         %
@@ -62,7 +63,10 @@ function [varargout] = dis2acc_new(varargin)
         %         thd_pad = cos_taper(thd_pad);
         %         % _acasual filtering_
         %         thd = filtfilt(bfb,bfa,thd_pad);
+    else
+        disp('TIME INTEGRATION--->NO FILTER')
     end
+    
     %% BACK TO ACCELERATION
     thd = filtfilt(bfb,bfa,thd);
     % _time differentiation_

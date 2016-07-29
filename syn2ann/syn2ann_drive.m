@@ -32,12 +32,12 @@ end
 
 %% *LF-HF HYBRIDIZATION*
 syn2ann_hybrid;
-% 
-% %% *ANN - DATABASE*
-% syn2ann_ann;
-% 
+
+%% *ANN - DATABASE*
+syn2ann_ann;
+
 % %% SPECTRAL MATCHING
 % syn2ann_scaling;
-% 
-% %% PLOT RESULTS
-% syn2ann_plot_res;
+
+%% PLOT RESULTS
+syn2ann_plot_res;

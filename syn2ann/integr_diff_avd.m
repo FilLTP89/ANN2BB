@@ -27,6 +27,7 @@ function [varargout] = integr_diff_avd(varargin)
         flag = true;
     end
     if flag
+        disp('TIME INTEGRATION--->FILTER')
         ntm = numel(tha);
         %% COMPUTING/PROCESSING VELOCITY
         % _time integration_
@@ -57,6 +58,7 @@ function [varargout] = integr_diff_avd(varargin)
         thv = cumtrapz(tha)*dtm;
         thd = cumtrapz(thv)*dtm;
     else
+        disp('TIME INTEGRATION--->NO FILTER')
         %% COMPUTING/PROCESSING VELOCITY
         % _time integration_
         thv = cumtrapz(tha)*dtm;
