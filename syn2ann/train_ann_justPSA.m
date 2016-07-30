@@ -6,7 +6,8 @@ function train_ann_justPSA(varargin)
     % _load database_
     %
     db = load(ann.dbn);
-    db.nr  = size(db,2);
+    db.simbad = db.SIMBAD;
+    db.nr  = size(db.simbad,2);
     db.vTn = (0:0.05:10)';
     db.nT  = numel(db.vTn);
     %
@@ -23,54 +24,55 @@ function train_ann_justPSA(varargin)
     switch upper(ann.cl)
         case 'ALL'
             idx_cl = ones(db.nr,1);
+            keyboard
         case 'AB'
-            ia1 = strcmpi('A',{db.SIMBAD(:).site_EC8});
-            ia2 = strcmpi('A*',{db.SIMBAD(:).site_EC8});
+            ia1 = strcmpi('A',{db.simbad(:).site_EC8});
+            ia2 = strcmpi('A*',{db.simbad(:).site_EC8});
             ia  = logical(ia1+ia2);
-            ib1 = strcmpi('B',{db.SIMBAD(:).site_EC8});
-            ib2 = strcmpi('B*',{db.SIMBAD(:).site_EC8});
+            ib1 = strcmpi('B',{db.simbad(:).site_EC8});
+            ib2 = strcmpi('B*',{db.simbad(:).site_EC8});
             ib  = logical(ib1+ib2);
             idx_cl = logical(ia+ib);
         case 'CD'
-            ia1 = strcmpi('C',{db.SIMBAD(:).site_EC8});
-            ia2 = strcmpi('C*',{db.SIMBAD(:).site_EC8});
+            ia1 = strcmpi('C',{db.simbad(:).site_EC8});
+            ia2 = strcmpi('C*',{db.simbad(:).site_EC8});
             ia  = logical(ia1+ia2);
-            ib1 = strcmpi('D',{db.SIMBAD(:).site_EC8});
-            ib2 = strcmpi('D*',{db.SIMBAD(:).site_EC8});
+            ib1 = strcmpi('D',{db.simbad(:).site_EC8});
+            ib2 = strcmpi('D*',{db.simbad(:).site_EC8});
             ib  = logical(ib1+ib2);
             idx_cl = logical(ia+ib);
     end
     db.nr     = numel(find(idx_cl==1));
-    db.SIMBAD = db.SIMBAD(idx_cl);
+    db.simbad = db.simbad(idx_cl);
     
     %
     % _define training/validation set_
     %
     [idx_train,idx_valid] = trann_tv_sets(db.nr,5/100);
-    
+    keyboard
     
     %% *DEFINE INPUT/OUTPUT*
     PSA = -999*ones(db.nr,db.nT);
     switch ann.cp
         case {'h1'}
             for j_ = 1:db.nr
-                PSA(j_,:) = db.SIMBAD(j_).psa_h1(:)';
+                PSA(j_,:) = db.simbad(j_).psa_h1(:)';
             end
         case {'h2'}
             for j_ = 1:db.nr
-                PSA(j_,:) = db.SIMBAD(j_).psa_h2(:)';
+                PSA(j_,:) = db.simbad(j_).psa_h2(:)';
             end
         case 'ud'
             for j_ = 1:db.nr
-                PSA(j_,:) = db.SIMBAD(j_).psa_v(:)';
+                PSA(j_,:) = db.simbad(j_).psa_v(:)';
             end
         case 'gh'
             for j_ = 1:db.nr
-                PSA(j_,:) = geomean([db.SIMBAD(j_).psa_h1(:)';...
-                    db.SIMBAD(j_).psa_h2(:)'],1);
+                PSA(j_,:) = geomean([db.simbad(j_).psa_h1(:)';...
+                    db.simbad(j_).psa_h2(:)'],1);
             end
     end
-    
+
     inp.simbad  = -999*ones(inp.nT,db.nr);
     tar.simbad  = -999*ones(tar.nT,db.nr);
     for i_=1:inp.nT
@@ -112,8 +114,8 @@ function train_ann_justPSA(varargin)
         perfs(i)     = mse(output2-tar.simbad(:,idx_valid));
         output2Total = output2Total + output2;
     end
-    %     output2AverageOutput = output2Total/numNN;
-    %     perfAveragedOutputs = mse(targets2-output2AverageOutput);
+%     output2AverageOutput = output2Total/numNN;
+%     perfAveragedOutputs  = mse(targets2-output2AverageOutput);
     %     figure(1)
     %     plot(perfs,'ok');
     %     hold on
@@ -123,7 +125,7 @@ function train_ann_justPSA(varargin)
     [~,id_min] = min(perfs);
     net = nets(id_min);
     net = net{1,1};
-    save(fullfile(wd,sprintf('net_%u_%s_%s_justPSA.mat',...
+    save(fullfile(wd,sprintf('net_%u_%s_%s.mat',...
         round(ann.TnC*100),ann.cl,ann.cp)),...
         'net','idx_train','idx_valid');
     %     % Plot
