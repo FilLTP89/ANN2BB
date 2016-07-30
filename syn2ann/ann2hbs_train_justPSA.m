@@ -12,48 +12,33 @@
 %% OUTPUT:
 % * _trs (trained/simulated ann structure)_
 %% N.B. 
-% Need for _sim.m_
+% Need for _sim.m_, _trann_check_vTn.m_.
 function [varargout] = ann2hbs_train_justPSA(varargin)
     %% *SET-UP*
     hbs = varargin{1};
     ann = varargin{2};
     
-    % _input periods_
+    %
+    % _check input/target natural periods with hbs_
+    %
     for j_ = 1:hbs.mon.nc
         cpp = (hbs.mon.cp{j_});
-        for k_ = 1:ann.(cpp).inp.nT
-            idx = find(abs(hbs.mon.vTn-ann.(cpp).inp.vTn(k_))<1e-8);
-            if ~isempty(idx)
-                trs.(cpp).iid(k_) = idx;
-            end
-        end
-    end
-    
-    % _target natural periods_
-    for j_ = 1:hbs.mon.nc
-        cpp = (hbs.mon.cp{j_});
-        for k_ = 1:ann.(cpp).tar.nT
-            idx = find(abs(hbs.mon.vTn-ann.(cpp).tar.vTn(k_))<1e-8);
-            if ~isempty(idx)
-                trs.(cpp).tid(k_) = idx;
-            end
-        end
+        [trs.(cpp).iid,trs.(cpp).tid] = ...
+        trann_check_vTn(ann.(cpp).inp,ann.(cpp).tar,hbs.mon,1e-8);
     end
     
     inn = cell(hbs.mon.nc,1);
     
     for j_ = 1:hbs.mon.nc
-        psa = -ones(hbs.mon.na,hbs.mon.nT);
-        pgv = -ones(hbs.mon.na,1);
-        pgd = -ones(hbs.mon.na,1);
+        psa = -999*ones(hbs.mon.na,hbs.mon.nT);
         cpp = hbs.mon.cp{j_};
         for i_ = 1:hbs.mon.na
             psa(i_,:) = hbs.syn{i_}.psa.(cpp)(:)';
         end
-        inn{j_} = [psa(:,trs.(cpp).iid)];
+        inn{j_} = psa(:,trs.(cpp).iid);
     end
     
-    %% TRAIN NETWORK
+    %% *TRAIN NETWORK*
     trs.mon.cp = hbs.mon.cp;
     for j_ = 1:hbs.mon.nc
         inp = log10(inn{j_}.*100);
@@ -65,14 +50,15 @@ function [varargout] = ann2hbs_train_justPSA(varargin)
             try
                 out = 10.^(sim(ann.(hbs.mon.cp{j_}).net,inp(i_,:)'));
                 out = out./100;
-                trs.(hbs.mon.cp{j_}).syn{i_}.psa.(hbs.mon.cp{j_}) = [out(:);inn{j_}(i_,1:end-1)'];
+                trs.(hbs.mon.cp{j_}).syn{i_}.psa.(hbs.mon.cp{j_}) = ...
+                    [out(:);inn{j_}(i_,:)'];
             catch
                 keyboard
             end
         end
     end
     
-    %% OUTPUT
+    %% *OUTPUT*
     varargout{1} = trs;
     return
 end

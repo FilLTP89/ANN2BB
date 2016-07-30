@@ -27,7 +27,7 @@ cor.MIR08.thv.z = ud.data(:,18);
 cor.MIR08.thd.z = ud.data(:,30);
 bhr.lfr = [];
 bhr.hfr = [];
-[bhr,rec.org]= rc_parser(bhr,cor);
+[bhr,rec.org]= syn2ann_rec_parser(bhr,cor);
 % % _original_
 % bhr.lfr = [];
 % bhr.hfr = 3;

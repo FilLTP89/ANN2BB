@@ -79,7 +79,7 @@ function [varargout] = spectral_scaling(varargin)
     if ~isempty(idx_max)
         tar_vTn_new(idx_max)=[];
     end
-    tar_psa_new = interp1(tar_vTn,tar_psa,tar_vTn_new,'linear');
+%     tar_psa_new = interp1(tar_vTn,tar_psa,tar_vTn_new,'linear');
     
     %     tar_psa = tar_psa_new;
     %     tar_vTn = tar_vTn_new;

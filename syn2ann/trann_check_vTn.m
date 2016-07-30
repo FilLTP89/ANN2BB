@@ -16,7 +16,9 @@ function [varargout] = trann_check_vTn(varargin)
     for i_ = 1:tar.nT
         tar.idx(i_,1) = find(abs(chk.vTn-tar.vTn(i_))<tol);
     end
-
+    if any(isempty(inp.idx))||any(isempty(tar.idx))
+        error('no period found!');
+    end
     varargout{1} = inp.idx;
     varargout{2} = tar.idx;
 

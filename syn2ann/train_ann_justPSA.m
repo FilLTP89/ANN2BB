@@ -45,31 +45,27 @@ function train_ann_justPSA(varargin)
     
     %
     % _define training/validation set_
-    idx_train = randi(db.nr,db.nr,1);
-    idx_valid = randi(db.nr,round(5*db.nr/100),1);
+    %
+    [idx_train,idx_valid] = trann_tv_sets(db.nr,5/100);
+    
     
     %% *DEFINE INPUT/OUTPUT*
-    PGA = -999*ones(db.nr,1);
     PSA = -999*ones(db.nr,db.nT);
     switch ann.cp
         case {'h1'}
             for j_ = 1:db.nr
-                PGA(j_,1) = db.SIMBAD(j_).pga(1);
                 PSA(j_,:) = db.SIMBAD(j_).psa_h1(:)';
             end
         case {'h2'}
             for j_ = 1:db.nr
-                PGA(j_,1) = db.SIMBAD(j_).pga(2);
                 PSA(j_,:) = db.SIMBAD(j_).psa_h2(:)';
             end
         case 'ud'
             for j_ = 1:db.nr
-                PGA(j_,1) = db.SIMBAD(j_).pga(3);
                 PSA(j_,:) = db.SIMBAD(j_).psa_v(:)';
             end
         case 'gh'
             for j_ = 1:db.nr
-                PGA(j_,1) = geomean(db.SIMBAD(j_).pga(1:2));
                 PSA(j_,:) = geomean([db.SIMBAD(j_).psa_h1(:)';...
                     db.SIMBAD(j_).psa_h2(:)'],1);
             end
@@ -83,7 +79,6 @@ function train_ann_justPSA(varargin)
     for i_=1:tar.nT
         tar.simbad(i_,1:db.nr) = log10(PSA(1:db.nr,tar.idx(i_)))';
     end
-    
     
     % Create Network
     numHiddenNeurons = 30;  % Adjust as desired

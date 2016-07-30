@@ -4,7 +4,7 @@
 % DICA - Politecnico di Milano
 % Copyright 2016_
 %% NOTES
-% _rc_parser_: function to parse synthetics from speed/hisada
+% _syn2ann_rec_parser_: function to parse synthetics from speed/hisada
 %% INPUT:
 % * _bhr (borehole data structure)_
 %% OUTPUT:
@@ -13,7 +13,7 @@
 % Need for _itaca_monitor_name.m_, _parse_itaca_file.m_,
 % _band_pass_filter.m_, _vel2acc.m_, _dis2acc.m_, _syn2ann_thp.m_
 
-function [varargout] = rc_parser(varargin)
+function [varargout] = syn2ann_rec_parser(varargin)
     %% *SET-UP*
     % _borehole data structure_
     bhr = varargin{1};

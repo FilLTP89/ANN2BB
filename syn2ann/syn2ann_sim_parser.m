@@ -4,7 +4,7 @@
 % DICA - Politecnico di Milano
 % Copyright 2016_
 %% NOTES
-% _ns_parser_: function to parse synthetics from speed/hisada
+% _syn2ann_sim_parser_: function to parse synthetics from speed/hisada
 %% INPUT:
 % * _mon (monitor structure)_
 %% OUTPUT:
@@ -13,7 +13,7 @@
 %% N.B.
 % Need for _speed_monitor_name.m,hisada_monitor_name.m,vel2acc.m,
 % dis2acc.m,PGAVD_eval.m_
-function [varargout] = ns_parser(varargin)
+function [varargout] = syn2ann_sim_parser(varargin)
     I1 = 0.05;
     %% SET-UP
     % _monitor structure_

@@ -5,7 +5,7 @@ fprintf('--> Parsing\n');
 % _original_
 mon.lfr = 0.05;
 mon.hfr = [];
-[mon,nss.org]= ns_parser(mon,bhr);
+[mon,nss.org]= syn2ann_sim_parser(mon,bhr);
 %% *PGA-PGV-PGD & ARIAS INTENSITY*
 fprintf('--> Peak Values and Arias\n');
 nss.org = syn2ann_thp(nss.org);

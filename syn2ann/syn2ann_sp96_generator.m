@@ -4,7 +4,7 @@
 % DICA - Politecnico di Milano
 % Copyright 2016_
 %% NOTES
-% _sp_generator_: function to produce non-stationary accelerograms
+% _syn2ann_sp96_generator_: function to produce non-stationary accelerograms
 % according to the approach by Sabetta & Pugliese, 1996.
 %% INPUT:
 % * _mon (monitor structure)_
@@ -26,7 +26,7 @@
 %   number =  {2},
 %   pages =   {337--352},
 % }
-function [varargout] = sp_generator(varargin)
+function [varargout] = syn2ann_sp96_generator(varargin)
     %% *SET-UP*
     sps.mon = varargin{1};
     sps.mtd = varargin{2};
