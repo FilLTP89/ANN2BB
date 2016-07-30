@@ -6,8 +6,7 @@ function train_ann_justPSA(varargin)
     % _load database_
     %
     db = load(ann.dbn);
-    db.simbad = db.SIMBAD;
-    db.nr  = size(db.simbad,2);
+    db.nr  = size(db.SIMBAD,2);
     db.vTn = (0:0.05:10)';
     db.nT  = numel(db.vTn);
     %
@@ -24,32 +23,34 @@ function train_ann_justPSA(varargin)
     switch upper(ann.cl)
         case 'ALL'
             idx_cl = ones(db.nr,1);
-            keyboard
         case 'AB'
-            ia1 = strcmpi('A',{db.simbad(:).site_EC8});
-            ia2 = strcmpi('A*',{db.simbad(:).site_EC8});
+            ia1 = strcmpi('A',{db.SIMBAD(:).site_EC8});
+            ia2 = strcmpi('A*',{db.SIMBAD(:).site_EC8});
             ia  = logical(ia1+ia2);
-            ib1 = strcmpi('B',{db.simbad(:).site_EC8});
-            ib2 = strcmpi('B*',{db.simbad(:).site_EC8});
+            ib1 = strcmpi('B',{db.SIMBAD(:).site_EC8});
+            ib2 = strcmpi('B*',{db.SIMBAD(:).site_EC8});
             ib  = logical(ib1+ib2);
             idx_cl = logical(ia+ib);
         case 'CD'
-            ia1 = strcmpi('C',{db.simbad(:).site_EC8});
-            ia2 = strcmpi('C*',{db.simbad(:).site_EC8});
+            ia1 = strcmpi('C',{db.SIMBAD(:).site_EC8});
+            ia2 = strcmpi('C*',{db.SIMBAD(:).site_EC8});
             ia  = logical(ia1+ia2);
-            ib1 = strcmpi('D',{db.simbad(:).site_EC8});
-            ib2 = strcmpi('D*',{db.simbad(:).site_EC8});
+            ib1 = strcmpi('D',{db.SIMBAD(:).site_EC8});
+            ib2 = strcmpi('D*',{db.SIMBAD(:).site_EC8});
             ib  = logical(ib1+ib2);
             idx_cl = logical(ia+ib);
     end
-    db.nr     = numel(find(idx_cl==1));
-    db.simbad = db.simbad(idx_cl);
-    
+    idx_cl1 = find(idx_cl==1);
+    db.nr   = numel(idx_cl1);
+    for i_=1:db.nr
+        
+        db.simbad(i_) = db.SIMBAD(idx_cl1)
+    end
+    db.simbad = ;
     %
     % _define training/validation set_
     %
     [idx_train,idx_valid] = trann_tv_sets(db.nr,5/100);
-    keyboard
     
     %% *DEFINE INPUT/OUTPUT*
     PSA = -999*ones(db.nr,db.nT);
@@ -72,7 +73,7 @@ function train_ann_justPSA(varargin)
                     db.simbad(j_).psa_h2(:)'],1);
             end
     end
-
+    
     inp.simbad  = -999*ones(inp.nT,db.nr);
     tar.simbad  = -999*ones(tar.nT,db.nr);
     for i_=1:inp.nT
