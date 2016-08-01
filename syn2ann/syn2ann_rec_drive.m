@@ -28,14 +28,11 @@ cor.MIR08.thd.z = ud.data(:,30);
 bhr.lfr = [];
 bhr.hfr = [];
 [bhr,rec.org]= syn2ann_rec_parser(bhr,cor);
-% % _original_
-% bhr.lfr = [];
-% bhr.hfr = 3;
-% [bhr,rec.fil]= rc_parser(bhr);
+
 %% *PGA-PGV-PGD & ARIAS INTENSITY*
 fprintf('--> Peak Values and Arias\n');
 rec.org = syn2ann_thp(rec.org);
-% rec.fil = syn2ann_thp(rec.fil);
+
 %% *SPECTRA*
 fprintf('--> Spectra\n');
 rec.org = syn2ann_spp(rec.org);

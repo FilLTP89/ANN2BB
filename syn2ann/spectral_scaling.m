@@ -29,7 +29,7 @@ function [varargout] = spectral_scaling(varargin)
     tar_vTn = varargin{4};      % target natural periods
     tar_nT = numel(tar_vTn);   % number of target natural periods
     % _selected period_
-    tar_vTn_idx = varargin{5};
+    out_idx = varargin{5};
     %
     % _spectral matching set up_
     %
@@ -37,7 +37,7 @@ function [varargout] = spectral_scaling(varargin)
     scl = 1;                    % scaling factor
     lfr = [];                  % corner frequency
     hfr = [];                   % cutoff frequency
-    nit = 10;                   % number of iterations
+    ni = 10;                   % number of iterations
     pga_target = tar_psa(1);
     %     tol_upp = 0.3; % (1+tol_upp) is the upper spec. tol.
     %     tol_low = 0.1; % (1-tol_low) is the lower spec. tol.
@@ -45,7 +45,8 @@ function [varargout] = spectral_scaling(varargin)
     % _resampling and correcting_
     %
     [obj_dtm,obj_tha,obj_ntm,~] = seismo_rsmpl(inp_dtm,inp_tha,fac,scl);
-    obj_tha = detrend(obj_tha, 'linear');
+    
+    %     obj_tha = detrend(obj_tha, 'linear');
     obj_vtm = obj_dtm*(0:obj_ntm-1);
     %
     % _frequency response_
@@ -59,62 +60,29 @@ function [varargout] = spectral_scaling(varargin)
     % _objective frequency_
     %
     np_cor  = 10;
-    idx_save_org(:,1) = find(tar_vTn>0.05);
-    idx_save_new = idx_save_org+(np_cor-idx_save_org(1)+1);
-    dTn_cor = (log10(0.05)-log10(2*inp_dtm))/(np_cor-1);
-    tar_vTn_new(1:np_cor,1) = (log10(2*inp_dtm):dTn_cor:log10(0.05))';
-    tar_vTn_new(1:np_cor,1) = 10.^tar_vTn_new(1:np_cor,1);
-    tar_vTn_new(idx_save_new,1)=tar_vTn(idx_save_org,1);
-    idx0 = find(tar_vTn == 0,1,'first');  % indexes
-    if ~isempty(idx0)
-        tar_vTn_new(1,1)=0.0;
-        obj_vfr(tar_nT-idx0+1) = 0.5/obj_dtm; % Nyquist frequency
-    else
-        tar_vTn_new(1,1)=2*obj_dtm;
-        tar_vTn_new = [0;tar_vTn_new];
-    end
-    tar_vTn_new = tar_vTn_new(tar_vTn_new<=5);
-    idx_min = tar_vTn_new < min(tar_vTn);
-    idx_max = tar_vTn_new > max(tar_vTn);
-    if ~isempty(idx_min)
-        tar_vTn_new(idx_min)=[];
-    end
-    if ~isempty(idx_max)
-        tar_vTn_new(idx_max)=[];
-    end
-%     tar_psa_new = interp1(tar_vTn,tar_psa,tar_vTn_new,'linear');
     
-    %     tar_psa = tar_psa_new;
-    %     tar_vTn = tar_vTn_new;
     obj_vfr = [0;flip(1./tar_vTn(2:end));0.5/obj_dtm];
     obj_vTn = tar_vTn(:);
-    vfr_cor = [1/tar_vTn(tar_vTn_idx(end));0.5/obj_dtm];
+    vfr_cor = [1/tar_vTn(out_idx(end));0.5/obj_dtm];
     vfr_cor = (inp_vfr>=vfr_cor(1) & inp_vfr<=vfr_cor(end));
-    vfr_hfc = inp_vfr>=40;
+    vfr_hfc = inp_vfr>=50;
     %% *SPECTRAL MATCHING*
     obj_psa = tar_psa;
-    for i_ = 1:nit % spectral matching iterations
+    for i_ = 1:ni % spectral matching iterations
         %
         % _psa response spectra at target periods_
         %
-        [obj_psd(tar_vTn_idx),~,~,obj_psa(tar_vTn_idx),~] = ...
-            newmark_sd(obj_tha(:,1),obj_dtm,tar_vTn(tar_vTn_idx),0.05);
+        [obj_psd(out_idx),~,~,obj_psa(out_idx),~] = ...
+            newmark_sd(obj_tha(:,1),obj_dtm,tar_vTn(out_idx),0.05);
         %
         % _psa response spectral ratio at target periods_
         %
         obj_rra = flip(obj_psa(:,1)./tar_psa(:,1));
-        %
-        % _constrain 0-frequency_
-        %
-        obj_rra = [1;obj_rra];
+        obj_rra=[1;obj_rra];
         %
         % _linear interpolation_
         %
         obj_rra = interp1(obj_vfr(:,1),obj_rra(:,1),inp_vfr(:,1),'linear');
-        %
-        % _constrain high frequencies_
-        %
-        obj_rra(vfr_hfc) = obj_psa(1,1)./tar_psa(1,1);
         %
         % _fourier spectra_
         %
@@ -171,5 +139,6 @@ function [varargout] = spectral_scaling(varargin)
     varargout{6} = obj_vTn;
     varargout{7} = obj_psa;
     varargout{8} = obj_psd;
+    save('mio.mat');
     return
 end
