@@ -7,5 +7,5 @@ spm = syn2ann_sm(hbs,trs);
 fprintf('--> Peak Values and Arias\n');
 for j_ = 1:hbs.mon.nc
     spm.(hbs.mon.cp{j_}) = syn2ann_thp(spm.(hbs.mon.cp{j_}));
-    spm.(hbs.mon.cp{j_}) = syn2ann_spp(spm.(hbs.mon.cp{j_}),2);
+    spm.(hbs.mon.cp{j_}) = syn2ann_spp(spm.(hbs.mon.cp{j_}));
 end

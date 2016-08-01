@@ -70,6 +70,7 @@ function [varargout] = lfhf_hybridator(varargin)
             shf.syn{i_}.fsa.(cpp) = WHF.*shf.syn{i_}.fsa.(cpp);
             %
             hyb.syn{i_}.fsa.(cpp) = slf.syn{i_}.fsa.(cpp) + shf.syn{i_}.fsa.(cpp);
+            
             %% *TIME-HISTORIES*
             slf.syn{i_}.tha.(cpp) = super_ifft(slf.mon.dtm(i_),...
                 slf.mon.ntm(i_),slf.syn{i_}.fsa.(cpp));
@@ -79,15 +80,16 @@ function [varargout] = lfhf_hybridator(varargin)
             %
             hyb.syn{i_}.tha.(cpp) = super_ifft(hyb.mon.dtm(i_),...
                 hyb.mon.ntm(i_),hyb.syn{i_}.fsa.(cpp));
+            
             %% *VELOCITY-DISPLACEMENTS*
             [~,slf.syn{i_}.thv.(cpp),slf.syn{i_}.thd.(cpp)] = ...
-                band_pass_filter(slf.mon.dtm(i_),slf.syn{i_}.tha.(cpp),[],[]);
+                integr_diff_avd(slf.mon.dtm(i_),slf.syn{i_}.tha.(cpp));
             %
             [~,shf.syn{i_}.thv.(cpp),shf.syn{i_}.thd.(cpp)] = ...
-                band_pass_filter(shf.mon.dtm(i_),shf.syn{i_}.tha.(cpp),[],[]);
+                integr_diff_avd(shf.mon.dtm(i_),shf.syn{i_}.tha.(cpp));
             %
             [~,hyb.syn{i_}.thv.(cpp),hyb.syn{i_}.thd.(cpp)] = ...
-                band_pass_filter(hyb.mon.dtm(i_),hyb.syn{i_}.tha.(cpp),[],[]);            
+                integr_diff_avd(hyb.mon.dtm(i_),hyb.syn{i_}.tha.(cpp));            
         end
     end
     %% OUTPUT

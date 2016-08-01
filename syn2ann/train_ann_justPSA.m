@@ -43,10 +43,9 @@ function train_ann_justPSA(varargin)
     idx_cl1 = find(idx_cl==1);
     db.nr   = numel(idx_cl1);
     for i_=1:db.nr
-        
-        db.simbad(i_) = db.SIMBAD(idx_cl1)
+        db.simbad(i_) = db.SIMBAD(idx_cl1(i_));
     end
-    db.simbad = ;
+    
     %
     % _define training/validation set_
     %

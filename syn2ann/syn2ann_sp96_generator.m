@@ -39,9 +39,7 @@ function [varargout] = syn2ann_sp96_generator(varargin)
                 sps.mtd.scc(i_),sps.mtd.sst(i_),sps.mtd.dtm_sp96(i_),sps.mtd.scl(i_));
             %
             [sps.syn{i_}.tha.(cpp),sps.syn{i_}.thv.(cpp),sps.syn{i_}.thd.(cpp)] = ...
-                band_pass_filter(sps.mtd.dtm_sp96(i_),sps.syn{i_}.tha.(cpp),...
-                sps.mon.lfr,sps.mon.hfr);
-            
+                integr_diff_avd(sps.mtd.dtm_sp96(i_),sps.syn{i_}.tha.(cpp));
         end
         sps.mon.dtm(i_) = sps.mtd.dtm_sp96(i_);
         sps.mon.vtm{i_} = vtm;

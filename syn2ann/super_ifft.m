@@ -8,7 +8,7 @@ function [varargout] = super_ifft(varargin)
     fst(1:nfr/2) = fss(1:nfr/2);
     fst(nfr/2+2:nfr) = flip(conj(fss(2:nfr/2)));
     ths = real(ifft(fst))./dtm;
-    ths = ths(1:ntm);
+%     ths = ths(1:ntm);
     varargout{1} = ths(:);
     return
 end
