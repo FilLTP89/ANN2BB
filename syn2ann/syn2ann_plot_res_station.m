@@ -56,7 +56,6 @@ for i_ = 1:numel(mm_)
             {'none','none','none','none','none'},...
             {'--','--','-','-','-'});
         
-        
         %% *POST-PROCESS - HYBRIDS vs ANN*
         fn = fullfile(sp,sprintf('%s_hyb_ann',st));
         syn2ann_plot_compare(...

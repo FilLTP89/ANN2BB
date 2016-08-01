@@ -35,18 +35,21 @@ function [varargout] = spectral_scaling(varargin)
     %
     fac = 1;                    % resampling factor
     scl = 1;                    % scaling factor
-    lfr = 0.05;                  % corner frequency
-    hfr = 40;                   % cutoff frequency
+    lfr = [];                  % corner frequency
+    hfr = [];                   % cutoff frequency
     nit = 10;                   % number of iterations
     pga_target = tar_psa(1);
     %     tol_upp = 0.3; % (1+tol_upp) is the upper spec. tol.
     %     tol_low = 0.1; % (1-tol_low) is the lower spec. tol.
     %
-    % _resampling_
+    % _resampling and correcting_
     %
     [obj_dtm,obj_tha,obj_ntm,~] = seismo_rsmpl(inp_dtm,inp_tha,fac,scl);
-    obj_tha=detrend(obj_tha, 'linear');
+    obj_tha = detrend(obj_tha, 'linear');
     obj_vtm = obj_dtm*(0:obj_ntm-1);
+    %
+    % _frequency response_
+    %
     inp_nfr = 2^nextpow2(obj_ntm);
     inp_dfr = 1/inp_dtm/(inp_nfr-1);
     inp_vfr = (0:inp_dfr:0.5/inp_dtm)';

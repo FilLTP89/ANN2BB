@@ -89,8 +89,17 @@ function [varargout] = lfhf_hybridator(varargin)
                 integr_diff_avd(shf.mon.dtm(i_),shf.syn{i_}.tha.(cpp));
             %
             [~,hyb.syn{i_}.thv.(cpp),hyb.syn{i_}.thd.(cpp)] = ...
-                integr_diff_avd(hyb.mon.dtm(i_),hyb.syn{i_}.tha.(cpp));            
+                integr_diff_avd(hyb.mon.dtm(i_),hyb.syn{i_}.tha.(cpp));
+            % 
         end
+        slf.mon.ntm(i_) = numel(slf.syn{i_}.tha.(cpp));
+        slf.mon.vtm(i_) = {(0:slf.mon.ntm(i_)-1)'};
+        %
+        shf.mon.ntm(i_) = numel(shf.syn{i_}.tha.(cpp));
+        shf.mon.vtm(i_) = {(0:shf.mon.ntm(i_)-1)'};
+        %
+        hyb.mon.ntm(i_) = numel(hyb.syn{i_}.tha.(cpp));
+        hyb.mon.vtm(i_) = {(0:hyb.mon.ntm(i_)-1)'};
     end
     %% OUTPUT
     varargout{1} = slf;
