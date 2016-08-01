@@ -93,13 +93,14 @@ function [varargout] = lfhf_hybridator(varargin)
             % 
         end
         slf.mon.ntm(i_) = numel(slf.syn{i_}.tha.(cpp));
-        slf.mon.vtm(i_) = {(0:slf.mon.ntm(i_)-1)'};
+        slf.mon.vtm(i_) = {slf.mon.dtm*(0:slf.mon.ntm(i_)-1)'};
         %
         shf.mon.ntm(i_) = numel(shf.syn{i_}.tha.(cpp));
-        shf.mon.vtm(i_) = {(0:shf.mon.ntm(i_)-1)'};
+        shf.mon.vtm(i_) = {shf.mon.dtm*(0:shf.mon.ntm(i_)-1)'};
         %
         hyb.mon.ntm(i_) = numel(hyb.syn{i_}.tha.(cpp));
-        hyb.mon.vtm(i_) = {(0:hyb.mon.ntm(i_)-1)'};
+        hyb.mon.vtm(i_) = {hyb.mon.dtm*(0:hyb.mon.ntm(i_)-1)'};
+
     end
     %% OUTPUT
     varargout{1} = slf;
