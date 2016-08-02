@@ -3,83 +3,60 @@
 % CentraleSupélec - Laboratoire MSSMat
 % DICA - Politecnico di Milano
 % Copyright 2016_
-% _super_deg2utm_ : function to generate Hisada input file
-% correponding to selected scenario for Shiba's fault model
+% _super_deg2utm_ : Function to convert lat/lon vectors into UTM coordinates (WGS84).
 %% INPUT
-% * _fld (folder object)_
-% * _fault_model.name (fault name)_
-% * _vp_vs_model.name (Vp/Vs vp_vs_model.name)_
-% * _flag_plot (flag for plotting)_
-% -------------------------------------------------------------------------
-% [x,y,utm_zone] = deg2utm(LAT,LON)
-%
-% Description: Function to convert lat/lon vectors into UTM coordinates (WGS84).
-% Some code has been extracted from UTM.m function by Gabriel Ruiz Martinez.
-%
-% Inputs:
-%    LON: Longitude vector.  Degrees.  +ddd.ddddd  WGS84
-%    LAT: Latitude vector.   Degrees.  +ddd.ddddd  WGS84
-%    
-%
-% Outputs:
-%    x, y , utm_zone.   See example
-%
-% Example 1:
-%    LAT=[40.3154333; 46.283900; 37.577833; 28.645650; 38.855550; 25.061783];
-%    LON=[-3.4857166; 7.8012333; -119.95525; -17.759533; -94.7990166; 121.640266];
-%    [x,y,utm_zone] = deg2utm(LAT,LON);
-%    fprintf('%7.0f ',x)
-%       458731  407653  239027  230253  343898  362850
-%    fprintf('%7.0f ',y)
-%      4462881 5126290 4163083 3171843 4302285 2772478
-%    utm_zone =
-%       30 T
-%       32 T
-%       11 S
-%       28 R
-%       15 S
-%       51 R
-%
-% Example 2: If you have LAT/LON coordinates in Degrees, Minutes and Seconds
-%    LatDMS=[40 18 55.56; 46 17 2.04];
-%    LonDMS=[-3 29  8.58;  7 48 4.44];
-%    LAT=dms2deg(mat2dms(LatDMS)); %convert into degrees
-%    LON=dms2deg(mat2dms(LonDMS)); %convert into degrees
-%    [x,y,utm_zone] = deg2utm(LON,LAT)
-%
-function  [varargout] = deg2utm(varargin)
-    
-    %-------------------------------------------------------------------------
-    % Check input arguments
+% * _LON (vector of longitude coordinates)_
+% * _LAT (vector of latitude  coordinates)_
+%% OUTPUT
+% * _E_UTM (utm easting coordinate)_
+% * _N_UTM (utm northing coordinate)_
+% * _ZONE_UTM (utm zone)_ 
+%% N.B.
+% * negative latitudes refer to south hemisphere
+% * If you have LAT/LON coordinates in Degrees, Minutes and Seconds
+% LatDMS=[40 18 55.56; 46 17 2.04];
+% LonDMS=[-3 29  8.58;  7 48 4.44];
+% LAT=dms2deg(mat2dms(LatDMS)); %convert into degrees
+% LON=dms2deg(mat2dms(LonDMS)); %convert into degrees
+% [E_UTM,N_UTM,ZONE_UTM] = super_deg2utm(LON,LAT)
+%% REFERENCES: 
+% function by Gabriel Ruiz Martinez.
+% Krueger series: Wikipedia
+% utm reference: http://www.dmap.co.uk/utmworld.htm (based on north
+% hemisphere)
+function  [varargout] = super_deg2utm(varargin)
+    %% *SET-UP*
     narginchk(2,4);  % 2 to 4 arguments required
     LON   = varargin{1}; 
     LAT   = varargin{2}; 
     n_lat = length(LAT); % latitude vector
     n_lon = length(LON); % longitude vector
-    
     if (n_lat~=n_lon)
         error('LAT and LON vectors should have the same length');
     end
-    
     % check ellipsoid values
     try narginchk(2,2)
         % default wgs84
         sa = 6378137.000000;   % major semi-axis of reference ellipsoid
         sb = 6356752.31424518; % minor semi-axis of reference ellipsoid
     catch
-        sa=varargin{3};
-        sb=varargin{4};
+        sa = varargin{3};
+        sb = varargin{4};
     end
-    Eccentricity=sqrt(sa^2-sb^2)/sa;
-    SquareEccentricity=Eccentricity^2; 
-    c=(sa^2)/sb;
-    Flattening=(sa-sb)/sa; 
-    InverseFlattening=1/Flattening;
+    
+    %% *ELLIPSOID*
+    Eccentricity = sqrt(sa^2-sb^2)/sa;
+    SquareEccentricity = Eccentricity^2; 
+    c = (sa^2)/sb;
+    Flattening = (sa-sb)/sa; 
+    InverseFlattening = 1/Flattening;
     k0=0.9996; 
     n=0.00167419; 
     rm=sqrt(sa*sb);
     AA=(sa/(1+n))*(1+(1/4)*n^2+(1/64)*n^4+(1/256)*n^6+(25/16384)*n^8+(49/65536)*n^10);
-    % Krueger Series
+    
+    %% *SERIES EXPANSION*
+    % _Krueger Series coefficients_
     alpha1=(1/2)*n-(2/3)*n^2+(5/16)*n^3+(41/180)*n^4-(127/288)*n^5+(7891/37800)*n^6+(72161/387072)*n^7-(18975107/50803200)*n^8+(60193001/290304000)*n^9+(134592031/1026432000)*n^10;
     alpha2=(13/48)*n^2-(3/5)*n^3+(557/1440)*n^4+(281/630)*n^5-(1983433/1935360)*n^6+(13769/28800)*n^7+(148003883/174182400)*n^8-(705286231/465696000)*n^9+(1703267974087/3218890752000)*n^10;
     alpha3=(61/240)*n^3-(103/140)*n^4+(15061/26880)*n^5+(167603/181440)*n^6-(67102379/29030400)*n^7+(79682431/79833600)*n^8+(6304945039/2128896000)*n^9-(6601904925257/1307674368000)*n^10;
@@ -103,9 +80,15 @@ function  [varargout] = deg2utm(varargin)
     ALPHA=[alpha1;alpha2;alpha3;alpha4;alpha5;alpha6;alpha7;alpha8;alpha9;alpha10];
     BETA=[beta1;beta2;beta3;beta4;beta5;beta6;beta7;beta8;beta9;beta10];
     
+    %% *UTM COORDINATES*
     E_UTM    = -999*ones(n_lat,1); 
     N_UTM    = -999*ones(n_lat,1); 
-    utm_zone = repmat('NUL',n_lat,1);
+    ZONE_UTM = repmat('NUL',n_lat,1);
+    
+    ref_lat = [-80:8:72,84]; % referred to north hemisphere
+    ref_utm = ['C','D','E','F','G','H','J','K','L','M',...
+        'N','P','Q','R','S','T','U','V','W','X'];
+    
     
     for i=1:n_lat
         
@@ -114,48 +97,8 @@ function  [varargout] = deg2utm(varargin)
         geozone = fix((lon/6)+31);
         Smeridian=((geozone*6)-183);
         
-        if (lat<-72)
-            utm_letter='C';
-        elseif (lat<-64)
-            utm_letter='D';
-        elseif (lat<-56)
-            utm_letter='E';
-        elseif (lat<-48)
-            utm_letter='F';
-        elseif (lat<-40)
-            utm_letter='G';
-        elseif (lat<-32)
-            utm_letter='H';
-        elseif (lat<-24)
-            utm_letter='J';
-        elseif (lat<-16),
-            utm_letter='K';
-        elseif (lat<-8)
-            utm_letter='L';
-        elseif (lat<0)
-            utm_letter='M';
-        elseif (lat<8)
-            utm_letter='N';
-        elseif (lat<16)
-            utm_letter='P';
-        elseif (lat<24)
-            utm_letter='Q';
-        elseif (lat<32)
-            utm_letter='R';
-        elseif (lat<40)
-            utm_letter='S';
-        elseif (lat<48)
-            utm_letter='T';
-        elseif (lat<56)
-            utm_letter='U';
-        elseif (lat<64)
-            utm_letter='V';
-        elseif (lat<72)
-            utm_letter='W';
-        else
-            utm_letter='X';
-        end
-        lat=lat*pi/180; lon=lon*pi/180;
+        lat=lat*pi/180; 
+        lon=lon*pi/180;
         dlon=abs(lon-Smeridian*pi/180);
         tau=tan(abs(lat));
         %conflat1=atan(sinh(asinh(tau)-Eccentricity*atanh(Eccentricity*sin(abs(lat)))));
@@ -199,13 +142,14 @@ function  [varargout] = deg2utm(varargin)
         %
         %    x(i)=xx;
         %    y(i)=yy;
-        E_UTM(i) = Easting;
-        N_UTM(i) = Northing;
-        utm_zone(i,:) = sprintf('%02d%c',geozone,utm_letter);
+        E_UTM(i)      = Easting;
+        N_UTM(i)      = Northing;
+        ZONE_UTM(i,:) = sprintf('%02d%c',...
+            geozone,ref_utm(find(ref_lat<=LAT(i),1,'last')));
     end
     %% OUTPUT
     varargout{1} = E_UTM;
     varargout{2} = N_UTM;
-    varargout{3} = utm_zone;
+    varargout{3} = ZONE_UTM;
     return
 end
