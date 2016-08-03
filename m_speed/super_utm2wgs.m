@@ -43,6 +43,7 @@ function [varargout] = super_utm2wgs(varargin)
         x=E_UTM(i);
         y=N_UTM(i);
         zone=str2double(ZONE_UTM(i,1:2));
+        keyboard
         sa = 6378137.000000;                % semi-major axis of the Earth ellipsoid
         sb = 6356752.314245;                % semi-minor axis of the Earth ellipsoid
         e=(((sa^2)-(sb^2))^0.5)/sb;      % squared second eccentricity
