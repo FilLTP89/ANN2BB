@@ -47,9 +47,10 @@ function [varargout] = spectral_scaling(varargin)
     %
     % _frequency response_
     %
-    inp_nfr = 2^nextpow2(obj_ntm);
-    inp_dfr = 1/inp_dtm/(inp_nfr-1);
-    inp_vfr = (0:inp_dfr:0.5/inp_dtm)';
+    [inp_vfr,inp_fsa] = super_fft(obj_dtm,obj_tha,0,[1,4]);
+    inp_nfr = numel(inp_vfr);
+    inp_dfr = 1/obj_dtm/(inp_nfr-1);
+    inp_vfr = (0:inp_dfr:0.5/obj_dtm)';
     obj_nfs = numel(inp_vfr);
     %
     % _refining tar_vTn vector at high frequency_
@@ -57,62 +58,111 @@ function [varargout] = spectral_scaling(varargin)
     vTn_cor = 0.05;
     nc  = 10;
     idxn = find(tar_vTn(tar_vTn~=0) < vTn_cor); % indexes
-    close all;
-    figure
-    plot(tar_vTn,tar_psa,'ro')
-    hold all
+    close all
+    %     figure
+    %     plot(tar_vTn,tar_psa,'ro','markerfacecolor',rgb('orange'));hold all;
+    %     plot(tar_vTn(out_idx),tar_psa(out_idx),'ks','markerfacecolor',rgb('grey'));
+    
     if logical(isempty(idxn))
         idx_save_org(:,1)    = find(tar_vTn>vTn_cor);
         idx_save_new         = idx_save_org+(nc-idx_save_org(1)+1);
+        
         dTn_cor              = (log10(vTn_cor)-log10(2*obj_dtm))/(nc-1);
         tar_vTn_new(1:nc,1)  = (log10(2*obj_dtm):dTn_cor:log10(vTn_cor))';
         tar_vTn_new(1:nc,1)  = 10.^tar_vTn_new(1:nc,1);
         tar_vTn_new(idx_save_new,1) = tar_vTn(idx_save_org,1);
         tar_vTn_new          = [0;tar_vTn_new];
         tar_psa_new          = interp1(tar_vTn,tar_psa,tar_vTn_new,'linear');
+        
+        out_idx_new=-999*ones(numel(out_idx),1);
+        for j_=1:numel(out_idx)
+            out_idx_new(j_) = find(abs(tar_vTn_new-tar_vTn(out_idx(j_)))<1e-8);
+        end
+        out_idx = out_idx_new;
         tar_vTn = tar_vTn_new;
         tar_psa = tar_psa_new;
     end
-    plot(tar_vTn,tar_psa,'b+')
-    keyboard
+    %     figure
+    %     plot(tar_vTn,tar_psa,'bp','markerfacecolor',rgb('deepskyblue'));hold all;
+    %     plot(tar_vTn(out_idx_new),tar_psa(out_idx_new),'go','markerfacecolor',rgb('darkgreen'));
+    %     keyboard
     obj_vfr = [0;flip(1./tar_vTn(2:end));0.5/obj_dtm];
     obj_vTn = tar_vTn(:);
     vfr_cor = [1/tar_vTn(out_idx(end));0.5/obj_dtm];
-    vfr_cor = (inp_vfr>=vfr_cor(1) & inp_vfr<=vfr_cor(end));
+    vfr_cor = (inp_vfr>vfr_cor(1) & inp_vfr<=vfr_cor(end));
     vfr_hfc = inp_vfr>=50;
+    
     %% *SPECTRAL MATCHING*
-    %     obj_psa = tar_psa;
+    xpl = cell(ni,1);
+    %     ypl = cell(ni,1);
+    ypl1 = cell(ni,1);
+    leg  = cell(ni,1);
+    close all
+    figure
+    [~,~,~,obj_psa,~] = ...
+        newmark_sd(obj_tha(:,1),obj_dtm,tar_vTn,0.05);
+    obj_rra = flip(obj_psa(:,1)./tar_psa(:,1));
+    obj_rra = [1;obj_rra];
+    obj_rra = interp1(obj_vfr(:,1),obj_rra(:,1),inp_vfr(:,1),'linear');
+    %     plot(tar_vTn,tar_psa,'go'); hold all;
+    
     for i_ = 1:ni % spectral matching iterations
         %
         % _psa response spectra at target periods_
         %
-        [obj_psd,~,~,obj_psa,~] = ...
-            newmark_sd(obj_tha(:,1),obj_dtm,tar_vTn,0.05);
+        
+        %         plot(tar_vTn,obj_psa,'b'); hold all;
         %
         % _psa response spectral ratio at target periods_
         %
-        obj_rra = flip(obj_psa(:,1)./tar_psa(:,1));
-        obj_rra=[1;obj_rra];
-        idx = logical(obj_rra<= 1+tol_upp)&logical(obj_rra>= 1-tol_low);
-        obj_rra(idx) = 1;
+        
+        
         %
         % _linear interpolation_
         %
-        figure
-        plot(obj_vfr,obj_rra,'ro');hold all;
-        obj_rra = interp1(obj_vfr(:,1),obj_rra(:,1),inp_vfr(:,1),'linear');
-        plot(inp_vfr,obj_rra,'b');
-        keyboard
+        
+        
+        
+        %         semilogx(inp_vfr,obj_rra,'b'); hold all;
+        %         semilogx(inp_vfr(vfr_cor),obj_rra(vfr_cor),'r'); hold all;
         %
         % _fourier spectra_
         %
-        obj_fsa = super_fft(obj_dtm,obj_tha(:),0,4);
+        obj_fsa          = super_fft(obj_dtm,obj_tha(:),0,4);
         obj_fsa(vfr_cor) = obj_fsa(vfr_cor)./obj_rra(vfr_cor);
+        obj_tha  = super_ifft(obj_dtm,obj_ntm,obj_fsa);
+        
+        [~,~,~,obj_psa,~] = ...
+            newmark_sd(obj_tha(:,1),obj_dtm,tar_vTn,0.05);
+        obj_rra = flip(obj_psa(:,1)./tar_psa(:,1));
+        obj_rra = [1;obj_rra];
+        
+        idx     = logical(obj_rra<= 1+tol_upp)&logical(obj_rra>= 1-tol_low);
+        obj_rra(idx) = 1;
+        obj_rra = interp1(obj_vfr(:,1),obj_rra(:,1),inp_vfr(:,1),'linear');
+        %         figure
+        %         loglog(inp_vfr,abs(obj_fsa(1:obj_nfs)),'b'); hold all;
+        %         loglog(inp_vfr(vfr_cor),abs(obj_fsa(vfr_cor)),'r'); hold all;
+        %         loglog(inp_vfr,obj_rra,'g')
+        %         keyboard
         %
         % _new accelerogram_
         %
-        %obj_tha = detrend(super_ifft(obj_dtm,obj_ntm,obj_fsa));
+        
+        xpl{i_}  = inp_vfr;
+        %         ypl{i_}  = abs(obj_fsa(1:numel(inp_vfr)));
+        ypl1{i_} = (obj_rra(1:numel(inp_vfr)));
+        leg{i_}  = num2str(i_);
     end
+    
+    %     fpplot('xpl',xpl,'ypl',ypl,'vfg','on',...
+    %         'mrk',{'none','none','none','none','none','none','none','none','none','none'},...
+    %         'xlm',{[0,50]},'ylm',{[0,1e1]},'scl',{'log'},'leg',{leg});
+    
+    fpplot('xpl',xpl,'ypl',ypl1,'vfg','on',...
+        'mrk',{'none','none','none','none','none','none','none','none','none','none'},...
+        'xlm',{[0,50]},'ylm',{[0,1e1]},'scl',{'slx'},'leg',{leg});
+    
     %
     % _correct PGA on time history_
     %
@@ -150,6 +200,8 @@ function [varargout] = spectral_scaling(varargin)
     catch
     end
     [obj_tha,obj_thv,obj_thd] = integr_diff_avd(obj_dtm,obj_tha);
+    [obj_psd,~,~,~,~] = ...
+        newmark_sd(obj_tha(:,1),obj_dtm,tar_vTn,0.05);
     %% OUTPUT
     varargout{1} = obj_dtm;
     varargout{2} = obj_tha;

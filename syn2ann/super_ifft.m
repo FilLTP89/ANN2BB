@@ -5,6 +5,7 @@ function [varargout] = super_ifft(varargin)
     
     nfr = numel(fss);
     fst = zeros(nfr,1);
+    
     fst(1:nfr/2) = fss(1:nfr/2);
     fst(nfr/2+2:nfr) = flip(conj(fss(2:nfr/2)));
     ths = real(ifft(fst))./dtm;

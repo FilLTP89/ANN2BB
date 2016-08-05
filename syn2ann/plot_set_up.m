@@ -45,7 +45,7 @@ function [varargout]=plot_set_up
                    1.000 0.498 0.140;
                    0.800 0.060 0.460];
     % color_order=[color_order;varycolor(100)];    
-    set(0,'defaultaxescolororder',color_order);
+%     set(0,'defaultaxescolororder',color_order);
     
     %% DEFAULT GUI APPEARANCE
     set(0,'defaultuicontrolbackgroundcolor',[0.94 0.94 0.94]);
