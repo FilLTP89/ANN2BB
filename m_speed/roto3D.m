@@ -12,7 +12,7 @@
 
 % REFERENCE: Foley & Van Dam, Chapter 5 (Lecture_07_6.pdf )
 
-function [vp] = roto3D(v,axis,theta); 
+function [vp] = roto3D(v,axis,theta)
 
 R = zeros(4,4); 
 v = [v;1]; 
