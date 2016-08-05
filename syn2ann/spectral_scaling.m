@@ -43,7 +43,7 @@ function [varargout] = spectral_scaling(varargin)
     % _resampling and correcting_
     %
     [obj_dtm,obj_tha,obj_ntm,~] = seismo_rsmpl(inp_dtm,inp_tha,fac,scl);
-    obj_vtm = obj_dtm*(0:obj_ntm-1);
+    
     %
     % _frequency response_
     %
@@ -52,6 +52,12 @@ function [varargout] = spectral_scaling(varargin)
     inp_dfr = 1/obj_dtm/(inp_nfr-1);
     inp_vfr = (0:inp_dfr:0.5/obj_dtm)';
     obj_nfs = numel(inp_vfr);
+    
+    obj_tha(obj_ntm+1:inp_nfr)=0;
+    obj_ntm = numel(obj_tha);
+    obj_vtm = obj_dtm*(0:obj_ntm-1);
+%     save('sc_1.mat')
+    stop
     %
     % _refining tar_vTn vector at high frequency_
     %

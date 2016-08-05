@@ -9,8 +9,8 @@ wd = fullfile(filesep,'media','user','DATI','Filippo','PHD_heavyweight',...
 %     'EMILIA_2905');
 fprintf('Workdir: %s\n',wd);
 % _save path_
-sp = fullfile(wd,'images');
-eval(sprintf('!mkdir -p %s',sp));
+sp = '/media/user/DATI/Filippo/heavy_images';
+% eval(sprintf('!mkdir -p %s',sp));
 
 %% *REAL RECORDS: METADATA*
 % _path to record files_
