@@ -3,7 +3,7 @@
 % DICA - Politecnico di Milano
 % Copyright 2016_
 %% NOTES
-% _newmark_sd_: function to compute acceleration/velocity/displacement of
+% _SDOF_response_: function to compute acceleration/velocity/displacement of
 % a SDOF, by exploiting Newmark's method.
 %% INPUT: 
 % * _ag (ground acceleration)_
@@ -15,9 +15,8 @@
 %% N.B.: 
 % interpolation of input acceleration TH to improve accuracy of numerical
 % integration (step = dtm)
-function [varargout] = newmark_sd(varargin)
-    
-    %% SET-UP
+function [varargout] = SDOF_response(varargin)
+    %% *SET-UP*
     ag  = varargin{1};   % ag = interp1(t1,gacc1,t);
     dtm = varargin{2};
     vTn  = varargin{3};
@@ -27,13 +26,18 @@ function [varargout] = newmark_sd(varargin)
     % _newmark coefficients_
     beta = 0.25;
     gamma = 0.5;
+    
+    out_sel = 1:5;
+    if nargin>4
+        out_sel = varargin{5};
+    end
     % _spectral displacement_
     sd  = -ones(nTn,1);
     % _spectral velocity_
     sv  = -ones(nTn,1);
     % _spectral acceleration_
     sa  = -ones(nTn,1);
-    %% NEWMARK INTEGRATION
+    %% *NEWMARK INTEGRATION*
     for j_ = 1:nTn % natural periods
         % _natural circular frequency of sdof system_
         wn = 2*pi/vTn(j_);
@@ -66,18 +70,35 @@ function [varargout] = newmark_sd(varargin)
         sv(j_) = max(abs(yp));
         sa(j_) = max(abs(ypp));
     end
-    % _pseudo-spectral displacement_
-    psa = sd.*((2*pi./vTn).^2);
-    % _pseudo-spectral velocity_
-    psv = sd.*(2*pi./vTn);
-    % add pga 
-    psa(vTn==0) = max(abs(ag));
     sd(vTn==0) = 0.0;
-    %% OUTPUT
-    varargout{1} = sd;
-    varargout{2} = sv;
-    varargout{3} = sa;
-    varargout{4} = psa;
-    varargout{5} = psv;
+    
+    %% *OUTPUT*
+    if any(out_sel==1)
+        % _pseudo-spectral acceleration_
+        psa = sd.*((2*pi./vTn).^2);
+        % _add pga_
+        psa(vTn==0) = max(abs(ag));
+        varargout{out_sel==1} = psa;
+    end
+    
+    if any(out_sel==2)
+        varargout{out_sel==2} = sd;
+    end
+    
+    if any(out_sel==3)
+        % _pseudo-spectral velocity_
+        varargout{out_sel==3} = sd.*(2*pi./vTn);
+    end
+    
+    if any(out_sel==4)
+        % _spectral acceleration_
+        varargout{out_sel==4} = sa;
+    end
+    
+    if any(out_sel==5)
+        % _spectral acceleration_
+        varargout{out_sel==5} = sv;
+    end
+    
     return
 end

@@ -24,18 +24,18 @@
 % nfr should be odd number to be able to transpose the
 % conjugate part [size(fsr)=nfr (odd)]
 % REFERENCES:
-% Frequency domain representation returned as a vector, matrix, or 
-% multidimensional array. If X is of type single, then fft natively computes 
-% in single precision, and Y is also of type single. Otherwise, Y is 
+% Frequency domain representation returned as a vector, matrix, or
+% multidimensional array. If X is of type single, then fft natively computes
+% in single precision, and Y is also of type single. Otherwise, Y is
 % returned as a type double.
 % The size of Y is as follows:
-% 
+%
 %     For Y = fft(X) or Y = fft(X,[],dim), the size of Y is equal to the size of X.
-% 
-%     For Y = fft(X,n,dim), the value of size(Y,dim) is equal to n, 
+%
+%     For Y = fft(X,n,dim), the value of size(Y,dim) is equal to n,
 %     while the size of all other dimensions remains as in X.
-% 
-% If X is real, then Y is conjugate symmetric, and the number of unique 
+%
+% If X is real, then Y is conjugate symmetric, and the number of unique
 % points in Y is ceil((n+1)/2).
 
 function [varargout]=super_fft(varargin)
@@ -52,7 +52,12 @@ function [varargout]=super_fft(varargin)
         out_sel = varargin{4};
     end
     % _frequency vector_
-    nfr=2^nextpow2(numel(thr)+1);
+    %     nfr=2^nextpow2(numel(thr));
+    ig=0;
+    while (2^ig<=numel(thr));
+        ig=ig+1;
+    end
+    nfr = 2^ig;
     if any(out_sel==1)
         dfr = 1/dtm/(nfr-1);
         vfr = dfr*(0:nfr-1);
@@ -72,7 +77,7 @@ function [varargout]=super_fft(varargin)
         amp = abs(fsr);
         % _Konno-Ohmachi smoothing_
         if logical(kos)
-            amp=smooth_KO(amp,40);
+            amp = smooth_KO(amp,40);
         end
         varargout{out_sel==2} = amp(:);
     end
