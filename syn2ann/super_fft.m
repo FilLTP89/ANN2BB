@@ -52,12 +52,7 @@ function [varargout]=super_fft(varargin)
         out_sel = varargin{4};
     end
     % _frequency vector_
-    %     nfr=2^nextpow2(numel(thr));
-    ig=0;
-    while (2^ig<=numel(thr));
-        ig=ig+1;
-    end
-    nfr = 2^ig;
+    nfr=2^nextpow2(numel(thr));
     if any(out_sel==1)
         dfr = 1/dtm/(nfr-1);
         vfr = dfr*(0:nfr-1);

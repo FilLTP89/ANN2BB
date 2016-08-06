@@ -5,23 +5,23 @@
 %% NOTES
 % _SDOF_response_: function to compute acceleration/velocity/displacement of
 % a SDOF, by exploiting Newmark's method.
-%% INPUT: 
-% * _ag (ground acceleration)_
+%% INPUT:
+% * _tha (ground acceleration)_
 % * _dtm (time step for numerical integration)_
 % * _vTn (vector of natural period)_
 % * _zeta (damping ratio)_
-%% OUTPUT: 
+%% OUTPUT:
 % * _ymax (maximum relative displacement of single dof)_
-%% N.B.: 
+%% N.B.:
 % interpolation of input acceleration TH to improve accuracy of numerical
 % integration (step = dtm)
 function [varargout] = SDOF_response(varargin)
     %% *SET-UP*
-    ag  = varargin{1};   % ag = interp1(t1,gacc1,t);
+    tha  = varargin{1}(:);   % tha = interp1(t1,gacc1,t);
     dtm = varargin{2};
-    vTn  = varargin{3};
+    vTn  = varargin{3}(:);
     zeta = varargin{4};
-    ntm = numel(ag);
+    ntm = numel(tha);
     nTn = numel(vTn);
     % _newmark coefficients_
     beta = 0.25;
@@ -49,7 +49,7 @@ function [varargout] = SDOF_response(varargin)
         yp0 = 0.;
         y(1)   = y0;
         yp(1)  = yp0;
-        ypp(1) = -ag(1)-2*wn*zeta*yp0-wn^2*y0;
+        ypp(1) = -tha(1)-2*wn*zeta*yp0-wn^2*y0;
         %%
         % _integration coefficients_
         keff = wn^2 + 1/(beta*dtm^2) + gamma*2*wn*zeta/(beta*dtm);
@@ -59,7 +59,7 @@ function [varargout] = SDOF_response(varargin)
         %%
         % _Newmark time scheme_
         for i_ = 1:ntm-1 % time steps
-            y(i_+1)   = (-ag(i_+1)+a1*y(i_)+a2*yp(i_)+a3*ypp(i_))/keff;
+            y(i_+1)   = (-tha(i_+1)+a1*y(i_)+a2*yp(i_)+a3*ypp(i_))/keff;
             ypp(i_+1) = ypp(i_)+...
                 (y(i_+1)-y(i_)-dtm*yp(i_)-dtm^2*ypp(i_)/2)/(beta*dtm^2);
             yp(i_+1)  = yp(i_)+dtm*ypp(i_)+dtm*gamma*(ypp(i_+1)-ypp(i_));
@@ -77,7 +77,7 @@ function [varargout] = SDOF_response(varargin)
         % _pseudo-spectral acceleration_
         psa = sd.*((2*pi./vTn).^2);
         % _add pga_
-        psa(vTn==0) = max(abs(ag));
+        psa(vTn==0) = max(abs(tha));
         varargout{out_sel==1} = psa;
     end
     

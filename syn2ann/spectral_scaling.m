@@ -117,7 +117,7 @@ function [varargout] = spectral_scaling(varargin)
         obj_fsa          = fft(obj_tha(:))*obj_dtm;
         obj_fsa(vfr_cor) = obj_fsa(vfr_cor)./obj_rra(vfr_cor);
         obj_tha  = super_ifft(obj_dtm,obj_ntm,obj_fsa);
-        
+        obj_tha = detrend(obj_tha);
         obj_psa = SDOF_response(obj_tha(:,1),obj_dtm,tar_vTn,0.05,1);
         obj_rra = flip(obj_psa(:,1)./tar_psa(:,1));
         obj_rra = [1;obj_rra];
