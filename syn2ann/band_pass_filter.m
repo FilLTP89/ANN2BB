@@ -50,7 +50,7 @@ function [varargout] = band_pass_filter(varargin)
         %% PROCESSING ACCELERATION
         % _pad definition_
         ntm = numel(tha);
-        npd = ceil(40/dtm);
+        npd = 0;%ceil(40/dtm);
         ntm_pad = ntm + 2*npd;
         tha_pad = zeros(ntm_pad,1);
         % _base-line correction_

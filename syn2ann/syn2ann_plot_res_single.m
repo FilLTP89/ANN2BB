@@ -1,14 +1,14 @@
 %% *SET UP*
 global pfg xlm xlb xtk ylm ylb ytk grd scl mrk tit utd
 cd(wd);close all;
-mm_ = 1;
+mm_ = 1:4;
 cpp = {'e';'n';'z'};
 %
 % _COMPUTE TIME SHIFT FOR RECORD PLOT_
 %
 syn2ann_alignth;
 
-% vtm_shift(3) = vtm_shift(3)-1.2;
+vtm_shift(3) = vtm_shift(3)-1.2;
 %
 % * _FOURIER SPECTRA_
 %

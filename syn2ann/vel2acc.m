@@ -62,7 +62,7 @@ function [varargout] = vel2acc(varargin)
         thv = filtfilt(bfb,bfa,thv_pad);
         %% COMPUTING/PROCESSING DISPLACEMENT
         % _time integration_
-        thd_pad = cumtrapz(thv)*dtm;
+        thd_pad = cumtrapz(thv_pad)*dtm;
         % _base-line correction_
         thd_pad = detrend(thd_pad);
         % _applying cosinus taper_
@@ -79,9 +79,9 @@ function [varargout] = vel2acc(varargin)
     end
     %% BACK TO ACCELERATION
     % _time differentiation_
-    tha(2:ntm-1,1) = (thv(3:ntm,1)-thv(1:ntm-2,1))./(2*dtm);
+    tha(2:ntm_pad-1,1) = (thv(3:ntm_pad,1)-thv(1:ntm_pad-2,1))./(2*dtm);
     tha(1,1) = 0.0;
-    tha(ntm,1) = tha(ntm-1,1);
+    tha(ntm_pad,1) = tha(ntm_pad-1,1);
     % _time integration_
     thv = cumtrapz(tha)*dtm;
     thd = cumtrapz(thv)*dtm;
