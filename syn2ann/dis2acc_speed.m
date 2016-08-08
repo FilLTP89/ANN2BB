@@ -47,28 +47,8 @@ function [varargout] = dis2acc_new(varargin)
     [bfb,bfa,flag] = create_butter_filter(bfo,lfr,hfr,fNy);
     
     %% PROCESSING
-    if flag
-        disp('TIME INTEGRATION--->FILTER')
-        %         %% PROCESSING DISPLACEMENT
-        %         % _pad definition_
-        %
-        %         npd = ceil(40/dtm);
-        %         ntm_pad = ntm + 2*npd;
-        %         thd_pad = zeros(ntm_pad,1);
-        %         % _padding_
-        %         thd_pad(:) = padarray(thd,npd,'both');
-        %         % _base-line correction_
-        %         thd_pad = detrend(thd_pad);
-        %         % _applying cosinus taper_
-        %         thd_pad = cos_taper(thd_pad);
-        %         % _acasual filtering_
-        %         thd = filtfilt(bfb,bfa,thd_pad);
-    else
-        disp('TIME INTEGRATION--->NO FILTER')
-    end
-    
-    %% BACK TO ACCELERATION
     thd = filtfilt(bfb,bfa,thd);
+    %% BACK TO ACCELERATION
     % _time differentiation_
     thv(2:ntm-1,1) = (thd(3:ntm,1)-thd(1:ntm-2,1))./(2*dtm);
     thv(1,1) = 0.0;
@@ -77,21 +57,6 @@ function [varargout] = dis2acc_new(varargin)
     tha(1,1) = 0.0;
     tha(ntm,1) = tha(ntm-1,1);
     
-    %     thv = [0;diff(thd)/dtm];
-    %     tha = [0;diff(thv)/dtm];
-    % _time integration_
-    %     thv = cumtrapz(tha)*dtm;
-    %     thd = cumtrapz(thv)*dtm;
-    %% OUTPUT
-    %     if flag
-    %         varargout{1} = tha(npd+1:ntm+npd,1);
-    %         varargout{2} = thv(npd+1:ntm+npd,1);
-    %         varargout{3} = thd(npd+1:ntm+npd,1);
-    %     else
-    %         varargout{1} = tha(:);
-    %         varargout{2} = thv(:);
-    %         varargout{3} = thd(:);
-    %     end
     varargout{1} = tha(:);
     varargout{2} = thv(:);
     varargout{3} = thd(:);

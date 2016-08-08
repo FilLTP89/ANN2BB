@@ -42,8 +42,7 @@ function [varargout] = integr_diff_avd(varargin)
         % _base-line correction_
         thd = detrend(thd);
         % _applying cosinus taper_
-        %         thd = cos_taper(thd);
-        thd = taper_fun(thd,5,1,1);
+        thd = cos_taper(thd);
         % _acasual filtering_
         thd = filtfilt(bfb,bfa,thd);
         %% BACK TO ACCELERATION

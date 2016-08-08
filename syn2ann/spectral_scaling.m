@@ -98,17 +98,12 @@ function [varargout] = spectral_scaling(varargin)
     vfr_hfc = inp_vfr>=50;
     
     %% *SPECTRAL MATCHING*
-    xpl = cell(ni,1);
-    %     ypl = cell(ni,1);
-    ypl1 = cell(ni,1);
-    leg  = cell(ni,1);
 
     obj_psa = SDOF_response(obj_tha(:,1),obj_dtm,tar_vTn,0.05,1);
     obj_rra = flip(obj_psa(:,1)./tar_psa(:,1));
     obj_rra = [1;obj_rra];
     obj_rra = interp1(obj_vfr(:,1),obj_rra(:,1),inp_vfr(:,1),'linear');
-    save('sc_1.mat')
-    
+
     
     for i_ = 1:ni % spectral matching iterations
         %
@@ -121,15 +116,10 @@ function [varargout] = spectral_scaling(varargin)
         obj_psa = SDOF_response(obj_tha(:,1),obj_dtm,tar_vTn,0.05,1);
         obj_rra = flip(obj_psa(:,1)./tar_psa(:,1));
         obj_rra = [1;obj_rra];
-        
-%         idx     = logical(obj_rra<= 1+tol_upp)&logical(obj_rra>= 1-tol_low);
-%         obj_rra(idx) = 1;
+        idx     = logical(obj_rra<= 1+tol_upp)&logical(obj_rra>= 1-tol_low);
+        obj_rra(idx) = 1;
         obj_rra = interp1(obj_vfr(:,1),obj_rra(:,1),inp_vfr(:,1),'linear');
-        if i_==4
-            save('sc_2.mat')
-            
-            stop
-        end
+        
     end
     
     %
@@ -169,7 +159,7 @@ function [varargout] = spectral_scaling(varargin)
     catch
     end
     [obj_tha,obj_thv,obj_thd] = integr_diff_avd(obj_dtm,obj_tha);
-    obj_psd = newmark_sd(obj_tha(:,1),obj_dtm,tar_vTn,0.05,2);
+    [obj_psa,obj_psd] = SDOF_response(obj_tha(:,1),obj_dtm,tar_vTn,0.05,[1,2]);
     %% *OUTPUT*
     varargout{1} = obj_dtm;
     varargout{2} = obj_tha;

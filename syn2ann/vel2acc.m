@@ -45,6 +45,7 @@ function [varargout] = vel2acc(varargin)
     end
     %% BUTTERWORTH FILTER
     [bfb,bfa,flag] = create_butter_filter(bfo,lfr,hfr,fNy);
+
     %% PROCESSING
     if flag
         %% PROCESSING VELOCITY
@@ -68,14 +69,19 @@ function [varargout] = vel2acc(varargin)
         thd_pad = cos_taper(thd_pad);
         % _acasual filtering_
         thd = filtfilt(bfb,bfa,thd_pad);
-        thv = [0;diff(thd)/dtm];
+        % _time integration_
+        thv(2:ntm-1,1) = (thd(3:ntm,1)-thd(1:ntm-2,1))./(2*dtm);
+        thv(1,1) = 0.0;
+        thv(ntm,1) = thv(ntm-1,1);
     else
         % _time integration_
         thd = cumtrapz(thv)*dtm;
     end
     %% BACK TO ACCELERATION
     % _time differentiation_
-    tha = [0;diff(thv)/dtm];
+    tha(2:ntm-1,1) = (thv(3:ntm,1)-thv(1:ntm-2,1))./(2*dtm);
+    tha(1,1) = 0.0;
+    tha(ntm,1) = tha(ntm-1,1);
     % _time integration_
     thv = cumtrapz(tha)*dtm;
     thd = cumtrapz(thv)*dtm;

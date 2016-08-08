@@ -14,14 +14,14 @@
 % * _shf (structure of sp synthetics)_
 % * _hyb (hybrid synthetics structure)_
 function [varargout] = lfhf_mashup(varargin)
-    %% SET-UP
+    %% *SET-UP*
     slf = varargin{1};
     shf = varargin{2};
     hyb.mon = slf.mon;
     hyb.syn = cell(slf.mon.na,1);
-    %% HYBRIDIZATION
+    %% *HYBRIDIZATION*
     [slf,shf,hyb] = lfhf_hybridator(slf,shf,hyb);
-    %% OUTPUT
+    %% *OUTPUT*
     varargout{1} = slf;
     varargout{2} = shf;
     varargout{3} = hyb;
@@ -43,11 +43,12 @@ end
 % * _shf(high frequency records)_
 % * _hyb(hybrid records)_
 function [varargout] = lfhf_hybridator(varargin)
-    %% SET-UP
+    %% *SET-UP*
     slf = varargin{1};
     shf = varargin{2};
     hyb = varargin{3};
-    %% BROAD-BAND SIGNALS
+    
+    %% *BROAD-BAND SIGNALS*
     for i_ = 1:slf.mon.na
         nfa = round(hyb.mon.fa(i_)/hyb.mon.dfr(i_));
         nfb = round(hyb.mon.fb(i_)/hyb.mon.dfr(i_));
@@ -93,13 +94,13 @@ function [varargout] = lfhf_hybridator(varargin)
             % 
         end
         slf.mon.ntm(i_) = numel(slf.syn{i_}.tha.(cpp));
-        slf.mon.vtm(i_) = {slf.mon.dtm*(0:slf.mon.ntm(i_)-1)'};
+        slf.mon.vtm(i_) = {slf.mon.dtm(i_)*(0:slf.mon.ntm(i_)-1)'};
         %
         shf.mon.ntm(i_) = numel(shf.syn{i_}.tha.(cpp));
-        shf.mon.vtm(i_) = {shf.mon.dtm*(0:shf.mon.ntm(i_)-1)'};
+        shf.mon.vtm(i_) = {slf.mon.dtm(i_)*(0:shf.mon.ntm(i_)-1)'};
         %
         hyb.mon.ntm(i_) = numel(hyb.syn{i_}.tha.(cpp));
-        hyb.mon.vtm(i_) = {hyb.mon.dtm*(0:hyb.mon.ntm(i_)-1)'};
+        hyb.mon.vtm(i_) = {slf.mon.dtm(i_)*(0:hyb.mon.ntm(i_)-1)'};
 
     end
     %% OUTPUT
