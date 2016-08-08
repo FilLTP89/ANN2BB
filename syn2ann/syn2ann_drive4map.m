@@ -37,7 +37,7 @@ syn2ann_hybrid_drive4map;
 
 %% *ANN - DATABASE*
 syn2ann_ann_drive;
-keyboard
+
 %% *PLOT MAP*
 syn2ann_map_drive;
 
