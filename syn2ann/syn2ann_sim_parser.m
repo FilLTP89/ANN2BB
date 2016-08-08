@@ -25,11 +25,15 @@ function [varargout] = syn2ann_sim_parser(varargin)
     idm = find(strcmpi('Monitor ID',mtd.textdata(1,:))==1);
     idd = find(strcmpi('Repi (km)',mtd.textdata(1,:))==1);
     ids = strcmpi('Station code',mtd.textdata(1,:));
+    idg.eutm = find(strcmpi('E_UTM [m]',mtd.textdata(1,:))==1);
+    idg.nutm = find(strcmpi('N_UTM [m]',mtd.textdata(1,:))==1);
     
     for i_ = 1:mon.na
         idn = find(round(mtd.data(:,idm-1))==mon.id(i_)==1);
         mon.dep(i_) = mtd.data(idn,idd-1);
         mon.st(i_) = mtd.textdata(idn+1,ids);
+        mon.eutm(i_) = mtd.data(idn,idg.eutm-1);
+        mon.nutm(i_) = mtd.data(idn,idg.nutm-1);
         if strcmpi(mon.st(i_),bhr.nm(i_))
             fprintf('monitor %u matched to record %s!\n',mon.id(i_),bhr.nm{i_});
         else

@@ -8,7 +8,7 @@ fprintf('--> Resampling\n');
 %% *PAD LF/HF*
 fprintf('--> Padding/Tapering\n');
 [nss.org,sps.org] = lfhf_pad(nss.org,sps.org);
-keyboard
+
 %% *ALIGN LF/HF*
 fprintf('--> Align records\n');
 [nss.org,sps.org] = lfhf_shift(nss.org,sps.org);

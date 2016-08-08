@@ -107,15 +107,15 @@ mon.ci = mon.ci(:);
 %% *HYBRIDIZATION METADATA*
 % _SP96 metadata_
 hybrid_type='sp96';
-mtd.mw = [6];%,6,6.3,6.3];
-mtd.dtm_sp96 = [0.01];%,0.01,0.01,0.01];
-mtd.scc = [2];%,1,2,1];
+mtd.mw = [6,6,6.3,6.3];
+mtd.dtm_sp96 = [0.01,0.01,0.01,0.01];
+mtd.scc = [2,1,2,1];
 mtd.sst = zeros(mon.na,1);
 mtd.scl = 0.01*ones(mon.na,1);
 
 %% *PARSING EXTRA METADATA*
-mon.fa = [1.3];%,1.3,1.3,1.3]; % in Hz
-mon.fb = [1.5];%,1.5,1.5,1.5]; % in Hz
+mon.fa = [1.3,1.3,1.3,1.3]; % in Hz
+mon.fb = [1.5,1.5,1.5,1.5]; % in Hz
 
 %% *ANN*
 ann.mtd.scl = 'ALL';
