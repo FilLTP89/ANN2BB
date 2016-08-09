@@ -22,7 +22,7 @@ function [varargout] = band_pass_filter(varargin)
     % _accelerogram_
     tha = varargin{2}(:);
     % _default corner frequency (high-pass filter)_
-    lfr =.01;
+    lfr =.05;
     % _default cutoff frequency (low-pass filter)_
     hfr = 25;
     % _default butterworth order_
