@@ -93,27 +93,28 @@ function [varargout] = spectral_scaling(varargin)
     % _frequency vector_
     %
     obj_vfr = [0;flip(1./tar_vTn(2:end));0.5/obj_dtm];
-    vfr_cor = [1/tar_vTn(out_idx(end)+1);1/vTn_cor(1)];
-    vfr_cor = (inp_vfr>=vfr_cor(1) & inp_vfr<=vfr_cor(end));
+    vfr_cor = [1/tar_vTn(out_idx(end));1/vTn_cor(1)];
+    vfr_cor = (inp_vfr>vfr_cor(1) & inp_vfr<=vfr_cor(end));
     vfr_hfc = inp_vfr>=50;
     
     %% *SPECTRAL MATCHING*
 %     
-    obj_psa = tar_psa;
-    
+%     obj_psa = tar_psa;
+    close all
     figure
 
     for i_ = 1:ni % spectral matching iterations
         %
         % _objective psa_
         %
-%         obj_psa = SDOF_response(obj_tha(:,1),obj_dtm,tar_vTn,zeta,1);
-        obj_psa(out_idx) = SDOF_response(obj_tha(:,1),obj_dtm,tar_vTn(out_idx),zeta,1);
+        obj_psa = SDOF_response(obj_tha(:,1),obj_dtm,tar_vTn,zeta,1);
+%         obj_psa(out_idx) = SDOF_response(obj_tha(:,1),obj_dtm,tar_vTn(out_idx),zeta,1);
         %
         % _psa spectral ratio_
         %
         obj_rra = flip(obj_psa(:,1)./tar_psa(:,1));
         obj_rra = [1;obj_rra];
+        obj_rra(obj_rra<=1.1 & obj_rra<=0.9)=1;
         plot(obj_vfr,obj_rra,'o','displayname',num2str(i_)); hold all;
         obj_rra = interp1(obj_vfr(:,1),obj_rra(:,1),inp_vfr(:,1),'pchip');
         plot(inp_vfr,obj_rra,'displayname',num2str(i_)); hold all;
@@ -121,8 +122,7 @@ function [varargout] = spectral_scaling(varargin)
         % _fourier spectrum_
         %
         obj_fsa            = fft(obj_tha(:))*obj_dtm;
-        obj_fsa(vfr_cor)   = obj_fsa(vfr_cor)./obj_rra(vfr_cor);
-%         obj_fsa(1:inp_nfr) = obj_fsa(1:inp_nfr)./obj_rra;
+        obj_fsa(1:inp_nfr) = obj_fsa(1:inp_nfr)./obj_rra;
         %
         % _inverse fourier spectrum_
         %
