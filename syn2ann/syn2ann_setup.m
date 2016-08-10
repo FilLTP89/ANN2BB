@@ -118,7 +118,7 @@ mon.fa = [1.3,1.3,1.3,1.3]; % in Hz
 mon.fb = [1.5,1.5,1.5,1.5]; % in Hz
 
 %% *ANN*
-ann.mtd.scl = 'ALL';
+ann.mtd.scl = 'CD';
 ann.mtd.TnC = {0.75;0.75;0.75};
 ann.mtd.cpn = {'gh';'gh';'ud'};
 for i_ = 1:numel(ann.mtd.TnC)

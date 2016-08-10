@@ -27,6 +27,8 @@ function [varargout] = syn2ann_sm(varargin)
             %
             % _spectral scaling_
             %
+            vTn_idx = 1:numel(trs.e.tid);
+            
             [smr.(hbs.mon.cp{j_}).mon.dtm(i_),...
                 smr.(hbs.mon.cp{j_}).syn{i_}.tha.(hbs.mon.cp{j_}),...
                 smr.(hbs.mon.cp{j_}).mon.vTn,...
@@ -46,6 +48,13 @@ function [varargout] = syn2ann_sm(varargin)
             %
             smr.(hbs.mon.cp{j_}).mon.vtm{i_} = smr.(hbs.mon.cp{j_}).mon.dtm(i_)*...
                 (0:smr.(hbs.mon.cp{j_}).mon.ntm(i_)-1);
+            %
+            
+%             figure;
+%             hold all;
+%             plot(trs.(trs.mon.cp{j_}).mon.vTn,trs.(trs.mon.cp{j_}).syn{i_}.psa.(trs.mon.cp{j_})*100,'md-');
+%             plot(smr.(hbs.mon.cp{j_}).mon.vTn,smr.(hbs.mon.cp{j_}).syn{i_}.psa.(hbs.mon.cp{j_})*100,'b+-');
+%             keyboard
         end
     end
     %% OUTPUT

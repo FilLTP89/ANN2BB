@@ -27,7 +27,7 @@ function [varargout] = syn2ann_spp(varargin)
         % maximum natural period
         Tn_max   = 5;
         % natural period step
-        dTn      = 0.005;
+        dTn      = 0.05;
         sas.mon.vTn  = (Tn_min:dTn:Tn_max)';
         sas.mon.nT   = numel(sas.mon.vTn);
         sas.mon.zeta = 0.05;

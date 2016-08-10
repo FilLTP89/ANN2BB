@@ -94,45 +94,52 @@ function [varargout] = spectral_scaling(varargin)
     %
     obj_vfr = [0;flip(1./tar_vTn(2:end));0.5/obj_dtm];
     vfr_cor = [1/tar_vTn(out_idx(end)+1);1/vTn_cor(1)];
-    vfr_cor = (inp_vfr>=vfr_cor(1) & inp_vfr<=vfr_cor(end));
-    vfr_hfc = inp_vfr>=50;
+    vfr_cor = (inp_vfr>=vfr_cor(1));
     
     %% *SPECTRAL MATCHING*
-%     
     obj_psa = tar_psa;
-    
-    figure
-
+%     figure(1)
+%     hold all
+%     figure(2)
+%     hold all
     for i_ = 1:ni % spectral matching iterations
         %
         % _objective psa_
         %
-%         obj_psa = SDOF_response(obj_tha(:,1),obj_dtm,tar_vTn,zeta,1);
+        
         obj_psa(out_idx) = SDOF_response(obj_tha(:,1),obj_dtm,tar_vTn(out_idx),zeta,1);
+%         keyboard
         %
         % _psa spectral ratio_
         %
         obj_rra = flip(obj_psa(:,1)./tar_psa(:,1));
         obj_rra = [1;obj_rra];
-        plot(obj_vfr,obj_rra,'o','displayname',num2str(i_)); hold all;
-        obj_rra = interp1(obj_vfr(:,1),obj_rra(:,1),inp_vfr(:,1),'pchip');
-        plot(inp_vfr,obj_rra,'displayname',num2str(i_)); hold all;
+%         figure(1)
+%         plot(obj_vfr,obj_rra,'o','displayname',num2str(i_)); hold all;
+        obj_rra = interp1(obj_vfr(:,1),obj_rra(:,1),inp_vfr(:,1),'linear');
+%         plot(inp_vfr,obj_rra,'displayname',num2str(i_)); hold all;
+%         vline(1/tar_vTn(out_idx(end)+1),'k','LF');
         %
         % _fourier spectrum_
         %
-        obj_fsa            = fft(obj_tha(:))*obj_dtm;
-        obj_fsa(vfr_cor)   = obj_fsa(vfr_cor)./obj_rra(vfr_cor);
-%         obj_fsa(1:inp_nfr) = obj_fsa(1:inp_nfr)./obj_rra;
+        obj_fsa          = fft(obj_tha(:))*obj_dtm;
+%         figure(2)
+%         loglog(inp_vfr,abs(obj_fsa(1:inp_nfr)));hold all;
+%         loglog(inp_vfr(vfr_cor),abs(obj_fsa(vfr_cor)));hold all;
+        obj_fsa(vfr_cor) = obj_fsa(vfr_cor)./obj_rra(vfr_cor);
+%         loglog(inp_vfr,abs(obj_fsa(1:inp_nfr)));hold all;
+%         vline(1/tar_vTn(out_idx(end)+1),'k','LF');
+%         set(gca,'xscale','log','yscale','log');
+        
         %
         % _inverse fourier spectrum_
         %
         obj_tha          = super_ifft(obj_dtm,obj_ntm,obj_fsa);
-        obj_tha          = detrend(obj_tha);
     end
-    vline(1/tar_vTn(out_idx(end)),'k','LF');
-    vline(1/vTn_cor(1),'k','HF');
-    legend('show');
-    keyboard
+%     vline(1/tar_vTn(out_idx(end)),'k','LF');
+    
+%     legend('show');
+
     %
     % _correct PGA on time history_
     %
@@ -162,18 +169,12 @@ function [varargout] = spectral_scaling(varargin)
     if abs((max(abs(obj_tha))-pga_target)/(pga_target))>5e-2
         disp('Check PGA adjustment!');
     end
-%     [obj_tha,obj_thv,obj_thd] = integr_diff_avd(obj_dtm,obj_tha);
-    obj_thv = cumtrapz(obj_tha)*obj_dtm;
-    obj_thd = cumtrapz(obj_thv)*obj_dtm;
-    [obj_psa,obj_psd] = SDOF_response(obj_tha(:,1),obj_dtm,tar_vTn,0.05,[1,2]);
+
+    obj_psa = SDOF_response(obj_tha(:,1),obj_dtm,tar_vTn,0.05,1);
     %% *OUTPUT*
     varargout{1} = obj_dtm;
     varargout{2} = obj_tha;
-    varargout{3} = obj_thv;
-    varargout{4} = obj_thd;
-    varargout{5} = obj_vfr;
-    varargout{6} = obj_vTn;
-    varargout{7} = obj_psa;
-    varargout{8} = obj_psd;
+    varargout{3} = obj_vTn;
+    varargout{4} = obj_psa;
     return
 end
