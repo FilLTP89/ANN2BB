@@ -1,5 +1,6 @@
 global pfg xlm xlb xtk ylm ylb ytk grd scl mrk tit utd
-
+clr = [rgb('Blue');rgb('DeepSkyBlue');rgb('Red');rgb('DarkOrange');rgb('Black')];
+set(0,'defaultaxescolororder',clr);
 %% HYBRID
 for i_ = 1:numel(mm_)
     st = bhr.nm{mm_(i_)};

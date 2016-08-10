@@ -16,12 +16,9 @@ function syn2ann_plot_compare(varargin)
     
     leg = {legplot};
     spg = numel(xplot);
-    mrka = [repmat(mrk.tha,spg,1);repmat(mrk.pga,spg,1)];
+    
     spg = [spg,1];
     pax = num2cell([1:spg(1),1:spg(1)]');
-    
-    clr = [rgb('Blue');rgb('DeepSkyBlue');rgb('Red');rgb('DarkOrange');rgb('Black')];
-    set(0,'defaultaxescolororder',clr);
     
     if flags(1)
         %
@@ -29,7 +26,11 @@ function syn2ann_plot_compare(varargin)
         %
         for i_ = 1:spg(1)
             xpl{i_} = xplot{i_}.mon.vTn;
+            try
             ypl{i_} = abs(xplot{i_}.syn{identity}.psa.(cpp))*utd.psa;
+            catch
+                keyboard
+            end
         end
         try
             fpplot('xpl',xpl,'ypl',ypl,'pfg',pfg.psa,...
@@ -71,10 +72,14 @@ function syn2ann_plot_compare(varargin)
         saveas(gcf,strcat(fn,sprintf('_fsa_c_%s',cpp)),'epsc');
     end
     
+    if any(flags(3:end))
+        mrka = [repmat(mrk.tha,spg,1);repmat(mrk.pga,spg,1)];
+    end
     if flags(3)
         %
         % * _ACCELERATION TIME HISTORY_
         %
+        
         for i_ = 1:spg(1)
             xpl{i_} = xplot{i_}.mon.vtm{identity}-time_shift(i_);
             ypl{i_} = xplot{i_}.syn{identity}.tha.(cpp)*utd.tha;
