@@ -11,5 +11,6 @@ function [varargout] = super_ifft(varargin)
     ths = real(ifft(fst))./dtm;
 %     ths = ths(1:ntm);
     varargout{1} = ths(:);
+    varargout{2} = fst(:);
     return
 end

@@ -24,8 +24,7 @@ sps.org = syn2ann_spp(sps.org);
 %% *SPECTRAL MASHUP LF/HF*
 fprintf('--> Hybridization\n');
 [nss.hyb,sps.hyb,hbs] = lfhf_mashup(nss.org,sps.org);
-
-
+close all;
 figure
 BB_FREQ(end+1:numel(BB_AMP))=BB_FREQ(end)+mean(diff(BB_FREQ))*(1:numel(BB_AMP)/2)';
 loglog(BB_FREQ,abs(BB_AMP)); hold all;
