@@ -17,7 +17,7 @@
 % * _thd (displacement time-history column vector)_
 function [varargout] = band_pass_filter(varargin)
     
-    %% SET-UP
+    %% *SET-UP*
     % _time-step_
     dtm = varargin{1};
     % _accelerogram_
@@ -27,7 +27,7 @@ function [varargout] = band_pass_filter(varargin)
     % _default cutoff frequency (low-pass filter)_
     hfr = 25;
     % _default butterworth order_
-    bfo = 2;
+    bfo = 3;
     % custom corner frequency (high-pass filter)_
     if nargin>=3
         lfr=varargin{3};
@@ -43,7 +43,8 @@ function [varargout] = band_pass_filter(varargin)
             hfr = fNy;
         end
     end
-    %% BUTTERWORTH FILTER
+    keyboard
+    %% *BUTTERWORTH FILTER*
     [bfb,bfa,flag] = create_butter_filter(bfo,lfr,hfr,fNy);
     
     %% PROCESSING
