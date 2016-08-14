@@ -20,21 +20,21 @@ fprintf('--> Record Path: %s\n',bhr.pt);
 % _station identity_
 bhr.st{1}.id = {'MRN'};
 bhr.st{1}.ni = {'CIT';'HN'};
-bhr.st{2}.id = {'MIR'};
-bhr.st{2}.ni = {'TV';'HN'};
-bhr.st{3}.id = {'AQK'};
-bhr.st{3}.ni = {'IT';'HN'};
-bhr.st{4}.id = {'AQU'};
-bhr.st{4}.ni = {'MN';'HL'};
+% bhr.st{2}.id = {'MIR'};
+% bhr.st{2}.ni = {'TV';'HN'};
+% bhr.st{3}.id = {'AQK'};
+% bhr.st{3}.ni = {'IT';'HN'};
+% bhr.st{4}.id = {'AQU'};
+% bhr.st{4}.ni = {'MN';'HL'};
 bhr.ns = numel(bhr.st);
 fprintf('--> N. Stations: %u\n',bhr.ns);
 cellfun(@(y) structfun(@(x) fprintf('--> Station ID: %s\n',x{:}),y,'UniformOutput',0),bhr.st);
 fprintf('\n');
 % _recorded events_
 bhr.st{1}.ev = {'20120529.070002'};
-bhr.st{2}.ev = {'20120529.070002'};
-bhr.st{3}.ev = {'20090406.013240'};
-bhr.st{4}.ev = {'20090406.013240'};
+% bhr.st{2}.ev = {'20120529.070002'};
+% bhr.st{3}.ev = {'20090406.013240'};
+% bhr.st{4}.ev = {'20090406.013240'};
 % _database_
 bhr.tp = {'itaca'};
 cellfun(@(x) fprintf('--> Database: %s',x),bhr.tp);
@@ -43,9 +43,9 @@ fprintf('\n');
 bhr.lb = {'Main Shock'};
 % _device list_
 bhr.st{1}.dv = {''};
-bhr.st{2}.dv = {'08'};
-bhr.st{3}.dv = {''};
-bhr.st{4}.dv = {''};
+% bhr.st{2}.dv = {'08'};
+% bhr.st{3}.dv = {''};
+% bhr.st{4}.dv = {''};
 bhr.na = 0;
 for i_ = 1:bhr.ns
     bhr.nd(i_) = numel(bhr.st{i_}.dv);
@@ -82,7 +82,7 @@ fprintf('--> Monitor File: %s\n',mon.fn);
 mon.tp  = 'S';
 fprintf('--> Type of Simulation: %s\n',mon.tp);
 % _monitor identity_
-mon.id  = [16928,15045,1,2];
+mon.id  = [16928];%,15045,1,2];
 mon.na  = numel(mon.id);
 fprintf('--> N. Monitor: %u\n',mon.na);
 arrayfun(@(x) fprintf('--> Monitor ID: %u \n',x),mon.id);
@@ -118,7 +118,7 @@ mon.fa = [1.3,1.3,1.3,1.3]; % in Hz
 mon.fb = [1.5,1.5,1.5,1.5]; % in Hz
 
 %% *ANN*
-ann.mtd.scl = 'CD';
+ann.mtd.scl = 'ALL';
 ann.mtd.TnC = {0.75;0.75;0.75};
 ann.mtd.cpn = {'gh';'gh';'ud'};
 for i_ = 1:numel(ann.mtd.TnC)

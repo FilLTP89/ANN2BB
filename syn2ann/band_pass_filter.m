@@ -16,6 +16,7 @@
 % * _thv (velocity time-history column vector)_
 % * _thd (displacement time-history column vector)_
 function [varargout] = band_pass_filter(varargin)
+    
     %% SET-UP
     % _time-step_
     dtm = varargin{1};
