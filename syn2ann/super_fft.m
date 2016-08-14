@@ -43,7 +43,7 @@ function [varargout]=super_fft(varargin)
     % _time step_
     dtm = varargin{1};
     % _acceleration_
-    thr=varargin{2}(:);
+    thr = varargin{2}(:);
     % _Konno-Ohmachi Smoothing flag_
     kos = varargin{3};
     % _output selection_
