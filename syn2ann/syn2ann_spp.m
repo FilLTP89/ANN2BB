@@ -27,16 +27,16 @@ function [varargout] = syn2ann_spp(varargin)
         % maximum natural period
         Tn_max   = 5;
         % natural period step
-        dTn      = 0.005;
+        dTn      = 0.05;
         sas.mon.vTn  = (Tn_min:dTn:Tn_max)';
         sas.mon.nT   = numel(sas.mon.vTn);
         sas.mon.zeta = 0.05;
         for i_ = 1:sas.mon.na
             for j_ = 1:sas.mon.nc
-                [sas.syn{i_}.psa.(sas.mon.cp{j_}),sas.syn{i_}.rsd.(sas.mon.cp{j_})] = ...
-                    SDOF_response(sas.syn{i_}.tha.(sas.mon.cp{j_}),...
-                    sas.mon.dtm(i_),sas.mon.vTn,...
-                    sas.mon.zeta,[1,2]);
+                sas.syn{i_}.psa.(sas.mon.cp{j_}) = SDOF_response(sas.syn{i_}.tha.(sas.mon.cp{j_}),...
+                    sas.mon.dtm(i_),sas.mon.vTn,sas.mon.zeta,1);
+                sas.syn{i_}.rsd.(sas.mon.cp{j_}) = SDOF_response(sas.syn{i_}.tha.(sas.mon.cp{j_}),...
+                    sas.mon.dtm(i_),sas.mon.vTn,sas.mon.zeta,2); 
             end
         end
     end

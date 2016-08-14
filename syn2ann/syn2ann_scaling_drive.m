@@ -7,13 +7,5 @@ spm = syn2ann_sm(hbs,trs);
 fprintf('--> Peak Values and Arias\n');
 for j_ = 1:hbs.mon.nc
     spm.(hbs.mon.cp{j_}) = syn2ann_thp(spm.(hbs.mon.cp{j_}));
-    spm.(hbs.mon.cp{j_}) = syn2ann_spp(spm.(hbs.mon.cp{j_}));
-    if strcmpi(hbs.mon.cp{j_},'z')
-        
-        hold all;
-        plot(trs.z.mon.vTn,trs.z.syn{1}.psa.z*100,'gd-');
-        plot(spm.z.mon.vTn,spm.z.syn{1}.psa.z*100,'c+-');
-        keyboard
-    end
-    
+    spm.(hbs.mon.cp{j_}) = syn2ann_spp(spm.(hbs.mon.cp{j_}));    
 end
