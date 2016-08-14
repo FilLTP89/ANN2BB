@@ -18,7 +18,7 @@ syn2ann_setup;
 
 %% *RECORDS*
 syn2ann_rec_drive;
-
+keyboard
 %% *NUMERICAL SIMULATIONS*
 syn2ann_sim_drive;
 
