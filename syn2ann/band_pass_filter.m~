@@ -52,13 +52,13 @@ function [varargout] = band_pass_filter(varargin)
         %% PROCESSING ACCELERATION
         % _pad definition_
         ntm = numel(tha);
-        npd = 0;%ceil(40/dtm);
+        npd = 0;ceil(40/dtm);
         ntm_pad = ntm + 2*npd;
         tha_pad = zeros(ntm_pad,1);
         % _base-line correction_
         tha = detrend(tha);
         % _applying cosinus taper_
-%         tha = cos_taper(tha);
+        tha = cos_taper(tha);
         % _padding_
         tha_pad(:) = padarray(tha,npd,'both');
         % _acausal Butterworth filtering_

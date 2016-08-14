@@ -26,6 +26,7 @@ function [varargout] = integr_diff_avd(varargin)
         bfa = varargin{4};
         flag = true;
     end
+    flag=false;
     if flag
         disp('TIME INTEGRATION--->FILTER')
         ntm = numel(tha);
@@ -36,7 +37,7 @@ function [varargout] = integr_diff_avd(varargin)
         thv = detrend(thv);
         % _acasual filtering_
         thv = filtfilt(bfb,bfa,thv);
-        %% COMPUTING/PROCESSING DISPLACEMENT
+        %% *COMPUTING/PROCESSING DISPLACEMENT*
         % _time integration_
         thd = cumtrapz(thv)*dtm;
         % _base-line correction_
@@ -45,7 +46,7 @@ function [varargout] = integr_diff_avd(varargin)
         thd = cos_taper(thd);
         % _acasual filtering_
         thd = filtfilt(bfb,bfa,thd);
-        %% BACK TO ACCELERATION
+        %% *BACK TO ACCELERATION*
         % _time differentiation_
         thv(2:ntm-1,1) = (thd(3:ntm,1)-thd(1:ntm-2,1))./(2*dtm);
         thv(1,1) = 0.0;
@@ -58,10 +59,10 @@ function [varargout] = integr_diff_avd(varargin)
         thd = cumtrapz(thv)*dtm;
     else
         disp('TIME INTEGRATION--->NO FILTER')
-        %% COMPUTING/PROCESSING VELOCITY
+        %% *COMPUTING/PROCESSING VELOCITY*
         % _time integration_
         thv = cumtrapz(tha)*dtm;
-        %% COMPUTING/PROCESSING DISPLACEMENT
+        %% *COMPUTING/PROCESSING DISPLACEMENT*
         % _time integration_
         thd = cumtrapz(thv)*dtm;
     end
