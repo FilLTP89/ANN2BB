@@ -18,21 +18,40 @@ syn2ann_setup;
 
 %% *RECORDS*
 syn2ann_rec_drive;
-acc = rec.org.syn{1}.tha.e;
-dtime=rec.org.mon.dtm(1);
-fsa=fft(acc,8192);
-close all
-figure
-loglog(abs(fsa),'b'); hold all;
+% dtime = rec.org.mon.dtm(1);
+% time  = (0:numel(acc)-1)*dtime;
+% 
+% acc       = rec.org.syn{1}.tha.e;
+% [vfr,fsa] = super_fft(dtime,acc,0,[1,4]);
+% 
+% [acc1,~,~] = band_pass_filter(
+% [vfr,fsa1] = super_fft(dtime,acc,0,[1,4]);
+% 
+% close all
+% figure(1)
+% plot(time,acc,'k');hold all;
+% figure(2)
+% loglog(
+% 
+% 
+% figure
+% loglog(abs(fsa),'b'); hold all;
+% [acc1,~,~]=band_pass_filter(dtime,acc,[],[]);
+% fsa1=fft(acc1,8192);
+% loglog(abs(fsa1),'g'); hold all;
+% keyboard
+% [acc2,~,~]=band_pass_filter(dtime,acc,[],[]);
+% fsa2=fft(acc2,8192);
+% loglog(abs(fsa2),'g'); hold all;
+% 
+% 
+% figure
+% plot(acc); hold all;
+% plot(acc1);
+% plot(acc2);
+% keyboard
 
-acc1=detrend(acc);
-fsa1=fft(acc1,8192);
-loglog(abs(fsa1),'r--'); hold all;
 
-[acc2,~,~]=band_pass_filter(dtime,acc,[],[]);
-fsa2=fft(acc2,8192);
-loglog(abs(fsa2),'g'); hold all;
-keyboard
 %% *NUMERICAL SIMULATIONS*
 syn2ann_sim_drive;
 
