@@ -444,7 +444,9 @@ function [varargout] = fpplot(varargin)
     catch
         for m_ = 1:numel(hax)
             idx = ~strcmpi(inp.Results.leg{m_},'');
-            legend(hax(m_),hpl(m_,idx),inp.Results.leg{m_}(idx));
+            if any(idx)
+                legend(hax(m_),hpl(m_,idx),inp.Results.leg{m_}(idx));
+            end
         end
     end
     %%
