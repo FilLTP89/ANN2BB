@@ -4,7 +4,7 @@
 % DICA - Politecnico di Milano
 % Copyright 2014-15_
 %% NOTES
-% _bpf_acc_: function to detrend, filter (band pass) and integrate in
+% _bpf_tha_: function to detrend, filter (band pass) and integrate in
 % time input signal (to get velocity and displacement)
 %% INPUT:
 % * _dtm (sampling time step)_
@@ -21,19 +21,19 @@
 %   Author                   = {Boore, David M. and Bommer, Julian J.},
 %   Journal                  = {Soil Dynamics and Earthquake Engineering},
 %   Year                     = {2005},
-% 
+%
 %   Month                    = {February},
 %   Number                   = {2},
 %   Pages                    = {93--115},
 %   Volume                   = {25},
-% 
+%
 %   Doi                      = {10.1016/j.soildyn.2004.10.007},
 %   File                     = {Boore_Bommer_2005.pdf:Boore_Bommer_2005.pdf:PDF},
 %   ISSN                     = {02677261},
 %   Keywords                 = {baseline adjustments,filters,instrument corrections,signal-to-noise ratios,strong-motion accelerograms},
 %   Url                      = {http://linkinghub.elsevier.com/retrieve/pii/S0267726104001708}
 % }
-function [varargout] = bpf_acc(varargin)
+function [varargout] = bpf_tha(varargin)
     %% *SET-UP*
     % time-step
     dtm = varargin{1};
@@ -68,16 +68,10 @@ function [varargout] = bpf_acc(varargin)
         %% *PROCESSING ACCELERATION*
         disp('--->CORRECTING ACCELERATION')
         %
-        % _pad definition_
+        %  _pad definition_
         %
-        % number of time steps of original record
-        ntm     = numel(tha);
         % number of padding points (Boore&Bommer,2005)
-        npd     = ceil(1.5*bfo/min([lfr;hfr]));
-        % number of time-steps of padded record
-        ntm_pad = ntm + 2*npd;
-        % padded acceleration
-        tha_pad = zeros(ntm_pad,1);
+        npd     = ceil(1.5*bfo./min([lfr;hfr])./dtm);
         %
         % _acceleration base-line correction_
         %
@@ -90,26 +84,20 @@ function [varargout] = bpf_acc(varargin)
         %
         % _padding acceleration_
         %
-        tha_pad(1:ntm_pad,1) = padarray(tha,npd,'both');
+        tha = padarray(tha,npd,'both');
         %
         % _acceleration acausal Butterworth filtering_
         %
-        tha_pad = filtfilt(bfb,bfa,tha_pad);
-        
-        %% *TIME INTEGRATION*
-        [tha_pad,thv_pad,thd_pad] = ...
-            integr_diff_avd(dtm,tha_pad,bfb,bfa);
-        %% *OUTPUT*
-        varargout{1} = tha_pad(npd+1:ntm+npd,1);
-        varargout{2} = thv_pad(npd+1:ntm+npd,1);
-        varargout{3} = thd_pad(npd+1:ntm+npd,1);
-    else
-        %% *TIME INTEGRATION*
-        [tha,thv,thd] = integr_diff_avd(dtm,tha);
-        %% *OUTPUT*
-        varargout{1} = tha;
-        varargout{2} = thv;
-        varargout{3} = thd;
+        tha = filtfilt(bfb,bfa,tha);
     end
+    %% *TIME INTEGRATION*
+    [tha,thv,thd] = integr_diff_avd(dtm,tha,bfb,bfa);
+    %% *OUTPUT*
+    ntm = numel(tha);
+    vtm = dtm*(0:ntm-1)';
+    varargout{1} = tha;%(npd+1:ntm+npd,1);
+    varargout{2} = thv;%(npd+1:ntm+npd,1);
+    varargout{3} = thd;%(npd+1:ntm+npd,1);
+    varargout{4} = vtm;
     return
 end

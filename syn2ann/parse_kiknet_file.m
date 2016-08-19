@@ -20,7 +20,7 @@ function [varargout] = parse_kiknet_file(varargin)
     tag_string(2) = {'Scale'};
     tag_string(3) = {'Memo.'};
     tag_string(4) = {'Record'};
-    tag_string(5) = {'Last'};
+    tag_string(5) = {'Origin'};
     
     fid = fopen(fn);
     if fid==-1
@@ -43,8 +43,8 @@ function [varargout] = parse_kiknet_file(varargin)
         str2double(data{1}{idx(5)+1}(4:5))*60 + ...
         str2double(data{1}{idx(5)+1}(7:8));
     
-%     time_shift    = abs(first_sample_time-eqk_time);
-    nsample_shift = 0;%round(time_shift/dtm);
+    time_shift    = abs(first_sample_time-eqk_time);
+    nsample_shift = round(time_shift/dtm);
     
     str = data{1}{idx(2)};
     idx0 = findstr('(gal)',str);
@@ -52,11 +52,11 @@ function [varargout] = parse_kiknet_file(varargin)
     
     %% *READ DATA*
     th = cellfun(@(x) str2double(x),data{1}(idx(3)-1:end))*scale;
-    
-    th = th(nsample_shift+1:end);
-    if isempty(th)
-        keyboard
-    end
+%     
+%     th = th(nsample_shift+1:end);
+%     if isempty(th)
+%         keyboard
+%     end
     ntm = numel(th);
     vtm = dtm*(0:ntm-1)';
     %% *OUTPUT*
@@ -64,7 +64,7 @@ function [varargout] = parse_kiknet_file(varargin)
     varargout{2} = ntm;
     varargout{3} = vtm;
     varargout{4} = th;
-    
+    varargout{5} = nsample_shift;
 %     dtm = cell2mat(metadata(32));dtm=str2double(dtm(1:3));
 %     scale_factor=cell2mat(metadata(40));
 %     idx=strfind(scale_factor,'(gal)/');

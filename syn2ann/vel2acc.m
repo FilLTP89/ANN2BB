@@ -51,21 +51,27 @@ function [varargout] = vel2acc(varargin)
         %% *PROCESSING VELOCITY*
         disp('--->CORRECTING VELOCITY')
         %
+        % _velocity base-line correction_
+        %
+        thv = detrend(thv);
+        %
+        % _velocity cosinus tapering_
+        %
+        thv = cos_taper(thv);
+        % EQUIVALENT: thd = taper_fun(thd,2.5,1,1);
+        %
         % _pad definition_
         %
         % number of time steps of original record
         ntm     = numel(thv);
         % number of padding points (Boore&Bommer,2005)
-        npd     = ceil(1.5*bfo/min([lfr;hfr]));
+        npd     = ceil(1.5*bfo./min([lfr;hfr])./dtm);
         % number of time-steps of padded record
         ntm_pad = ntm + 2*npd;
         %
         % _velocity padding_
+        %
         thv_pad = padarray(thv,npd,'both');
-        %
-        % _velocity base-line correction_
-        %
-        thv_pad = detrend(thv_pad);
         %
         % _velocity acausal Butterworth filtering_
         %
@@ -126,9 +132,9 @@ function [varargout] = vel2acc(varargin)
     
     %% *OUTPUT*
     if flag
-        varargout{1} = tha(npd+1:ntm+npd,1);
-        varargout{2} = thv(npd+1:ntm+npd,1);
-        varargout{3} = thd(npd+1:ntm+npd,1);
+        varargout{1} = tha;%(npd+1:ntm+npd,1);
+        varargout{2} = thv;%(npd+1:ntm+npd,1);
+        varargout{3} = thd;%(npd+1:ntm+npd,1);
     else
         varargout{1} = tha(:);
         varargout{2} = thv(:);

@@ -68,7 +68,7 @@ function [varargout]=super_fft(varargin)
     %
     % _fft amplitude_
     %
-    if any(out_sel==2) || logical(kos)
+    if any(out_sel==2)
         amp = abs(fsr);
         % _Konno-Ohmachi smoothing_
         if logical(kos)

@@ -16,7 +16,7 @@
 % vector)_
 % * _thv (velocity time-history column vector)_
 % * _thd (displacement time-history column vector)_
-function [varargout] = vel2acc(varargin)
+function [varargout] = bpf_thv(varargin)
     %% *SET-UP*
     % time-step
     dtm = varargin{1};
@@ -46,71 +46,79 @@ function [varargout] = vel2acc(varargin)
     
     %% *CREATE BUTTERWORTH FILTER*
     [bfb,bfa,flag] = create_butter_filter(bfo,lfr,hfr,fNy);
-
+    
     if flag
         %% *PROCESSING VELOCITY*
         disp('--->CORRECTING VELOCITY')
         %
-        % _pad definition_
-        %
-        % number of time steps of original record
-        ntm     = numel(thv);
-        % number of padding points (Boore&Bommer,2005)
-        npd     = ceil(1.5*bfo/min([lfr;hfr]));
-        % number of time-steps of padded record
-        ntm_pad = ntm + 2*npd;
-        %
-        % _velocity padding_
-        thv_pad = padarray(thv,npd,'both');
-        %
         % _velocity base-line correction_
         %
-        thv_pad = detrend(thv_pad);
+        thv = detrend(thv);
+        %
+        % _velocity cosinus tapering_
+        %
+        thv = cos_taper(thv);
+        % EQUIVALENT: thd = taper_fun(thd,2.5,1,1);
+        %
+        %  definition_
+        %
+        % number of padding points (Boore&Bommer,2005)
+        npd     = ceil(1.5*bfo./min([lfr;hfr])./dtm);
+        %
+        % _velocity padding_
+        %
+        thv = padarray(thv,npd,'both');
         %
         % _velocity acausal Butterworth filtering_
         %
-        thv_pad = filtfilt(bfb,bfa,thv_pad);
+        thv = filtfilt(bfb,bfa,thv);
         
         %% *CORRECTED DISPLACEMENT TIME INTEGRATION*
         % displacement
-        thd_pad = cumtrapz(thv_pad)*dtm;
+        thd = cumtrapz(thv)*dtm;
         %
         % _displacement base-line correction_
         %
-        thd_pad = detrend(thd_pad);
+        thd = detrend(thd);
         %
         % _displacement cosinus tapering_
         %
-        thd_pad = cos_taper(thd_pad);
+        thd = cos_taper(thd);
         % EQUIVALENT: thd = taper_fun(thd,2.5,1,1);
         %
         % _displacement acasual filtering_
         %
-        thd_ = filtfilt(bfb,bfa,thd_pad);
+        thd = filtfilt(bfb,bfa,thd);
     else
-        %
-        % _time integration_
-        %
+        %% *DISPLACEMENT TIME INTEGRATION*
+        % displacement
+        npd = 0;
         thd = cumtrapz(thv)*dtm;
     end
-    %% BACK TO ACCELERATION
-    % _time differentiation_
-    tha(2:ntm_pad-1,1) = (thv(3:ntm_pad,1)-thv(1:ntm_pad-2,1))./(2*dtm);
-    tha(1,1) = 0.0;
-    tha(ntm_pad,1) = tha(ntm_pad-1,1);
+    %% *BACK TO ACCELERATION*
+    %
+    % _time differentiation (central differences--->E=o(dtm^2))
+    % http://oregonstate.edu/instruct/ch490/lessons/lesson11.htm_
+    %
+    % number of sampling points
+    ntm = numel(thd);
+    vtm = dtm*(0:ntm-1)';
+    % velocity
+    thv(2:ntm-1,1) = (thd(3:ntm,1)-thd(1:ntm-2,1))./(2*dtm);
+    thv([1,ntm],1) = [0.0;thv(ntm-1,1)];
+    % acceleration
+    tha = zeros(ntm,1);
+    tha(2:ntm-1,1) = (thv(3:ntm,1)-thv(1:ntm-2,1))./(2*dtm);
+    tha([1,ntm],1) = [0.0;tha(ntm-1,1)];
     % _time integration_
     thv = cumtrapz(tha)*dtm;
     thd = cumtrapz(thv)*dtm;
     
     %% *OUTPUT*
-    if flag
-        varargout{1} = tha(npd+1:ntm+npd,1);
-        varargout{2} = thv(npd+1:ntm+npd,1);
-        varargout{3} = thd(npd+1:ntm+npd,1);
-    else
-        varargout{1} = tha(:);
-        varargout{2} = thv(:);
-        varargout{3} = thd(:);
-    end
+    varargout{1} = tha(:);
+    varargout{2} = thv(:);
+    varargout{3} = thd(:);
+    varargout{4} = vtm(:);
+    varargout{5} = npd;
     return
 end
