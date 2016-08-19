@@ -4,7 +4,7 @@
 % Politecnico di Milano - DICA
 % Copyright 2016_
 %% NOTES
-% _vel2acc_: function to differentiate velocigram to get accelerogram
+% _bpf_thv_: function to differentiate velocigram to get accelerogram
 % by applying butterworth filter and detrending.
 %% INPUT:
 % * _dt (sampling time step)_
@@ -60,7 +60,7 @@ function [varargout] = bpf_thv(varargin)
         thv = cos_taper(thv);
         % EQUIVALENT: thd = taper_fun(thd,2.5,1,1);
         %
-        %  definition_
+        %  _pad definition_
         %
         % number of padding points (Boore&Bommer,2005)
         npd     = ceil(1.5*bfo./min([lfr;hfr])./dtm);

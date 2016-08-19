@@ -68,11 +68,6 @@ function [varargout] = bpf_tha(varargin)
         %% *PROCESSING ACCELERATION*
         disp('--->CORRECTING ACCELERATION')
         %
-        %  _pad definition_
-        %
-        % number of padding points (Boore&Bommer,2005)
-        npd     = ceil(1.5*bfo./min([lfr;hfr])./dtm);
-        %
         % _acceleration base-line correction_
         %
         tha = detrend(tha);
@@ -82,6 +77,11 @@ function [varargout] = bpf_tha(varargin)
         tha = cos_taper(tha);
         % EQUIVALENT: tha = taper_fun(tha,2.5,1,1);
         %
+        %  _pad definition_
+        %
+        % number of padding points (Boore&Bommer,2005)
+        npd     = ceil(1.5*bfo./min([lfr;hfr])./dtm);
+        %
         % _padding acceleration_
         %
         tha = padarray(tha,npd,'both');
@@ -89,15 +89,21 @@ function [varargout] = bpf_tha(varargin)
         % _acceleration acausal Butterworth filtering_
         %
         tha = filtfilt(bfb,bfa,tha);
+        %% *TIME INTEGRATION*
+        [tha,thv,thd] = integr_diff_avd(dtm,tha,bfb,bfa);
+    else
+        npd = 0;
+        %% *TIME INTEGRATION*
+        [tha,thv,thd] = integr_diff_avd(dtm,tha);
     end
-    %% *TIME INTEGRATION*
-    [tha,thv,thd] = integr_diff_avd(dtm,tha,bfb,bfa);
+    
     %% *OUTPUT*
     ntm = numel(tha);
     vtm = dtm*(0:ntm-1)';
-    varargout{1} = tha;%(npd+1:ntm+npd,1);
-    varargout{2} = thv;%(npd+1:ntm+npd,1);
-    varargout{3} = thd;%(npd+1:ntm+npd,1);
-    varargout{4} = vtm;
+    varargout{1} = tha(:);
+    varargout{2} = thv(:);
+    varargout{3} = thd(:);
+    varargout{4} = vtm(:);
+    varargout{5} = npd;
     return
 end
