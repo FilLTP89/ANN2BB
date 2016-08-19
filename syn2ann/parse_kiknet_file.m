@@ -43,17 +43,15 @@ function [varargout] = parse_kiknet_file(varargin)
         str2double(data{1}{idx(5)+1}(4:5))*60 + ...
         str2double(data{1}{idx(5)+1}(7:8));
     
-    time_shift = abs(first_sample_time-eqk_time);
-    
-    time_shift = 0;
-    nsample_shift = round(time_shift/dtm);
+%     time_shift    = abs(first_sample_time-eqk_time);
+    nsample_shift = 0;%round(time_shift/dtm);
     
     str = data{1}{idx(2)};
     idx0 = findstr('(gal)',str);
     scale = str2num(str(1:idx0(1)-1))./str2num(str(idx0(end)+6:end));
-
+    
     %% *READ DATA*
-    th = cellfun(@(x) str2num(x),data{1}(idx(3)-1:end))*scale;
+    th = cellfun(@(x) str2double(x),data{1}(idx(3)-1:end))*scale;
     
     th = th(nsample_shift+1:end);
     if isempty(th)

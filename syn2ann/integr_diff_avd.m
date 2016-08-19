@@ -17,8 +17,10 @@
 % * thd (displacement time-history vector (after differentiation))
 
 function [varargout] = integr_diff_avd(varargin)
-    %% SET-UP
+    %% *SET-UP*
+    % time-step
     dtm = varargin{1};
+    % accelerogram
     tha = varargin{2}(:);
     flag=false;
     if nargin>2
@@ -26,48 +28,63 @@ function [varargout] = integr_diff_avd(varargin)
         bfa = varargin{4};
         flag = true;
     end
-    flag=false;
+
     if flag
-        disp('TIME INTEGRATION--->FILTER')
+        %% *CORRECTED ACCELERATION TIME INTEGRATION*
+        disp('--->CORRECTED TIME INTEGRATION')
+        % number of time steps of original record
         ntm = numel(tha);
-        %% COMPUTING/PROCESSING VELOCITY
-        % _time integration_
+        % velocity
         thv = cumtrapz(tha)*dtm;
-        % _base-line correction_
+        %
+        % _velocity base-line correction_
+        %
         thv = detrend(thv);
-        % _acasual filtering_
+        %
+        % _velocity acausal Butterworth filtering_
+        %
         thv = filtfilt(bfb,bfa,thv);
-        %% *COMPUTING/PROCESSING DISPLACEMENT*
-        % _time integration_
+        %% *DISPLACEMENT TIME INTEGRATION*
+        % displacement
         thd = cumtrapz(thv)*dtm;
-        % _base-line correction_
+        %
+        % _displacement base-line correction_
+        %
         thd = detrend(thd);
-        % _applying cosinus taper_
+        %
+        % _displacement cosinus tapering_
+        %
         thd = cos_taper(thd);
-        % _acasual filtering_
+        % EQUIVALENT: thd = taper_fun(thd,2.5,1,1);
+        %
+        % _displacement acasual filtering_
+        %
         thd = filtfilt(bfb,bfa,thd);
+        
         %% *BACK TO ACCELERATION*
-        % _time differentiation_
+        %
+        % _time differentiation (central differences--->E=o(dtm^2))
+        % http://oregonstate.edu/instruct/ch490/lessons/lesson11.htm_
+        %
+        % velocity 
         thv(2:ntm-1,1) = (thd(3:ntm,1)-thd(1:ntm-2,1))./(2*dtm);
-        thv(1,1) = 0.0;
-        thv(ntm,1) = thv(ntm-1,1);
+        thv([1,ntm],1) = [0.0;thv(ntm-1,1)];
+        % acceleration
         tha(2:ntm-1,1) = (thv(3:ntm,1)-thv(1:ntm-2,1))./(2*dtm);
-        tha(1,1) = 0.0;
-        tha(ntm,1) = tha(ntm-1,1);
+        tha([1,ntm],1) = [0.0;tha(ntm-1,1)];
         % _time integration_
         thv = cumtrapz(tha)*dtm;
         thd = cumtrapz(thv)*dtm;
     else
-        disp('TIME INTEGRATION--->NO FILTER')
-        %% *COMPUTING/PROCESSING VELOCITY*
-        % _time integration_
+        %% *ACCELERATION TIME INTEGRATION*
+        disp('--->TIME INTEGRATION')
+        % velocity
         thv = cumtrapz(tha)*dtm;
-        %% *COMPUTING/PROCESSING DISPLACEMENT*
-        % _time integration_
+        % displacement
         thd = cumtrapz(thv)*dtm;
     end
     
-    %% OUTPUT
+    %% *OUTPUT*
     varargout{1} = tha(:);
     varargout{2} = thv(:);
     varargout{3} = thd(:);
