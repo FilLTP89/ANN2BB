@@ -8,13 +8,6 @@ function [varargout] = adjust_pga(varargin)
     vtm = (0:ntm-1)*dtm;
     [ref_pga,ipga] = max(abs(tha));
     
-    figure
-    plot(vtm,tha,'b');hold all;
-    hline(tar_pga,'k--');
-    hline(-tar_pga,'k--');
-    hline(ref_pga,'b');
-    hline(-ref_pga,'b');
-    
     nc_pga = 11;
     ic_pga0 = ipga+[-(nc_pga-1)/2;0;(nc_pga-1)/2];
     ic_pga1 = ipga+(-(nc_pga-1)/2:(nc_pga-1)/2)';
@@ -24,11 +17,7 @@ function [varargout] = adjust_pga(varargin)
         tha(ic_pga0).*sc_pga,vtm(ic_pga1),'pchip');
     
     [ref_pga,ipga] = max(abs(tha));
-    plot(vtm,tha,'r');hold all;
-    hline(ref_pga,'r');
-    hline(-ref_pga,'r');
     
-    keyboard
     if abs(ref_pga-tar_pga)>1e-3
         ic_pga0 = ipga+[-(nc_pga-1)/2;0;(nc_pga-1)/2];
         ic_pga1 = ipga+(-(nc_pga-1)/2:(nc_pga-1)/2)';
@@ -37,9 +26,7 @@ function [varargout] = adjust_pga(varargin)
             tha(ic_pga0).*sc_pga,vtm(ic_pga1),'pchip');
         ref_pga = max(abs(tha));
     end
-    
-    keyboard
-    
+       
     % check final PGA
     if abs(ref_pga-tar_pga)/tar_pga>5e-2
         disp('Check PGA adjustment!');

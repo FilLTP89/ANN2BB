@@ -17,7 +17,6 @@ function [varargout] = spectral_scaling_original(varargin)
     % _resampling and correcting_
     %
     [obj_dtm,obj_tha,obj_ntm,~] = seismo_rsmpl(inp_dtm,inp_tha,fac,scl);
-
     %
     % _HF refining_
     %
@@ -108,20 +107,37 @@ function [varargout] = spectral_scaling_original(varargin)
         end
         
     end
-%     [bfb,bfa,~] = create_butter_filter(3,0.05,[],0.5/obj_dtm);
+    
+    [obj_tha,obj_thv,obj_thd] = blc_tha(obj_dtm,obj_tha);
 %     obj_tha = detrend(obj_tha);
-%     obj_tha = filtfilt(bfb,bfa,obj_tha);
+%     obj_tha = adjust_pga(obj_dtm,obj_tha,tar_pga);
+%     obj_tha = detrend(obj_tha);
+%     obj_thv = cumtrapz(obj_tha)*obj_dtm;
+%     figure
+%     hold all
+%     plot(thvp,'g');hold all;
+%     plot(obj_thv,'b');hold all;
+%     hline(mean(obj_thv),'b--');
 %     
-%     obj_thv = cumsum(obj_tha)*obj_dtm;
 %     obj_thv = detrend(obj_thv,'linear');
-%     obj_thd = cumsum(obj_thv)*obj_dtm;
+%     hold all
+%     plot(obj_thv,'r');hold all;
+%     hline(mean(obj_thv),'r--');
+%     
+%     obj_thd = cumtrapz(obj_thv)*obj_dtm;
+%     figure
+%     hold all
+%     plot(thdp,'g');hold all;
+%     plot(obj_thd,'b');hold all;
+%     hline(mean(obj_thv),'b--');
+%     
 %     obj_thd = detrend(obj_thd,'linear');
-%     obj_thd = taper_fun(obj_thd,10,1,1);
-    [obj_tha,obj_thv,obj_thd,obj_vtm,obj_npd] = bpf_tha(obj_dtm,obj_tha,0.05,[]);
-    %
-    % _correct PGA on time history_
-    %
-    obj_tha = adjust_pga(obj_dtm,obj_tha,tar_pga);
+%     obj_thd = taper_fun(obj_thd,2.5,1,1);
+%     hold all
+%     plot(obj_thd,'r');hold all;
+%     hline(mean(obj_thd),'r--');
+%     keyboard
+    
     % response spectral parameters
     dTn = 0.05;
     Tmax = 5;

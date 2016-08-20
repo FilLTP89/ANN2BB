@@ -17,7 +17,6 @@ function [varargout] = spectral_scaling_original(varargin)
     % _resampling and correcting_
     %
     [obj_dtm,obj_tha,obj_ntm,~] = seismo_rsmpl(inp_dtm,inp_tha,fac,scl);
-
     %
     % _HF refining_
     %
@@ -108,53 +107,34 @@ function [varargout] = spectral_scaling_original(varargin)
         end
         
     end
-%     [bfb,bfa,~] = create_butter_filter(3,0.05,[],0.5/obj_dtm);
-%     obj_tha = detrend(obj_tha);
-%     obj_tha = filtfilt(bfb,bfa,obj_tha);
-%     
-%     obj_thv = cumsum(obj_tha)*obj_dtm;
-%     obj_thv = detrend(obj_thv,'linear');
-%     obj_thd = cumsum(obj_thv)*obj_dtm;
-%     obj_thd = detrend(obj_thd,'linear');
-%     obj_thd = taper_fun(obj_thd,10,1,1);
-    [obj_tha,obj_thv,obj_thd,obj_vtm,obj_npd] = bpf_tha(obj_dtm,obj_tha,0.05,[]);
-    %
-    % _correct PGA on time history_
-    %
-    [~,ipga] = max(abs(obj_tha));
-%     dt_cor = 0.05;
-%     nc_pga = 10;%round(dt_cor./(obj_vtm(2)-obj_vtm(1)));
-%     if mod(nc_pga,2)==0
-%         nc_pga = nc_pga+1;
-%     end
-    nc_pga = 11;
-    ic_pga0 = ipga+[-(nc_pga-1)/2;0;(nc_pga-1)/2];
-    ic_pga1 = ipga+(-(nc_pga-1)/2:(nc_pga-1)/2)';
-    sc_pga = [1;tar_pga.*sign(obj_tha(ipga))/obj_tha(ipga);1];
-
-%     x = [obj_vtm(ipga-(nc_pga-1)/2);obj_vtm(ipga);obj_vtm(ipga+(nc_pga-1)/2)];
-%     y = [obj_tha(ipga-(nc_pga-1)/2);tar_pga.*sign(obj_tha(ipga));...
-%         obj_tha(ipga+(nc_pga-1)/2)];
-%     keyboard
     
-    obj_tha(ic_pga1) = interp1(obj_vtm(ic_pga0),...
-        obj_tha(ic_pga0).*sc_pga,obj_vtm(ic_pga1),'pchip');
+    [obj
+    obj_tha = detrend(obj_tha);
+    obj_tha = adjust_pga(obj_dtm,obj_tha,tar_pga);
+    obj_tha = detrend(obj_tha);
+    obj_thv = cumtrapz(obj_tha)*obj_dtm;
+    figure
+    hold all
+    plot(obj_thv,'b');hold all;
+    hline(mean(obj_thv),'b--');
     
-    if (max(abs(obj_tha))-tar_pga)>1e-3
-        [pga,ipga] = max(abs(obj_tha));
-        x = [ obj_vtm(ipga-(nc_pga-1)/2),obj_vtm(ipga),obj_vtm(ipga+(nc_pga-1)/2)];
-        y = [obj_tha(ipga-(nc_pga-1)/2),tar_pga.*sign(obj_tha(ipga)),...
-            obj_tha(ipga+(nc_pga-1)/2)];
-        xi = obj_vtm(ipga-nc_pga/2:ipga+nc_pga/2-1);
-        yi_c = interp1(x,y,xi,'pchip');
-        obj_tha(ipga-(nc_pga-1)/2:ipga+(nc_pga-1)/2) = ...
-            yi_c;
-    end
+    obj_thv = detrend(obj_thv,'linear');
+    hold all
+    plot(obj_thv,'r');hold all;
+    hline(mean(obj_thv),'r--');
     
-    % check final PGA
-    if abs((max(abs(obj_tha))-tar_pga)/(tar_pga))>5e-2
-        disp('Check PGA adjustment!');
-    end
+    obj_thd = cumtrapz(obj_thv)*obj_dtm;
+    figure
+    hold all
+    plot(obj_thd,'b');hold all;
+    hline(mean(obj_thv),'b--');
+    
+    obj_thd = detrend(obj_thd,'linear');
+    obj_thd = taper_fun(obj_thd,2.5,1,1);
+    hold all
+    plot(obj_thd,'r');hold all;
+    hline(mean(obj_thd),'r--');
+    keyboard
     
     % response spectral parameters
     dTn = 0.05;
