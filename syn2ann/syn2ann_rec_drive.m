@@ -29,11 +29,14 @@ bhr.lfr = [];
 bhr.hfr = [];
 [bhr,rec.org]= syn2ann_rec_parser(bhr,cor);
 
+%% *BASELINE CORRECTED*
+rec.fil = syn2ann_blc(rec.org);
+
 %% *PGA-PGV-PGD & ARIAS INTENSITY*
 fprintf('--> Peak Values and Arias\n');
 rec.org = syn2ann_thp(rec.org);
-
+rec.fil = syn2ann_thp(rec.fil);
 %% *SPECTRA*
 fprintf('--> Spectra\n');
 rec.org = syn2ann_spp(rec.org);
-% rec.fil = syn2ann_spp(rec.fil);
+rec.fil = syn2ann_spp(rec.fil);

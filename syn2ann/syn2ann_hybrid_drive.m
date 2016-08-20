@@ -19,19 +19,21 @@ sps.org = syn2ann_spp(sps.org);
 
 %% *SPECTRAL MASHUP LF/HF*
 fprintf('--> Hybridization\n');
-[nss.hyb,sps.hyb,hbs] = lfhf_mashup(nss.org,sps.org);
-
+[nss.hyb,sps.hyb,hbs_org] = lfhf_mashup(nss.org,sps.org);
+hbs = syn2ann_blc(hbs_org);
 
 %% *PGA-PGV-PGD & ARIAS INTENSITY*
 fprintf('--> Peak Values and Arias\n');
 nss.hyb = syn2ann_thp(nss.hyb);
 sps.hyb = syn2ann_thp(sps.hyb);
+hbs_org = syn2ann_thp(hbs_org);
 hbs     = syn2ann_thp(hbs);
 
 %% *SPECTRA*
 fprintf('--> Spectra\n');
 nss.hyb = syn2ann_spp(nss.hyb);
 sps.hyb = syn2ann_spp(sps.hyb);
+hbs_org = syn2ann_spp(hbs_org);
 hbs = syn2ann_spp(hbs);
 
 % % ============ DEBUG CODE---> CHECK WITH BBSYNT ============================
