@@ -56,8 +56,8 @@ function [varargout] = lfhf_hybridator(varargin)
         for j_ = 1:slf.mon.nc
             cpp = slf.mon.cp{j_};
             %% *FOURIER TRANSFORM*
-%             slf.syn{i_}.tha.(cpp)(slf.mon.ntm+1:hyb.mon.nfr(i_))=0;
-%             shf.syn{i_}.tha.(cpp)(shf.mon.ntm+1:hyb.mon.nfr(i_))=0;
+            slf.syn{i_}.tha.(cpp)(slf.mon.ntm+1:hyb.mon.nfr(i_))=0;
+            shf.syn{i_}.tha.(cpp)(shf.mon.ntm+1:hyb.mon.nfr(i_))=0;
             
             slf.syn{i_}.fsa.(cpp) = fft(slf.syn{i_}.tha.(cpp),hyb.mon.nfr(i_)).*...
                 slf.mon.dtm(i_);

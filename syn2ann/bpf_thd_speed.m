@@ -16,7 +16,7 @@
 % * _thv (velocity time-history column vector)_
 % * _thd (displacement time-history column vector)_
 function [varargout] = bpf_thd_speed(varargin)
-    %% SET-UP
+    %% *SETUP*
     % _time-step_
     dtm = varargin{1};
     % _accelerogram_
@@ -42,21 +42,19 @@ function [varargout] = bpf_thd_speed(varargin)
             hfr = fNy;
         end
     end
-    ntm = numel(thd);
-    %% BUTTERWORTH FILTER
-    [bfb,bfa,flag] = create_butter_filter(bfo,lfr,hfr,fNy);
     
-    %% PROCESSING
-    thd = filtfilt(bfb,bfa,thd);
-    %% BACK TO ACCELERATION
-    % _time differentiation_
-    thv(2:ntm-1,1) = (thd(3:ntm,1)-thd(1:ntm-2,1))./(2*dtm);
-    thv(1,1) = 0.0;
-    thv(ntm,1) = thv(ntm-1,1);
-    tha(2:ntm-1,1) = (thv(3:ntm,1)-thv(1:ntm-2,1))./(2*dtm);
-    tha(1,1) = 0.0;
-    tha(ntm,1) = tha(ntm-1,1);
+    %% *BUTTERWORTH FILTER*
+%     [bfb,bfa,~] = create_butter_filter(bfo,lfr,hfr,fNy);
+%     
+%     ntm = numel(thd);
+%     %% *PROCESSING*
+%     thd = filtfilt(bfb,bfa,thd);
     
+    %% *BACK TO ACCELERATION*
+    thv = avd_diff(dtm,thd);
+    tha = avd_diff(dtm,thv);
+    
+    %% *OUTPUT*
     varargout{1} = tha(:);
     varargout{2} = thv(:);
     varargout{3} = thd(:);

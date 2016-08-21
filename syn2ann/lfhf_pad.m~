@@ -29,16 +29,12 @@ function [varargout] = lfhf_pad(varargin)
             % tapering
             nss.syn{i_}.tha.(nss.mon.cp{j_}) = ...
                 taper_fun(nss.syn{i_}.tha.(nss.mon.cp{j_}),5,0,1); 
-            figure(1)
-            plot(nss.syn{i_}.tha.(nss.mon.cp{j_}),'b');hold all;
-            
+            figure(
+            keyboard
             % _padding low-frequency_
             nss.syn{i_}.tha.(nss.mon.cp{j_}) = ...
                 padarray(nss.syn{i_}.tha.(nss.mon.cp{j_}),...
                 npad-nss.mon.ntm(i_),0,'post');
-            
-            plot(nss.syn{i_}.tha.(nss.mon.cp{j_}),'r--');hold all;
-            keyboard
             % _padding high-frequency_
             sps.syn{i_}.tha.(sps.mon.cp{j_}) = ...
                 padarray(sps.syn{i_}.tha.(sps.mon.cp{j_}),...

@@ -1,34 +1,40 @@
-% funzione per il tapering con una finestra coseno di tipo Hann
+% Hann cosinus-function tapering
 % A = 0.5
 % B = 0.5
 % w = A + B * cos(ind)
-% ind = (npt - i) * pi / (npt - 1) fine segnale
-% ind = i * pi / (npt - 1) inizio segnale
-% npt e' il numero di punti su cui eseguire il tapering
-% i � un indice che va da 0 a npt
+% ind = (ntm - n_) * pi / (ntm - 1) --->end
+% ind = n_ * pi / (ntm - 1)         --->start
+% ntm tapering points
 
 
-function [Xtap] = taper_fun(x,perce,ini,fin)
-
-Ntot=length(x);
-npt = round(Ntot * (perce / 100.));
-
-if ini == 1
-    for i = 1:npt
-        dth = (npt - i) * pi / (npt - 1);
-        a = 0.5 * (1.0 + cos(dth));
-        x(i) = x(i) * a ;
+function [varargout] = taper_fun(varargin)
+    
+    ths = varargin{1}(:);
+    pct = varargin{2};
+    idx.before = varargin{3};
+    idx.after = varargin{4};
+    Ntot=length(ths);
+    ntm = round(Ntot * (pct / 100.));
+    
+    if logical(idx.before)
+        for n_ = 1:ntm
+            dth = (ntm - n_) * pi / (ntm - 1);
+            a = 0.5 * (1.0 + cos(dth));
+            ths(n_) = ths(n_) * a ;
+        end
     end
-end
-
-if fin == 1
-    for i = 0:(npt-1);
-        dth = i * pi / (npt - 1);
-        a = 0.5 * (1.0 + cos(dth));
-        bb = Ntot - (npt - 1) + i;
-        x(bb) = x(bb) * a; 
+    
+    if logical(idx.after)
+        for n_ = 0:ntm-1
+            dth = n_ * pi / (ntm - 1);
+            a = 0.5 * (1.0 + cos(dth));
+            bb = Ntot - (ntm - 1) + n_;
+            ths(bb) = ths(bb) * a;
+        end
     end
+    
+    varargout{1} = ths;
+    
+    return
 end
-
-Xtap = x;
 
