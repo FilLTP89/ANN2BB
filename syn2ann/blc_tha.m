@@ -33,8 +33,7 @@ function [varargout] = blc_tha(varargin)
     %
     % _integration_
     %
-    thv = dtm*cumtrapz(tha);
-    thd = dtm*cumtrapz(thv);
+    [~,thv,thd] = integr_diff_avd(dtm,tha);
     
     varargout{1} = tha(:);
     varargout{2} = thv(:);

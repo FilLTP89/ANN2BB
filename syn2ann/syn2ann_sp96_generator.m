@@ -37,6 +37,7 @@ function [varargout] = syn2ann_sp96_generator(varargin)
             cpp = sps.mon.cp{j_};
             [vtm,sps.syn{i_}.tha.(cpp)] = sabetta(sps.mtd.mw(i_),sps.mon.dep(i_),...
                 sps.mtd.scc(i_),sps.mtd.sst(i_),sps.mtd.dtm_sp96(i_),sps.mtd.scl(i_));
+            sps.syn{i_}.tha.(cpp) = detrend(sps.syn{i_}.tha.(cpp));
             %
             [sps.syn{i_}.tha.(cpp),sps.syn{i_}.thv.(cpp),sps.syn{i_}.thd.(cpp)] = ...
                 integr_diff_avd(sps.mtd.dtm_sp96(i_),sps.syn{i_}.tha.(cpp));

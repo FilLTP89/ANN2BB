@@ -76,14 +76,12 @@ function [varargout] = lfhf_hybridator(varargin)
             hyb.syn{i_}.fsa.(cpp) = slf.syn{i_}.fsa.(cpp) + shf.syn{i_}.fsa.(cpp);
             
             %% *TIME-HISTORIES*
-            slf.syn{i_}.tha.(cpp) = super_ifft(slf.mon.dtm(i_),...
-                slf.mon.ntm(i_),slf.syn{i_}.fsa.(cpp));
+            
+            slf.syn{i_}.tha.(cpp) = super_ifft(slf.mon.dtm(i_),slf.syn{i_}.fsa.(cpp));
             %
-            shf.syn{i_}.tha.(cpp) = super_ifft(shf.mon.dtm(i_),...
-                shf.mon.ntm(i_),shf.syn{i_}.fsa.(cpp));
+            shf.syn{i_}.tha.(cpp) = super_ifft(shf.mon.dtm(i_),shf.syn{i_}.fsa.(cpp));
             %
-            hyb.syn{i_}.tha.(cpp) = super_ifft(hyb.mon.dtm(i_),...
-                hyb.mon.ntm(i_),hyb.syn{i_}.fsa.(cpp));
+            hyb.syn{i_}.tha.(cpp) = super_ifft(hyb.mon.dtm(i_),hyb.syn{i_}.fsa.(cpp));
             
             %% *VELOCITY-DISPLACEMENTS*
             [~,slf.syn{i_}.thv.(cpp),slf.syn{i_}.thd.(cpp)] = ...

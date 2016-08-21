@@ -1,16 +1,15 @@
 function [varargout] = super_ifft(varargin)
+    %% *SETUP*
     dtm = varargin{1};
-    ntm = varargin{2};
-    fss = varargin{3};
+    fss = varargin{2}(:);
+    if nargin>2
+        error('CHANGE SYNTAX');
+    end
     
     nfr = numel(fss);
-    fst = zeros(nfr,1);
+    ths = ifft(fss,nfr,1,'symmetric')/dtm;
     
-    fst(1:nfr/2) = fss(1:nfr/2);
-    fst(nfr/2+2:nfr) = flip(conj(fss(2:nfr/2)));
-    ths = real(ifft(fst))./dtm;
-%     ths = ths(1:ntm);
+    %% *OUTPUT*
     varargout{1} = ths(:);
-    varargout{2} = fst(:);
     return
 end
