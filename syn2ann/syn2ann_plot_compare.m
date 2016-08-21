@@ -53,8 +53,10 @@ function syn2ann_plot_compare(varargin)
         % * _FOURIER SPECTRA_
         %
         for i_ = 1:spg(1)
-            xpl{i_} = xplot{i_}.mon.vfr{identity};
-            ypl{i_} = abs(xplot{i_}.syn{identity}.fsa.(cpp))*utd.fsa;
+            
+            nfr     = numel(xplot{i_}.mon.vfr{identity})/2;
+            xpl{i_} = xplot{i_}.mon.vfr{identity}(1:nfr);
+            ypl{i_} = abs(xplot{i_}.syn{identity}.fsa.(cpp)(1:nfr))*utd.fsa;
         end
         try
             fpplot('xpl',xpl,'ypl',ypl,'pfg',pfg.fsa,...

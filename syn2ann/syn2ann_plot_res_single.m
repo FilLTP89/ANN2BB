@@ -17,10 +17,10 @@ vtm_shift(4) = 1.9;
 % * _FOURIER SPECTRA_
 %
 pfg.fsa = [0 0 16 16];
-xlm.fsa = {[1e-2,25]};
+xlm.fsa = {[1e-2,1e2]};
 ylm.fsa = {[1e-4,1e1]};
 xtk.fsa = {[1e-4,1e-3,1e-2,1e-1,1,1e1]};
-ytk.fsa = {[1e-2,1e-1,1,10]};
+ytk.fsa = {[1e-2,1e-1,1,1e1,1e2]};
 xlb.fsa = {'f [Hz]'};
 ylb.fsa = {'FS [m/s]','',''};
 scl.fsa = {'log','log','log'};
@@ -34,10 +34,10 @@ mm_ = 1;
 % * _PSEUDO-ACCELERATION RESPONSE SPECTRA_
 %
 pfg.psa = [0 0 16 16];
-xlm.psa = {[0,4]};
-ylm.psa = {[0,2400]};
-xtk.psa = {0:4};
-ytk.psa = {0:400:2400};
+xlm.psa = {[0,5]};
+ylm.psa = {[0,2800]};
+xtk.psa = {0:5};
+ytk.psa = {0:400:2800};
 xlb.psa = {'T [s]'};
 ylb.psa = {'PSA [g]','',''};
 scl.psa = {'lin','lin','lin'};
@@ -52,7 +52,7 @@ pfg.tha.c = [0 0 16 6];
 pfg.tha.s = [0 0 16 18];
 % xlm.tha = {[2;16];[2;16];[2;16]};
 xlm.tha = {[0;40];[0;40];[0;40]};
-ylm.tha = {[-8e2,8e2];[-8e2,8e2];[-8e2,8e2]};
+ylm.tha = {[-9e2;9e2];[-9e2;9e2];[-9e2;9e2]};
 % xtk.tha = {[2:2:16];[2:2:16];[2:2:16]};
 xtk.tha = {[0:5:40];[0:5:40];[0:5:40]};
 xlb.tha = {'t [s]'};
