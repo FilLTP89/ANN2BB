@@ -32,7 +32,8 @@ function [varargout] = blc_tha(varargin)
     Aeq = vtm(idx2).^(n:-1:0);
     % and 'beq' is the value the curve should take at that point
     beq = 0;
-    pq = lsqlin(C,thv,[],[],Aeq,beq);
+    options = optimoptions('lsqlin','Algorithm','active-set');
+    pq = lsqlin(C,thv,[],[],Aeq,beq,[],[],[],options);
     thv = polyval(pq,vtm);
     %
     % _subtracting derivative to 0th order corrected acceleration_

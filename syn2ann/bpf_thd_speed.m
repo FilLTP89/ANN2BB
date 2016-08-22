@@ -43,10 +43,9 @@ function [varargout] = bpf_thd_speed(varargin)
         end
     end
     
-    %% *BUTTERWORTH FILTER*
+%     %% *BUTTERWORTH FILTER*
 %     [bfb,bfa,~] = create_butter_filter(bfo,lfr,hfr,fNy);
 %     
-%     ntm = numel(thd);
 %     %% *PROCESSING*
 %     thd = filtfilt(bfb,bfa,thd);
     
