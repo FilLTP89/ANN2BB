@@ -16,8 +16,6 @@ function [varargout] = spectral_scaling_original(varargin)
     %
     % _resampling and correcting_
     %
-%     inp_tha = blc_tha1(inp_dtm,inp_tha);
-%     inp_tha = taper_fun(inp_tha,2.5,1,1);
     [obj_dtm,obj_tha,obj_ntm,~] = seismo_rsmpl(inp_dtm,inp_tha,fac,scl);
     %
     % _HF refining_
@@ -82,7 +80,7 @@ function [varargout] = spectral_scaling_original(varargin)
         end
         
         obj_tha = ifft(obj_fsa(:),[],1,'symmetric');
-        obj_tha = blc_tha1(obj_dtm,obj_tha);
+        obj_tha = detrend(obj_tha);
         obj_tha = adjust_pga(obj_dtm,obj_tha,tar_pga);
         % response spectrum of corrected waveform
         psa_pro = SDOF_response(obj_tha,obj_dtm,tar_vTn,zeta,1);
@@ -100,7 +98,7 @@ function [varargout] = spectral_scaling_original(varargin)
         end
         
     end
-    [obj_tha,obj_thv,obj_thd] = blc_tha(obj_dtm,obj_tha);
+    [obj_tha,obj_thv,obj_thd] = hpf_tha(obj_dtm,obj_tha);
     
     % response spectral parameters
     dTn = 0.05;
