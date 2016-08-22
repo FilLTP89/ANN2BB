@@ -32,8 +32,6 @@ function [varargout] = integr_diff_avd(varargin)
     if flag
         %% *CORRECTED ACCELERATION TIME INTEGRATION*
         disp('--->CORRECTED TIME INTEGRATION')
-        % number of time steps of original record
-        ntm = numel(tha);
         % velocity
         thv = cumtrapz(tha)*dtm;
         %
@@ -67,11 +65,9 @@ function [varargout] = integr_diff_avd(varargin)
         % http://oregonstate.edu/instruct/ch490/lessons/lesson11.htm_
         %
         % velocity 
-        thv(2:ntm-1,1) = (thd(3:ntm,1)-thd(1:ntm-2,1))./(2*dtm);
-        thv([1,ntm],1) = [0.0;thv(ntm-1,1)];
+        thv = avd_diff(dtm,thd);
         % acceleration
-        tha(2:ntm-1,1) = (thv(3:ntm,1)-thv(1:ntm-2,1))./(2*dtm);
-        tha([1,ntm],1) = [0.0;tha(ntm-1,1)];
+        tha = avd_diff(dtm,thv);
         % _time integration_
         thv = cumtrapz(tha)*dtm;
         thd = cumtrapz(thv)*dtm;
