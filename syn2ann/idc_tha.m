@@ -4,7 +4,7 @@
 % DICA - Politecnico di Milano
 % Copyright 2014-15_
 %% NOTES
-% _integr_diff_avd_: function that integrates and differentiate acceleration
+% _idc_tha_: function that integrates and differentiate acceleration
 % signal
 %% INPUT:
 % * dtm (sampling time step)
@@ -16,7 +16,7 @@
 % * thv (velocity time-history vector (after differentiation))
 % * thd (displacement time-history vector (after differentiation))
 
-function [varargout] = integr_diff_avd(varargin)
+function [varargout] = idc_tha(varargin)
     %% *SET-UP*
     % time-step
     dtm = varargin{1};
@@ -31,7 +31,7 @@ function [varargout] = integr_diff_avd(varargin)
 
     if flag
         %% *CORRECTED ACCELERATION TIME INTEGRATION*
-        disp('--->CORRECTED TIME INTEGRATION')
+        disp('--->IDC_THA: CORRECTED TIME INTEGRATION')
         % velocity
         thv = cumtrapz(tha)*dtm;
         %

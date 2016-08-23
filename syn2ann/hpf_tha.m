@@ -18,7 +18,7 @@ function [varargout] = hpf_tha(varargin)
     %
     % _integration_
     %
-    [~,thv,thd] = integr_diff_avd(dtm,tha);
+    [~,thv,thd] = idc_tha(dtm,tha);
     
     %% *OUTPUT*
     varargout{1} = tha(:);

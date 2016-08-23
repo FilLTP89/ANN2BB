@@ -85,13 +85,13 @@ function [varargout] = lfhf_hybridator(varargin)
             
             %% *VELOCITY-DISPLACEMENTS*
             [~,slf.syn{i_}.thv.(cpp),slf.syn{i_}.thd.(cpp)] = ...
-                integr_diff_avd(slf.mon.dtm(i_),slf.syn{i_}.tha.(cpp));
+                idc_tha(slf.mon.dtm(i_),slf.syn{i_}.tha.(cpp));
             %
             [~,shf.syn{i_}.thv.(cpp),shf.syn{i_}.thd.(cpp)] = ...
-                integr_diff_avd(shf.mon.dtm(i_),shf.syn{i_}.tha.(cpp));
+                idc_tha(shf.mon.dtm(i_),shf.syn{i_}.tha.(cpp));
             %
             [~,hyb.syn{i_}.thv.(cpp),hyb.syn{i_}.thd.(cpp)] = ...
-                integr_diff_avd(hyb.mon.dtm(i_),hyb.syn{i_}.tha.(cpp));
+                idc_tha(hyb.mon.dtm(i_),hyb.syn{i_}.tha.(cpp));
             % 
         end
         slf.mon.ntm(i_) = numel(slf.syn{i_}.tha.(cpp));
