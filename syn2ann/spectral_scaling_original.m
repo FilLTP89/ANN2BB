@@ -12,14 +12,11 @@ function [varargout] = spectral_scaling_original(varargin)
     zeta = 0.05;                 % damping coefficient
     fac  = 1;                    % resampling factor
     scl  = 1;                    % scaling factor
-    ni   = 20;                   % number of iterations
+    ni   = 10;                   % number of iterations
     %
     % _resampling and correcting_
     %
     [obj_dtm,obj_tha,obj_ntm,~] = seismo_rsmpl(inp_dtm,inp_tha,fac,scl);
-    [bfb,bfa,~] = create_butter_filter(4,0.02,[],0.5/obj_dtm);
-    obj_tha = detrend(obj_tha);
-    obj_tha = filtfilt(bfb,bfa,obj_tha);
     %
     % _HF refining_
     %
@@ -46,7 +43,6 @@ function [varargout] = spectral_scaling_original(varargin)
         tar_psa = tar_psa_new;
     end
     tar_nT  = numel(tar_vTn);
-    
     %
     % _frequency response_
     %
@@ -63,21 +59,15 @@ function [varargout] = spectral_scaling_original(varargin)
     % _pseudo-spectral acceleration_
     %
     obj_psa = SDOF_response(obj_tha,obj_dtm,tar_vTn,zeta);
-    
+    rra_in=-999*ones(tar_nT+1);
     for i_ = 2:tar_nT
-        if tar_nT<=0.8
             rra_in(tar_nT-i_+2) = obj_psa(i_)/tar_psa(i_);
-        else
-            rra_in(tar_nT-i_+2)=1;
-        end
     end
     rra_in(tar_nT+1) = obj_psa(1)/tar_psa(1);
     rra_in(1)=1;
-    
     rra = interp1(obj_vfr,rra_in,inp_vfr,'linear');
     
-    f_amax=40;
-    f_amin=1.25;
+    rra_pro=-999*ones(tar_nT+1);
     for i_=1:ni
         obj_fsa=fft(obj_tha);
         obj_fsa(1:inp_nfr) = obj_fsa(1:inp_nfr)./rra(1:inp_nfr);
@@ -91,14 +81,11 @@ function [varargout] = spectral_scaling_original(varargin)
         % response spectrum of corrected waveform
         psa_pro = SDOF_response(obj_tha,obj_dtm,tar_vTn,zeta,1);
         
-        for j_=1:tar_nT
-            if tar_nT<=0.8
-                rra_pro(tar_nT-j_+2)=psa_pro(j_)/tar_psa(j_);
-            else
-                rra_pro(tar_nT-j_+2)=1;
-            end
-        end
         rra_pro(1)=1;
+        for j_=1:tar_nT
+                rra_pro(tar_nT-j_+2)=psa_pro(j_)/tar_psa(j_);
+        end
+        
         rra = interp1(obj_vfr,rra_pro,inp_vfr,'linear');
         
         %         for j_=1:inp_nfr
@@ -108,13 +95,20 @@ function [varargout] = spectral_scaling_original(varargin)
         %         end
         
     end
-    obj_tha = detrend(obj_tha);
-    %% *BUTTERWORTH FILTER*
-    %     obj_tha = padarray(obj_tha,ceil(30/obj_dtm),'both');
-    [obj_tha,obj_thv,obj_thd] = integr_diff_avd(obj_dtm,obj_tha);
-    %     obj_tha = obj_tha(ceil(30/obj_dtm)+1:end-ceil(30/obj_dtm));
-    %     obj_thv = obj_thv(ceil(30/obj_dtm)+1:end-ceil(30/obj_dtm));
-    %     obj_thd = obj_thd(ceil(30/obj_dtm)+1:end-ceil(30/obj_dtm));
+    obj_ntm = numel(obj_tha);
+    obj_tha=filtfilt(bfb,bfa,obj_tha);
+    
+    obj_thv=cumtrapz(obj_tha)*obj_dtm;
+    obj_thv=detrend(obj_thv,'linear');
+    obj_thd=cumtrapz(obj_thv)*obj_dtm;
+    obj_thd=detrend(obj_thd,'linear');
+    frac=5; %% taper
+    obj_thd = taper_fun(obj_thd,frac,1,1);
+    
+    obj_thv=diff(obj_thd)/obj_dtm;
+    obj_thv(obj_ntm)=0;
+    obj_tha=diff(obj_thv)/obj_dtm;
+    obj_tha(obj_ntm)=0;
     
     %% *PROCESSING*
     
