@@ -15,44 +15,36 @@ sp = fullfile(filesep,'media','user','DATI','Filippo','PHD_heavyweight',...
 %     'heavy_images');
 % eval(sprintf('!mkdir -p %s',sp));
 
+syn2ann_case_list
+selected_case = 2;
+
 %% *REAL RECORDS: METADATA*
 % _path to record files_
 bhr.pt  = fullfile(wd,'records');
 fprintf('--> Record Path: %s\n',bhr.pt);
-% _station identity_
-bhr.st{1}.id = {'MRN'};
-bhr.st{1}.ni = {'CIT';'HN'};
-% bhr.st{2}.id = {'MIR'};
-% bhr.st{2}.ni = {'TV';'HN'};
-% bhr.st{3}.id = {'AQK'};
-% bhr.st{3}.ni = {'IT';'HN'};
-% bhr.st{4}.id = {'AQU'};
-% bhr.st{4}.ni = {'MN';'HL'};
-bhr.ns = numel(bhr.st);
-fprintf('--> N. Stations: %u\n',bhr.ns);
-cellfun(@(y) structfun(@(x) fprintf('--> Station ID: %s\n',x{:}),y,'UniformOutput',0),bhr.st);
-fprintf('\n');
-% _recorded events_
-bhr.st{1}.ev = {'20120529.070002'};
-% bhr.st{2}.ev = {'20120529.070002'};
-% bhr.st{3}.ev = {'20090406.013240'};
-% bhr.st{4}.ev = {'20090406.013240'};
 % _database_
 bhr.tp = {'itaca'};
 cellfun(@(x) fprintf('--> Database: %s',x),bhr.tp);
 fprintf('\n');
-% _event label_
-bhr.lb = {'Main Shock'};
-% _device list_
-bhr.st{1}.dv = {''};
-% bhr.st{2}.dv = {'08'};
-% bhr.st{3}.dv = {''};
-% bhr.st{4}.dv = {''};
+
+
+bhr.ns = numel(selected_case);
+for m_ = 1:bhr.ns
+    for n_ = 1:fnn.bhrr
+        bhr.(fni.bhrr{n_}){m_} = bhrr.(fni.bhrr{n_}){selected_case(m_)};
+    end
+end
+
+fprintf('--> N. Stations: %u\n',bhr.ns);
+cellfun(@(y) structfun(@(x) fprintf('--> Station ID: %s\n',x{:}),y,'UniformOutput',0),bhr.st);
+fprintf('---------------------------------------------------------------\n');
+
 bhr.na = 0;
 for i_ = 1:bhr.ns
     bhr.nd(i_) = numel(bhr.st{i_}.dv);
     bhr.na = bhr.na+bhr.nd(i_);
 end
+
 % _reference system_
 bhr.rs = {'e';'n';'z'};
 bhr.cp = {'e';'n';'z'};
@@ -72,6 +64,7 @@ cellfun(@(x) fprintf('%s; ',x),bhr.rc);
 fprintf('\n');
 bhr.cp = bhr.cp(:);
 bhr.ci = bhr.ci(:);
+fprintf('---------------------------------------------------------------\n');
 
 %% *MONITORS*
 % _path to monitor files_
@@ -84,11 +77,15 @@ fprintf('--> Monitor File: %s\n',mon.fn);
 mon.tp  = 'S';
 fprintf('--> Type of Simulation: %s\n',mon.tp);
 % _monitor identity_
-mon.id  = [16928];%,15045,1,2];
-mon.na  = numel(mon.id);
+mon.na = bhr.ns;
+for m_ = 1:mon.na
+    for n_ = 1:fnn.monn
+        mon.(fni.monn{n_})(m_) = monn.(fni.monn{n_})(selected_case(m_));
+    end
+end
+
 fprintf('--> N. Monitor: %u\n',mon.na);
 arrayfun(@(x) fprintf('--> Monitor ID: %u \n',x),mon.id);
-fprintf('\n');
 % _reference system_
 mon.rs = bhr.rs;
 mon.cp = bhr.cp;
@@ -96,28 +93,24 @@ mon.ci = bhr.ci;
 mon.nc = numel(mon.cp);
 fprintf('--> Directions: ');
 cellfun(@(x) fprintf('%s ',x),mon.cp);
-fprintf('\n');
 % _motion components_
 mon.rc  = {'d'};
 mon.nr  = numel(mon.rc);
 fprintf('--> Components: ');
 cellfun(@(x) fprintf('%s ',x),mon.rc);
-fprintf('\n');
+fprintf('\n---------------------------------------------------------------\n');
 mon.cp = mon.cp(:);
 mon.ci = mon.ci(:);
 
 %% *HYBRIDIZATION METADATA*
 % _SP96 metadata_
 hybrid_type='sp96';
-mtd.mw = [6,6,6.3,6.3];
-mtd.dtm_sp96 = [0.01,0.01,0.01,0.01];
-mtd.scc = [2,1,2,1];
-mtd.sst = zeros(mon.na,1);
-mtd.scl = 0.01*ones(mon.na,1);
-
-%% *PARSING EXTRA METADATA*
-mon.fa = [1.3,1.3,1.3,1.3]; % in Hz
-mon.fb = [1.7,1.5,1.5,1.5]; % in Hz
+mtd.na = mon.na;
+for m_ = 1:mtd.na
+    for n_ = 1:fnn.mtdd
+        mtd.(fni.mtdd{n_})(m_) = mtdd.(fni.mtdd{n_})(selected_case(m_));
+    end
+end
 
 %% *ANN*
 ann.mtd.scl = 'ALL';

@@ -166,6 +166,7 @@ function [hex,name] = getcolors()
     'FF','7F','50', 'Coral'
     'FF','63','47', 'Tomato'
     'FF','45','00', 'OrangeRed'
+    'FF','6A','30', 'IntenseOrange'
     %Yellow colors
     'FF','FF','00', 'Yellow'
     'FF','FF','E0', 'LightYellow'
@@ -178,6 +179,7 @@ function [hex,name] = getcolors()
     'F0','E6','8C', 'Khaki'
     'BD','B7','6B', 'DarkKhaki'
     'FF','D7','00', 'Gold'
+    'FF','C0','00', 'IntenseYellow'
     %Brown colors
     'A5','2A','2A', 'Brown'
     'FF','F8','DC', 'Cornsilk'
@@ -220,6 +222,7 @@ function [hex,name] = getcolors()
     '80','80','00', 'Olive'
     '55','6B','2F', 'DarkOliveGreen'
     '00','80','80', 'Teal'
+    '1F','B6','25', 'IntenseGreen'
     %Blue colors
     '00','00','FF', 'Blue'
     'AD','D8','E6', 'LightBlue'
@@ -245,6 +248,7 @@ function [hex,name] = getcolors()
     '00','00','8B', 'DarkBlue'
     '00','00','80', 'Navy'
     '19','19','70', 'MidnightBlue'
+    '00','B6','FF', 'IntenseBlue'
     %Purple colors
     '80','00','80', 'Purple'
     'E6','E6','FA', 'Lavender'
