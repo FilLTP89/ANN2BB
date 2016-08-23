@@ -22,7 +22,7 @@ function [varargout] = bpf_thd_speed(varargin)
     % _accelerogram_
     thd = varargin{2}(:);
     % _default corner frequency (high-pass filter)_
-    lfr =.01;
+    lfr =.15;
     % _default cutoff frequency (low-pass filter)_
     hfr = 25;
     % _default butterworth order_

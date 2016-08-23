@@ -5,7 +5,6 @@ function [varargout] = spectral_scaling_original(varargin)
     tar_vTn = varargin{3}(:);
     tar_psa = varargin{4}(:);
     tar_pga = tar_psa(1);     % target pga
-    tar_nT  = numel(tar_vTn);
     %
     % _spectral matching set up_
     %
@@ -13,18 +12,16 @@ function [varargout] = spectral_scaling_original(varargin)
     fac  = 1;                    % resampling factor
     scl  = 1;                    % scaling factor
     ni   = 10;                   % number of iterations
-    %
-    % _resampling and correcting_
-    %
-    [obj_dtm,obj_tha,obj_ntm,~] = seismo_rsmpl(inp_dtm,inp_tha,fac,scl);
-    %
-    % _HF refining_
-    %
-    vTn_cor = [2*obj_dtm,0.05];                     % upper period of refinement
-    nc      = 10;                                     % number of refinement points
-    idxn    = find(tar_vTn(tar_vTn~=0) < vTn_cor(2)); % indexes
     
-    if logical(isempty(idxn))
+    %% *SCALING/RESAMPLING ACCELERATION*
+    [obj_dtm,obj_tha,obj_ntm,~] = seismo_rsmpl(inp_dtm,inp_tha,fac,scl);
+
+    %% *TARGET SPECTRUM ENRICHMENT AT SP*
+    vTn_cor = [2*obj_dtm,0.05];                       % upper period of refinement
+    nc      = 10;                                     % number of refinement points
+    idxn    = (tar_vTn(tar_vTn~=0) < vTn_cor(2)); % indexes
+    
+    if logical(any(idxn))
         idx_save_org(:,1)    = find(tar_vTn>vTn_cor(2));
         idx_save_new         = idx_save_org+(nc-idx_save_org(1)+1);
         %
@@ -43,9 +40,8 @@ function [varargout] = spectral_scaling_original(varargin)
         tar_psa = tar_psa_new;
     end
     tar_nT  = numel(tar_vTn);
-    %
-    % _frequency response_
-    %
+    
+    %% *INITAL PSA AND FSA*
     inp_nfr = 2^nextpow2(obj_ntm);
     inp_dfr = 1/(inp_nfr-1)/obj_dtm;
     inp_vfr = (0:inp_dfr:0.5/obj_dtm)';
@@ -59,20 +55,21 @@ function [varargout] = spectral_scaling_original(varargin)
     % _pseudo-spectral acceleration_
     %
     obj_psa = SDOF_response(obj_tha,obj_dtm,tar_vTn,zeta);
-    rra_in=-999*ones(tar_nT+1);
+    rra_in=-999*ones(tar_nT+1,1);
     for i_ = 2:tar_nT
-            rra_in(tar_nT-i_+2) = obj_psa(i_)/tar_psa(i_);
+      rra_in(tar_nT-i_+2) = obj_psa(i_)/tar_psa(i_);
     end
     rra_in(tar_nT+1) = obj_psa(1)/tar_psa(1);
     rra_in(1)=1;
     rra = interp1(obj_vfr,rra_in,inp_vfr,'linear');
     
-    rra_pro=-999*ones(tar_nT+1);
+    
+    rra_pro=-999*ones(tar_nT+1,1);
     for i_=1:ni
         obj_fsa=fft(obj_tha);
         obj_fsa(1:inp_nfr) = obj_fsa(1:inp_nfr)./rra(1:inp_nfr);
         
-        for m_ = inp_nfr+2:2*inp_nfr+1
+        for m_ = inp_nfr+2:2*inp_nfr
             obj_fsa(m_) = conj(obj_fsa(2*inp_nfr-m_+2));
         end
         obj_tha = ifft(obj_fsa(:),2*inp_nfr,1,'symmetric');
@@ -96,21 +93,23 @@ function [varargout] = spectral_scaling_original(varargin)
         
     end
     obj_ntm = numel(obj_tha);
-    obj_tha=filtfilt(bfb,bfa,obj_tha);
-    
-    obj_thv=cumtrapz(obj_tha)*obj_dtm;
-    obj_thv=detrend(obj_thv,'linear');
-    obj_thd=cumtrapz(obj_thv)*obj_dtm;
-    obj_thd=detrend(obj_thd,'linear');
-    frac=5; %% taper
+
+    [bfb,bfa,~] = create_butter_filter(2,0.15,25,0.5/obj_dtm);
+    [obj_tha,~,~] = blc_tha(obj_dtm,obj_tha);
+    obj_tha = filtfilt(bfb,bfa,obj_tha);
+    obj_thv = cumtrapz(obj_tha)*obj_dtm;
+    obj_thv = detrend(obj_thv);
+    obj_thd = cumtrapz(obj_thv)*obj_dtm;
+    obj_thd = detrend(obj_thd,'linear');
+    frac=5;
     obj_thd = taper_fun(obj_thd,frac,1,1);
     
     obj_thv=diff(obj_thd)/obj_dtm;
     obj_thv(obj_ntm)=0;
     obj_tha=diff(obj_thv)/obj_dtm;
     obj_tha(obj_ntm)=0;
-    
-    %% *PROCESSING*
+        
+    %% *SCALED PSA SPECTRUM*
     
     % response spectral parameters
     dTn = 0.05;

@@ -9,9 +9,11 @@ fprintf('--> Generation\n');
 mon.lfr = [];
 mon.hfr = [];
 sps.org = syn2ann_sp96_generator(mon,mtd);
+
 %% *PGA-PGV-PGD & ARIAS INTENSITY*
 fprintf('--> Peak Values and Arias\n');
 sps.org = syn2ann_thp(sps.org);
+
 %% *SPECTRA*
 fprintf('--> Spectra\n');
 sps.org = syn2ann_spp(sps.org);

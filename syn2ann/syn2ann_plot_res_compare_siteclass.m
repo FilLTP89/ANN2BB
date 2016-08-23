@@ -3,23 +3,24 @@ syn2ann_setup;
 global pfg xlm xlb xtk ylm ylb ytk grd scl mrk tit utd
 bhr = syn2ann_bhr_parser(bhr);
 cd(wd);close all;
-mm_ = 1:4;
+mm_ = 1;
 cpp = {'e';'n';'z'};
-clr = [rgb('DeepSkyBlue');rgb('DeepSkyBlue');...
-    rgb('DarkOrange');rgb('DarkOrange');...
-    rgb('DarkGreen');rgb('DarkGreen')];
+clr = [rgb('Navy');rgb('Navy');...
+    rgb('Tomato');rgb('Tomato');...
+    rgb('DeepSkyBlue');rgb('DeepSkyBlue')];
 set(0,'defaultaxescolororder',clr);
+
 %
 % * _PSEUDO-ACCELERATION RESPONSE SPECTRA_
 %
 pfg.psa = [0 0 16 16];
-xlm.psa = {[0,4]};
-ylm.psa = {[0,2000]};
-xtk.psa = {0:4};
-ytk.psa = {0:400:2000};
+xlm.psa = {10.^([log10(0.05),1])};
+ylm.psa = {10.^(1:3:4)};
+xtk.psa = {10.^([log10(0.05),-1:1])};
+ytk.psa = {10.^(1:4)};
 xlb.psa = {'T [s]'};
-ylb.psa = {'PSA [g]','',''};
-scl.psa = {'lin','lin','lin'};
+ylb.psa = {'PSA [cm/s^2]','',''};
+scl.psa = {'log','log','log'};
 grd.psa = {'minor'};
 mrk.psa = {'none'};
 tit.psa = {'PSEUDO-ACCELERATION SPECTRUM (5%)'};

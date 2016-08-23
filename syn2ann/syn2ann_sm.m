@@ -42,7 +42,7 @@ function [varargout] = syn2ann_sm(varargin)
             spm.(hbs.mon.cp{j_}).mon.ntm(i_) = numel(spm.(hbs.mon.cp{j_}).syn{i_}.tha.(hbs.mon.cp{j_}));
             %
             spm.(hbs.mon.cp{j_}).mon.vtm{i_} = spm.(hbs.mon.cp{j_}).mon.dtm(i_)*...
-                (0:spm.(hbs.mon.cp{j_}).mon.ntm(i_)-1);
+                (0:spm.(hbs.mon.cp{j_}).mon.ntm(i_)-1)'+hbs.mon.vtm{i_}(1);
         end
     end
     %% *OUTPUT*

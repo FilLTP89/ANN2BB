@@ -26,11 +26,7 @@ function syn2ann_plot_compare(varargin)
         %
         for i_ = 1:spg(1)
             xpl{i_} = xplot{i_}.mon.vTn;
-            try
             ypl{i_} = abs(xplot{i_}.syn{identity}.psa.(cpp))*utd.psa;
-            catch
-                keyboard
-            end
         end
         try
             fpplot('xpl',xpl,'ypl',ypl,'pfg',pfg.psa,...
@@ -137,11 +133,15 @@ function syn2ann_plot_compare(varargin)
         %
         % # _ASIDE_
         %
+        try
         fpplot('xpl',xpl,'ypl',ypl,'pfg',pfg.tha.s,...
             'pax',pax,'scl',scl.thv,'grd',grd.thv,...
             'xlm',xlm.thv(i_),'xlb',xlbt,'xtk',xtk.thv(i_),'mrk',mrka,'spg',spg,...
             'ylm',ylm.thv(i_),'ylb',ylb.thv,'ytk',ytk.thv(i_),'tit',legplot);
         saveas(gcf,strcat(fn,sprintf('_thv_s_%s',cpp)),'epsc');
+        catch
+            keyboard
+        end
         %
         % # _COMPARE_
         %

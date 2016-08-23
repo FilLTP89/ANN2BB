@@ -8,11 +8,9 @@ cpp = {'e';'n';'z'};
 %
 % _COMPUTE TIME SHIFT FOR RECORD PLOT_
 %
-syn2ann_alignth;
+% syn2ann_alignth;
 
-vtm_shift(1,1)=1.75;
-vtm_shift(1,2)=0.73;
-
+vtm_shift(1)=0.8;
 
 % vtm_shift(3) = vtm_shift(3)-1.2;
 % 
@@ -71,7 +69,7 @@ utd.tha = 100;
 % * _VELOCITY TIME-HISTORY_
 %
 xlm.thv = xlm.tha;
-ylm.thv = {[-60.0,60.0];[-60.0,60.0];[-60.0,60.0]};
+ylm.thv = {[-60,60];[-60,60];[-60,60]};
 xtk.thv = xtk.tha;
 xlb.thv = xlb.tha;
 ylb.thv = {'v(t) [cm/s]','v(t) [cm/s]','v(t) [cm/s]'};
@@ -84,7 +82,7 @@ utd.thv = 100;
 % * _DISPLACEMENT TIME-HISTORY_
 %
 xlm.thd = xlm.tha;
-ylm.thd = {[-30.0,30.0];[-30.0,30.0];[-30.0,30.0]};
+ylm.thd = {[-25,25];[-25,25];[-25,25]};
 xtk.thd = xtk.tha;
 xlb.thd = xlb.tha;
 ylb.thd = {'d(t) [cm]','d(t) [cm]','d(t) [cm]'};

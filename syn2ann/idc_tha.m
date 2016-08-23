@@ -31,7 +31,7 @@ function [varargout] = idc_tha(varargin)
 
     if flag
         %% *CORRECTED ACCELERATION TIME INTEGRATION*
-        disp('--->IDC_THA: CORRECTED TIME INTEGRATION')
+        disp('--->IDC_THA: CORRECTING VELOCITY')
         % velocity
         thv = cumtrapz(tha)*dtm;
         %
@@ -42,7 +42,9 @@ function [varargout] = idc_tha(varargin)
         % _velocity acausal Butterworth filtering_
         %
         thv = filtfilt(bfb,bfa,thv);
-        %% *DISPLACEMENT TIME INTEGRATION*
+        
+        %% *CORRECTED VELOCITY TIME INTEGRATION*
+        disp('--->IDC_THA: CORRECTING DISPLACEMENT')
         % displacement
         thd = cumtrapz(thv)*dtm;
         %
@@ -59,21 +61,19 @@ function [varargout] = idc_tha(varargin)
         %
         thd = filtfilt(bfb,bfa,thd);
         
-        %% *BACK TO ACCELERATION*
-        %
-        % _time differentiation (central differences--->E=o(dtm^2))
-        % http://oregonstate.edu/instruct/ch490/lessons/lesson11.htm_
-        %
+        %% *FINAL ACC/VEL/DIS*
+        disp('--->IDC_THA: BACK TO ACCELEARATION')
         % velocity 
         thv = avd_diff(dtm,thd);
         % acceleration
         tha = avd_diff(dtm,thv);
-        % _time integration_
+        % velocity
         thv = cumtrapz(tha)*dtm;
+        % displacement
         thd = cumtrapz(thv)*dtm;
     else
         %% *ACCELERATION TIME INTEGRATION*
-        disp('--->TIME INTEGRATION')
+        disp('--->IDC_THA: UNCORRECTED TIME INTEGRATION')
         % velocity
         thv = cumtrapz(tha)*dtm;
         % displacement

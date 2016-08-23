@@ -27,7 +27,7 @@ sps.org = syn2ann_spp(sps.org);
 %% *SPECTRAL MASHUP LF/HF*
 fprintf('--> Hybridization\n');
 [nss.hyb,sps.hyb,hbs_org] = lfhf_mashup(nss.org,sps.org);
-hbs = hbs_org;
+hbs = syn2ann_blc(hbs_org);
 
 % close all;
 % figure
