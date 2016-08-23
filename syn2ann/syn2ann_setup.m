@@ -116,8 +116,8 @@ mtd.sst = zeros(mon.na,1);
 mtd.scl = 0.01*ones(mon.na,1);
 
 %% *PARSING EXTRA METADATA*
-mon.fa = [0.4,1.3,1.3,1.3]; % in Hz
-mon.fb = [0.9,1.5,1.5,1.5]; % in Hz
+mon.fa = [1.3,1.3,1.3,1.3]; % in Hz
+mon.fb = [1.7,1.5,1.5,1.5]; % in Hz
 
 %% *ANN*
 ann.mtd.scl = 'CD';

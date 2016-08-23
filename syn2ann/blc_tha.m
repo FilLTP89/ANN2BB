@@ -8,6 +8,7 @@ function [varargout] = blc_tha(varargin)
     if nargin>2
         tp = varargin{3};
     end
+    
     %
     % _acceleration 0th order correction (pre-event)_
     %
@@ -15,7 +16,7 @@ function [varargout] = blc_tha(varargin)
     idx1 = vtm>=tp;
     idx2 = find(idx1>=1,1,'first');
     blc  = mean(tha(idx0));
-    tha = tha-blc;    
+    tha = tha-blc;
     %
     % _quadratic fitting of velocity trace_
     %
@@ -43,6 +44,8 @@ function [varargout] = blc_tha(varargin)
     % _integration_
     %
     [~,thv,thd] = integr_diff_avd(dtm,tha);
+    
+    
     %% *OUTPUT*
     varargout{1} = tha(:);
     varargout{2} = thv(:);

@@ -65,23 +65,20 @@ function [varargout] = spectral_scaling_original(varargin)
     obj_psa = SDOF_response(obj_tha,obj_dtm,tar_vTn,zeta);
     
     for i_ = 2:tar_nT
-        if tar_nT<=0.8
-            rra_in(tar_nT-i_+2) = obj_psa(i_)/tar_psa(i_);
-        else
-            rra_in(tar_nT-i_+2)=1;
-        end
+        if tar_nT
+        rra_in(tar_nT-i_+2) = obj_psa(i_)/tar_psa(i_);
     end
     rra_in(tar_nT+1) = obj_psa(1)/tar_psa(1);
     rra_in(1)=1;
-    
+    rra_(
     rra = interp1(obj_vfr,rra_in,inp_vfr,'linear');
     
     f_amax=40;
     f_amin=1.25;
     for i_=1:ni
         obj_fsa=fft(obj_tha);
-        obj_fsa(1:inp_nfr) = obj_fsa(1:inp_nfr)./rra(1:inp_nfr);
-        
+        obj_fsa(inp_nfr) = obj_fsa(1:inp_nfr)./rra(1:inp_nfr);
+
         for m_ = inp_nfr+2:2*inp_nfr+1
             obj_fsa(m_) = conj(obj_fsa(2*inp_nfr-m_+2));
         end
@@ -92,29 +89,25 @@ function [varargout] = spectral_scaling_original(varargin)
         psa_pro = SDOF_response(obj_tha,obj_dtm,tar_vTn,zeta,1);
         
         for j_=1:tar_nT
-            if tar_nT<=0.8
-                rra_pro(tar_nT-j_+2)=psa_pro(j_)/tar_psa(j_);
-            else
-                rra_pro(tar_nT-j_+2)=1;
-            end
+            rra_pro(tar_nT-j_+2)=psa_pro(j_)/tar_psa(j_);
         end
         rra_pro(1)=1;
         rra = interp1(obj_vfr,rra_pro,inp_vfr,'linear');
         
-        %         for j_=1:inp_nfr
-        %             if (inp_vfr(j_)>f_amax)
-        %                 rra(j_)=psa_pro(1)/tar_psa(1);
-        %             end
-        %         end
+%         for j_=1:inp_nfr
+%             if (inp_vfr(j_)>f_amax)
+%                 rra(j_)=psa_pro(1)/tar_psa(1);
+%             end
+%         end
         
     end
     obj_tha = detrend(obj_tha);
     %% *BUTTERWORTH FILTER*
-    %     obj_tha = padarray(obj_tha,ceil(30/obj_dtm),'both');
+%     obj_tha = padarray(obj_tha,ceil(30/obj_dtm),'both');
     [obj_tha,obj_thv,obj_thd] = integr_diff_avd(obj_dtm,obj_tha);
-    %     obj_tha = obj_tha(ceil(30/obj_dtm)+1:end-ceil(30/obj_dtm));
-    %     obj_thv = obj_thv(ceil(30/obj_dtm)+1:end-ceil(30/obj_dtm));
-    %     obj_thd = obj_thd(ceil(30/obj_dtm)+1:end-ceil(30/obj_dtm));
+%     obj_tha = obj_tha(ceil(30/obj_dtm)+1:end-ceil(30/obj_dtm));
+%     obj_thv = obj_thv(ceil(30/obj_dtm)+1:end-ceil(30/obj_dtm));
+%     obj_thd = obj_thd(ceil(30/obj_dtm)+1:end-ceil(30/obj_dtm));
     
     %% *PROCESSING*
     
