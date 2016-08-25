@@ -3,20 +3,20 @@ ccc;
 fprintf('---------------------\n0. SETUP\n---------------------\n');
 
 %% *WORKDIR*
-wd = fullfile(filesep,'media','user','DATI','Filippo','PHD_heavyweight',...
-    'EMILIA_2905');
-% wd = fullfile(filesep,'media','filippo','Data','Filippo','PHD_heavyweight',...
+% wd = fullfile(filesep,'media','user','DATI','Filippo','PHD_heavyweight',...
 %     'EMILIA_2905');
+wd = fullfile(filesep,'media','filippo','Data','Filippo','PHD_heavyweight',...
+    'EMILIA_2905');
 fprintf('Workdir: %s\n',wd);
 % _save path_
-sp = fullfile(filesep,'media','user','DATI','Filippo','PHD_heavyweight',...
-    'heavy_images');
-% sp = fullfile(filesep,'media','filippo','Data','Filippo','PHD_heavyweight',...
+% sp = fullfile(filesep,'media','user','DATI','Filippo','PHD_heavyweight',...
 %     'heavy_images');
+sp = fullfile(filesep,'media','filippo','Data','Filippo','PHD_heavyweight',...
+    'heavy_images');
 % eval(sprintf('!mkdir -p %s',sp));
 
 syn2ann_case_list
-selected_case = 2;
+selected_case = 1;
 
 %% *REAL RECORDS: METADATA*
 % _path to record files_
