@@ -4,11 +4,15 @@ function [varargout] = blc_tha(varargin)
     tha = varargin{2}(:);
     ntm = numel(tha);
     vtm = dtm*(0:ntm-1)';
-    tp = PphasePicker(tha,dtm,'sm','n')-1;
     if nargin>2
         tp = varargin{3};
+    else
+        tp=0;
+        try
+            tp = PphasePicker(tha,dtm,'sm','n')-1;
+        end
     end
-    
+    tp = max([tp,0]);
     %
     % _acceleration 0th order correction (pre-event)_
     %
