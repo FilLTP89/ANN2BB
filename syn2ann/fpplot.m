@@ -439,19 +439,20 @@ function [varargout] = fpplot(varargin)
         end
     end
     %%
+    % _crop figure_
+    rule_fig(hfg);
+    %%
     % _legend_
     try any(validatestring('leg',inp.UsingDefaults));
     catch
         for m_ = 1:numel(hax)
             idx = ~strcmpi(inp.Results.leg{m_},'');
             if any(idx)
-                legend(hax(m_),hpl(m_,idx),inp.Results.leg{m_}(idx));
+                legg=legend(hax(m_),hpl(m_,idx),inp.Results.leg{m_}(idx));
+                set(legg,'interpreter','latex','box','off');
             end
         end
     end
-    %%
-    % _crop figure_
-    rule_fig(hfg);
     %% OUTPUT
     varargout{1} = hfg;
     varargout{2} = hax;
