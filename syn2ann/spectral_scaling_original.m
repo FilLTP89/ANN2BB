@@ -94,7 +94,7 @@ function [varargout] = spectral_scaling_original(varargin)
     end
     obj_ntm = numel(obj_tha);
 
-    [bfb,bfa,~] = create_butter_filter(2,0.15,25,0.5/obj_dtm);
+    [bfb,bfa,~] = create_butter_filter(2,0.05,40,0.5/obj_dtm);
     [obj_tha,~,~] = blc_tha(obj_dtm,obj_tha);
     obj_tha = filtfilt(bfb,bfa,obj_tha);
     obj_thv = cumtrapz(obj_tha)*obj_dtm;

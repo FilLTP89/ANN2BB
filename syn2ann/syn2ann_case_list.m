@@ -1,4 +1,4 @@
-NS = 4;
+NS = 1;
 
 % _station identity_
 bhrr.st{1}.id = {'MRN'};
