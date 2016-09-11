@@ -16,7 +16,7 @@ sp = fullfile(filesep,'media','filippo','Data','Filippo','PHD_heavyweight',...
 % eval(sprintf('!mkdir -p %s',sp));
 
 syn2ann_case_list
-selected_case = 3;
+selected_case = [4,3];
 
 %% *REAL RECORDS: METADATA*
 % _path to record files_

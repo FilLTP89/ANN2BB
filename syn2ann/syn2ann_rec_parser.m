@@ -47,7 +47,8 @@ function [varargout] = syn2ann_rec_parser(varargin)
                                 (bhr.st{i_}.id{1},bhr.st{i_}.ev{1},bhr.st{i_}.dv{j_},...
                                 bhr.cp{ii_},bhr.rc{jj_},bhr.st{i_}.ni,bhr.pt);
                             fprintf('filename: %s\n',bhr.fn{count_fn});
-                            if i_<=2
+                            switch strcat(bhr.st{i_}.id{1},bhr.st{i_}.dv{j_})
+                                case {'MRN','MIR08'}
                                 rec.mon.dtm(count_na)=0.005;
                                 rec.syn{count_na}.(strcat('th',bhr.rc{jj_})).(bhr.cp{ii_})=...
                                     cor.(bhr.nm{count_na}).(strcat('th',bhr.rc{jj_})).(bhr.cp{ii_});
@@ -56,7 +57,7 @@ function [varargout] = syn2ann_rec_parser(varargin)
                                     (~isnan(rec.syn{count_na}.(strcat('th',bhr.rc{jj_})).(bhr.cp{ii_})));
                                 rec.mon.ntm(count_na)=numel(rec.syn{count_na}.(strcat('th',bhr.rc{jj_})).(bhr.cp{ii_}));
                                 rec.mon.vtm{count_na} = (0:rec.mon.ntm(count_na)-1)*rec.mon.dtm(count_na);
-                            else
+                            case {'AQK','AQU'}
                                 % _parsing_
                                 [rec.mon.dtm(count_na),...
                                     rec.mon.ntm(count_na),...
