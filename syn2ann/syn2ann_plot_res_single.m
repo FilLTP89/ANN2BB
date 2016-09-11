@@ -3,17 +3,12 @@ fprintf('---------------------\n6. PLOTTING RESULTS\n---------------------\n');
 %% *SET UP*
 global pfg xlm xlb xtk ylm ylb ytk grd scl mrk tit utd
 cd(wd);close all;
+clr = [rgb('Navy');rgb('IntenseBlue');rgb('Red');rgb('IntenseOrange');rgb('IntenseGreen')];
+set(0,'defaultaxescolororder',clr);
 cpp = {'e';'n';'z'};
 %
 % _COMPUTE TIME SHIFT FOR RECORD PLOT_
 %
-syn2ann_alignth;
-
-% vtm_shift(1,1)=1.75;
-% vtm_shift(1,2)=0.73;
-% vtm_shift(3) = vtm_shift(3)-1.2;
-%
-% vtm_shift(4) = 1.9;
 %
 % * _FOURIER SPECTRA_
 %
@@ -31,9 +26,10 @@ tit.fsa = {'FOURIER SPECTRUM'};
 utd.fsa = 1;
 
 for mm_ = 1:bhr.ns
-    
+    vtm_shift=zeros(1,2);
     switch  bhr.nm{mm_}
         case 'MRN'
+            vtm_shift(:) = 1.75*ones(1,2);
             %% *========================= MRN ========================================*
             %
             % * _PSEUDO-ACCELERATION RESPONSE SPECTRA_
@@ -44,7 +40,7 @@ for mm_ = 1:bhr.ns
             xtk.psa = {10.^([log10(0.05),-1:1])};
             ytk.psa = {10.^(1:4)};
             xlb.psa = {'T [s]'};
-            ylb.psa = {'PSA [cm/s^2]','',''};
+            ylb.psa = {'PSA [cm/s/s]','',''};
             scl.psa = {'log','log','log'};
             grd.psa = {'minor'};
             mrk.psa = {'none'};
@@ -61,7 +57,7 @@ for mm_ = 1:bhr.ns
             % xtk.tha = {[2:2:16];[2:2:16];[2:2:16]};
             xtk.tha = {[0:5:40];[0:5:40];[0:5:40]};
             xlb.tha = {'t [s]'};
-            ylb.tha = {'a(t) [cm/s^2]','a(t) [cm/s^2]','a(t) [cm/s^2]'};
+            ylb.tha = {'a(t) [cm/s/s]','a(t) [cm/s/s]','a(t) [cm/s/s]'};
             scl.tha = {'lin','lin','lin'};
             grd.tha = {'on'};
             mrk.tha = {'none'};
@@ -97,6 +93,9 @@ for mm_ = 1:bhr.ns
             utd.thd = 100;
         case 'MIR08'
             %% *========================== MIR08 =====================================*
+            
+            vtm_shift(:) = 0.73*ones(1,2);
+
             %
             % * _PSEUDO-ACCELERATION RESPONSE SPECTRA_
             %
@@ -106,7 +105,7 @@ for mm_ = 1:bhr.ns
             xtk.psa = {0:4};
             ytk.psa = {0:400:2000};
             xlb.psa = {'T [s]'};
-            ylb.psa = {'PSA [cm/s^2]','',''};
+            ylb.psa = {'PSA [cm/s/s]','',''};
             scl.psa = {'lin','lin','lin'};
             grd.psa = {'minor'};
             mrk.psa = {'none'};
@@ -123,7 +122,7 @@ for mm_ = 1:bhr.ns
             % xtk.tha = {[2:2:16];[2:2:16];[2:2:16]};
             xtk.tha = {[0:5:40];[0:5:40];[0:5:40]};
             xlb.tha = {'t [s]'};
-            ylb.tha = {'a(t) [cm/s^2]','a(t) [cm/s^2]','a(t) [cm/s^2]'};
+            ylb.tha = {'a(t) [cm/s/s]','a(t) [cm/s/s]','a(t) [cm/s/s]'};
             scl.tha = {'lin','lin','lin'};
             grd.tha = {'on'};
             mrk.tha = {'none'};
@@ -159,6 +158,9 @@ for mm_ = 1:bhr.ns
             utd.thd = 100;
         case 'AQK'
             %% *============================ AQK =====================================*
+            
+            vtm_shift(:) = 1.25;
+            
             %
             % * _PSEUDO-ACCELERATION RESPONSE SPECTRA_
             %
@@ -168,7 +170,7 @@ for mm_ = 1:bhr.ns
             xtk.psa = {0:4};
             ytk.psa = {0:400:2000};
             xlb.psa = {'T [s]'};
-            ylb.psa = {'PSA [cm/s^2]','',''};
+            ylb.psa = {'PSA [cm/s/s]','',''};
             scl.psa = {'lin','lin','lin'};
             grd.psa = {'minor'};
             mrk.psa = {'none'};
@@ -182,10 +184,10 @@ for mm_ = 1:bhr.ns
             % xlm.tha = {[0;15];[0;15];[0;15]};
             xlm.tha = {[0;40];[0;40];[0;40]};
             ylm.tha = {[-5e2,5e2];[-5e2,5e2];[-5e2,5e2]};
-            % xtk.tha = {[0:3:15];[0:3:15];[0:3:15]};
+%             xtk.tha = {[0:3:15];[0:3:15];[0:3:15]};
             xtk.tha = {[0:5:40];[0:5:40];[0:5:40]};
             xlb.tha = {'t [s]'};
-            ylb.tha = {'a(t) [cm/s^2]','a(t) [cm/s^2]','a(t) [cm/s^2]'};
+            ylb.tha = {'a(t) [cm/s/s]','a(t) [cm/s/s]','a(t) [cm/s/s]'};
             scl.tha = {'lin','lin','lin'};
             grd.tha = {'on'};
             mrk.tha = {'none'};
@@ -209,7 +211,7 @@ for mm_ = 1:bhr.ns
             % * _DISPLACEMENT TIME-HISTORY_
             %
             xlm.thd = xlm.tha;
-            ylm.thd = {[-25,25];[-25,25];[-25,25]};
+            ylm.thd = {[-30,30];[-30,30];[-30,30]};
             xtk.thd = xtk.tha;
             xlb.thd = xlb.tha;
             ylb.thd = {'d(t) [cm]','d(t) [cm]','d(t) [cm]'};
@@ -221,6 +223,9 @@ for mm_ = 1:bhr.ns
             utd.thd = 100;
         case 'AQU'
             %% *============================ AQU =====================================*
+            
+            vtm_shift(:) = 1.9*ones(1,2);
+
             %
             % * _PSEUDO-ACCELERATION RESPONSE SPECTRA_
             %
@@ -230,7 +235,7 @@ for mm_ = 1:bhr.ns
             xtk.psa = {0:4};
             ytk.psa = {0:400:2400};
             xlb.psa = {'T [s]'};
-            ylb.psa = {'PSA [cm/s^2]','',''};
+            ylb.psa = {'PSA [cm/s/s]','',''};
             scl.psa = {'lin','lin','lin'};
             grd.psa = {'minor'};
             mrk.psa = {'none'};
@@ -247,7 +252,7 @@ for mm_ = 1:bhr.ns
             % xtk.tha = {[2:4:18];[2:4:18];[2:4:18]};
             xtk.tha = {[0:5:40];[0:5:40];[0:5:40]};
             xlb.tha = {'t [s]'};
-            ylb.tha = {'a(t) [cm/s^2]','a(t) [cm/s^2]','a(t) [cm/s^2]'};
+            ylb.tha = {'a(t) [cm/s/s]','a(t) [cm/s/s]','a(t) [cm/s/s]'};
             scl.tha = {'lin','lin','lin'};
             grd.tha = {'on'};
             mrk.tha = {'none'};
