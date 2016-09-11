@@ -43,11 +43,11 @@ function [varargout] = bpf_thd_speed(varargin)
         end
     end
     
-%     %% *BUTTERWORTH FILTER*
-%     [bfb,bfa,~] = create_butter_filter(bfo,lfr,hfr,fNy);
-%     
-%     %% *PROCESSING*
-%     thd = filtfilt(bfb,bfa,thd);
+    %% *BUTTERWORTH FILTER*
+    [bfb,bfa,~] = create_butter_filter(bfo,lfr,hfr,fNy);
+    
+    %% *PROCESSING*
+    thd = filtfilt(bfb,bfa,thd);
     
     %% *BACK TO ACCELERATION*
     thv = avd_diff(dtm,thd);

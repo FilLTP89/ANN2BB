@@ -3,7 +3,8 @@ fprintf('---------------------\n6. PLOTTING RESULTS\n---------------------\n');
 %% *SET UP*
 global pfg xlm xlb xtk ylm ylb ytk grd scl mrk tit utd
 cd(wd);close all;
-clr = [rgb('Navy');rgb('IntenseBlue');rgb('Red');rgb('IntenseOrange');rgb('IntenseGreen')];
+clr = [rgb('Navy');rgb('Red');rgb('IntenseGreen')];
+clr1 = [rgb('Navy');rgb('Red');rgb('Grey');rgb('Grey');rgb('IntenseGreen')];
 set(0,'defaultaxescolororder',clr);
 cpp = {'e';'n';'z'};
 %
