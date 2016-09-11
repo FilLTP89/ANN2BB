@@ -36,8 +36,8 @@ fnn.monn = numel(fni.monn);
 mtdd.mw = [6,6,6.3,6.3];
 mtdd.dtm_sp96 = [0.01,0.01,0.01,0.01];
 mtdd.scc = [2,1,2,1];
-mtdd.sst = zeros(NS,1);
-mtdd.scl = 0.01*ones(NS,1);
+mtdd.sst = zeros(4,1);
+mtdd.scl = 0.01*ones(4,1);
 
 fni.mtdd = fieldnames(mtdd);
 fnn.mtdd = numel(fni.mtdd);
