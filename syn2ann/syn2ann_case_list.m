@@ -33,11 +33,12 @@ monn.fb = [1.7,1.5,3.0,3.0]; % in Hz
 fni.monn = fieldnames(monn);
 fnn.monn = numel(fni.monn);
 
-mtdd.mw = [6,6,6.3,6.3];
-mtdd.dtm_sp96 = [0.01,0.01,0.01,0.01];
-mtdd.scc = [2,1,2,2];
-mtdd.sst = zeros(4,1);
-mtdd.scl = 0.01*ones(4,1);
+% Sabetta&Pugliese 1996 - metadata
+mtdd.sp96.mw = [6,6,6.3,6.3];
+mtdd.sp96.dtm_sp96 = [0.01,0.01,0.01,0.01];
+mtdd.sp96.scc = [2,1,2,2];
+mtdd.sp96.sst = zeros(4,1);
+mtdd.sp96.scl = 0.01*ones(4,1);
 
-fni.mtdd = fieldnames(mtdd);
-fnn.mtdd = numel(fni.mtdd);
+fni.mtdd.sp96 = fieldnames(mtdd.sp96);
+fnn.mtdd.sp96 = numel(fni.mtdd.sp96);

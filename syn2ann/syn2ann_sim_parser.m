@@ -56,13 +56,9 @@ function [varargout] = syn2ann_sim_parser(varargin)
                 str = speed_monitor_name(mon.id(i_),mon.rc{1},mon.pt);
                 % read monitor file
                 str = importdata(str);
-                % time-vector
-                nss.mon.vtm(i_) = {str(:,1)};
                 % time-step
-                nss.mon.dtm(i_) = diff(nss.mon.vtm{i_}(1:2));
-                % time-step number
-                nss.mon.ntm(i_) = numel(nss.mon.vtm{i_});
-                % name of the stations
+                nss.mon.dtm(i_) = mean(diff(str(:,1)));
+                % parse acceleration components
                 fprintf('components: \n');
                 for j_ = 1:mon.nc
                     cpp = mon.cp{j_};
@@ -83,34 +79,11 @@ function [varargout] = syn2ann_sim_parser(varargin)
                                 nss.syn{i_}.thd.(cpp),mon.lfr,mon.hfr);
                     end
                 end
-            end
-        case 'h'
-            %%
-            % _hisada simulations_
-            for i_ = 1:mon.na % number of monitors
-                flag = 1;
-                for j_ = 1:mon.nc % number of components
-                    cpp = mon.cp{j_};
-                    % file name
-                    str = hisada_monitor_name(mon.id(i_),cpp,mon.pt);
-                    % read monitor file
-                    str = importdata(str);
-                    if flag    % time-vector
-                        nss.mon.vtm(i_) = {str(:,1)};
-                        % time-step
-                        nss.mon.dtm(i_) = diff(nss.mon.vtm{i_}(1:2));
-                        % time-step number
-                        nss.mon.ntm(i_) = numel(nss.mon.vtm{i_});
-                        flag = 0;
-                    end
-                    nss.syn{i_}.(strcat('th',mon.rc{1})).(cpp) = ...
-                        str(:,2);
-                    [nss.syn{i_}.tha.(cpp),...
-                        nss.syn{i_}.thv.(cpp),...
-                        nss.syn{i_}.thd.(cpp)] = ...
-                        vel2acc(nss.mon.dtm(i_),...
-                        nss.syn{i_}.thv.(cpp),mon.lfr,mon.hfr);
-                end
+                % time-step number
+                nss.mon.ntm(i_) = numel(nss.syn{i_}.tha.(cpp));
+                % time-vector
+                nss.mon.vtm{i_} = nss.mon.dtm(i_)*(0:nss.mon.ntm(i_)-1);
+                
             end
     end
     nss.mon.rc  = {'a';'v';'d'};

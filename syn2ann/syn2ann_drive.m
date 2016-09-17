@@ -30,6 +30,11 @@ switch lower(hybrid_type)
     case 'exsim'
         % _EXSIM_
         syn2ann_exsim_drive;
+    case 'both'
+        % _SABETTA & PUGLIESE 1996_
+        syn2ann_sp96_drive;
+        % _EXSIM_
+        syn2ann_exsim_drive;
 end
 
 %% *LF-HF HYBRIDIZATION*

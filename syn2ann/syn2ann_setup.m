@@ -16,7 +16,7 @@ sp = fullfile(filesep,'media','filippo','Data','Filippo','PHD_heavyweight',...
 % eval(sprintf('!mkdir -p %s',sp));
 
 syn2ann_case_list
-selected_case = [4,3];
+selected_case = 4;
 
 %% *REAL RECORDS: METADATA*
 % _path to record files_
@@ -105,10 +105,10 @@ mon.ci = mon.ci(:);
 %% *HYBRIDIZATION METADATA*
 % _SP96 metadata_
 hybrid_type='sp96';
-mtd.na = mon.na;
-for m_ = 1:mtd.na
-    for n_ = 1:fnn.mtdd
-        mtd.(fni.mtdd{n_})(m_) = mtdd.(fni.mtdd{n_})(selected_case(m_));
+mtd.sp96.na = mon.na;
+for m_ = 1:mtd.sp96.na
+    for n_ = 1:fnn.mtdd.sp96
+        mtd.sp96.(fni.mtdd.sp96{n_})(m_) = mtdd.sp96.(fni.mtdd.sp96{n_})(selected_case(m_));
     end
 end
 

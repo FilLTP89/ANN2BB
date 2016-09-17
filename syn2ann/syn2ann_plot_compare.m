@@ -5,13 +5,14 @@ function syn2ann_plot_compare(varargin)
     flags = logical(varargin{1});
     xplot = varargin{2};
     identity = varargin{3};
-    legplot = varargin{4};
-    cpp = varargin{5};
-    fn = varargin{6};
-    time_shift = varargin{7};
-    if nargin>7
-        mrkd = varargin{8};
-        lstd = varargin{9};
+    dlg = varargin{4};
+    legplot = varargin{5};
+    cpp = varargin{6};
+    fn = varargin{7};
+    time_shift = varargin{8};
+    if nargin>8
+        mrkd = varargin{9};
+        lstd = varargin{10};
     end
     
     leg = {legplot};
@@ -33,13 +34,13 @@ function syn2ann_plot_compare(varargin)
                 'scl',scl.psa,'grd',grd.psa,'mrk',mrkd,'lst',lstd,...
                 'xlm',xlm.psa,'xlb',xlb.psa,'xtk',xtk.psa,...
                 'ylm',ylm.psa,'ylb',ylb.psa,'ytk',ytk.psa,...
-                'leg',leg,'tit',{upper(cpp)});
+                'leg',leg,'tit',dlg);
         catch
             fpplot('xpl',xpl,'ypl',ypl,'pfg',pfg.psa,...
                 'scl',scl.psa,'grd',grd.psa,...
                 'xlm',xlm.psa,'xlb',xlb.psa,'xtk',xtk.psa,...
                 'ylm',ylm.psa,'ylb',ylb.psa,'ytk',ytk.psa,...
-                'leg',leg,'tit',{upper(cpp)});
+                'leg',leg,'tit',dlg);
         end
         saveas(gcf,strcat(fn,sprintf('_psa_c_%s',cpp)),'epsc');
     end
@@ -59,13 +60,13 @@ function syn2ann_plot_compare(varargin)
                 'scl',scl.fsa,'grd',grd.fsa,'mrk',mrkd,'lst',lstd,...
                 'xlm',xlm.fsa,'xlb',xlb.fsa,'xtk',xtk.fsa,...
                 'ylm',ylm.fsa,'ylb',ylb.fsa,'ytk',ytk.fsa,...
-                'leg',leg,'tit',{upper(cpp)});
+                'leg',leg,'tit',dlg);
         catch
             fpplot('xpl',xpl,'ypl',ypl,'pfg',pfg.fsa,...
                 'scl',scl.fsa,'grd',grd.fsa,...
                 'xlm',xlm.fsa,'xlb',xlb.fsa,'xtk',xtk.fsa,...
                 'ylm',ylm.fsa,'ylb',ylb.fsa,'ytk',ytk.fsa,...
-                'leg',leg,'tit',{upper(cpp)});
+                'leg',leg,'tit',dlg);
         end
         saveas(gcf,strcat(fn,sprintf('_fsa_c_%s',cpp)),'epsc');
     end
@@ -108,7 +109,7 @@ function syn2ann_plot_compare(varargin)
             'scl',scl.tha,'grd',grd.tha,...
             'xlm',xlm.tha(end),'xlb',xlb.tha,'xtk',xtk.tha(end),...
             'ylm',ylm.tha(end),'ylb',ylb.tha,'ytk',ytk.tha(end),...
-            'leg',leg,'tit',{upper(cpp)});
+            'leg',leg,'tit',dlg);
         saveas(gcf,strcat(fn,sprintf('_tha_c_%s',cpp)),'epsc');
     end
     
@@ -149,7 +150,7 @@ function syn2ann_plot_compare(varargin)
             'scl',scl.thv,'grd',grd.thv,...
             'xlm',xlm.thv(end),'xlb',xlb.thv,'xtk',xtk.thv(end),...
             'ylm',ylm.thv(end),'ylb',ylb.thv,'ytk',ytk.thv(end),...
-            'leg',leg,'tit',{upper(cpp)});
+            'leg',leg,'tit',dlg);
         saveas(gcf,strcat(fn,sprintf('_thv_c_%s',cpp)),'epsc');
     end
     
@@ -188,7 +189,7 @@ function syn2ann_plot_compare(varargin)
             'scl',scl.thd,'grd',grd.thd,...
             'xlm',xlm.thd(end),'xlb',xlb.thd,'xtk',xtk.thd(end),...
             'ylm',ylm.thd(end),'ylb',ylb.thd,'ytk',ytk.thd(end),...
-            'leg',leg,'tit',{upper(cpp)});
+            'leg',leg,'tit',dlg);
         saveas(gcf,strcat(fn,sprintf('_thd_c_%s',cpp)),'epsc');
     end
     close all;

@@ -39,8 +39,8 @@ xlim([0,DSTR]);
 ylim([-DDIP,0]);
 
 % interpolated grid
-DSFSTR = 1;
-DSFDIP = 1;
+DSFSTR = 0.5;
+DSFDIP = 0.5;
 NSTR = DSTR/DSFSTR;
 NDIP = DDIP/DSFDIP;
 
