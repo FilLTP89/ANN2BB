@@ -10,9 +10,7 @@ fprintf('---------------------\n4. HYBRIDIZATION\n---------------------\n');
 
 switch lower(hybrid_type)
     case 'sp96'
-        %
         % _SABETTA & PUGLIESE 1996_
-        %
         %% *RESAMPLING*
         fprintf('--> Resampling\n');
         [nss.sps,sps.org] = lfhf_rsmpl(nss.org,sps.org);
@@ -31,7 +29,8 @@ switch lower(hybrid_type)
         
         %% *SPECTRAL MASHUP LF/HF*
         fprintf('--> Hybridization\n');
-        [nss.hyb.sps,sps.hyb,hbs.sps] = lfhf_mashup(nss.sps,sps.org);
+        [nss.hyb.sps,sps.hyb,hbs_org] = lfhf_mashup(nss.sps,sps.org);
+        hbs.sps = hbs_org;
         
         %% *PGA-PGV-PGD & ARIAS INTENSITY*
         fprintf('--> Peak Values and Arias\n');
@@ -46,9 +45,7 @@ switch lower(hybrid_type)
         hbs.sps = syn2ann_spp(hbs.sps);
         
     case 'exsim'
-        %
         % _EXSIM_
-        %
         [nss.exs,exs.org] = lfhf_rsmpl(nss.org,exs.org);
         
         %% *PAD LF/HF*
@@ -78,8 +75,8 @@ switch lower(hybrid_type)
         nss.hyb.exs = syn2ann_spp(nss.hyb.exs);
         exs.hyb = syn2ann_spp(exs.hyb);
         hbs.exs = syn2ann_spp(hbs.exs);
-        
     case 'both'
+        % _SABETTA & PUGLIESE 1996_
         %% *RESAMPLING*
         fprintf('--> Resampling\n');
         [nss.sps,sps.org] = lfhf_rsmpl(nss.org,sps.org);
@@ -95,7 +92,6 @@ switch lower(hybrid_type)
         sps.org = syn2ann_thp(sps.org);
         nss.sps = syn2ann_spp(nss.sps);
         sps.org = syn2ann_spp(sps.org);
-        %
         [nss.exs,exs.org] = lfhf_shift(nss.exs,exs.org);
         nss.exs = syn2ann_thp(nss.exs);
         exs.org = syn2ann_thp(exs.org);
@@ -104,32 +100,10 @@ switch lower(hybrid_type)
         
         %% *SPECTRAL MASHUP LF/HF*
         fprintf('--> Hybridization\n');
-        [nss.hyb.sps,sps.hyb,hbs.sps] = lfhf_mashup(nss.sps,sps.org);
+        [nss.hyb.sps,sps.hyb,hbs_org] = lfhf_mashup(nss.sps,sps.org);
+        hbs.sps = hbs_org;
         [nss.hyb.exs,exs.hyb,hbs.exs] = lfhf_mashup(nss.exs,exs.org);
-        
-        %% *PGA-PGV-PGD & ARIAS INTENSITY*
-        fprintf('--> Peak Values and Arias\n');
-        nss.hyb.sps = syn2ann_thp(nss.hyb.sps);
-        sps.hyb = syn2ann_thp(sps.hyb);
-        hbs.sps = syn2ann_thp(hbs.sps);
-        
-        %% *SPECTRA*
-        fprintf('--> Spectra\n');
-        nss.hyb.sps = syn2ann_spp(nss.hyb.sps);
-        sps.hyb = syn2ann_spp(sps.hyb);
-        hbs.sps = syn2ann_spp(hbs.sps);        
-        
-        %% *PGA-PGV-PGD & ARIAS INTENSITY*
-        fprintf('--> Peak Values and Arias\n');
-        nss.hyb.exs = syn2ann_thp(nss.hyb.exs);
-        exs.hyb = syn2ann_thp(exs.hyb);
-        hbs.exs = syn2ann_thp(hbs.exs);
-        
-        %% *SPECTRA*
-        fprintf('--> Spectra\n');
-        nss.hyb.exs = syn2ann_spp(nss.hyb.exs);
-        exs.hyb = syn2ann_spp(exs.hyb);
-        hbs.exs = syn2ann_spp(hbs.exs);
+         = hbs_org;
 end
 
 

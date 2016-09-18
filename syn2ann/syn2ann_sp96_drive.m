@@ -1,5 +1,5 @@
 %% *SABETTA & PUGLIESE SYNTHETICS*
-fprintf('---------------------\n3. SABETTA&PUGLIESE\n---------------------\n');
+fprintf('---> SABETTA&PUGLIESE\n\n');
 %% *METADATA*
 mfn = fullfile(wd,'metadata.dat');
 fprintf('--> Metadata: %s\n',mfn);

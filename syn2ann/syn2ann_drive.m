@@ -23,26 +23,14 @@ syn2ann_rec_drive;
 syn2ann_sim_drive;
 
 %% *EMPIRICAL BB SYNTHETICS*
-switch lower(hybrid_type)
-    case 'sp96'
-        % _SABETTA & PUGLIESE 1996_
-        syn2ann_sp96_drive;
-    case 'exsim'
-        % _EXSIM_
-        syn2ann_exsim_drive;
-    case 'both'
-        % _SABETTA & PUGLIESE 1996_
-        syn2ann_sp96_drive;
-        % _EXSIM_
-        syn2ann_exsim_drive;
-end
+syn2ann_emp_sto_drive;
 
 %% *LF-HF HYBRIDIZATION*
 syn2ann_hybrid_drive;
 
 %% *ANN - DATABASE*
 syn2ann_ann_drive;
-
+keyboard
 %% *SPECTRAL MATCHING*
 syn2ann_scaling_drive;
 

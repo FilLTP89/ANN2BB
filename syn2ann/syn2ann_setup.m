@@ -15,7 +15,7 @@ sp = fullfile(filesep,'media','filippo','Data','Filippo','PHD_heavyweight',...
     'heavy_images');
 % eval(sprintf('!mkdir -p %s',sp));
 
-syn2ann_case_list
+syn2ann_case_list;
 selected_case = 4;
 
 %% *REAL RECORDS: METADATA*
@@ -104,14 +104,20 @@ mon.ci = mon.ci(:);
 
 %% *HYBRIDIZATION METADATA*
 % _SP96 metadata_
-hybrid_type='sp96';
+hybrid_type='exsim';
 mtd.sp96.na = mon.na;
 for m_ = 1:mtd.sp96.na
     for n_ = 1:fnn.mtdd.sp96
         mtd.sp96.(fni.mtdd.sp96{n_})(m_) = mtdd.sp96.(fni.mtdd.sp96{n_})(selected_case(m_));
     end
 end
-
+% _EXSIM metadata_
+mtd.exsim.na = mon.na;
+for m_ = 1:mtd.exsim.na
+    for n_ = 1:fnn.mtdd.exsim
+        mtd.exsim.(fni.mtdd.exsim{n_})(m_) = mtdd.exsim.(fni.mtdd.exsim{n_})(selected_case(m_));
+    end
+end
 %% *ANN*
 ann.mtd.scl = 'ALL';
 ann.mtd.TnC = {0.75;0.75;0.75};

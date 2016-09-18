@@ -1,5 +1,5 @@
 %% *SABETTA & PUGLIESE SYNTHETICS*
-fprintf('---------------------\n4. EXSIM\n---------------------\n');
+fprintf('---> EXSIM\n\n');
 %% *METADATA*
 mfn = fullfile(wd,'metadata.dat');
 fprintf('--> Metadata: %s\n',mfn);
@@ -8,7 +8,7 @@ fprintf('--> Generation\n');
 % _original_
 mon.lfr = [];
 mon.hfr = [];
-exs.org = syn2ann_exsim_parser(mon,mtd);
+exs.org = syn2ann_exsim_parser(mon,mtd.exsim);
 
 %% *PGA-PGV-PGD & ARIAS INTENSITY*
 fprintf('--> Peak Values and Arias\n');

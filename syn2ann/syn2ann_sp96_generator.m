@@ -8,7 +8,7 @@
 % according to the approach by Sabetta & Pugliese, 1996.
 %% INPUT:
 % * _mon (monitor structure)_
-% * _str (string: extra metadata file)
+% * _mtd (metadata structure)_
 %% OUTPUT:
 % * _sps (structure of sp synthetics)_
 %% N.B.:
@@ -30,8 +30,7 @@ function [varargout] = syn2ann_sp96_generator(varargin)
     %% *SET-UP*
     sps.mon = varargin{1};
     sps.mtd = varargin{2};
-    %% *SABETTA & PUGLIESE SYNTHETICS*
-    
+    %% *SABETTA & PUGLIESE SYNTHETICS*    
     for i_ = 1:sps.mon.na
         for j_ = 1:sps.mon.nc
             cpp = sps.mon.cp{j_};
