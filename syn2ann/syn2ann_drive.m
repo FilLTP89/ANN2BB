@@ -30,7 +30,7 @@ syn2ann_hybrid_drive;
 
 %% *ANN - DATABASE*
 syn2ann_ann_drive;
-keyboard
+
 %% *SPECTRAL MATCHING*
 syn2ann_scaling_drive;
 

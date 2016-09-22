@@ -93,14 +93,14 @@ function syn2ann_plot_compare(varargin)
             end
             [~,ytk.tha{i_}]=get_axis_tick(xlm.tha{i_},ylm.tha{i_},10,diff(ylm.tha{1})/4);
         end
-        
-        %
-        % # _ASIDE_
-        %
-        fpplot('xpl',xpl,'ypl',ypl,'pfg',pfg.tha.s,...
-            'pax',pax,'scl',scl.tha,'grd',grd.tha,...
-            'xlm',xlm.tha,'xlb',xlbt,'xtk',xtk.tha,'mrk',mrka,'spg',spg,...
-            'ylm',ylm.tha,'ylb',ylb.tha,'ytk',ytk.tha,'tit',legplot);
+%         
+%         %
+%         % # _ASIDE_
+%         %
+%         fpplot('xpl',xpl,'ypl',ypl,'pfg',pfg.tha.s,...
+%             'pax',pax,'scl',scl.tha,'grd',grd.tha,...
+%             'xlm',xlm.tha,'xlb',xlbt,'xtk',xtk.tha,'mrk',mrka,'spg',spg,...
+%             'ylm',ylm.tha,'ylb',ylb.tha,'ytk',ytk.tha,'tit',legplot);
         saveas(gcf,strcat(fn,sprintf('_tha_s_%s',cpp)),'epsc');
         %
         % # _COMPARE_
@@ -131,18 +131,14 @@ function syn2ann_plot_compare(varargin)
             end
             [~,ytk.thv{i_}]=get_axis_tick(xlm.thv{i_},ylm.thv{i_},10,diff(ylm.thv{1})/4);
         end
-        %
-        % # _ASIDE_
-        %
-        try
-        fpplot('xpl',xpl,'ypl',ypl,'pfg',pfg.tha.s,...
-            'pax',pax,'scl',scl.thv,'grd',grd.thv,...
-            'xlm',xlm.thv(i_),'xlb',xlbt,'xtk',xtk.thv(i_),'mrk',mrka,'spg',spg,...
-            'ylm',ylm.thv(i_),'ylb',ylb.thv,'ytk',ytk.thv(i_),'tit',legplot);
-        saveas(gcf,strcat(fn,sprintf('_thv_s_%s',cpp)),'epsc');
-        catch
-            keyboard
-        end
+%         %
+%         % # _ASIDE_
+%         %
+%             fpplot('xpl',xpl,'ypl',ypl,'pfg',pfg.tha.s,...
+%                 'pax',pax,'scl',scl.thv,'grd',grd.thv,...
+%                 'xlm',xlm.thv(i_),'xlb',xlbt,'xtk',xtk.thv(i_),'mrk',mrka,'spg',spg,...
+%                 'ylm',ylm.thv(i_),'ylb',ylb.thv,'ytk',ytk.thv(i_),'tit',legplot);
+%             saveas(gcf,strcat(fn,sprintf('_thv_s_%s',cpp)),'epsc');
         %
         % # _COMPARE_
         %
@@ -173,18 +169,18 @@ function syn2ann_plot_compare(varargin)
             [~,ytk.thd{i_}]=get_axis_tick(xlm.thd{i_},ylm.thd{i_},10,diff(ylm.thd{1})/4);
         end
         
-        
-        %
-        % # _ASIDE_
-        %
-        fpplot('xpl',xpl,'ypl',ypl,'pfg',pfg.tha.s,...
-            'pax',pax,'scl',scl.thd,'grd',grd.thd,...
-            'xlm',xlm.thd(i_),'xlb',xlbt,'xtk',xtk.thd(i_),'mrk',mrka,'spg',spg,...
-            'ylm',ylm.thd(i_),'ylb',ylb.thd,'ytk',ytk.thd(i_),'tit',legplot);
-        saveas(gcf,strcat(fn,sprintf('_thd_s_%s',cpp)),'epsc');
+%         %
+%         % # _ASIDE_
+%         %
+%         fpplot('xpl',xpl,'ypl',ypl,'pfg',pfg.tha.s,...
+%             'pax',pax,'scl',scl.thd,'grd',grd.thd,...
+%             'xlm',xlm.thd(i_),'xlb',xlbt,'xtk',xtk.thd(i_),'mrk',mrka,'spg',spg,...
+%             'ylm',ylm.thd(i_),'ylb',ylb.thd,'ytk',ytk.thd(i_),'tit',legplot);
+%         saveas(gcf,strcat(fn,sprintf('_thd_s_%s',cpp)),'epsc');
         %
         % * _COMPARE_
         %
+        fprintf('%f-%f',ylm.thd{end})
         fpplot('xpl',xpl,'ypl',ypl,'pfg',pfg.tha.c,...
             'scl',scl.thd,'grd',grd.thd,...
             'xlm',xlm.thd(end),'xlb',xlb.thd,'xtk',xtk.thd(end),...
