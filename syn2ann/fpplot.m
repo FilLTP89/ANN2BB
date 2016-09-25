@@ -436,6 +436,7 @@ function [varargout] = fpplot(varargin)
             %%
             % _axes grid
             grid(hax(m_),grd{m_});
+            set_axis_grid(hax(m_));
         end
     end
     %%

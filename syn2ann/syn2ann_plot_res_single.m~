@@ -8,11 +8,11 @@ cd(wd);close all;
 clr0 = [rgb('Navy');rgb('IntenseBlue')]; 
 % fil-fil-pbs-empirical/stochastic-hybrid
 clr10 = [rgb('IntenseBlue');rgb('IntenseGreen');rgb('Orange')];
-clr11 = [rgb('DarkGrey');rgb('DarkGrey');rgb('IntenseBlue');rgb('IntenseGreen');rgb('Orange')];
+clr11 = [rgb('LightGrey');rgb('LightGrey');rgb('IntenseBlue');rgb('IntenseGreen');rgb('Orange')];
 % records-pbs-empirical/stochastic-hybrid
 clr12 = [rgb('Navy');rgb('IntenseBlue');rgb('IntenseGreen');rgb('Orange')];
 % hybrid-ann-spectral-matched
-clr2 = [rgb('Navy');rgb('Orange');rgb('Red');rgb('Red')];
+clr2 = [rgb('Orange');rgb('Red');rgb('Red')];
 % records-spectral-matched
 clr3 = [rgb('Navy');rgb('Red')];
 cpp = {'e';'n';'z'};
