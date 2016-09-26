@@ -10,7 +10,7 @@
 % *_fn (ann file name)_
 %% OUTPUT:
 % *_ann (artificial neural network structure)_
-% N.B. Need for _trann_define_inout.m_
+%% N.B. Need for _trann_define_inout.m_
 %% REFERENCES:
 % http://it.mathworks.com/help/nnet/ug/neural-network-object-properties.html?requestedDomain=www.mathworks.com
 
