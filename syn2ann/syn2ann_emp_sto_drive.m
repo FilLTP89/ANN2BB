@@ -1,4 +1,4 @@
-fprintf('---------------------\n3. EMPIRICAL\STOCHASTIC\n---------------------\n');
+fprintf('---------------------\n3. EMPIRICAL-STOCHASTIC\n---------------------\n');
 
 switch lower(hybrid_type)
     case 'sp96'

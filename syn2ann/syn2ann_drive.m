@@ -35,7 +35,7 @@ syn2ann_ann_drive;
 syn2ann_scaling_drive;
 
 %% *SAVE RESULTS*
-%syn2ann_save_res;
+% syn2ann_save_res;
 
 %% *PLOT RESULTS*
 syn2ann_plot_res_single;

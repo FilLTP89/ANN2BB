@@ -94,15 +94,15 @@ function [varargout] = spectral_scaling_original(varargin)
     end
     obj_ntm = numel(obj_tha);
 
-    [bfb,bfa,~] = create_butter_filter(2,0.05,40,0.5/obj_dtm);
+    [bfb,bfa,~] = create_butter_filter(3,0.05,40,0.5/obj_dtm);
     [obj_tha,~,~] = blc_tha(obj_dtm,obj_tha);
     obj_tha = filtfilt(bfb,bfa,obj_tha);
     obj_thv = cumtrapz(obj_tha)*obj_dtm;
     obj_thv = detrend(obj_thv);
     obj_thd = cumtrapz(obj_thv)*obj_dtm;
     obj_thd = detrend(obj_thd,'linear');
-    frac=5;
-    obj_thd = taper_fun(obj_thd,frac,1,1);
+    frac=2.5;
+    obj_thd = taper_fun(obj_thd,frac,1,0);
     
     obj_thv=diff(obj_thd)/obj_dtm;
     obj_thv(obj_ntm)=0;

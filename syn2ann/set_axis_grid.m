@@ -17,8 +17,8 @@ function set_axis_grid(varargin)
     XLimit  = get(hax, 'XLim');
     YLimit  = get(hax, 'YLim');
     newGrid = cat(1, ...
-        line([XTick; XTick], YLimit, 'Parent', hax, GridStyle), ...
-        line(XLimit, [YTick; YTick], 'Parent', hax, GridStyle));
+        line([XTick(2:end-1); XTick(2:end-1)], YLimit, 'Parent', hax, GridStyle), ...
+        line(XLimit, [YTick(2:end-1); YTick(2:end-1)], 'Parent', hax, GridStyle));
     
     % New grid on top or bottom of other objects:
     %set(hax, 'Child', [newGrid; Child(:)]);

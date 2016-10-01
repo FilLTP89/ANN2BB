@@ -24,10 +24,11 @@ function [varargout] = syn2ann_exsim_parser(varargin)
             
             str = strcat(exs.mtd.pf{i_},cpp,'_acc_s001.1');
             fid = fopen(str,'r');
-            str = textscan(fid,'%9.3f%13.4f','Headerlines',12);
+            str = textscan(fid,'%f%f','Headerlines',12);
             fclose(fid);
+            
             exs.mon.dtm(i_) = mean(diff(str{1}));
-            exs.syn{i_}.tha.(cpp) = str{2};
+            exs.syn{i_}.tha.(cpp) = str{2}./100;
             [~,exs.syn{i_}.thv.(cpp),exs.syn{i_}.thd.(cpp)] = ...
                 idc_tha(exs.mon.dtm(i_),exs.syn{i_}.tha.(cpp));
         end

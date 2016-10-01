@@ -104,7 +104,7 @@ mon.ci = mon.ci(:);
 
 %% *HYBRIDIZATION METADATA*
 % _SP96 metadata_
-hybrid_type='sp96';
+hybrid_type='exsim';
 mtd.sp96.na = mon.na;
 for m_ = 1:mtd.sp96.na
     for n_ = 1:fnn.mtdd.sp96

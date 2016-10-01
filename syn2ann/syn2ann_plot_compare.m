@@ -72,7 +72,7 @@ function syn2ann_plot_compare(varargin)
     end
     
     if any(flags(3:end))
-        mrka = [repmat(mrk.tha,spg,1);repmat(mrk.pga,spg,1)];
+        mrka = [repmat(mrk.tha,[spg,1]);repmat(mrk.pga,[spg,1])];
     end
     if flags(3)
         %
