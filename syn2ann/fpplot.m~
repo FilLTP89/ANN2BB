@@ -415,9 +415,6 @@ function [varargout] = fpplot(varargin)
             if fytk
                 set(hax(m_),'ytick',ytk{m_});
             end
-            % _axes grid
-            grid(hax(m_),grd{m_});
-            set_axis_grid(hax(m_));
             %%
             % _title_
             title(hax(m_),tit{m_});

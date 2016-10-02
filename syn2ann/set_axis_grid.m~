@@ -11,25 +11,16 @@ function set_axis_grid(varargin)
     GridStyle.LineWidth = 1;
     GridStyle.HitTest   = 'off';
     
-    Child   = get(hax,'Children');
-    XTick   = get(hax,'XTick');
-    YTick   = get(hax,'YTick');
-    XLimit  = get(hax,'XLim');
-    YLimit  = get(hax,'YLim');
-    
+    Child   = get(hax, 'Children');
+    XTick   = get(hax, 'XTick');
+    YTick   = get(hax, 'YTick');
+    XLimit  = get(hax, 'XLim');
+    YLimit  = get(hax, 'YLim');
     if numel(XTick)>3
-        idx.x = 2:numel(XTick)-1;
-    else
-        idx.x = 1:numel(XTick);
-    end
-    if numel(YTick)>3
-        idx.y = 2:numel(YTick)-1;
-    else
-        idx.y = 1:numel(YTick);
-    end
+        
     newGrid = cat(1, ...
-        line([XTick(idx.x);XTick(idx.x)],YLimit,'Parent',hax,GridStyle), ...
-        line(XLimit,[YTick(idx.y);YTick(idx.y)],'Parent',hax,GridStyle));
+        line([XTick(2:end-1); XTick(2:end-1)], YLimit, 'Parent', hax, GridStyle), ...
+        line(XLimit, [YTick(2:end-1); YTick(2:end-1)], 'Parent', hax, GridStyle));
     
     % New grid on top or bottom of other objects:
     %set(hax, 'Child', [newGrid; Child(:)]);

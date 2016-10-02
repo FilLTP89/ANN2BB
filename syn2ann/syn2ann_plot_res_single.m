@@ -11,8 +11,12 @@ clr10 = [rgb('IntenseBlue');rgb('IntenseGreen');rgb('Orange')];
 clr11 = [rgb('DarkGrey');rgb('DarkGrey');rgb('IntenseBlue');rgb('IntenseGreen');rgb('Orange')];
 % records-pbs-empirical/stochastic-hybrid
 clr12 = [rgb('Navy');rgb('IntenseBlue');rgb('IntenseGreen');rgb('Orange')];
-% hybrid-ann-spectral-matched
+% records-pbs-hybrid-hybrid
+clr121 = [rgb('Navy');rgb('Orange');rgb('Magenta')];
+% record-hybrid-ann-spectral-matched
 clr2 = [rgb('Navy');rgb('Orange');rgb('Red');rgb('Red')];
+% records-spectral-matched
+clr21 = [rgb('Navy');rgb('Orange');rgb('Orange');rgb('Magenta');rgb('Magenta')];
 % records-spectral-matched
 clr3 = [rgb('Navy');rgb('Red')];
 cpp = {'e';'n';'z'};
@@ -155,6 +159,10 @@ for mm_ = 1:bhr.ns
             %
             syn2ann_plot_res_station_exsim;
         case 'both'
+            %
+            % _BOTH_
+            %
+            syn2ann_plot_res_station_both;
     end
     
 end

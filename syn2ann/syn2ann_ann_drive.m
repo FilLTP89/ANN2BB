@@ -18,10 +18,8 @@ switch lower(hybrid_type)
         %
         [~,~,ib] = intersect(hbs.sps.mon.cp,ann.cp,'stable');
         ann.cp   = ann.cp(ib);
-        
         % _ apply trained ANN on hybrid accelerograms_
         fprintf('--> Apply\n');
-        
         trs.sps = ann2hbs_train_justPSA(hbs.sps,ann);
     case 'exsim'
         %
@@ -29,10 +27,8 @@ switch lower(hybrid_type)
         %
         [~,~,ib] = intersect(hbs.exs.mon.cp,ann.cp,'stable');
         ann.cp   = ann.cp(ib);
-        
         % _ apply trained ANN on hybrid accelerograms_
         fprintf('--> Apply\n');
-        
         trs.exs = ann2hbs_train_justPSA(hbs.exs,ann);
     case 'both'
         %
