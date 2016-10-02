@@ -16,7 +16,7 @@ clr121 = [rgb('Navy');rgb('Orange');rgb('Magenta')];
 % record-hybrid-ann-spectral-matched
 clr2 = [rgb('Navy');rgb('Orange');rgb('Red');rgb('Red')];
 % records-spectral-matched
-clr21 = [rgb('Navy');rgb('Orange');rgb('Orange');rgb('Magenta');rgb('Magenta')];
+clr21 = [rgb('Navy');rgb('Red');rgb('Orange');rgb('IntenseGreen');];
 % records-spectral-matched
 clr3 = [rgb('Navy');rgb('Red')];
 cpp = {'e';'n';'z'};
