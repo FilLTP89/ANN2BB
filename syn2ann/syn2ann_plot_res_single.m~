@@ -45,7 +45,7 @@ for mm_ = 1:bhr.ns
         case 'MRN'
             % *======================== MRN ==============================*
             disp('PLOTTING MRN')
-            vtm_shift(:) = 0.5;
+            vtm_shift(:) = -0.7;
             vtm_lim = [0;25];
             vtm_lab = (vtm_lim(1):5:vtm_lim(end));
             tha_lim = [-9e2;9e2];
@@ -97,8 +97,8 @@ for mm_ = 1:bhr.ns
     %
     % * _ACCELERATION TIME-HISTORY_
     %
-    pfg.tha.c = [0 0 14 5.25];
-    pfg.tha.s = [0 0 14 15.7500];
+    pfg.tha.c = [0 0 14 6];
+    pfg.tha.s = [0 0 14 18];
     xlm.tha = {vtm_lim;vtm_lim;vtm_lim};
     xtk.tha = {vtm_lab;vtm_lab;vtm_lab};
     ylm.tha = {tha_lim;tha_lim;tha_lim};
