@@ -1,37 +1,38 @@
-%%  *Spectral Matching: Numerical synthetics & ANN*
+%% *GENERATION OF STRONG GROUND MOTION SIGNALS BY COUPLING PHYSICS-BASED ANALYSIS WITH ARTIFICIAL NEURAL NETWORKS*
 % _Editor: Filippo Gatti
-% CentraleSupélec - Laboratoire MSSMat
+% CentraleSup?lec - Laboratoire MSSMat
 % DICA - Politecnico di Milano
 % Copyright 2016_
-%% NOTES
+%% *NOTES*
 % _syn2ann_drive_: function to match the low-frequency synthetics' spectra
 % from numerical simulations (SPEED/HISADA) to target spectra obtained via
 % Artificial Neural Networks.
-%% N.B.
-% Need for
+%% *N.B.*
+% Need for:
 % _syn2ann_setup.m,syn2ann_rec_drive.m, syn2ann_sim_drive.m,
-% syn2ann_sp96_drive.m, syn2ann_exsim_drive.m, syn2ann_hybrid_drive.m,
-% syn2ann_ann_drive.m, syn2ann_scaling.m, syn2ann_plot_res.m
+% syn2ann_emp_sto_drive.m, syn2ann_hybrid_drive.m, syn2ann_ann_drive.m, 
+% syn2ann_scaling_drive.m, syn2ann_save_res, syn2ann_plot_res_single.m_
+%% *REFERENCES*
 
-%% *SET-UP*
+%% *ANALYSIS SET-UP*
 syn2ann_setup;
 
-%% *RECORDS*
+%% *PARSE RECORDS*
 syn2ann_rec_drive;
 
-%% *NUMERICAL SIMULATIONS*
+%% *PARSE NUMERICAL SIMULATIONS*
 syn2ann_sim_drive;
 
-%% *EMPIRICAL BB SYNTHETICS*
+%% *GENERATE EMPIRICAL - PARSE STOCHASTIC*
 syn2ann_emp_sto_drive;
 
-%% *LF-HF HYBRIDIZATION*
+%% *LF-HF CLASSIC HYBRIDIZATION*
 syn2ann_hybrid_drive;
 
-%% *ANN - DATABASE*
+%% *PARSE ANN DATABASE*
 syn2ann_ann_drive;
 
-%% *SPECTRAL MATCHING*
+%% *HYB-ANN SPECTRAL MATCHING*
 syn2ann_scaling_drive;
 
 %% *SAVE RESULTS*

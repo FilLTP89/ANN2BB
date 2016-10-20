@@ -1,0 +1,353 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>GENERATION OF STRONG GROUND MOTION SIGNALS BY COUPLING PHYSICS-BASED ANALYSIS WITH ARTIFICIAL NEURAL NETWORKS</title><meta name="generator" content="MATLAB 8.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-10-20"><meta name="DC.source" content="syn2ann_setup.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1><b>GENERATION OF STRONG GROUND MOTION SIGNALS BY COUPLING PHYSICS-BASED ANALYSIS WITH ARTIFICIAL NEURAL NETWORKS</b></h1><!--introduction--><p><i>Editor: Filippo Gatti CentraleSup?lec - Laboratoire MSSMat DICA - Politecnico di Milano Copyright 2016</i></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1"><b>NOTES</b></a></li><li><a href="#2"><b>N.B.</b></a></li><li><a href="#3"><b>DEFINE WORKDIR</b></a></li><li><a href="#4"><b>LOAD ALL METADATA AVAILABLE</b></a></li><li><a href="#5"><b>DEFINE REAL RECORDS METADATA</b></a></li><li><a href="#6"><b>DEFINE SPEED MONITORS METADATA</b></a></li><li><a href="#7"><b>DEFINE HYBRIDIZATION METADATA</b></a></li><li><a href="#8"><b>DEFINE ANN METADATA</b></a></li></ul></div><h2><b>NOTES</b><a name="1"></a></h2><p><i>syn2ann_setup</i>: function to set-up all the metadata required to the analyses to be run.</p><h2><b>N.B.</b><a name="2"></a></h2><p>Need for: <i>syn2ann_case_list.m</i></p><pre class="codeinput">ccc;
+fprintf(<span class="string">'---------------------\n0. SETUP\n---------------------\n'</span>);
+</pre><pre class="codeoutput">---------------------
+0. SETUP
+---------------------
+</pre><h2><b>DEFINE WORKDIR</b><a name="3"></a></h2><p>wd = fullfile(filesep,'media','user','DATI','Filippo','PHD_heavyweight',...     'EMILIA_2905');</p><pre class="codeinput">wd = fullfile(filesep,<span class="string">'media'</span>,<span class="string">'filippo'</span>,<span class="string">'Data'</span>,<span class="string">'Filippo'</span>,<span class="string">'PHD_heavyweight'</span>,<span class="keyword">...</span>
+    <span class="string">'EMILIA_2905'</span>);
+fprintf(<span class="string">'Workdir: %s\n'</span>,wd);
+<span class="comment">% _save path_</span>
+<span class="comment">% sp = fullfile(filesep,'media','user','DATI','Filippo','PHD_heavyweight',...</span>
+<span class="comment">%     'heavy_images');</span>
+sp = fullfile(filesep,<span class="string">'media'</span>,<span class="string">'filippo'</span>,<span class="string">'Data'</span>,<span class="string">'Filippo'</span>,<span class="string">'PHD_heavyweight'</span>,<span class="keyword">...</span>
+    <span class="string">'heavy_images'</span>);
+<span class="comment">% eval(sprintf('!mkdir -p %s',sp));</span>
+</pre><pre class="codeoutput">Workdir: /media/filippo/Data/Filippo/PHD_heavyweight/EMILIA_2905
+</pre><h2><b>LOAD ALL METADATA AVAILABLE</b><a name="4"></a></h2><pre class="codeinput">syn2ann_case_list;
+<span class="comment">% _select analyses : selected_case = [a,b,...,d]_</span>
+selected_case = 1;
+</pre><h2><b>DEFINE REAL RECORDS METADATA</b><a name="5"></a></h2><p><i>path to record files</i></p><pre class="codeinput">bhr.pt  = fullfile(wd,<span class="string">'records'</span>);
+fprintf(<span class="string">'--&gt; Record Path: %s\n'</span>,bhr.pt);
+<span class="comment">% _database_</span>
+bhr.tp = {<span class="string">'itaca'</span>};
+cellfun(@(x) fprintf(<span class="string">'--&gt; Database: %s'</span>,x),bhr.tp);
+fprintf(<span class="string">'\n'</span>);
+
+bhr.ns = numel(selected_case);
+<span class="keyword">for</span> m_ = 1:bhr.ns
+    <span class="keyword">for</span> n_ = 1:fnn.bhrr
+        bhr.(fni.bhrr{n_}){m_} = bhrr.(fni.bhrr{n_}){selected_case(m_)};
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+fprintf(<span class="string">'--&gt; N. Stations: %u\n'</span>,bhr.ns);
+cellfun(@(y) structfun(@(x) fprintf(<span class="string">'--&gt; Station ID: %s\n'</span>,x{:}),y,<span class="string">'UniformOutput'</span>,0),bhr.st);
+fprintf(<span class="string">'---------------------------------------------------------------\n'</span>);
+
+bhr.na = 0;
+<span class="keyword">for</span> i_ = 1:bhr.ns
+    bhr.nd(i_) = numel(bhr.st{i_}.dv);
+    bhr.na = bhr.na+bhr.nd(i_);
+<span class="keyword">end</span>
+
+<span class="comment">% _reference system_</span>
+bhr.rs = {<span class="string">'e'</span>;<span class="string">'n'</span>;<span class="string">'z'</span>};
+bhr.cp = {<span class="string">'e'</span>;<span class="string">'n'</span>;<span class="string">'z'</span>};
+bhr.nc = numel(bhr.cp);
+[~,bhr.ci] = ismember(bhr.cp,bhr.rs);
+fprintf(<span class="string">'--&gt; Reference system : '</span>);
+cellfun(@(x) fprintf(<span class="string">'%s; '</span>,x),bhr.rs);
+fprintf(<span class="string">'\n'</span>);
+fprintf(<span class="string">'--&gt; Directions: '</span>);
+cellfun(@(x) fprintf(<span class="string">'%s '</span>,x),bhr.cp);
+fprintf(<span class="string">'\n'</span>);
+<span class="comment">% _motion components_</span>
+bhr.rc = {<span class="string">'a'</span>,<span class="string">'v'</span>,<span class="string">'d'</span>};
+bhr.nr = numel(bhr.rc);
+fprintf(<span class="string">'--&gt; Components: '</span>);
+cellfun(@(x) fprintf(<span class="string">'%s; '</span>,x),bhr.rc);
+fprintf(<span class="string">'\n'</span>);
+bhr.cp = bhr.cp(:);
+bhr.ci = bhr.ci(:);
+fprintf(<span class="string">'---------------------------------------------------------------\n'</span>);
+</pre><pre class="codeoutput">--&gt; Record Path: /media/filippo/Data/Filippo/PHD_heavyweight/EMILIA_2905/records
+--&gt; Database: itaca
+--&gt; N. Stations: 1
+--&gt; Station ID: MRN
+--&gt; Station ID: CIT
+--&gt; Station ID: HN
+--&gt; Station ID: 20120529.070002
+--&gt; Station ID: 
+---------------------------------------------------------------
+--&gt; Reference system : e; n; z; 
+--&gt; Directions: e n z 
+--&gt; Components: a; v; d; 
+---------------------------------------------------------------
+</pre><h2><b>DEFINE SPEED MONITORS METADATA</b><a name="6"></a></h2><p><i>path to monitor files</i></p><pre class="codeinput">mon.pt  = fullfile(wd,<span class="string">'monitor'</span>);
+fprintf(<span class="string">'--&gt; Monitor Path: %s\n'</span>,mon.pt);
+<span class="comment">% _metadata filename_</span>
+mon.fn  = fullfile(wd,<span class="string">'SM_Stations_Monitors.csv'</span>);
+fprintf(<span class="string">'--&gt; Monitor File: %s\n'</span>,mon.fn);
+<span class="comment">% _type of simulation_</span>
+mon.tp  = <span class="string">'S'</span>;
+fprintf(<span class="string">'--&gt; Type of Simulation: %s\n'</span>,mon.tp);
+<span class="comment">% _monitor identity_</span>
+mon.na = bhr.ns;
+<span class="keyword">for</span> m_ = 1:mon.na
+    <span class="keyword">for</span> n_ = 1:fnn.monn
+        mon.(fni.monn{n_})(m_) = monn.(fni.monn{n_})(selected_case(m_));
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+fprintf(<span class="string">'--&gt; N. Monitor: %u\n'</span>,mon.na);
+arrayfun(@(x) fprintf(<span class="string">'--&gt; Monitor ID: %u \n'</span>,x),mon.id);
+<span class="comment">% _reference system_</span>
+mon.rs = bhr.rs;
+mon.cp = bhr.cp;
+mon.ci = bhr.ci;
+mon.nc = numel(mon.cp);
+fprintf(<span class="string">'--&gt; Directions: '</span>);
+cellfun(@(x) fprintf(<span class="string">'%s '</span>,x),mon.cp);
+<span class="comment">% _motion components_</span>
+mon.rc  = {<span class="string">'d'</span>};
+mon.nr  = numel(mon.rc);
+fprintf(<span class="string">'--&gt; Components: '</span>);
+cellfun(@(x) fprintf(<span class="string">'%s '</span>,x),mon.rc);
+fprintf(<span class="string">'\n---------------------------------------------------------------\n'</span>);
+mon.cp = mon.cp(:);
+mon.ci = mon.ci(:);
+</pre><pre class="codeoutput">--&gt; Monitor Path: /media/filippo/Data/Filippo/PHD_heavyweight/EMILIA_2905/monitor
+--&gt; Monitor File: /media/filippo/Data/Filippo/PHD_heavyweight/EMILIA_2905/SM_Stations_Monitors.csv
+--&gt; Type of Simulation: S
+--&gt; N. Monitor: 1
+--&gt; Monitor ID: 16928 
+--&gt; Directions: e n z --&gt; Components: d 
+---------------------------------------------------------------
+</pre><h2><b>DEFINE HYBRIDIZATION METADATA</b><a name="7"></a></h2><p><i>SP96 metadata</i></p><pre class="codeinput">hybrid_type=<span class="string">'sp96'</span>;
+mtd.sp96.na = mon.na;
+<span class="keyword">for</span> m_ = 1:mtd.sp96.na
+    <span class="keyword">for</span> n_ = 1:fnn.mtdd.sp96
+        mtd.sp96.(fni.mtdd.sp96{n_})(m_) = mtdd.sp96.(fni.mtdd.sp96{n_})(selected_case(m_));
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+<span class="comment">% _EXSIM metadata_</span>
+mtd.exsim.na = mon.na;
+<span class="keyword">for</span> m_ = 1:mtd.exsim.na
+    <span class="keyword">for</span> n_ = 1:fnn.mtdd.exsim
+        mtd.exsim.(fni.mtdd.exsim{n_})(m_) = mtdd.exsim.(fni.mtdd.exsim{n_})(selected_case(m_));
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+</pre><h2><b>DEFINE ANN METADATA</b><a name="8"></a></h2><p><i>site class considered : ALL,AB,CD</i></p><pre class="codeinput">ann.mtd.scl = <span class="string">'ALL'</span>;
+<span class="comment">% _corner period for each ANN_</span>
+ann.mtd.TnC = {0.75;0.75;0.75};
+<span class="comment">% _ANN motion component : gh,ud (geometric mean horizontal, updip)_</span>
+ann.mtd.cpn = {<span class="string">'gh'</span>;<span class="string">'gh'</span>;<span class="string">'ud'</span>};
+<span class="keyword">for</span> i_ = 1:numel(ann.mtd.TnC)
+    ann.mtd.nl(i_) = {sprintf(<span class="string">'net_%u_%s_%s.mat'</span>,<span class="keyword">...</span>
+        round(ann.mtd.TnC{i_}*100),ann.mtd.scl,ann.mtd.cpn{i_})};
+<span class="keyword">end</span>
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% *GENERATION OF STRONG GROUND MOTION SIGNALS BY COUPLING PHYSICS-BASED ANALYSIS WITH ARTIFICIAL NEURAL NETWORKS*
+% _Editor: Filippo Gatti
+% CentraleSup?lec - Laboratoire MSSMat
+% DICA - Politecnico di Milano
+% Copyright 2016_
+%% *NOTES*
+% _syn2ann_setup_: function to set-up all the metadata required to the 
+% analyses to be run.
+%% *N.B.*
+% Need for:
+% _syn2ann_case_list.m_
+ccc;
+fprintf('REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-\n0. SETUP\nREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-\n');
+
+%% *DEFINE WORKDIR*
+% wd = fullfile(filesep,'media','user','DATI','Filippo','PHD_heavyweight',...
+%     'EMILIA_2905');
+wd = fullfile(filesep,'media','filippo','Data','Filippo','PHD_heavyweight',...
+    'EMILIA_2905');
+fprintf('Workdir: %s\n',wd);
+% _save path_
+% sp = fullfile(filesep,'media','user','DATI','Filippo','PHD_heavyweight',...
+%     'heavy_images');
+sp = fullfile(filesep,'media','filippo','Data','Filippo','PHD_heavyweight',...
+    'heavy_images');
+% eval(sprintf('!mkdir -p %s',sp));
+
+%% *LOAD ALL METADATA AVAILABLE*
+syn2ann_case_list;
+% _select analyses : selected_case = [a,b,...,d]_
+selected_case = 1;
+
+%% *DEFINE REAL RECORDS METADATA*
+% _path to record files_
+bhr.pt  = fullfile(wd,'records');
+fprintf('REPLACE_WITH_DASH_DASH> Record Path: %s\n',bhr.pt);
+% _database_
+bhr.tp = {'itaca'};
+cellfun(@(x) fprintf('REPLACE_WITH_DASH_DASH> Database: %s',x),bhr.tp);
+fprintf('\n');
+
+bhr.ns = numel(selected_case);
+for m_ = 1:bhr.ns
+    for n_ = 1:fnn.bhrr
+        bhr.(fni.bhrr{n_}){m_} = bhrr.(fni.bhrr{n_}){selected_case(m_)};
+    end
+end
+
+fprintf('REPLACE_WITH_DASH_DASH> N. Stations: %u\n',bhr.ns);
+cellfun(@(y) structfun(@(x) fprintf('REPLACE_WITH_DASH_DASH> Station ID: %s\n',x{:}),y,'UniformOutput',0),bhr.st);
+fprintf('REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-\n');
+
+bhr.na = 0;
+for i_ = 1:bhr.ns
+    bhr.nd(i_) = numel(bhr.st{i_}.dv);
+    bhr.na = bhr.na+bhr.nd(i_);
+end
+
+% _reference system_
+bhr.rs = {'e';'n';'z'};
+bhr.cp = {'e';'n';'z'};
+bhr.nc = numel(bhr.cp);
+[~,bhr.ci] = ismember(bhr.cp,bhr.rs);
+fprintf('REPLACE_WITH_DASH_DASH> Reference system : ');
+cellfun(@(x) fprintf('%s; ',x),bhr.rs);
+fprintf('\n');
+fprintf('REPLACE_WITH_DASH_DASH> Directions: ');
+cellfun(@(x) fprintf('%s ',x),bhr.cp);
+fprintf('\n');
+% _motion components_
+bhr.rc = {'a','v','d'};
+bhr.nr = numel(bhr.rc);
+fprintf('REPLACE_WITH_DASH_DASH> Components: ');
+cellfun(@(x) fprintf('%s; ',x),bhr.rc);
+fprintf('\n');
+bhr.cp = bhr.cp(:);
+bhr.ci = bhr.ci(:);
+fprintf('REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-\n');
+
+%% *DEFINE SPEED MONITORS METADATA*
+% _path to monitor files_
+mon.pt  = fullfile(wd,'monitor');
+fprintf('REPLACE_WITH_DASH_DASH> Monitor Path: %s\n',mon.pt);
+% _metadata filename_
+mon.fn  = fullfile(wd,'SM_Stations_Monitors.csv');
+fprintf('REPLACE_WITH_DASH_DASH> Monitor File: %s\n',mon.fn);
+% _type of simulation_
+mon.tp  = 'S';
+fprintf('REPLACE_WITH_DASH_DASH> Type of Simulation: %s\n',mon.tp);
+% _monitor identity_
+mon.na = bhr.ns;
+for m_ = 1:mon.na
+    for n_ = 1:fnn.monn
+        mon.(fni.monn{n_})(m_) = monn.(fni.monn{n_})(selected_case(m_));
+    end
+end
+
+fprintf('REPLACE_WITH_DASH_DASH> N. Monitor: %u\n',mon.na);
+arrayfun(@(x) fprintf('REPLACE_WITH_DASH_DASH> Monitor ID: %u \n',x),mon.id);
+% _reference system_
+mon.rs = bhr.rs;
+mon.cp = bhr.cp;
+mon.ci = bhr.ci;
+mon.nc = numel(mon.cp);
+fprintf('REPLACE_WITH_DASH_DASH> Directions: ');
+cellfun(@(x) fprintf('%s ',x),mon.cp);
+% _motion components_
+mon.rc  = {'d'};
+mon.nr  = numel(mon.rc);
+fprintf('REPLACE_WITH_DASH_DASH> Components: ');
+cellfun(@(x) fprintf('%s ',x),mon.rc);
+fprintf('\nREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-\n');
+mon.cp = mon.cp(:);
+mon.ci = mon.ci(:);
+
+%% *DEFINE HYBRIDIZATION METADATA*
+% _SP96 metadata_
+hybrid_type='sp96';
+mtd.sp96.na = mon.na;
+for m_ = 1:mtd.sp96.na
+    for n_ = 1:fnn.mtdd.sp96
+        mtd.sp96.(fni.mtdd.sp96{n_})(m_) = mtdd.sp96.(fni.mtdd.sp96{n_})(selected_case(m_));
+    end
+end
+% _EXSIM metadata_
+mtd.exsim.na = mon.na;
+for m_ = 1:mtd.exsim.na
+    for n_ = 1:fnn.mtdd.exsim
+        mtd.exsim.(fni.mtdd.exsim{n_})(m_) = mtdd.exsim.(fni.mtdd.exsim{n_})(selected_case(m_));
+    end
+end
+%% *DEFINE ANN METADATA*
+% _site class considered : ALL,AB,CD_
+ann.mtd.scl = 'ALL';
+% _corner period for each ANN_
+ann.mtd.TnC = {0.75;0.75;0.75};
+% _ANN motion component : gh,ud (geometric mean horizontal, updip)_
+ann.mtd.cpn = {'gh';'gh';'ud'};
+for i_ = 1:numel(ann.mtd.TnC)
+    ann.mtd.nl(i_) = {sprintf('net_%u_%s_%s.mat',...
+        round(ann.mtd.TnC{i_}*100),ann.mtd.scl,ann.mtd.cpn{i_})};
+end
+
+##### SOURCE END #####
+--></body></html>

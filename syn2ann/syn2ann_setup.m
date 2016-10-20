@@ -1,8 +1,18 @@
-%% *SET-UP - EMILIA 2012 SIMULATIONS*
+%% *GENERATION OF STRONG GROUND MOTION SIGNALS BY COUPLING PHYSICS-BASED ANALYSIS WITH ARTIFICIAL NEURAL NETWORKS*
+% _Editor: Filippo Gatti
+% CentraleSup?lec - Laboratoire MSSMat
+% DICA - Politecnico di Milano
+% Copyright 2016_
+%% *NOTES*
+% _syn2ann_setup_: function to select the set of analyses to the 
+% analyses to be run.
+%% *N.B.*
+% Need for:
+% _syn2ann_case_list.m_
 ccc;
 fprintf('---------------------\n0. SETUP\n---------------------\n');
 
-%% *WORKDIR*
+%% *DEFINE WORKDIR*
 % wd = fullfile(filesep,'media','user','DATI','Filippo','PHD_heavyweight',...
 %     'EMILIA_2905');
 wd = fullfile(filesep,'media','filippo','Data','Filippo','PHD_heavyweight',...
@@ -15,10 +25,12 @@ sp = fullfile(filesep,'media','filippo','Data','Filippo','PHD_heavyweight',...
     'heavy_images');
 % eval(sprintf('!mkdir -p %s',sp));
 
+%% *LOAD ALL METADATA AVAILABLE*
 syn2ann_case_list;
+% _select analyses : selected_case = [a,b,...,d]_
 selected_case = 1;
 
-%% *REAL RECORDS: METADATA*
+%% *DEFINE REAL RECORDS METADATA*
 % _path to record files_
 bhr.pt  = fullfile(wd,'records');
 fprintf('--> Record Path: %s\n',bhr.pt);
@@ -26,7 +38,6 @@ fprintf('--> Record Path: %s\n',bhr.pt);
 bhr.tp = {'itaca'};
 cellfun(@(x) fprintf('--> Database: %s',x),bhr.tp);
 fprintf('\n');
-
 
 bhr.ns = numel(selected_case);
 for m_ = 1:bhr.ns
@@ -66,7 +77,7 @@ bhr.cp = bhr.cp(:);
 bhr.ci = bhr.ci(:);
 fprintf('---------------------------------------------------------------\n');
 
-%% *MONITORS*
+%% *DEFINE SPEED MONITORS METADATA*
 % _path to monitor files_
 mon.pt  = fullfile(wd,'monitor');
 fprintf('--> Monitor Path: %s\n',mon.pt);
@@ -102,7 +113,7 @@ fprintf('\n---------------------------------------------------------------\n');
 mon.cp = mon.cp(:);
 mon.ci = mon.ci(:);
 
-%% *HYBRIDIZATION METADATA*
+%% *DEFINE HYBRIDIZATION METADATA*
 % _SP96 metadata_
 hybrid_type='sp96';
 mtd.sp96.na = mon.na;
@@ -118,9 +129,12 @@ for m_ = 1:mtd.exsim.na
         mtd.exsim.(fni.mtdd.exsim{n_})(m_) = mtdd.exsim.(fni.mtdd.exsim{n_})(selected_case(m_));
     end
 end
-%% *ANN*
+%% *DEFINE ANN METADATA*
+% _site class considered : ALL,AB,CD_
 ann.mtd.scl = 'ALL';
+% _corner period for each ANN_
 ann.mtd.TnC = {0.75;0.75;0.75};
+% _ANN motion component : gh,ud (geometric mean horizontal, updip)_
 ann.mtd.cpn = {'gh';'gh';'ud'};
 for i_ = 1:numel(ann.mtd.TnC)
     ann.mtd.nl(i_) = {sprintf('net_%u_%s_%s.mat',...
