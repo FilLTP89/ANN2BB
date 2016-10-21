@@ -1,0 +1,3 @@
+% SOURCE PARAMETERS 
+% fault_id L(m) W(m) Strike(deg) Dip(deg) Rake(deg) FO_x(m) F0_y(m) F0_top(m)
+1 39000 20000 353 60 90 360082.835650 6275389.344457 1300  

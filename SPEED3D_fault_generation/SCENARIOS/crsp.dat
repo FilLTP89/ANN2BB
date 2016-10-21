@@ -1,0 +1,22 @@
+% Input data for correlated random source parameters
+% ====================================================================== %
+% REMARK: IT WORKS ONLY WHEN THE FAULT SIZE OF THE SELECTED SCENARIO 
+% MATCHES EXACTLY THE SIZE OF THE FAULT AS IMPLEMENTED IN CUBIT !
+% ====================================================================== %
+% parameters:
+% tag_param: logical variabile, if = 1 the program generates random source parameters
+% cov_param: coefficient of variation (between 0 and 1)
+% type_psd_param: type of Power Spectral Density  
+% 0 = Gaussian, 1 = Exponential; 2 = Von Karman (self-sim)
+% eta = correlation coefficient with slip distribution (between 0 and 1)
+% vr_max = maximum rupture velocity (m/s)
+% ax: correlation length in the along-strike direction (m)
+% Note: ax default = 10^(-2.5+1/2*Mw)*1000 Mai & Beroza (2002,JGR)   
+% ay: correlation length in the down-dip direction (m) 
+% Note: ay default = 10^(-1.5+1/3*Mw)*1000 Mai & Beroza (2002,JGR)
+%
+% tag_rake cov_rake type_psd_rake eta_rake tag_rise cov_rise type_psd_rise  eta_rise      tag_vr cov_vr type_psd_vr        vr_max    ax    ay
+%     1       0.30       1            0.3       1       0.50        1         0.9     1     0.30       1       0.3     3500  1000  1000 
+%
+% tag_rake cov_rake type_psd_rake eta_rake tag_rise cov_rise type_psd_rise  eta_rise  tag_vr cov_vr type_psd_vr  eta_vr  vr_max    ax    ay
+     1        0.30       2       0.2      1      0.50        2            0.5     1      0.30      2         0.3    3500   3162.3  3162.3

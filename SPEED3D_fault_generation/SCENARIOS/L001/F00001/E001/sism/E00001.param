@@ -1,0 +1,57 @@
+*********************** SCENARIO PARAMETERS *********************** 
+19H : L001
+************************
+**** FAULT GEOMETRY ****
+************************
+Fault ID = F00001
+Fault Length = 39 km
+Fault Width = 20 km
+Fault Strike = 353°
+Fault Dip = 60°
+Fault Origin (FO): X_FO = 360082.8357 m - Y_FO = 6275389.3445 m
+Latitude of FO = -33.6522° - Longiutde of FO = -70.5089° - utmzone 19H
+Depth of FO = 1.3 km
+************************
+**** EQK SCENARIO   ****
+************************
+Scenario ID = E00001
+Moment Magnitude = 6
+Slip model #: S0002 : Colfiorito#2
+Rupture Length L = 12 km
+Rupture Width W = 6 km
+Normalized distance L0 of rupture scenario along strike from FO (w.r.t Lmax) = 0.64
+Normalized distance W0 of rupture scenario down dip from FO (w.r.t Wmax) = 0.42
+Normalized distance Hypo_X of hypocenter along strike from FO (w.r.t Lmax) = 0.66656
+Normalized distance Hypo_Y of hypocenter down dip from FO (w.r.t Wmax) = 0.67559
+X_HY = 363620.2896 m - Y_HY = 6302014.8845 m
+Latitude of HYPO = -33.4125° - Longitude of HYPO = -70.4667° - utmzone 19H
+Focal Depth = -10.4016 km
+Rake angle = 90 deg
+Rupture Velocity = 2.2 km/s
+Rise time = 0.8 s
+Mean slip value: 0.028471 m
+Maximum slip value: 1.35 m
+************************
+****   SLIP MODEL   ****
+************************
+Slip model ID: S0002
+Slip model reference: Colfiorito#2
+Mean slip value (original): 0.396 m
+Maximum slip value (original): 1.35 m
+*************************************************
+****   CORRELATED RANDOM SOURCE PARAMETERS   ****
+*************************************************
+Random perturbation of rake angle : YES
+(Mean) Rake angle : 90°
+Rake - coefficient of variation: 0.3
+Rake - correlation length in along-strike direction: 3162.3 m
+Rake - correlation length in down-dip direction: 3162.3 m
+Rake - correlation coefficient with slip distribution: 0.2
+Random perturbation of rise time : YES
+(Mean) Rise Time : 0.8 s
+Rise Time - coefficient of variation: 0.5
+Rise Time - correlation length in along-strike direction: 3162.3 m
+Rise Time - correlation length in down-dip direction: 3162.3 m
+Rise Time - correlation coefficient with slip distribution: 0.5
+Random perturbation of rupture velocity : NO
+(Mean) Rupt. Vel. : 2.2 km/s

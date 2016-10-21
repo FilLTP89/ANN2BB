@@ -1,0 +1,5 @@
+% SCENARIO PARAMETERS: 
+% scen_id fault_id slip_no hypo_no L0/Lmax W0/Wmax L(m) W(m) Mw Vr(m/s) risetime(s) rake(deg) iscale icrsp
+%SANTIAGO
+% NEW SCENARIOS DEC 2105
+1 1  2  37   0.64   0.42 12000  6000  6.0  2200  0.8  90  0 1

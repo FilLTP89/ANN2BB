@@ -1,0 +1,14 @@
+GRIDFILE  Santiago_SanRamon_official
+MATFILE   Santiago_SanRamon_official_1
+MPIFILE   FILES_MPI
+MONFILE   MONITORS
+
+OPTIOUT  1 0 0  0 0 0    1 6
+
+DAMPING  1 
+
+TIMESTEP   0.00100
+TMONITOR   10
+STOPTIME    30.00
+
+MLST     -20.00  1

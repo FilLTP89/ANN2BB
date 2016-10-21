@@ -1,0 +1,153 @@
+Starting input files generation...
+on Unix Filesystem
+ 
+1 th scenario selected from the database
+ 
+Location number: L001
+Fault number: F00001
+ 
+ 
+---------------------------------------------------------------
+SPEED INPUT FILES WILL BE STORED IN FOLDER:
+ 
+/home/ilario/Desktop/SPEED/PRE_AND_POST_PROC/PrePT/pippo/SCENARIOS/L001/F00001/E001/
+ 
+---------------------------------------------------------------
+Scenario properties:
+SLIP ID: 2
+Mw: 6
+HYPO ID: 37
+HYPO LOC: 363620.2896  6302014.8845  -10401.6026
+L [m]: 12000 L0/LMAX: 0.64
+W [m]: 6000 W0/WMAX: 0.42
+RUPTURE VEL [m/s]: 2200
+RISE TIME [s]: 0.8
+RAKE [deg]: 90
+SCALING: 0
+---------------------------------------------------------------
+Fault properties:
+FAULT ID: 1
+L MAX [m]: 39000
+W MAX [m]: 20000
+STRIKE [deg]: 353
+DIP [deg]: 60
+F0X: 360082.8357   F0Y: 6275389.3445   F0Z: 1300
+---------------------------------------------------------------
+ 
+ 
+Reading material file: /home/ilario/Desktop/SPEED/PRE_AND_POST_PROC/PrePT/pippo/SCENARIOS/L001/F00001/mate/Santiago_SanRamon_official_1.mate
+ 
+Not honoring case: 8
+Tolerance: 10
+---------------------------------------------------------------
+Start reading files exported from cubit...
+Opening folder :/home/ilario/Desktop/SPEED/PRE_AND_POST_PROC/PrePT/pippo/SCENARIOS/L001/F00001/cub
+ 
+Do you want to convert EXODUS files in ASCII files? (1=YES)
+Do you want to convert ASCII files to .mesh files ? (1=YES)
+
+ans =
+
+    73
+
+
+ans =
+
+    73
+
+
+ans =
+
+    73
+
+
+ans =
+
+    73
+
+
+ans =
+
+    90
+
+
+ans =
+
+    41
+
+---------------------------------------------------------------
+Generating Extended Fault...
+Mechanical properties:
+ 
+Number of layers:
+3
+Layer #1
+Vp = 4700 m/s
+Vs = 2400 m/s
+rho = 2400 kg/m3
+Layer #2
+Vp = 5900 m/s
+Vs = 3200 m/s
+rho = 2700 kg/m3
+Layer #3
+Vp = 6200 m/s
+Vs = 3450 m/s
+rho = 2800 kg/m3
+ 
+Loading slip distribution
+<a href="matlab: opentoline('/home/ilario/Desktop/SPEED/PRE_AND_POST_PROC/PrePT/pippo/src/scen_generator.m',148,1)">148 </a>disp(['Slip pattern model: ',nomer2]);
+nomer
+{Undefined function or variable 'nomer'.
+} 
+nomer2
+
+nomer2 =
+
+Colfiorito#2
+
+dbcont
+Slip pattern model: Colfiorito#2
+ 
+Reading and Converting /home/ilario/Desktop/SPEED/PRE_AND_POST_PROC/PrePT/pippo/SCENARIOS/L001/F00001/sism/fault.txt
+ 
+Reading 1st block  (782 elem.)
+completed in 0.16 sec.
+Reading 2nd block  (718 elem.)
+completed in 0.13 sec.
+Reading 3rd block  (782 elem.)
+completed in 0.14 sec.
+*** Storing data informations ***
+completed in 0 sec.
+BEGIN - Reading nodes coordinates
+END - Reading nodes coordinates in 0.28 sec.
+ 
+BEGIN - Writing input format
+CORRECT FAULT !
+*** Reading and interpolating data about slip distribution***
+ 
+*** Correlated random perturbation of rake angle ***
+ 
+*** Correlated random perturbation of rise time ***
+ 
+BEGIN - Computing area and so on... 
+Magnitude Target   6.00 
+Scale factor    1.15 
+Computed Magnitude   5.96 
+END - Computing area and so on... 2.09 sec.
+ 
+scale factor for seismic moment: 1.1526
+---------------------------------------------------------------
+Converting monitors.txt in monitors.out
+Reading 1st block  (27180 elem.)
+completed in 4.6 sec.
+*** Storing data informations ***
+completed in 0 sec.
+BEGIN - Reading nodes coordinates
+END - Reading nodes coordinates in 2.66 sec.
+BEGIN - Writing input format
+ 
+Write LS.input from monitors.txt
+  
+---------------------------------------------------------------
+Start writing SPEED.input file
+END

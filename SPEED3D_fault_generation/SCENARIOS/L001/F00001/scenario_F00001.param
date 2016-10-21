@@ -1,0 +1,764 @@
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00002 L001 F00001 6 S0013 12 7 0.35 0.3244 0.5 0.4 -33.469 -70.4892 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00050 L001 F00001 6 S0013 12 7 0.35 0.3244 0.1 0.2 -33.6144 -70.4921 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00051 L001 F00001 6 S0013 12 7 0.35 0.3244 0.2 0.2 -33.5785 -70.4967 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00052 L001 F00001 6 S0013 12 7 0.35 0.3244 0.3 0.2 -33.5426 -70.5013 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00053 L001 F00001 6 S0013 12 7 0.35 0.3244 0.4 0.2 -33.5068 -70.506 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00054 L001 F00001 6 S0013 12 7 0.35 0.3244 0.5 0.2 -33.4709 -70.5106 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00055 L001 F00001 6 S0013 12 7 0.35 0.3244 0.6 0.2 -33.4351 -70.5152 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00056 L001 F00001 6 S0013 12 7 0.35 0.3244 0.7 0.2 -33.3992 -70.5198 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00057 L001 F00001 6 S0013 12 7 0.35 0.3244 0.8 0.2 -33.3633 -70.5245 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00058 L001 F00001 6 S0013 12 7 0.35 0.3244 0.9 0.2 -33.3275 -70.5291 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00059 L001 F00001 6 S0013 12 7 0.35 0.3244 0.1 0.4 -33.6124 -70.4706 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00060 L001 F00001 6 S0013 12 7 0.35 0.3244 0.2 0.4 -33.5766 -70.4753 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00061 L001 F00001 6 S0013 12 7 0.35 0.3244 0.3 0.4 -33.5407 -70.4799 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00062 L001 F00001 6 S0013 12 7 0.35 0.3244 0.4 0.4 -33.5048 -70.4845 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00063 L001 F00001 6 S0013 12 7 0.35 0.3244 0.5 0.4 -33.469 -70.4892 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00064 L001 F00001 6 S0013 12 7 0.35 0.3244 0.6 0.4 -33.4331 -70.4938 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00065 L001 F00001 6 S0013 12 7 0.35 0.3244 0.7 0.4 -33.3973 -70.4984 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00066 L001 F00001 6 S0013 12 7 0.35 0.3244 0.8 0.4 -33.3614 -70.503 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00067 L001 F00001 6 S0013 12 7 0.35 0.3244 0.9 0.4 -33.3255 -70.5077 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00068 L001 F00001 6 S0013 12 7 0.35 0.3244 0.1 0.6 -33.6105 -70.4491 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00069 L001 F00001 6 S0013 12 7 0.35 0.3244 0.2 0.6 -33.5746 -70.4538 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00070 L001 F00001 6 S0013 12 7 0.35 0.3244 0.3 0.6 -33.5387 -70.4584 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00071 L001 F00001 6 S0013 12 7 0.35 0.3244 0.4 0.6 -33.5029 -70.4631 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00020 L001 F00001 6 S0011 12 7 0 0 0.2 0.2 -33.5785 -70.4967 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00021 L001 F00001 6 S0011 12 7 0 0 0.1 0.4 -33.6124 -70.4706 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00022 L001 F00001 6 S0011 12 7 0 0 0.3 0.4 -33.5407 -70.4799 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00020 L001 F00001 6 S0012 12 7 0 0 0.2 0.2 -33.5785 -70.4967 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00021 L001 F00001 6 S0012 12 7 0 0 0.1 0.4 -33.6124 -70.4706 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00022 L001 F00001 6 S0012 12 7 0 0 0.3 0.4 -33.5407 -70.4799 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00020 L001 F00001 6.5 S0012 22 11.5 0 0 0.2 0.2 -33.5785 -70.4967 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00020 L001 F00001 6.5 S0012 22 11.5 0.1 0.1 0.2 0.2 -33.5785 -70.4967 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00020 L001 F00001 6.5 S0012 22 11.5 0 0.1 0.2 0.2 -33.5785 -70.4967 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00020 L001 F00001 6.5 S0012 22 11.5 0 0.2 0.3 0.2 -33.5426 -70.5013 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00020 L001 F00001 6.5 S0012 22 11.5 0 0.2 0.3 0.2 -33.5426 -70.5013 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00021 L001 F00001 6.5 S0012 22 11.5 0 0.1 0.3 0.2 -33.5426 -70.5013 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00022 L001 F00001 6.5 S0012 22 11.5 0 0 0.3 0.2 -33.5426 -70.5013 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00020 L001 F00001 6.5 S0012 22 11.5 0 0.2 0.2 0.2 -33.5785 -70.4967 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00021 L001 F00001 6.5 S0012 22 11.5 0 0.1 0.2 0.2 -33.5785 -70.4967 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00022 L001 F00001 6.5 S0012 22 11.5 0 0 0.2 0.2 -33.5785 -70.4967 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00020 L001 F00001 6.5 S0012 22 11.5 0 0 0.3 0.2 -33.5426 -70.5013 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00021 L001 F00001 6.5 S0012 22 11.5 0.25 0 0.4 0.2 -33.5068 -70.506 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00022 L001 F00001 6.5 S0012 22 11.5 0.5 0 0.6 0.2 -33.4351 -70.5152 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00023 L001 F00001 6.5 S0012 22 11.5 0.75 0 0.7 0.2 -33.3992 -70.5198 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00020 L001 F00001 6.5 S0012 22 11.5 0 0 0.3 0.2 -33.5426 -70.5013 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00021 L001 F00001 6.5 S0012 22 11.5 0.1 0 0.5 0.2 -33.4709 -70.5106 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00020 L001 F00001 6.5 S0012 22 11.5 0.1 0 0.3 0.2 -33.5426 -70.5013 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00020 L001 F00001 6.5 S0012 22 11.5 0.05 0 0.3 0.2 -33.5426 -70.5013 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00021 L001 F00001 6.5 S0012 22 11.5 0.1 0 0.4 0.2 -33.5068 -70.506 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00020 L001 F00001 6.5 S0012 22 11.5 0.05 0 0.3 0.2 -33.5426 -70.5013 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00020 L001 F00001 6.5 S0012 22 11.5 0.05 0.02 0.3 0.2 -33.5426 -70.5013 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00021 L001 F00001 6.5 S0012 22 11.5 0.1 0.02 0.4 0.2 -33.5068 -70.506 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00022 L001 F00001 6.5 S0012 22 11.5 0.15 0.02 0.5 0.2 -33.4709 -70.5106 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00023 L001 F00001 6.5 S0012 22 11.5 0.2 0.02 0.6 0.2 -33.4351 -70.5152 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00020 L001 F00001 6.5 S0012 22 11.5 0.05 0.02 0.3 0.2 -33.5426 -70.5013 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00021 L001 F00001 6.5 S0012 22 11.5 0.1 0.02 0.4 0.2 -33.5068 -70.506 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00022 L001 F00001 6.5 S0012 22 11.5 0.2 0.02 0.5 0.2 -33.4709 -70.5106 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00023 L001 F00001 6.5 S0012 22 11.5 0.3 0.02 0.6 0.2 -33.4351 -70.5152 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00024 L001 F00001 6.5 S0012 22 11.5 0.4 0.02 0.7 0.2 -33.3992 -70.5198 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00025 L001 F00001 6.5 S0012 22 11.5 0 0.12 0.3 0.4 -33.5407 -70.4799 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00025 L001 F00001 6.5 S0012 22 11.5 0 0.22 0.3 0.4 -33.5407 -70.4799 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00026 L001 F00001 6.5 S0012 22 11.5 0.1 0.22 0.4 0.4 -33.5048 -70.4845 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00027 L001 F00001 6.5 S0012 22 11.5 0.2 0.22 0.5 0.4 -33.469 -70.4892 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00028 L001 F00001 6.5 S0012 22 11.5 0.3 0.22 0.6 0.4 -33.4331 -70.4938 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00029 L001 F00001 6.5 S0012 22 11.5 0.4 0.22 0.7 0.4 -33.3973 -70.4984 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00020 L001 F00001 6.5 S0012 22 11.5 0 0.02 0.2 0.2 -33.5785 -70.4967 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00020 L001 F00001 6.5 S0012 22 11.5 0 0.02 0.2 0.2 -33.5785 -70.4967 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00021 L001 F00001 6.5 S0012 22 11.5 0 0.02 0.3 0.2 -33.5426 -70.5013 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00022 L001 F00001 6.5 S0012 22 11.5 0 0.02 0.4 0.2 -33.5068 -70.506 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00020 L001 F00001 6.5 S0012 22 11.5 0 0.02 0.1 0.2 -33.6144 -70.4921 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00021 L001 F00001 6.5 S0012 22 11.5 0 0.02 0.3 0.2 -33.5426 -70.5013 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00022 L001 F00001 6.5 S0012 22 11.5 0 0.02 0.5 0.2 -33.4709 -70.5106 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00023 L001 F00001 6.5 S0012 22 11.5 0 0.02 0.1 0.4 -33.6124 -70.4706 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00024 L001 F00001 6.5 S0012 22 11.5 0 0.02 0.3 0.4 -33.5407 -70.4799 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00025 L001 F00001 6.5 S0012 22 11.5 0 0.02 0.5 0.4 -33.469 -70.4892 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00020 L001 F00001 6.5 S0012 22 11.5 0 0.02 0.3 0.2 -33.5426 -70.5013 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00021 L001 F00001 6.5 S0012 22 11.5 0 0.02 0.1 0.4 -33.6124 -70.4706 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00022 L001 F00001 6.5 S0012 22 11.5 0 0.02 0.3 0.4 -33.5407 -70.4799 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00023 L001 F00001 6.5 S0012 22 11.5 0 0.02 0.5 0.4 -33.469 -70.4892 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00024 L001 F00001 6.5 S0012 22 11.5 0.1 0.02 0.4 0.2 -33.5068 -70.506 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00025 L001 F00001 6.5 S0012 22 11.5 0.1 0.02 0.2 0.4 -33.5766 -70.4753 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00026 L001 F00001 6.5 S0012 22 11.5 0.1 0.02 0.4 0.4 -33.5048 -70.4845 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00027 L001 F00001 6.5 S0012 22 11.5 0.1 0.02 0.6 0.4 -33.4331 -70.4938 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00028 L001 F00001 6.5 S0012 22 11.5 0.2 0.02 0.5 0.2 -33.4709 -70.5106 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00029 L001 F00001 6.5 S0012 22 11.5 0.2 0.02 0.3 0.4 -33.5407 -70.4799 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00030 L001 F00001 6.5 S0012 22 11.5 0.2 0.02 0.5 0.4 -33.469 -70.4892 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00031 L001 F00001 6.5 S0012 22 11.5 0.2 0.02 0.7 0.4 -33.3973 -70.4984 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00032 L001 F00001 6.5 S0012 22 11.5 0.3 0.02 0.6 0.2 -33.4351 -70.5152 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00033 L001 F00001 6.5 S0012 22 11.5 0.3 0.02 0.4 0.4 -33.5048 -70.4845 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00034 L001 F00001 6.5 S0012 22 11.5 0.3 0.02 0.6 0.4 -33.4331 -70.4938 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00035 L001 F00001 6.5 S0012 22 11.5 0.3 0.02 0.8 0.4 -33.3614 -70.503 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00036 L001 F00001 6.5 S0012 22 11.5 0.4 0.02 0.7 0.2 -33.3992 -70.5198 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00037 L001 F00001 6.5 S0012 22 11.5 0.4 0.02 0.5 0.4 -33.469 -70.4892 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00038 L001 F00001 6.5 S0012 22 11.5 0.4 0.02 0.7 0.4 -33.3973 -70.4984 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00039 L001 F00001 6.5 S0012 22 11.5 0.4 0.02 0.9 0.4 -33.3255 -70.5077 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00040 L001 F00001 6.5 S0012 22 11.5 0 0.22 0.3 0.4 -33.5407 -70.4799 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00041 L001 F00001 6.5 S0012 22 11.5 0 0.22 0.1 0.6 -33.6105 -70.4491 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00042 L001 F00001 6.5 S0012 22 11.5 0 0.22 0.3 0.6 -33.5387 -70.4584 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00043 L001 F00001 6.5 S0012 22 11.5 0 0.22 0.5 0.6 -33.467 -70.4677 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00044 L001 F00001 6.5 S0012 22 11.5 0.1 0.22 0.4 0.4 -33.5048 -70.4845 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00045 L001 F00001 6.5 S0012 22 11.5 0.1 0.22 0.2 0.6 -33.5746 -70.4538 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00046 L001 F00001 6.5 S0012 22 11.5 0.1 0.22 0.4 0.6 -33.5029 -70.4631 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00047 L001 F00001 6.5 S0012 22 11.5 0.1 0.22 0.6 0.6 -33.4312 -70.4724 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00048 L001 F00001 6.5 S0012 22 11.5 0.2 0.22 0.5 0.4 -33.469 -70.4892 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00049 L001 F00001 6.5 S0012 22 11.5 0.2 0.22 0.3 0.6 -33.5387 -70.4584 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00050 L001 F00001 6.5 S0012 22 11.5 0.2 0.22 0.5 0.6 -33.467 -70.4677 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00051 L001 F00001 6.5 S0012 22 11.5 0.2 0.22 0.7 0.6 -33.3953 -70.477 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00052 L001 F00001 6.5 S0012 22 11.5 0.3 0.22 0.6 0.4 -33.4331 -70.4938 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00053 L001 F00001 6.5 S0012 22 11.5 0.3 0.22 0.4 0.6 -33.5029 -70.4631 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00054 L001 F00001 6.5 S0012 22 11.5 0.3 0.22 0.6 0.6 -33.4312 -70.4724 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00055 L001 F00001 6.5 S0012 22 11.5 0.3 0.22 0.8 0.6 -33.3594 -70.4816 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00056 L001 F00001 6.5 S0012 22 11.5 0.4 0.22 0.7 0.4 -33.3973 -70.4984 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00057 L001 F00001 6.5 S0012 22 11.5 0.4 0.22 0.5 0.6 -33.467 -70.4677 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00058 L001 F00001 6.5 S0012 22 11.5 0.4 0.22 0.7 0.6 -33.3953 -70.477 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00059 L001 F00001 6.5 S0012 22 11.5 0.4 0.22 0.9 0.6 -33.3236 -70.4863 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00060 L001 F00001 6.5 S0012 22 11.5 0 0.42 0.3 0.6 -33.5387 -70.4584 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00061 L001 F00001 6.5 S0012 22 11.5 0 0.42 0.1 0.8 -33.6085 -70.4277 -12.582 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00062 L001 F00001 6.5 S0012 22 11.5 0 0.42 0.3 0.8 -33.5368 -70.437 -12.582 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00063 L001 F00001 6.5 S0012 22 11.5 0 0.42 0.4 0.8 -33.5009 -70.4416 -12.582 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00064 L001 F00001 6.5 S0012 22 11.5 0.1 0.42 0.4 0.6 -33.5029 -70.4631 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00065 L001 F00001 6.5 S0012 22 11.5 0.1 0.42 0.2 0.8 -33.5727 -70.4323 -12.582 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00066 L001 F00001 6.5 S0012 22 11.5 0.1 0.42 0.4 0.8 -33.5009 -70.4416 -12.582 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00067 L001 F00001 6.5 S0012 22 11.5 0.1 0.42 0.6 0.8 -33.4292 -70.4509 -12.582 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00068 L001 F00001 6.5 S0012 22 11.5 0.2 0.42 0.5 0.6 -33.467 -70.4677 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00069 L001 F00001 6.5 S0012 22 11.5 0.2 0.42 0.3 0.8 -33.5368 -70.437 -12.582 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00070 L001 F00001 6.5 S0012 22 11.5 0.2 0.42 0.5 0.8 -33.4651 -70.4463 -12.582 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00071 L001 F00001 6.5 S0012 22 11.5 0.2 0.42 0.7 0.8 -33.3934 -70.4556 -12.582 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00072 L001 F00001 6.5 S0012 22 11.5 0.3 0.42 0.6 0.6 -33.4312 -70.4724 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00073 L001 F00001 6.5 S0012 22 11.5 0.3 0.42 0.4 0.8 -33.5009 -70.4416 -12.582 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00074 L001 F00001 6.5 S0012 22 11.5 0.3 0.42 0.6 0.8 -33.4292 -70.4509 -12.582 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00075 L001 F00001 6.5 S0012 22 11.5 0.3 0.42 0.8 0.8 -33.3575 -70.4602 -12.582 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00076 L001 F00001 6.5 S0012 22 11.5 0.4 0.42 0.7 0.6 -33.3953 -70.477 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00077 L001 F00001 6.5 S0012 22 11.5 0.4 0.42 0.5 0.8 -33.4651 -70.4463 -12.582 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00020 L001 F00001 6.5 S0017 22 11.5 0 0.02 0.3 0.2 -33.5426 -70.5013 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00020 L001 F00001 6.5 S0010 22 11.5 0 0.02 0.3 0.2 -33.5426 -70.5013 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00021 L001 F00001 6.5 S0011 22 11.5 0 0.02 0.1 0.4 -33.6124 -70.4706 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00022 L001 F00001 6.5 S0012 22 11.5 0 0.02 0.3 0.4 -33.5407 -70.4799 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00020 L001 F00001 6.5 S0013 22 11.5 0 0.02 0.3 0.2 -33.5426 -70.5013 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00021 L001 F00001 6.5 S0013 22 11.5 0 0.02 0.1 0.4 -33.6124 -70.4706 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00022 L001 F00001 6.5 S0013 22 11.5 0 0.02 0.3 0.4 -33.5407 -70.4799 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00023 L001 F00001 6.5 S0013 22 11.5 0 0.02 0.5 0.4 -33.469 -70.4892 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00024 L001 F00001 6.5 S0013 22 11.5 0.1 0.02 0.4 0.2 -33.5068 -70.506 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00025 L001 F00001 6.5 S0013 22 11.5 0.1 0.02 0.2 0.4 -33.5766 -70.4753 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00026 L001 F00001 6.5 S0013 22 11.5 0.1 0.02 0.4 0.4 -33.5048 -70.4845 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00027 L001 F00001 6.5 S0013 22 11.5 0.1 0.02 0.6 0.4 -33.4331 -70.4938 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00028 L001 F00001 6.5 S0013 22 11.5 0.2 0.02 0.5 0.2 -33.4709 -70.5106 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00029 L001 F00001 6.5 S0013 22 11.5 0.2 0.02 0.3 0.4 -33.5407 -70.4799 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00030 L001 F00001 6.5 S0013 22 11.5 0.2 0.02 0.5 0.4 -33.469 -70.4892 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00031 L001 F00001 6.5 S0013 22 11.5 0.2 0.02 0.7 0.4 -33.3973 -70.4984 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00032 L001 F00001 6.5 S0013 22 11.5 0.3 0.02 0.6 0.2 -33.4351 -70.5152 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00033 L001 F00001 6.5 S0013 22 11.5 0.3 0.02 0.4 0.4 -33.5048 -70.4845 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00034 L001 F00001 6.5 S0013 22 11.5 0.3 0.02 0.6 0.4 -33.4331 -70.4938 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00035 L001 F00001 6.5 S0013 22 11.5 0.3 0.02 0.8 0.4 -33.3614 -70.503 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00036 L001 F00001 6.5 S0013 22 11.5 0.4 0.02 0.7 0.2 -33.3992 -70.5198 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00037 L001 F00001 6.5 S0013 22 11.5 0.4 0.02 0.5 0.4 -33.469 -70.4892 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00038 L001 F00001 6.5 S0013 22 11.5 0.4 0.02 0.7 0.4 -33.3973 -70.4984 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00039 L001 F00001 6.5 S0013 22 11.5 0.4 0.02 0.9 0.4 -33.3255 -70.5077 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00040 L001 F00001 6.5 S0013 22 11.5 0 0.22 0.3 0.4 -33.5407 -70.4799 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00041 L001 F00001 6.5 S0013 22 11.5 0 0.22 0.1 0.6 -33.6105 -70.4491 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00042 L001 F00001 6.5 S0013 22 11.5 0 0.22 0.3 0.6 -33.5387 -70.4584 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00043 L001 F00001 6.5 S0013 22 11.5 0 0.22 0.5 0.6 -33.467 -70.4677 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00044 L001 F00001 6.5 S0013 22 11.5 0.1 0.22 0.4 0.4 -33.5048 -70.4845 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00045 L001 F00001 6.5 S0013 22 11.5 0.1 0.22 0.2 0.6 -33.5746 -70.4538 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00045 L001 F00001 6.5 S0013 22 11.5 0.1 0.22 0.2 0.6 -33.5746 -70.4538 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00046 L001 F00001 6.5 S0013 22 11.5 0.1 0.22 0.4 0.6 -33.5029 -70.4631 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00047 L001 F00001 6.5 S0013 22 11.5 0.1 0.22 0.6 0.6 -33.4312 -70.4724 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00048 L001 F00001 6.5 S0013 22 11.5 0.2 0.22 0.5 0.4 -33.469 -70.4892 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00049 L001 F00001 6.5 S0013 22 11.5 0.2 0.22 0.3 0.6 -33.5387 -70.4584 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00050 L001 F00001 6.5 S0013 22 11.5 0.2 0.22 0.5 0.6 -33.467 -70.4677 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00051 L001 F00001 6.5 S0013 22 11.5 0.2 0.22 0.7 0.6 -33.3953 -70.477 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00052 L001 F00001 6.5 S0013 22 11.5 0.3 0.22 0.6 0.4 -33.4331 -70.4938 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00053 L001 F00001 6.5 S0013 22 11.5 0.3 0.22 0.4 0.6 -33.5029 -70.4631 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00054 L001 F00001 6.5 S0013 22 11.5 0.3 0.22 0.6 0.6 -33.4312 -70.4724 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00055 L001 F00001 6.5 S0013 22 11.5 0.3 0.22 0.8 0.6 -33.3594 -70.4816 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00056 L001 F00001 6.5 S0013 22 11.5 0.4 0.22 0.7 0.4 -33.3973 -70.4984 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00057 L001 F00001 6.5 S0013 22 11.5 0.4 0.22 0.5 0.6 -33.467 -70.4677 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00058 L001 F00001 6.5 S0013 22 11.5 0.4 0.22 0.7 0.6 -33.3953 -70.477 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00059 L001 F00001 6.5 S0013 22 11.5 0.4 0.22 0.9 0.6 -33.3236 -70.4863 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00060 L001 F00001 6.5 S0013 22 11.5 0 0.42 0.3 0.6 -33.5387 -70.4584 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00061 L001 F00001 6.5 S0013 22 11.5 0 0.42 0.1 0.8 -33.6085 -70.4277 -12.582 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00062 L001 F00001 6.5 S0013 22 11.5 0 0.42 0.3 0.8 -33.5368 -70.437 -12.582 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00063 L001 F00001 6.5 S0013 22 11.5 0 0.42 0.4 0.8 -33.5009 -70.4416 -12.582 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00064 L001 F00001 6.5 S0013 22 11.5 0.1 0.42 0.4 0.6 -33.5029 -70.4631 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00065 L001 F00001 6.5 S0013 22 11.5 0.1 0.42 0.2 0.8 -33.5727 -70.4323 -12.582 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00066 L001 F00001 6.5 S0013 22 11.5 0.1 0.42 0.4 0.8 -33.5009 -70.4416 -12.582 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00067 L001 F00001 6.5 S0013 22 11.5 0.1 0.42 0.6 0.8 -33.4292 -70.4509 -12.582 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00068 L001 F00001 6.5 S0013 22 11.5 0.2 0.42 0.5 0.6 -33.467 -70.4677 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00069 L001 F00001 6.5 S0013 22 11.5 0.2 0.42 0.3 0.8 -33.5368 -70.437 -12.582 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00070 L001 F00001 6.5 S0013 22 11.5 0.2 0.42 0.5 0.8 -33.4651 -70.4463 -12.582 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00071 L001 F00001 6.5 S0013 22 11.5 0.2 0.42 0.7 0.8 -33.3934 -70.4556 -12.582 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00072 L001 F00001 6.5 S0013 22 11.5 0.3 0.42 0.6 0.6 -33.4312 -70.4724 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00073 L001 F00001 6.5 S0013 22 11.5 0.3 0.42 0.4 0.8 -33.5009 -70.4416 -12.582 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00074 L001 F00001 6.5 S0013 22 11.5 0.3 0.42 0.6 0.8 -33.4292 -70.4509 -12.582 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00075 L001 F00001 6.5 S0013 22 11.5 0.3 0.42 0.8 0.8 -33.3575 -70.4602 -12.582 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00076 L001 F00001 6.5 S0013 22 11.5 0.4 0.42 0.7 0.6 -33.3953 -70.477 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00077 L001 F00001 6.5 S0013 22 11.5 0.4 0.42 0.5 0.8 -33.4651 -70.4463 -12.582 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00078 L001 F00001 6.5 S0013 22 11.5 0.4 0.42 0.7 0.8 -33.3934 -70.4556 -12.582 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00079 L001 F00001 6.5 S0013 22 11.5 0.4 0.42 0.9 0.8 -33.3216 -70.4649 -12.582 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00080 L001 F00001 6.5 S0012 22 11.5 0 0.02 0.2 0.2 -33.5785 -70.4967 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00080 L001 F00001 6 S0012 12 7 0 0.02 0.2 0.2 -33.5785 -70.4967 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00080 L001 F00001 6 S0012 12 7 0.1 0.12 0.1 0.2 -33.6144 -70.4921 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00080 L001 F00001 6 S0012 12 7 0.05 0.05 0.1 0.2 -33.6144 -70.4921 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00080 L001 F00001 6 S0012 12 7 0.05 0 0.1 0.2 -33.6144 -70.4921 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00080 L001 F00001 6 S0012 12 7 0 0 0.1 0.2 -33.6144 -70.4921 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00080 L001 F00001 6 S0012 12 7 0.01 0 0.1 0.2 -33.6144 -70.4921 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00081 L001 F00001 6 S0012 12 7 0.01 0 0.2 0.2 -33.5785 -70.4967 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00082 L001 F00001 6 S0012 12 7 0.01 0 0.3 0.2 -33.5426 -70.5013 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00080 L001 F00001 6 S0012 12 7 0.01 0.2 0.2 0.2 -33.5785 -70.4967 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00080 L001 F00001 6 S0012 12 7 0 0.1 0.2 0.2 -33.5785 -70.4967 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00081 L001 F00001 6 S0012 12 7 0 0.1 0.1 0.4 -33.6124 -70.4706 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00082 L001 F00001 6 S0012 12 7 0 0.1 0.3 0.4 -33.5407 -70.4799 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00080 L001 F00001 6 S0012 12 7 0 0.1 0.1 0.2 -33.6144 -70.4921 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00081 L001 F00001 6 S0012 12 7 0 0.1 0.1 0.4 -33.6124 -70.4706 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00080 L001 F00001 6 S0012 12 7 0.01 0.1 0.1 0.2 -33.6144 -70.4921 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00080 L001 F00001 6 S0012 12 7 0.01 0.1 0.2 0.2 -33.5785 -70.4967 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00081 L001 F00001 6 S0012 12 7 0.01 0.1 0.1 0.4 -33.6124 -70.4706 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00082 L001 F00001 6 S0012 12 7 0.01 0.1 0.2 0.4 -33.5766 -70.4753 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00084 L001 F00001 6 S0012 12 7 0.01 0.3 0.1 0.4 -33.6124 -70.4706 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00085 L001 F00001 6 S0012 12 7 0.01 0.5 0.1 0.6 -33.6105 -70.4491 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00103 L001 F00001 6 S0012 12 7 0.71 0.1 0.8 0.2 -33.3633 -70.5245 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00104 L001 F00001 6 S0012 12 7 0.71 0.1 0.9 0.2 -33.3275 -70.5291 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00105 L001 F00001 6 S0012 12 7 0.71 0.1 0.8 0.4 -33.3614 -70.503 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00106 L001 F00001 6 S0012 12 7 0.71 0.1 0.9 0.4 -33.3255 -70.5077 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00080 L001 F00001 6 S0012 12 7 0.01 0.1 0.1 0.2 -33.6144 -70.4921 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00081 L001 F00001 6 S0012 12 7 0.01 0.1 0.2 0.2 -33.5785 -70.4967 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00082 L001 F00001 6 S0012 12 7 0.01 0.1 0.1 0.4 -33.6124 -70.4706 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00083 L001 F00001 6 S0012 12 7 0.01 0.1 0.2 0.4 -33.5766 -70.4753 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00084 L001 F00001 6 S0012 12 7 0.11 0.1 0.2 0.2 -33.5785 -70.4967 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00085 L001 F00001 6 S0012 12 7 0.11 0.1 0.3 0.2 -33.5426 -70.5013 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00086 L001 F00001 6 S0012 12 7 0.11 0.1 0.2 0.4 -33.5766 -70.4753 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00087 L001 F00001 6 S0012 12 7 0.11 0.1 0.3 0.4 -33.5407 -70.4799 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00088 L001 F00001 6 S0012 12 7 0.21 0.1 0.3 0.2 -33.5426 -70.5013 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00089 L001 F00001 6 S0012 12 7 0.21 0.1 0.4 0.2 -33.5068 -70.506 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00090 L001 F00001 6 S0012 12 7 0.21 0.1 0.3 0.4 -33.5407 -70.4799 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00091 L001 F00001 6 S0012 12 7 0.21 0.1 0.4 0.4 -33.5048 -70.4845 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00092 L001 F00001 6 S0012 12 7 0.31 0.1 0.4 0.2 -33.5068 -70.506 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00093 L001 F00001 6 S0012 12 7 0.31 0.1 0.5 0.2 -33.4709 -70.5106 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00094 L001 F00001 6 S0012 12 7 0.31 0.1 0.4 0.4 -33.5048 -70.4845 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00095 L001 F00001 6 S0012 12 7 0.31 0.1 0.5 0.4 -33.469 -70.4892 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00096 L001 F00001 6 S0012 12 7 0.41 0.1 0.5 0.2 -33.4709 -70.5106 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00097 L001 F00001 6 S0012 12 7 0.41 0.1 0.6 0.2 -33.4351 -70.5152 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00098 L001 F00001 6 S0012 12 7 0.41 0.1 0.5 0.4 -33.469 -70.4892 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00099 L001 F00001 6 S0012 12 7 0.41 0.1 0.6 0.4 -33.4331 -70.4938 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00100 L001 F00001 6 S0012 12 7 0.51 0.1 0.6 0.2 -33.4351 -70.5152 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00101 L001 F00001 6 S0012 12 7 0.51 0.1 0.7 0.2 -33.3992 -70.5198 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00102 L001 F00001 6 S0012 12 7 0.51 0.1 0.6 0.4 -33.4331 -70.4938 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00103 L001 F00001 6 S0012 12 7 0.51 0.1 0.7 0.4 -33.3973 -70.4984 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00104 L001 F00001 6 S0012 12 7 0.61 0.1 0.7 0.2 -33.3992 -70.5198 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00105 L001 F00001 6 S0012 12 7 0.61 0.1 0.8 0.2 -33.3633 -70.5245 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00106 L001 F00001 6 S0012 12 7 0.61 0.1 0.7 0.4 -33.3973 -70.4984 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00107 L001 F00001 6 S0012 12 7 0.61 0.1 0.8 0.4 -33.3614 -70.503 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00108 L001 F00001 6 S0012 12 7 0.71 0.1 0.8 0.2 -33.3633 -70.5245 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00109 L001 F00001 6 S0012 12 7 0.71 0.1 0.9 0.2 -33.3275 -70.5291 -2.1705 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00110 L001 F00001 6 S0012 12 7 0.71 0.1 0.8 0.4 -33.3614 -70.503 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00111 L001 F00001 6 S0012 12 7 0.71 0.1 0.9 0.4 -33.3255 -70.5077 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00112 L001 F00001 6 S0012 12 7 0.01 0.3 0.1 0.6 -33.6105 -70.4491 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00113 L001 F00001 6 S0012 12 7 0.01 0.3 0.2 0.6 -33.5746 -70.4538 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00114 L001 F00001 6 S0012 12 7 0.01 0.3 0.1 0.4 -33.6124 -70.4706 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00115 L001 F00001 6 S0012 12 7 0.01 0.3 0.2 0.4 -33.5766 -70.4753 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00116 L001 F00001 6 S0012 12 7 0.11 0.3 0.2 0.6 -33.5746 -70.4538 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00117 L001 F00001 6 S0012 12 7 0.11 0.3 0.3 0.6 -33.5387 -70.4584 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00118 L001 F00001 6 S0012 12 7 0.11 0.3 0.2 0.4 -33.5766 -70.4753 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00119 L001 F00001 6 S0012 12 7 0.11 0.3 0.3 0.4 -33.5407 -70.4799 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00120 L001 F00001 6 S0012 12 7 0.21 0.3 0.3 0.6 -33.5387 -70.4584 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00121 L001 F00001 6 S0012 12 7 0.21 0.3 0.4 0.6 -33.5029 -70.4631 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00122 L001 F00001 6 S0012 12 7 0.21 0.3 0.3 0.4 -33.5407 -70.4799 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00123 L001 F00001 6 S0012 12 7 0.21 0.3 0.4 0.4 -33.5048 -70.4845 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00124 L001 F00001 6 S0012 12 7 0.31 0.3 0.4 0.6 -33.5029 -70.4631 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00125 L001 F00001 6 S0012 12 7 0.31 0.3 0.5 0.6 -33.467 -70.4677 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00126 L001 F00001 6 S0012 12 7 0.31 0.3 0.4 0.4 -33.5048 -70.4845 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00127 L001 F00001 6 S0012 12 7 0.31 0.3 0.5 0.4 -33.469 -70.4892 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00128 L001 F00001 6 S0012 12 7 0.41 0.3 0.5 0.6 -33.467 -70.4677 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00129 L001 F00001 6 S0012 12 7 0.41 0.3 0.6 0.6 -33.4312 -70.4724 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00130 L001 F00001 6 S0012 12 7 0.41 0.3 0.5 0.4 -33.469 -70.4892 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00131 L001 F00001 6 S0012 12 7 0.41 0.3 0.6 0.4 -33.4331 -70.4938 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00132 L001 F00001 6 S0012 12 7 0.51 0.3 0.6 0.6 -33.4312 -70.4724 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00133 L001 F00001 6 S0012 12 7 0.51 0.3 0.7 0.6 -33.3953 -70.477 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00134 L001 F00001 6 S0012 12 7 0.51 0.3 0.6 0.4 -33.4331 -70.4938 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00135 L001 F00001 6 S0012 12 7 0.51 0.3 0.7 0.4 -33.3973 -70.4984 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00136 L001 F00001 6 S0012 12 7 0.61 0.3 0.7 0.6 -33.3953 -70.477 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00137 L001 F00001 6 S0012 12 7 0.61 0.3 0.8 0.6 -33.3594 -70.4816 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00138 L001 F00001 6 S0012 12 7 0.61 0.3 0.7 0.4 -33.3973 -70.4984 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00139 L001 F00001 6 S0012 12 7 0.61 0.3 0.8 0.4 -33.3614 -70.503 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00140 L001 F00001 6 S0012 12 7 0.71 0.3 0.8 0.6 -33.3594 -70.4816 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00141 L001 F00001 6 S0012 12 7 0.71 0.3 0.9 0.6 -33.3236 -70.4863 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00142 L001 F00001 6 S0012 12 7 0.71 0.3 0.8 0.4 -33.3614 -70.503 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00143 L001 F00001 6 S0012 12 7 0.71 0.3 0.9 0.4 -33.3255 -70.5077 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00144 L001 F00001 6 S0012 12 7 0.01 0.5 0.2 0.8 -33.5727 -70.4323 -12.582 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00145 L001 F00001 6 S0012 12 7 0.01 0.5 0.1 0.8 -33.6085 -70.4277 -12.582 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00146 L001 F00001 6 S0012 12 7 0.01 0.5 0.1 0.6 -33.6105 -70.4491 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00147 L001 F00001 6 S0012 12 7 0.01 0.5 0.2 0.6 -33.5746 -70.4538 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00148 L001 F00001 6 S0012 12 7 0.11 0.5 0.2 0.6 -33.5746 -70.4538 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00149 L001 F00001 6 S0012 12 7 0.11 0.5 0.3 0.6 -33.5387 -70.4584 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00150 L001 F00001 6 S0012 12 7 0.11 0.5 0.2 0.8 -33.5727 -70.4323 -12.582 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00151 L001 F00001 6 S0012 12 7 0.11 0.5 0.3 0.8 -33.5368 -70.437 -12.582 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00152 L001 F00001 6 S0012 12 7 0.21 0.5 0.3 0.6 -33.5387 -70.4584 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00153 L001 F00001 6 S0012 12 7 0.21 0.5 0.4 0.6 -33.5029 -70.4631 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00154 L001 F00001 6 S0012 12 7 0.21 0.5 0.3 0.8 -33.5368 -70.437 -12.582 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00155 L001 F00001 6 S0012 12 7 0.21 0.5 0.4 0.8 -33.5009 -70.4416 -12.582 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00156 L001 F00001 6 S0012 12 7 0.31 0.5 0.4 0.6 -33.5029 -70.4631 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00157 L001 F00001 6 S0012 12 7 0.31 0.5 0.5 0.6 -33.467 -70.4677 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00158 L001 F00001 6 S0012 12 7 0.31 0.5 0.4 0.8 -33.5009 -70.4416 -12.582 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00159 L001 F00001 6 S0012 12 7 0.31 0.5 0.5 0.8 -33.4651 -70.4463 -12.582 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00160 L001 F00001 6 S0012 12 7 0.41 0.5 0.5 0.6 -33.467 -70.4677 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00161 L001 F00001 6 S0012 12 7 0.41 0.5 0.6 0.6 -33.4312 -70.4724 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00162 L001 F00001 6 S0012 12 7 0.41 0.5 0.5 0.8 -33.4651 -70.4463 -12.582 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00163 L001 F00001 6 S0012 12 7 0.41 0.5 0.6 0.8 -33.4292 -70.4509 -12.582 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00164 L001 F00001 6 S0012 12 7 0.51 0.5 0.6 0.6 -33.4312 -70.4724 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00165 L001 F00001 6 S0012 12 7 0.51 0.5 0.7 0.6 -33.3953 -70.477 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00166 L001 F00001 6 S0012 12 7 0.51 0.5 0.6 0.8 -33.4292 -70.4509 -12.582 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00167 L001 F00001 6 S0012 12 7 0.51 0.5 0.7 0.8 -33.3934 -70.4556 -12.582 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00168 L001 F00001 6 S0012 12 7 0.61 0.5 0.7 0.6 -33.3953 -70.477 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00169 L001 F00001 6 S0012 12 7 0.61 0.5 0.8 0.6 -33.3594 -70.4816 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00170 L001 F00001 6 S0012 12 7 0.61 0.5 0.7 0.8 -33.3934 -70.4556 -12.582 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00171 L001 F00001 6 S0012 12 7 0.61 0.5 0.8 0.8 -33.3575 -70.4602 -12.582 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00172 L001 F00001 6 S0012 12 7 0.71 0.5 0.8 0.6 -33.3594 -70.4816 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00173 L001 F00001 6 S0012 12 7 0.71 0.5 0.9 0.6 -33.3236 -70.4863 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00174 L001 F00001 6 S0012 12 7 0.71 0.5 0.8 0.8 -33.3575 -70.4602 -12.582 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00175 L001 F00001 6 S0012 12 7 0.71 0.5 0.9 0.8 -33.3216 -70.4649 -12.582 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00017 L001 F00001 7 S0015 40 18 0 0.024954 0.2 0.6 -33.5746 -70.4538 -9.1115 2.7 0.8 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00016 L001 F00001 7 S0018 40 18 0 0.024954 0.8 0.6 -33.3594 -70.4816 -9.1115 2.7 0.8 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00001 L001 F00001 5.5 S0010 6 5 0.625 0.29945 0.7 0.4 -33.3973 -70.4984 -5.641 2.5 0.4 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00002 L001 F00001 6 S0013 12 7 0.35 0.3244 0.5 0.4 -33.469 -70.4892 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00003 L001 F00001 6 S0013 12 7 0.35 0.3244 0.4 0.6 -33.5029 -70.4631 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00004 L001 F00001 6 S0013 12 7 0.35 0.3244 0.6 0.6 -33.4312 -70.4724 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00005 L001 F00001 6 S0011 12 7 0.35 0.3244 0.5 0.4 -33.469 -70.4892 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00006 L001 F00001 6 S0011 12 7 0.35 0.3244 0.4 0.6 -33.5029 -70.4631 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00007 L001 F00001 6 S0011 12 7 0.35 0.3244 0.6 0.6 -33.4312 -70.4724 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00008 L001 F00001 6.5 S0012 22 11.5 0.3125 0.099815 0.6 0.4 -33.4331 -70.4938 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00009 L001 F00001 6.5 S0012 22 11.5 0.3125 0.099815 0.4 0.6 -33.5029 -70.4631 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00010 L001 F00001 6.5 S0012 22 11.5 0.3125 0.099815 0.8 0.6 -33.3594 -70.4816 -9.1115 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00014 L001 F00001 7 S0018 40 18 0 0.024954 0.2 0.6 -33.5746 -70.4538 -9.1115 2.7 0.8 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00176 L001 F00001 7 S0002 40 18 0 0.024954 0.8 0.6 -33.3594 -70.4816 -9.1115 2.7 0.8 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00177 L001 F00001 7 S0003 40 18 0 0.024954 0.8 0.6 -33.3594 -70.4816 -9.1115 2.7 0.8 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00182 L001 F00001 7 S0008 40 18 0 0.024954 0.8 0.6 -33.3594 -70.4816 -9.1115 2.7 0.8 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00183 L001 F00001 7 S0009 40 18 0 0.024954 0.8 0.6 -33.3594 -70.4816 -9.1115 2.7 0.8 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00184 L001 F00001 7 S0010 40 18 0 0.024954 0.8 0.6 -33.3594 -70.4816 -9.1115 2.7 0.8 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00185 L001 F00001 7 S0011 40 18 0 0.024954 0.8 0.6 -33.3594 -70.4816 -9.1115 2.7 0.8 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00186 L001 F00001 7 S0012 40 18 0 0.024954 0.8 0.6 -33.3594 -70.4816 -9.1115 2.7 0.8 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00187 L001 F00001 7 S0013 40 18 0 0.024954 0.8 0.6 -33.3594 -70.4816 -9.1115 2.7 0.8 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00188 L001 F00001 7 S0014 40 18 0 0.024954 0.8 0.6 -33.3594 -70.4816 -9.1115 2.7 0.8 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00189 L001 F00001 7 S0015 40 18 0 0.024954 0.8 0.6 -33.3594 -70.4816 -9.1115 2.7 0.8 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00190 L001 F00001 7 S0016 40 18 0 0.024954 0.8 0.6 -33.3594 -70.4816 -9.1115 2.7 0.8 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00191 L001 F00001 7 S0017 40 18 0 0.024954 0.8 0.6 -33.3594 -70.4816 -9.1115 2.7 0.8 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00192 L001 F00001 7 S0018 40 18 0 0.024954 0.8 0.6 -33.3594 -70.4816 -9.1115 2.7 0.8 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00193 L001 F00001 7 S0019 40 18 0 0.024954 0.8 0.6 -33.3594 -70.4816 -9.1115 2.7 0.8 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00194 L001 F00001 7 S0020 40 18 0 0.024954 0.8 0.6 -33.3594 -70.4816 -9.1115 2.7 0.8 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00176 L001 F00001 7 S0019 40 18 0 0.024954 0.1 0.6 -33.6105 -70.4491 -9.1115 2.7 0.8 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00177 L001 F00001 7 S0019 40 18 0 0.024954 0.2 0.6 -33.5746 -70.4538 -9.1115 2.7 0.8 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00178 L001 F00001 7 S0019 40 18 0 0.024954 0.3 0.6 -33.5387 -70.4584 -9.1115 2.7 0.8 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00179 L001 F00001 7 S0019 40 18 0 0.024954 0.4 0.6 -33.5029 -70.4631 -9.1115 2.7 0.8 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00180 L001 F00001 7 S0019 40 18 0 0.024954 0.5 0.6 -33.467 -70.4677 -9.1115 2.7 0.8 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00181 L001 F00001 7 S0019 40 18 0 0.024954 0.6 0.6 -33.4312 -70.4724 -9.1115 2.7 0.8 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00182 L001 F00001 7 S0019 40 18 0 0.024954 0.7 0.6 -33.3953 -70.477 -9.1115 2.7 0.8 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00183 L001 F00001 7 S0019 40 18 0 0.024954 0.8 0.6 -33.3594 -70.4816 -9.1115 2.7 0.8 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00184 L001 F00001 7 S0019 40 18 0 0.024954 0.8 0.6 -33.3594 -70.4816 -9.1115 2.7 0.8 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00185 L001 F00001 7 S0019 40 18 0 0.024954 0.9 0.6 -33.3236 -70.4863 -9.1115 2.7 0.8 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00186 L001 F00001 7 S0019 40 18 0 0.024954 0.1 0.8 -33.6085 -70.4277 -12.582 2.7 0.8 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00187 L001 F00001 7 S0019 40 18 0 0.024954 0.2 0.8 -33.5727 -70.4323 -12.582 2.7 0.8 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00188 L001 F00001 7 S0019 40 18 0 0.024954 0.3 0.8 -33.5368 -70.437 -12.582 2.7 0.8 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00189 L001 F00001 7 S0019 40 18 0 0.024954 0.4 0.8 -33.5009 -70.4416 -12.582 2.7 0.8 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00190 L001 F00001 7 S0019 40 18 0 0.024954 0.5 0.8 -33.4651 -70.4463 -12.582 2.7 0.8 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00191 L001 F00001 7 S0019 40 18 0 0.024954 0.6 0.8 -33.4292 -70.4509 -12.582 2.7 0.8 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00192 L001 F00001 7 S0019 40 18 0 0.024954 0.7 0.8 -33.3934 -70.4556 -12.582 2.7 0.8 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00193 L001 F00001 7 S0019 40 18 0 0.024954 0.8 0.8 -33.3575 -70.4602 -12.582 2.7 0.8 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00194 L001 F00001 7 S0019 40 18 0 0.024954 0.9 0.8 -33.3216 -70.4649 -12.582 2.7 0.8 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00001 L001 F00001 5.5 S0010 6 5 0.625 0.29945 0.7 0.4 -33.3973 -70.4984 -5.641 2.5 0.4 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00001 L001 F00001 5.5 S0010 6 5 0.625 0.29945 0.7 0.4 -33.3973 -70.4984 -5.641 2.5 0.4 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00001 L001 F00001 5.5 S0010 6 5 0.625 0.29945 0.7 0.4 -33.3973 -70.4984 -5.641 2.5 0.4 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00099 L001 F00001 6 S0012 12 7 0.41 0.1 0.6 0.4 -33.4331 -70.4938 -5.641 2.7 0.6 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00020 L001 F00001 6 S0169 12 6 0.64 0.42 0.66863 0.71565 -33.4124 -70.5398 -11.1183 2.2 0.8 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00021 L001 F00001 6.5 S0170 21 12 0.11 0.31 0.24024 0.83491 -33.566 -70.52 -13.1879 2.2 0.8 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00022 L001 F00001 6.7 S0171 30 12 0.03 0.39 0.36855 0.8434 -33.52 -70.526 -13.3352 2.2 0.8 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00023 L001 F00001 7 S0172 39 18 0.01 0 1.6149 0.62076 -33.319 -73.7608 -9.4718 2.2 0.8 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00023 L001 F00001 7 S0172 39 18 0.01 0 0.55306 0.49276 -33.4538 -70.5345 -7.2507 2.2 0.8 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00023 L001 F00001 7 S0172 39 18 0.01 0 0.55306 0.49276 -33.4538 -70.5345 -7.2507 2.2 0.8 90
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Rt Rise rake
+E00023 L001 F00001 7 S0256 39 18 0 0 0.33242 0.58346 -33.5385 -70.5863 -8.8058 4.3226 0.12451 80.0593
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Rt Rise rake
+E00023 L001 F00001 7 S0256 39 18 0 0 0.34094 0.64829 -33.5385 -70.5863 -8.8058 4.3226 0.12451 80.0593
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Rt Rise rake
+E00023 L001 F00001 7 S0256 39 18 0 0.1 0.34094 0.64829 -33.5385 -70.5863 -8.8058 3.3346 0.10159 64.2526
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Rt Rise rake
+E00023 L001 F00001 7 S0256 39 18 0 0.1 0.34094 0.58346 -33.5385 -70.5863 -8.8058 3.5681 0.10781 68.7161
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Rt Rise rake
+E00023 L001 F00001 7 S0256 39 18 0 0.07 0.34094 0.58346 -33.5385 -70.5863 -8.8058 3.7154 0.1109 70.6833
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Rt Rise rake
+E00023 L001 F00001 7 S0256 39 18 0 0.09 0.34094 0.58346 -33.5385 -70.5863 -8.8058 3.6652 0.11009 70.214
+scen_ID loc_ID fault_ID Mw slip_ID L W L0 W0 Hypo_X Hypo_YHypo_Lon Hypo_Lat Hypo_Depth Vr tau rake
+E00001 L001 F00001 6 S0002 12 6 0.64 0.42 0.66656 0.67559 -33.4125 -70.4667 -10.4016 2.2 0.8 90
