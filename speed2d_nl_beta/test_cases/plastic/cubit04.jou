@@ -1,0 +1,26 @@
+## Z:/media/filippo/OS/Program Files (x86)/CUBIT 13.0/bin/cubitx
+## Cubit Version 13.0
+## Cubit Build 45867
+## Revised 2011-03-24 12:53:02 -0600 (Thu, 24 Mar 2011)
+## Running 07/07/2016 03:39:52 PM
+## Command Options:
+## -nographics
+## -warning = On
+## -information = On
+## -input /media/filippo/Data/Filippo/PHD_passing_through/MATLAB/m_polimi/square2d.jou
+reset
+brick x 1 y 1
+brick x 1 y 0.1
+move surface 1 7 x 0.5 y 0.5 include_merged
+move surface 7 x 0 y -0.55 include_merged
+curve 1 2 3 4 13 14 15 16 interval 1
+mesh curve 1 2 3 4 13 14 15 16
+block 1 surface 1
+block 2 surface 7
+block 1 2 element type QUAD
+mesh surface 1 7
+block 3 curve 1 13 3 15
+block 4 curve 16
+merge all
+set large exodus file off
+export mesh "/media/filippo/Data/Filippo/PHD_heavyweight/SPEED2D/INPUTS/plastic/square2d.e" dimension 2 block 1 2 3 4 overwrite
