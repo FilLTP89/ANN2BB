@@ -1,3 +1,15 @@
+%% *GENERATION OF STRONG GROUND MOTION SIGNALS BY COUPLING PHYSICS-BASED ANALYSIS WITH ARTIFICIAL NEURAL NETWORKS*
+% _Editor: Filippo Gatti
+% CentraleSupélec - Laboratoire MSSMat
+% DICA - Politecnico di Milano
+% Copyright 2016_
+%% *NOTES*
+% _train_ann_justPSA_: function train ANN on PSA values
+%% *N.B.*
+% Need for:
+% _trann_define_inout.m, trann_check_vTn.m, trann_tv_sets.m_
+% _ANN MATLAB tool_
+%% *REFERENCES*
 function train_ann_justPSA(varargin)
     %% *SET-UP*
     wd  = varargin{1};
@@ -20,7 +32,7 @@ function train_ann_justPSA(varargin)
     %
     % _select class-compatible sites (EC8)_
     %
-    switch upper(ann.cl)
+    switch upper(ann.scl)
         case 'ALL'
             idx_cl = ones(db.nr,1);
         case 'AB'
@@ -126,7 +138,7 @@ function train_ann_justPSA(varargin)
     net = nets(id_min);
     net = net{1,1};
     save(fullfile(wd,sprintf('net_%u_%s_%s.mat',...
-        round(ann.TnC*100),ann.cl,ann.cp)),...
+        round(ann.TnC*100),ann.scl,ann.cp)),...
         'net','idx_train','idx_valid');
     %     % Plot
     %     outputs1= sim(net,inputs1);
