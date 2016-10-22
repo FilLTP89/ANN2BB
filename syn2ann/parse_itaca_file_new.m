@@ -1,4 +1,4 @@
-%% *Parse ITACA record filename*
+%% *Parse ITACA record file*
 % _Editor: Filippo Gatti
 % CentraleSupélec - Laboratoire MSSMat
 % DICA - Politecnico di Milano
@@ -6,12 +6,12 @@
 %% NOTES
 % _parse_itaca_file: function to parse and synchronize records from ITACA database
 %% INPUT:
-% * fn (file name)
+% * _fn (file name)_
 %% OUTPUT:
-% * dtm (time-step)
-% * ntm (number of time-steps)
-% * vtm (time-vector)
-% * th (structure of parsed th)
+% * _dtm (time-step)_
+% * _ntm (number of time-steps)_
+% * vtm (time-vector)_
+% * _th (structure of parsed th)_
 
 function [varargout] = parse_itaca_file_new(varargin)
     %% *SET-UP*

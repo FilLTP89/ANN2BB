@@ -1,4 +1,4 @@
-%% *Parse ITACA record filename*
+%% *Parse ITACA record file*
 % _Editor: Filippo Gatti
 % CentraleSupélec - Laboratoire MSSMat
 % DICA - Politecnico di Milano
