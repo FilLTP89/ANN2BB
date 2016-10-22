@@ -1,6 +1,6 @@
 %% *GENERATION OF STRONG GROUND MOTION SIGNALS BY COUPLING PHYSICS-BASED ANALYSIS WITH ARTIFICIAL NEURAL NETWORKS*
 % _Editor: Filippo Gatti
-% CentraleSup?lec - Laboratoire MSSMat
+% CentraleSupélec - Laboratoire MSSMat
 % DICA - Politecnico di Milano
 % Copyright 2016_
 %% *NOTES*

@@ -1,6 +1,6 @@
 %% *GENERATION OF STRONG GROUND MOTION SIGNALS BY COUPLING PHYSICS-BASED ANALYSIS WITH ARTIFICIAL NEURAL NETWORKS*
 % _Editor: Filippo Gatti
-% CentraleSup?lec - Laboratoire MSSMat
+% CentraleSupélec - Laboratoire MSSMat
 % DICA - Politecnico di Milano
 % Copyright 2016_
 %% *NOTES*
@@ -8,19 +8,16 @@
 % analyses to be run.
 %% *N.B.*
 % Need for:
-% _syn2ann_case_list.m_
+% _ccc.m,syn2ann_case_list.m_
 ccc;
 fprintf('---------------------\n0. SETUP\n---------------------\n');
 
 %% *DEFINE WORKDIR*
-% wd = fullfile(filesep,'media','user','DATI','Filippo','PHD_heavyweight',...
-%     'EMILIA_2905');
+% _main workdir_
 wd = fullfile(filesep,'media','filippo','Data','Filippo','PHD_heavyweight',...
     'EMILIA_2905');
 fprintf('Workdir: %s\n',wd);
 % _save path_
-% sp = fullfile(filesep,'media','user','DATI','Filippo','PHD_heavyweight',...
-%     'heavy_images');
 sp = fullfile(filesep,'media','filippo','Data','Filippo','PHD_heavyweight',...
     'heavy_images');
 % eval(sprintf('!mkdir -p %s',sp));

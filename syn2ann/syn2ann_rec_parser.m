@@ -1,4 +1,4 @@
-%% *Parse recorded motions at KKNPP*
+%% *GENERATION OF STRONG GROUND MOTION SIGNALS BY COUPLING PHYSICS-BASED ANALYSIS WITH ARTIFICIAL NEURAL NETWORKS*
 % _Editor: Filippo Gatti
 % CentraleSupélec - Laboratoire MSSMat
 % DICA - Politecnico di Milano
