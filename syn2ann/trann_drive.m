@@ -29,3 +29,7 @@ trann_setup;
 %% *TEST TRAINED ANN*
 trann_load;
 trann_test;
+
+%% *PLOTTING TEST RESULTS*
+%trann_test_plot_single;
+trann_test_plot_compare;

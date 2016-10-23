@@ -1,4 +1,15 @@
-%% *PLOTTING RESULTS*
+%% *GENERATION OF STRONG GROUND MOTION SIGNALS BY COUPLING PHYSICS-BASED ANALYSIS WITH ARTIFICIAL NEURAL NETWORKS*
+% _Editor: Filippo Gatti
+% CentraleSupélec - Laboratoire MSSMat
+% DICA - Politecnico di Milano
+% Copyright 2016_
+%% *NOTES*
+% _syn2ann_plot_res_single_: function to plot syn2ann results at each
+% station for a single site class
+%% *N.B.*
+% Need for:
+% _get_axis_tick.m,syn2ann_plot_res_station_sp96.m,
+% syn2ann_plot_res_station_exsim.m,syn2ann_plot_res_station_both.m_
 fprintf('---------------------\n6. PLOTTING RESULTS\n---------------------\n');
 %% *SET UP*
 global pfg xlm xlb xtk ylm ylb ytk grd scl mrk tit utd
@@ -89,7 +100,7 @@ for mm_ = 1:bhr.ns
     ytk.psa = {10.^(1:4)};
     xlb.psa = {'T [s]'};
     ylb.psa = {'PSA [cm/s/s]','',''};
-    scl.psa = {'log','log','log'};
+    scl.psa = {'lin','lin','lin'};
     grd.psa = {'minor'};
     mrk.psa = {'none'};
     tit.psa = {'PSEUDO-ACCELERATION SPECTRUM (5%)'};

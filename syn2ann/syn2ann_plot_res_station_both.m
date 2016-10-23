@@ -1,3 +1,15 @@
+%% *GENERATION OF STRONG GROUND MOTION SIGNALS BY COUPLING PHYSICS-BASED ANALYSIS WITH ARTIFICIAL NEURAL NETWORKS*
+% _Editor: Filippo Gatti
+% CentraleSupélec - Laboratoire MSSMat
+% DICA - Politecnico di Milano
+% Copyright 2016_
+%% *NOTES*
+% _syn2ann_plot_res_station_both_: function to plot syn2ann results at each
+% station with both sp96 and exsim hybridization
+%% *N.B.*
+% Need for:
+% _syn2ann_plot_compare.m_
+
 global pfg xlm xlb xtk ylm ylb ytk grd scl mrk tit utd
 
 st = bhr.nm{mm_};

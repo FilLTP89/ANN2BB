@@ -7,6 +7,8 @@ for j_ = 1:mon.nc
     fn = fullfile(wd,'training',ann.mtd.nl{ib});
     TnC  = ann.mtd.TnC{ib};
     ann.(mon.cp{j_}) = syn2ann_ann_parser(TnC,fn);
+    disp('CHECK DIRECTIONS')
+    keyboard
 end
 
 ann.cp   = fieldnames(ann);
