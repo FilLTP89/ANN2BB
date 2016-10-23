@@ -20,20 +20,27 @@ function [varargout] = test_ann_justPSA(varargin)
     % _define input/target natural periods_
     %
     [inp.vTn,tar.vTn,inp.nT,tar.nT] = trann_define_inout(ann.TnC);
-    ann.vTn = [tar.vTn(:);inp.vTn(:)];
+    ann.mon.vTn = [tar.vTn(:);inp.vTn(:)];
+    
     for i_=1:rec.mon.na
-        
         %
         % _check input/target natural periods with database_
         %
         [inp.idx,tar.idx] = trann_check_vTn(inp,tar,rec.mon,1e-8);
         
         for j_ = 1:rec.mon.nc
-            cpp = (rec.mon.cp{j_});
-            psa = rec.syn{i_}.psa.(cpp)(:);
-            psa = log10(psa(inp.idx)*100);
-            out = 10.^(sim(ann.net,psa(:)));
-            ann.psa{i_}.(cpp) = out./100;
+            cpp.rec = rec.mon.cp{j_};
+            cpp.ann = ann.cpp;
+            
+            flag.rec = seismo_dir_conversion(cpp.rec);
+            flag.ann = seismo_dir_conversion(cpp.ann);
+            
+            if any(strcmpi(flag.rec,flag.ann))
+                inp.psa = rec.syn{i_}.psa.(cpp.rec)(:);
+                inp.psa = inp.psa(inp.idx,1);
+                out.psa = 10.^(sim(ann.net,log10(inp.psa*100)));
+                ann.syn{i_}.psa.(cpp.rec) = [out.psa(:)./100;inp.psa(:)];
+            end
         end
     end
     
