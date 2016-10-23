@@ -22,10 +22,11 @@ function [varargout] = trann_rec_parser(varargin)
     count_na = 0;
     count_fn = 0;
     rec.mon.na = bhr.na;
-    switch bhr.tp{1}
-        case 'random'
-            % stations
-            for i_ = 1:bhr.ns
+    % stations
+    
+    for i_ = 1:bhr.ns
+        switch lower(bhr.st{i_}.tp{1})
+            case 'avd'
                 % devices
                 for j_ = 1:bhr.nd(i_)
                     count_na = count_na+1;
@@ -45,7 +46,7 @@ function [varargout] = trann_rec_parser(varargin)
                             % _file-name_
                             bhr.fn{count_fn} = fullfile(bhr.pt,strcat(bhr.st{i_}.id{1},...
                                 bhr.st{i_}.ev{1},bhr.st{i_}.dv{j_},'_',...
-                                bhr.cp{ii_},'.AVD'));
+                                bhr.cp{ii_},bhr.st{i_}.ni{2}));
                             fprintf('filename: %s\n',bhr.fn{count_fn});
                             
                             % _parsing_
@@ -60,7 +61,43 @@ function [varargout] = trann_rec_parser(varargin)
                         end
                     end
                 end
-            end
+            case {'knet','kiknet'}
+                % devices
+                for j_ = 1:bhr.nd(i_)
+                    count_na = count_na+1;
+                    % _monitor identity_
+                    rec.mon.nc=0;
+                    rec.mon.nr=0;
+                    bhr.nm{count_na} = sprintf('%s%s',bhr.st{i_}.id{1},bhr.st{i_}.dv{j_});
+                    % _directions_
+                    for ii_ = 1:bhr.nc
+                        rec.mon.cp{ii_} = bhr.cp{ii_};
+                        rec.mon.nc = rec.mon.nc+1;
+                        % _components_
+                        for jj_ = 1:bhr.nr
+                            count_fn = count_fn+1;
+                            rec.mon.rc{jj_} = bhr.rc{jj_};
+                            rec.mon.nr = rec.mon.nr+1;
+                            % _file-name_
+                            bhr.fn{count_fn} = fullfile(bhr.pt,strcat(bhr.st{i_}.id{1},...
+                                bhr.st{i_}.ni{1},bhr.st{i_}.ev{1},...
+                                '.',upper(bhr.cp{ii_}),bhr.st{i_}.dv{j_}));
+                            fprintf('filename: %s\n',bhr.fn{count_fn});
+                            
+                            % _parsing_
+                            [rec.mon.dtm(count_na),...
+                                rec.mon.ntm(count_na),...
+                                rec.mon.vtm{count_na},...
+                                rec.syn{count_na}.tha.(bhr.cp{ii_}),~] = ...
+                                parse_kiknet_file(bhr.fn{count_fn});
+                            [~,rec.syn{count_na}.thv.(bhr.cp{ii_}),...
+                                rec.syn{count_na}.thd.(bhr.cp{ii_})] = ...
+                                idc_tha(rec.mon.dtm(count_na),...
+                                rec.syn{count_na}.tha.(bhr.cp{ii_}));
+                        end
+                    end
+                end
+        end
     end
     rec.bhr = bhr;
     %% *OUTPUT*

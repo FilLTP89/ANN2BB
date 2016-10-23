@@ -15,6 +15,8 @@ fprintf('---------------------\n0. SETUP\n---------------------\n');
 % _main workdir_
 wd = fullfile(filesep,'media','filippo','Data','Filippo','PHD_heavyweight',...
     'EMILIA_2905');
+sp = fullfile(filesep,'media','filippo','Data','Filippo','PHD_heavyweight',...
+    'heavy_images');
 ann.wd = fullfile(wd,'training');
 fprintf('Workdir: %s\n',ann.wd);
 % _database_
@@ -25,16 +27,13 @@ fprintf('Training Database: %s\n',dbn);
 %% *LOAD ALL METADATA AVAILABLE*
 trann_test_list;
 % _select test case : selected_case = [a,b,...,d]_
-selected_case = [1,2];
+selected_case = [3,4];
 
 %% *DEFINE REAL RECORDS METADATA*
 % _path to record files_
 bhr.pt  = fullfile(wd,'records');
 fprintf('--> Record Path: %s\n',bhr.pt);
-% _database_
-bhr.tp = {'random'};
-cellfun(@(x) fprintf('--> Database: %s',x),bhr.tp);
-fprintf('\n');
+
 
 bhr.ns = numel(selected_case);
 for m_ = 1:bhr.ns
@@ -54,8 +53,8 @@ for i_ = 1:bhr.ns
 end
 
 % _reference system_
-bhr.rs = {'WEC';'NSC';'UPC'};
-bhr.cp = {'WEC';'NSC';'UPC'};
+bhr.rs = {'ew';'ns';'ud'};
+bhr.cp = {'ew';'ns';'ud'};
 bhr.nc = numel(bhr.cp);
 [~,bhr.ci] = ismember(bhr.cp,bhr.rs);
 fprintf('--> Reference system : ');

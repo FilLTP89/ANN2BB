@@ -12,15 +12,29 @@
 %% *RECORDING STATION: bhrr*
 % _station identity_
 bhrr.st{1}.id = {'AMT'};
-bhrr.st{1}.ni = {'';'AVD'};
+bhrr.st{1}.ni = {'';'.AVD'};
 bhrr.st{2}.id = {'NRC'};
-bhrr.st{2}.ni = {'';'AVD'};
+bhrr.st{2}.ni = {'';'.AVD'};
+bhrr.st{3}.id = {'KMM'};
+bhrr.st{3}.ni = {'H';''};
+bhrr.st{4}.id = {'KMM'};
+bhrr.st{4}.ni = {'H';''};
 % _recorded events_
 bhrr.st{1}.ev = {''};
 bhrr.st{2}.ev = {''};
+bhrr.st{3}.ev = {'161604160125'};
+bhrr.st{4}.ev = {'161604160125'};
 % _device list_
 bhrr.st{1}.dv = {''};
 bhrr.st{2}.dv = {''};
+bhrr.st{3}.dv = {'1'};
+bhrr.st{4}.dv = {'2'};
+% _database_
+bhrr.st{1}.tp = {'avd'};
+bhrr.st{2}.tp = {'avd'};
+bhrr.st{3}.tp = {'knet'};
+bhrr.st{4}.tp = {'knet'};
+
 % _bhrr field names_
 fni.bhrr = fieldnames(bhrr);
 fnn.bhrr = numel(fni.bhrr);
@@ -60,12 +74,12 @@ end
 % _number of ann to be tested_
 tst.mtd.nr = 3;
 % _site class considered : ALL,AB,CD_
-tst.mtd.scl = {'ALL';'ALL';'ALL'};
+tst.mtd.scl = {'ALL';'AB';'CD'};
 % _corner period for each ANN_
 tst.mtd.TnC = {0.75;0.75;0.75};
 % _ANN motion component : gh,ud (geometric mean horizontal, updip)_
-tst.mtd.cpn = {'gh';'gh';'ud'};
+tst.mtd.cpp = {'ud';'ud';'ud'};
 for i_ = 1:tst.mtd.nr
     tst.mtd.nl(i_) = {sprintf('net_%u_%s_%s.mat',...
-        round(tst.mtd.TnC{i_}*100),tst.mtd.scl{i_},tst.mtd.cpn{i_})};
+        round(tst.mtd.TnC{i_}*100),tst.mtd.scl{i_},tst.mtd.cpp{i_})};
 end
