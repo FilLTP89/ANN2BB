@@ -1,8 +1,8 @@
 ccc;
 % wd.local = '/media/filippo/Data/Filippo/PHD_heavyweight/SPEED2D_NL/INPUTS/pwn';
-% sp = '/media/filippo/Data/Filippo/PHD_passing_through/WRITEUP/ALL_PICTURES/images';
+% sp = '/media/filippo/Data/Filippo/virgo/writeup/ALL_PICTURES/images';
 wd.local = '/media/user/DATI/Filippo/PHD_heavyweight/SPEED2D_NL/INPUTS/pwn';
-sp = '/media/user/DATI/Filippo/PHD_passing_through/WRITEUP/ALL_PICTURES/images';
+sp = '/media/user/DATI/Filippo/virgo/writeup/ALL_PICTURES/images';
 
 cd(wd.local);
 fn = struct2cell(dir('monitor*'));
