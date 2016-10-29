@@ -55,14 +55,14 @@ mtdd.sp96.sst = zeros(4,1);
 mtdd.sp96.scl = 0.01*ones(4,1);
 
 % _Exsim - reference files_
-mtdd.exsim.fn{1} = fullfile(wd,'exsim_old','exsim_emilia','MRN_new');
-mtdd.exsim.fn{2} = fullfile(wd,'exsim_old','exsim_emilia','MIR08_new');
-mtdd.exsim.fn{3} = fullfile(wd,'exsim_old','exsim_aquila','walters','aqk');
-mtdd.exsim.fn{4} = fullfile(wd,'exsim_old','exsim_aquila','walters','aqu');
-mtdd.exsim.pf{1} = strcat(mtdd.exsim.fn{1},filesep,'MRN_exsim_');
-mtdd.exsim.pf{2} = strcat(mtdd.exsim.fn{2},filesep,'MIR08_exsim_');
-mtdd.exsim.pf{3} = strcat(mtdd.exsim.fn{3},filesep,'aqk_0604_');
-mtdd.exsim.pf{4} = strcat(mtdd.exsim.fn{4},filesep,'aqu_0604_');
+mtdd.exsim.fnm{1} = fullfile(wd,'exsim_old','exsim_emilia','MRN_new');
+mtdd.exsim.fnm{2} = fullfile(wd,'exsim_old','exsim_emilia','MIR08_new');
+mtdd.exsim.fnm{3} = fullfile(wd,'exsim_old','exsim_aquila','walters','aqk');
+mtdd.exsim.fnm{4} = fullfile(wd,'exsim_old','exsim_aquila','walters','aqu');
+mtdd.exsim.pf{1} = strcat(mtdd.exsim.fnm{1},filesep,'MRN_exsim_');
+mtdd.exsim.pf{2} = strcat(mtdd.exsim.fnm{2},filesep,'MIR08_exsim_');
+mtdd.exsim.pf{3} = strcat(mtdd.exsim.fnm{3},filesep,'aqk_0604_');
+mtdd.exsim.pf{4} = strcat(mtdd.exsim.fnm{4},filesep,'aqu_0604_');
 
 % _mtdd field names_
 fni.mtdd.sp96 = fieldnames(mtdd.sp96);

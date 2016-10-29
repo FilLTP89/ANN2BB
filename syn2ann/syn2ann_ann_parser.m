@@ -21,16 +21,16 @@
 function [varargout] = syn2ann_ann_parser(varargin)
     %% *SET-UP*
     ann     = load(varargin{2},'net');
-    ann.fn  = varargin{2};
+    ann.fnm = varargin{2};
     ann.TnC = varargin{1};
-    
-    %% *DEFINE INPUT/TARGET PERIODS*
-    [ann.inp.vTn,ann.tar.vTn,ann.inp.nT,ann.tar.nT] = ...
-        trann_define_inout(ann.TnC);
     if nargin>2
         ann.cpp = varargin{3};
         ann.scl = varargin{4};
     end
+    %% *DEFINE INPUT/TARGET PERIODS*
+    [ann.inp.vTn,ann.tar.vTn,ann.inp.nT,ann.tar.nT] = ...
+        trann_define_inout(ann.TnC);
+    
     %% OUTPUT
     varargout{1} = ann;
     return

@@ -21,7 +21,7 @@ function [varargout] = syn2ann_sim_parser(varargin)
     bhr = varargin{2};
     %%
     % _parsing metadata_
-    mtd = importdata(mon.fn);
+    mtd = importdata(mon.fnm);
     idm = find(strcmpi('Monitor ID',mtd.textdata(1,:))==1);
     idd = find(strcmpi('Repi (km)',mtd.textdata(1,:))==1);
     ids = strcmpi('Station code',mtd.textdata(1,:));
@@ -44,7 +44,7 @@ function [varargout] = syn2ann_sim_parser(varargin)
     nss.mon = mon;
     %%
     % _parsing records_
-    switch(lower(mon.tp))
+    switch(lower(mon.typ))
         case 's'
             %%
             % _speed simulations_

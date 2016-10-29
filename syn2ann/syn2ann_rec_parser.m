@@ -22,7 +22,7 @@ function [varargout] = syn2ann_rec_parser(varargin)
     count_na = 0;
     count_fn = 0;
     rec.mon.na = bhr.na;
-    switch bhr.tp{1}
+    switch bhr.typ{1}
         case 'itaca'
             % stations
             for i_ = 1:bhr.ns
@@ -43,10 +43,10 @@ function [varargout] = syn2ann_rec_parser(varargin)
                             rec.mon.rc{jj_} = bhr.rc{jj_};
                             rec.mon.nr = rec.mon.nr+1;
                             % _file-name_
-                            bhr.fn{count_fn} = itaca_monitor_name...
+                            bhr.fnm{count_fn} = itaca_monitor_name...
                                 (bhr.st{i_}.id{1},bhr.st{i_}.ev{1},bhr.st{i_}.dv{j_},...
                                 bhr.cp{ii_},bhr.rc{jj_},bhr.st{i_}.ni,bhr.pt);
-                            fprintf('filename: %s\n',bhr.fn{count_fn});
+                            fprintf('filename: %s\n',bhr.fnm{count_fn});
                             switch strcat(bhr.st{i_}.id{1},bhr.st{i_}.dv{j_})
                                 case {'MRN','MIR08'}
                                 rec.mon.dtm(count_na)=0.005;
@@ -63,7 +63,7 @@ function [varargout] = syn2ann_rec_parser(varargin)
                                     rec.mon.ntm(count_na),...
                                     rec.mon.vtm{count_na},...
                                     rec.syn{count_na}.(strcat('th',bhr.rc{jj_})).(bhr.cp{ii_})] = ...
-                                    parse_itaca_file_new(bhr.fn{count_fn});
+                                    parse_itaca_file_new(bhr.fnm{count_fn});
                             end
                         end
                     end
@@ -85,9 +85,9 @@ function [varargout] = syn2ann_rec_parser(varargin)
                         rec.mon.rc{jj_} = bhr.rc{jj_};
                         rec.mon.nr = rec.mon.nr+1;
                         % _file-name_
-                        bhr.fn{count_fn} = kknpp_monitor_name(bhr.st{i_}.id{1},...
+                        bhr.fnm{count_fn} = kknpp_monitor_name(bhr.st{i_}.id{1},...
                             bhr.st{i_}.ev{1},bhr.st{i_}.dv{j_},bhr.pt);
-                        fprintf('filename: %s\n',bhr.fn{count_fn});
+                        fprintf('filename: %s\n',bhr.fnm{count_fn});
                         % _parsing_
                         rec.mon.cp = bhr.cp;
                         rec.mon.nc = bhr.nc;
@@ -95,7 +95,7 @@ function [varargout] = syn2ann_rec_parser(varargin)
                             rec.mon.ntm(count_na),...
                             rec.mon.vtm{count_na},...
                             rec.syn{count_na}.(strcat('th',bhr.rc{jj_}))] = ...
-                            parse_kknpp_file(bhr.fn{count_fn},bhr.cp);
+                            parse_kknpp_file(bhr.fnm{count_fn},bhr.cp);
                     end
                 end
             end

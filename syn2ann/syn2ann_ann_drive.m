@@ -1,17 +1,24 @@
-%% *SIMULATION ON TRAINED ANN (WITH PGV)*
+%% *GENERATION OF STRONG GROUND MOTION SIGNALS BY COUPLING PHYSICS-BASED ANALYSIS WITH ARTIFICIAL NEURAL NETWORKS*
+% _Editor: Filippo Gatti
+% CentraleSupélec - Laboratoire MSSMat
+% DICA - Politecnico di Milano
+% Copyright 2016_
+%% *NOTES*
+% _syn2ann_ann_drive_: function to parse and simulate ANN upon numerical
+% simulations
+%% *N.B.*
+% Need for:
+% ismember.m,syn2ann_ann_parser.m,intersect.m,apply_ann2hbs_justPSA.m_
 fprintf('---------------------\n5. ANN (JUST PSA)\n---------------------\n');
 % parse ann networks on each motion component
 fprintf('--> Parsing \n');
 for j_ = 1:mon.nc
     [~,ib] = ismember(mon.cp{j_},mon.rs);
-    fn = fullfile(wd,'training',ann.mtd.nl{ib});
+    fnm = fullfile(wd,'training',ann.mtd.nl{ib});
     TnC  = ann.mtd.TnC{ib};
-    ann.(mon.cp{j_}) = syn2ann_ann_parser(TnC,fn);
-    disp('CHECK DIRECTIONS')
-    keyboard
+    ann.cp{j_} = mon.cp{j_};
+    ann.(mon.cp{j_}) = syn2ann_ann_parser(TnC,fnm,mon.cp{j_},ann.mtd.scl{j_});
 end
-
-ann.cp   = fieldnames(ann);
 
 switch lower(hybrid_type)
     case 'sp96'
@@ -22,7 +29,7 @@ switch lower(hybrid_type)
         ann.cp   = ann.cp(ib);
         % _ apply trained ANN on hybrid accelerograms_
         fprintf('--> Apply\n');
-        trs.sps = ann2hbs_train_justPSA(hbs.sps,ann);
+        trs.sps = apply_ann2hbs_justPSA(hbs.sps,ann);
     case 'exsim'
         %
         % _EXSIM_
@@ -31,7 +38,7 @@ switch lower(hybrid_type)
         ann.cp   = ann.cp(ib);
         % _ apply trained ANN on hybrid accelerograms_
         fprintf('--> Apply\n');
-        trs.exs = ann2hbs_train_justPSA(hbs.exs,ann);
+        trs.exs = apply_ann2hbs_justPSA(hbs.exs,ann);
     case 'both'
         %
         % _SABETTA & PUGLIESE 1996_
@@ -40,7 +47,7 @@ switch lower(hybrid_type)
         ann.cp   = ann.cp(ib);
         % _ apply trained ANN on hybrid accelerograms_
         fprintf('--> Apply\n');
-        trs.sps = ann2hbs_train_justPSA(hbs.sps,ann);
+        trs.sps = apply_ann2hbs_justPSA(hbs.sps,ann);
         %
         % _EXSIM_
         %
@@ -48,5 +55,5 @@ switch lower(hybrid_type)
         ann.cp   = ann.cp(ib);
         % _ apply trained ANN on hybrid accelerograms_
         fprintf('--> Apply\n');
-        trs.exs = ann2hbs_train_justPSA(hbs.exs,ann);
+        trs.exs = apply_ann2hbs_justPSA(hbs.exs,ann);
 end

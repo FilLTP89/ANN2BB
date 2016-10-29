@@ -1,6 +1,15 @@
-%% *RECORDS*
+%% *GENERATION OF STRONG GROUND MOTION SIGNALS BY COUPLING PHYSICS-BASED ANALYSIS WITH ARTIFICIAL NEURAL NETWORKS*
+% _Editor: Filippo Gatti
+% CentraleSupélec - Laboratoire MSSMat
+% DICA - Politecnico di Milano
+% Copyright 2016_
+%% *NOTES*
+% _syn2ann_rec_drive_: function to parse and correct recordings
+%% *N.B.*
+% Need for:
+% _importdata.m,syn2ann_rec_parser.m,syn2ann_blc.m,syn2ann_thp.m,syn2ann_spp.m_
 fprintf('---------------------\n1. RECORDS\n---------------------\n');
-%% *PARSING*
+%% *PARSING RECORDS*
 fprintf('--> Parsing\n');
 % _original_
 ew = importdata(fullfile(bhr.pt,'EW_corrette.csv'));
@@ -29,7 +38,7 @@ bhr.lfr = [];
 bhr.hfr = [];
 [bhr,rec.org]= syn2ann_rec_parser(bhr,cor);
 
-%% *BASELINE CORRECTED*
+%% *BASELINE CORRECTION*
 rec.fil = syn2ann_blc(rec.org);
 
 %% *PGA-PGV-PGD & ARIAS INTENSITY*

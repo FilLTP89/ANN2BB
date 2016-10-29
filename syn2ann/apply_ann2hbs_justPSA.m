@@ -4,20 +4,21 @@
 % DICA - Politecnico di Milano
 % Copyright 2016_
 %% NOTES
-% _ann2hbs_train_: function to train ANN network onto hybrid LF/HF
-% synthetics, trained PSA(LF) values
+% _apply_ann2hbs_justPSA_: function to apply trained ANN onto hybrid LF/HF
+% synthetics, upon PSA(LF) values
 %% INPUT:
 % * _hbs (hybrid synthetics structure)_
 % * _ann (trained Artificial Neural Network (ANN) structure)_
 %% OUTPUT:
 % * _trs (trained/simulated ann structure)_
-%% N.B. 
-% Need for _sim.m_, _trann_check_vTn.m_.
-function [varargout] = ann2hbs_train_justPSA(varargin)
+%% *N.B.*
+% Need for:
+% _sim.m,trann_check_vTn.m_
+
+function [varargout] = apply_ann2hbs_justPSA(varargin)
     %% *SET-UP*
     hbs = varargin{1};
     ann = varargin{2};
-    
     %
     % _check input/target natural periods with hbs_
     %
@@ -38,7 +39,7 @@ function [varargout] = ann2hbs_train_justPSA(varargin)
         inn{j_} = psa(:,trs.(cpp).iid);
     end
     
-    %% *TRAIN NETWORK*
+    %% *ANN SIMULATION*
     trs.mon.cp = hbs.mon.cp;
     for j_ = 1:hbs.mon.nc
         inp = log10(inn{j_}.*100);

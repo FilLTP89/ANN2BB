@@ -9,8 +9,9 @@
 %% *N.B.*
 % Need for:
 % _get_axis_tick.m,syn2ann_plot_res_station_sp96.m,
-% syn2ann_plot_res_station_exsim.m,syn2ann_plot_res_station_both.m_
-fprintf('---------------------\n6. PLOTTING RESULTS\n---------------------\n');
+% syn2ann_plot_res_station_exsim.m,syn2ann_plot_res_station_both.m,
+% syn2ann_fancy_plot.m_
+fprintf('---------------------\n7. PLOTTING RESULTS\n---------------------\n');
 %% *SET UP*
 global pfg xlm xlb xtk ylm ylb ytk grd scl mrk tit utd
 cd(wd);close all;
@@ -61,12 +62,12 @@ for mm_ = 1:bhr.ns
             vtm_lab = (vtm_lim(1):5:vtm_lim(end));
             tha_lim = [-9e2;9e2];
             thv_lim = [-60;60];
-            thd_lim = [-30;30];            
+            thd_lim = [-30;30];
         case 'MIR08'
             % *======================== MIR08 ============================*
             disp('PLOTTING MIR08')
             vtm_shift(:) = 0.73;
-             vtm_lim = [0;25];
+            vtm_lim = [0;25];
             vtm_lab = (vtm_lim(1):5:vtm_lim(end));
             tha_lim = [-6e2;6e2];
             thv_lim = [-50;50];
@@ -94,13 +95,20 @@ for mm_ = 1:bhr.ns
     % * _PSEUDO-ACCELERATION RESPONSE SPECTRA_
     %
     pfg.psa = [0 0 14 14];
-    xlm.psa = {10.^([log10(0.05),1])};
-    ylm.psa = {10.^(1:3:4)};
-    xtk.psa = {10.^([log10(0.05),-1:1])};
-    ytk.psa = {10.^(1:4)};
+%     % log-plot
+%     xlm.psa = {10.^([log10(0.05);1])};
+%     ylm.psa = {10.^(1:3:4)'};
+%     xtk.psa = {10.^([log10(0.05);(-1:1)'])};
+%     ytk.psa = {10.^(1:4)'};
+%     scl.psa = {'log';'log';'log'};
+    % lin-plot
+    xlm.psa = {[0;3]};
+    ylm.psa = {[0;2500]};
+    xtk.psa = {(0:3)'};
+    ytk.psa = {(0:500:2500)'};
+    scl.psa = {'lin','lin','lin'};
     xlb.psa = {'T [s]'};
     ylb.psa = {'PSA [cm/s/s]','',''};
-    scl.psa = {'lin','lin','lin'};
     grd.psa = {'minor'};
     mrk.psa = {'none'};
     tit.psa = {'PSEUDO-ACCELERATION SPECTRUM (5%)'};
@@ -158,22 +166,23 @@ for mm_ = 1:bhr.ns
     tit.thd = {'DISPLACEMENT TIME-HISTORY'};
     utd.thd = 100;
     %%
-    switch lower(hybrid_type)
-        case 'sp96'
-            %
-            % _SABETTA & PUGLIESE 1996_
-            %
-            syn2ann_plot_res_station_sp96;
-        case 'exsim'
-            %
-            % _EXSIM_
-            %
-            syn2ann_plot_res_station_exsim;
-        case 'both'
-            %
-            % _BOTH_
-            %
-            syn2ann_plot_res_station_both;
-    end
+    %     switch lower(hybrid_type)
+    %         case 'sp96'
+    %             %
+    %             % _SABETTA & PUGLIESE 1996_
+    %             %
+    %             syn2ann_plot_res_station_sp96;
+    %         case 'exsim'
+    %             %
+    %             % _EXSIM_
+    %             %
+    %             syn2ann_plot_res_station_exsim;
+    %         case 'both'
+    %             %
+    %             % _BOTH_
+    %             %
+    %             syn2ann_plot_res_station_both;
+    %     end
+    syn2ann_fancy_plot;
     
 end

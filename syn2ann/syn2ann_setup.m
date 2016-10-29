@@ -25,15 +25,15 @@ sp = fullfile(filesep,'media','filippo','Data','Filippo','PHD_heavyweight',...
 %% *LOAD ALL METADATA AVAILABLE*
 syn2ann_case_list;
 % _select analyses : selected_case = [a,b,...,d]_
-selected_case = 1;
+selected_case = [1,3];
 
 %% *DEFINE REAL RECORDS METADATA*
 % _path to record files_
 bhr.pt  = fullfile(wd,'records');
 fprintf('--> Record Path: %s\n',bhr.pt);
 % _database_
-bhr.tp = {'itaca'};
-cellfun(@(x) fprintf('--> Database: %s',x),bhr.tp);
+bhr.typ = {'itaca'};
+cellfun(@(x) fprintf('--> Database: %s',x),bhr.typ);
 fprintf('\n');
 
 bhr.ns = numel(selected_case);
@@ -79,11 +79,11 @@ fprintf('---------------------------------------------------------------\n');
 mon.pt  = fullfile(wd,'monitor');
 fprintf('--> Monitor Path: %s\n',mon.pt);
 % _metadata filename_
-mon.fn  = fullfile(wd,'SM_Stations_Monitors.csv');
-fprintf('--> Monitor File: %s\n',mon.fn);
+mon.fnm  = fullfile(wd,'SM_Stations_Monitors.csv');
+fprintf('--> Monitor File: %s\n',mon.fnm);
 % _type of simulation_
-mon.tp  = 'S';
-fprintf('--> Type of Simulation: %s\n',mon.tp);
+mon.typ  = 'S';
+fprintf('--> Type of Simulation: %s\n',mon.typ);
 % _monitor identity_
 mon.na = bhr.ns;
 for m_ = 1:mon.na
@@ -128,12 +128,12 @@ for m_ = 1:mtd.exsim.na
 end
 %% *DEFINE ANN METADATA*
 % _site class considered : ALL,AB,CD_
-ann.mtd.scl = 'ALL';
+ann.mtd.scl = {'ALL';'ALL';'ALL'};
 % _corner period for each ANN_
 ann.mtd.TnC = {0.75;0.75;0.75};
 % _ANN motion component : gh,ud (geometric mean horizontal, updip)_
 ann.mtd.cpn = {'gh';'gh';'ud'};
 for i_ = 1:numel(ann.mtd.TnC)
     ann.mtd.nl(i_) = {sprintf('net_%u_%s_%s.mat',...
-        round(ann.mtd.TnC{i_}*100),ann.mtd.scl,ann.mtd.cpn{i_})};
+        round(ann.mtd.TnC{i_}*100),ann.mtd.scl{i_},ann.mtd.cpn{i_})};
 end

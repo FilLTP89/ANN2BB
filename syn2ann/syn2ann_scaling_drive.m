@@ -1,5 +1,15 @@
-%% *SPECTRAL SCALING*
-fprintf('---------------------\n5. SPECTRAL MATCHING (JUST PSA)\n---------------------\n');
+%% *GENERATION OF STRONG GROUND MOTION SIGNALS BY COUPLING PHYSICS-BASED ANALYSIS WITH ARTIFICIAL NEURAL NETWORKS*
+% _Editor: Filippo Gatti
+% CentraleSupélec - Laboratoire MSSMat
+% DICA - Politecnico di Milano
+% Copyright 2016_
+%% *NOTES*
+% _syn2ann_scaling_drive_: function to perform spectral scaling upon ANN
+% predictions
+%% *N.B.*
+% Need for:
+% _syn2ann_sm.m,syn2ann_thp.m,syn2ann_spp.m_
+fprintf('---------------------\n6. SPECTRAL MATCHING (JUST PSA)\n---------------------\n');
 %% *MATCHING*
 fprintf('--> Matching (just PSA)\n');
 switch lower(hybrid_type)
