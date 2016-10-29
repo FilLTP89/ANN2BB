@@ -72,13 +72,13 @@ end
 
 %% *DEFINE ANN TEST METADATA*
 % _number of ann to be tested_
-tst.mtd.nr = 3;
+tst.mtd.nr = 2;
 % _site class considered : ALL,AB,CD_
-tst.mtd.scl = {'ALL';'AB';'CD'};
+tst.mtd.scl = {'ALL';'ALL';'ALL'};
 % _corner period for each ANN_
 tst.mtd.TnC = {0.75;0.75;0.75};
 % _ANN motion component : gh,ud (geometric mean horizontal, updip)_
-tst.mtd.cpp = {'ud';'ud';'ud'};
+tst.mtd.cpp = {'gh';'ud';'ud'};
 for i_ = 1:tst.mtd.nr
     tst.mtd.nl(i_) = {sprintf('net_%u_%s_%s.mat',...
         round(tst.mtd.TnC{i_}*100),tst.mtd.scl{i_},tst.mtd.cpp{i_})};

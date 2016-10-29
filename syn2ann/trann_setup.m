@@ -27,7 +27,7 @@ fprintf('Training Database: %s\n',dbn);
 %% *LOAD ALL METADATA AVAILABLE*
 trann_test_list;
 % _select test case : selected_case = [a,b,...,d]_
-selected_case = [3,4];
+selected_case = 1:4;
 
 %% *DEFINE REAL RECORDS METADATA*
 % _path to record files_
