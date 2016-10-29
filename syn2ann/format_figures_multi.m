@@ -19,7 +19,7 @@ function format_figures_multi(hax)
     zl = get(hax,'zlabel');
     set(zl,'fontsize',16);%20,24
     li = get(hax,'children');
-    set(li,'linewidth',2,'markersize',6);%2.5-3
+    set(li,'linewidth',2,'markersize',3);%2.5-3
     set(hax,'linewidth',1.6,'fontsize',12);   %2,2-3,20
    
 end

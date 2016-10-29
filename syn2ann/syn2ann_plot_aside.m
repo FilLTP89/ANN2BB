@@ -51,6 +51,7 @@ function syn2ann_plot_aside(varargin)
             plt.tit(i_,1) = {legplot{i_}};
             plt.leg(i_,1) = {strcat(std,'-',dlg)};
         end
+        % psa spectra
         for i_ = 1:plt.spg(1)
             % x-plot
             plt.xpl{i_+plt.spg(1),1} = xplot{i_}.mon.vTn;
@@ -76,12 +77,12 @@ function syn2ann_plot_aside(varargin)
             'xlm',plt.xlm,'xtk',plt.xtk,'xlb',plt.xlb,...
             'ylm',plt.ylm,'ytk',plt.ytk,'ylb',plt.ylb,...
             'tit',plt.tit,'leg',plt.leg);
-        saveas(gcf,strcat(fnm,sprintf('_fsp_%s',cpp.nm)),'epsc');
+        saveas(gcf,strcat(fnm,sprintf('_fsp_%s',cpp.nm)),'jpg');
     end
     
     %% *TIME HISTORIES*
     if flags(2)
-        % _fourier's spectra_
+        % _velocities_
         for i_ = 1:plt.spg(1)
             % x-plot
             plt.xpl{i_,1} = xplot{i_}.mon.vtm{identity}-time_shift(i_);
@@ -99,6 +100,7 @@ function syn2ann_plot_aside(varargin)
             plt.tit(i_,1) = {legplot{i_}};
             plt.leg(i_,1) = {strcat(std,'-',dlg)};
         end
+        % accelerations
         for i_ = 1:plt.spg(1)
             % x-plot
             plt.xpl{i_+plt.spg(1),1} = xplot{i_}.mon.vtm{identity}-time_shift(i_);
@@ -124,7 +126,7 @@ function syn2ann_plot_aside(varargin)
             'xlm',plt.xlm,'xtk',plt.xtk,'xlb',plt.xlb,...
             'ylm',plt.ylm,'ytk',plt.ytk,'ylb',plt.ylb,...
             'tit',plt.tit,'leg',plt.leg);
-        saveas(gcf,strcat(fnm,sprintf('_fth_%s',cpp.nm)),'epsc');
+        saveas(gcf,strcat(fnm,sprintf('_fth_%s',cpp.nm)),'jpg');
     end
     
     %     if any(flags(3:end))
@@ -152,7 +154,7 @@ function syn2ann_plot_aside(varargin)
     %             'xlm',xlm.tha(end),'xlb',xlb.tha,'xtk',xtk.tha(end),...
     %             'ylm',ylm.tha(end),'ylb',ylb.tha,'ytk',ytk.tha(end),...
     %             'leg',leg,'tit',strcat(std,'-',dlg));
-    %         saveas(gcf,strcat(fnm,sprintf('_tha_c_%s',cpp)),'epsc');
+    %         saveas(gcf,strcat(fnm,sprintf('_tha_c_%s',cpp)),'jpg');
     %     end
     %
     %     if flags(4)
@@ -178,7 +180,7 @@ function syn2ann_plot_aside(varargin)
     %             'xlm',xlm.thv(end),'xlb',xlb.thv,'xtk',xtk.thv(end),...
     %             'ylm',ylm.thv(end),'ylb',ylb.thv,'ytk',ytk.thv(end),...
     %             'leg',leg,'tit',strcat(std,'-',dlg));
-    %         saveas(gcf,strcat(fnm,sprintf('_thv_c_%s',cpp)),'epsc');
+    %         saveas(gcf,strcat(fnm,sprintf('_thv_c_%s',cpp)),'jpg');
     %     end
     %
     %     if flags(5)
@@ -207,7 +209,7 @@ function syn2ann_plot_aside(varargin)
     %             'xlm',xlm.thd(end),'xlb',xlb.thd,'xtk',xtk.thd(end),...
     %             'ylm',ylm.thd(end),'ylb',ylb.thd,'ytk',ytk.thd(end),...
     %             'leg',leg,'tit',strcat(std,'-',dlg));
-    %         saveas(gcf,strcat(fnm,sprintf('_thd_c_%s',cpp)),'epsc');
+    %         saveas(gcf,strcat(fnm,sprintf('_thd_c_%s',cpp)),'jpg');
     %     end
     close all;
     %

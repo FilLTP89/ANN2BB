@@ -4,11 +4,11 @@
 % DICA - Politecnico di Milano
 % Copyright 2016_
 %% *NOTES*
-% _syn2ann_plot_res_single_: function to plot syn2ann results at each
+% _trann_test_plot_compare_: function to plot ANN test results at each
 % station
 %% *N.B.*
 % Need for:
-% _trann_plot_res_station.m_
+% _trann_plot_res_compare_siteclass.m_
 fprintf('---------------------\n6. PLOTTING RESULTS\n---------------------\n');
 %% *SET UP*
 global pfg xlm xlb xtk ylm ylb ytk grd scl mrk tit utd

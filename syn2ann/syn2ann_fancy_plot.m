@@ -18,12 +18,12 @@ dlg{1} = 'EW';
 dlg{2} = 'NS';
 dlg{3} = 'UD';
 set(0,'defaultaxescolororder',clr0f);
-
+spp = '/home/filippo/Scrivania/ann/';
 for j_ = 1:numel(cpp)
     cpn.nm = cpp{j_};
     cpn.nb = j_;
     %% *POST-PROCESS - RECORDS VS NUMERICAL SIMULATIONS VS SPECTRAL-MATCHED*
-    fnm = fullfile(sp,sprintf('%s_rec_sim_spm_%s',st,ann.mtd.scl{j_}));
+    fnm = fullfile(spp,sprintf('%s_rec_sim_spm_%s',st,ann.mtd.scl{j_}));
     syn2ann_plot_aside(...
         ones(2,1),...
         {rec.org,nss.org,spm.sps.(cpp{j_})},...
