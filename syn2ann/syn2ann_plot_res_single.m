@@ -16,6 +16,8 @@ fprintf('---------------------\n7. PLOTTING RESULTS\n---------------------\n');
 global pfg xlm xlb xtk ylm ylb ytk grd scl mrk tit utd
 cd(wd);close all;
 % _color sets_
+% fancy plot
+clr0f = [rgb('Navy');rgb('Navy');rgb('Navy')];
 % records-pbs
 clr0 = [rgb('Navy');rgb('IntenseBlue')];
 % fil-fil-pbs-empirical/stochastic-hybrid
@@ -32,6 +34,8 @@ clr21 = [rgb('Navy');rgb('Red');rgb('Orange');rgb('IntenseGreen')];
 % records-spectral-matched
 clr3 = [rgb('Navy');rgb('Red')];
 cpp = {'e';'n';'z'};
+pfg.fsp = [0 0 20 30];
+pfg.fth = [0 0 30 20];
 %
 % _COMPUTE TIME SHIFT FOR RECORD PLOT_
 %
@@ -39,9 +43,9 @@ cpp = {'e';'n';'z'};
 % * _FOURIER SPECTRA_
 %
 pfg.fsa = [0 0 14 14];
-xlm.fsa = {10.^([log10(0.05),log10(40)])};
+xlm.fsa = {10.^([log10(0.1),log10(40)])};
 ylm.fsa = {10.^([-4,1])};
-xtk.fsa = {10.^([log10(0.05),-1,0,log10(5),1,log10(40)])};
+xtk.fsa = {10.^([-1,0,log10(5),1,log10(40)])};
 ytk.fsa = {10.^(-4:1)};
 xlb.fsa = {'f [Hz]'};
 ylb.fsa = {'FS [m/s]','',''};

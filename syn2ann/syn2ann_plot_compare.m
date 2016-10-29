@@ -9,7 +9,7 @@ function syn2ann_plot_compare(varargin)
     legplot = varargin{5};
     cpp = varargin{6};
     std = varargin{7};
-    fn = varargin{8};
+    fnm = varargin{8};
     time_shift = varargin{9};
     if nargin>9
         mrkd = varargin{10};
@@ -43,7 +43,7 @@ function syn2ann_plot_compare(varargin)
                 'ylm',ylm.psa,'ylb',ylb.psa,'ytk',ytk.psa,...
                 'leg',leg,'tit',strcat(std,'-',dlg));
         end
-        saveas(gcf,strcat(fn,sprintf('_psa_c_%s',cpp)),'epsc');
+        saveas(gcf,strcat(fnm,sprintf('_psa_c_%s',cpp)),'epsc');
     end
     
     if flags(2)
@@ -69,7 +69,7 @@ function syn2ann_plot_compare(varargin)
                 'ylm',ylm.fsa,'ylb',ylb.fsa,'ytk',ytk.fsa,...
                 'leg',leg,'tit',strcat(std,'-',dlg));
         end
-        saveas(gcf,strcat(fn,sprintf('_fsa_c_%s',cpp)),'epsc');
+        saveas(gcf,strcat(fnm,sprintf('_fsa_c_%s',cpp)),'epsc');
     end
     
     if any(flags(3:end))
@@ -98,7 +98,7 @@ function syn2ann_plot_compare(varargin)
             'xlm',xlm.tha(end),'xlb',xlb.tha,'xtk',xtk.tha(end),...
             'ylm',ylm.tha(end),'ylb',ylb.tha,'ytk',ytk.tha(end),...
             'leg',leg,'tit',strcat(std,'-',dlg));
-        saveas(gcf,strcat(fn,sprintf('_tha_c_%s',cpp)),'epsc');
+        saveas(gcf,strcat(fnm,sprintf('_tha_c_%s',cpp)),'epsc');
     end
     
     if flags(4)
@@ -124,7 +124,7 @@ function syn2ann_plot_compare(varargin)
             'xlm',xlm.thv(end),'xlb',xlb.thv,'xtk',xtk.thv(end),...
             'ylm',ylm.thv(end),'ylb',ylb.thv,'ytk',ytk.thv(end),...
             'leg',leg,'tit',strcat(std,'-',dlg));
-        saveas(gcf,strcat(fn,sprintf('_thv_c_%s',cpp)),'epsc');
+        saveas(gcf,strcat(fnm,sprintf('_thv_c_%s',cpp)),'epsc');
     end
     
     if flags(5)
@@ -153,7 +153,7 @@ function syn2ann_plot_compare(varargin)
             'xlm',xlm.thd(end),'xlb',xlb.thd,'xtk',xtk.thd(end),...
             'ylm',ylm.thd(end),'ylb',ylb.thd,'ytk',ytk.thd(end),...
             'leg',leg,'tit',strcat(std,'-',dlg));
-        saveas(gcf,strcat(fn,sprintf('_thd_c_%s',cpp)),'epsc');
+        saveas(gcf,strcat(fnm,sprintf('_thd_c_%s',cpp)),'epsc');
     end
     close all;
     %
