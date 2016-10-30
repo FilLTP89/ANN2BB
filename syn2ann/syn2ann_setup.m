@@ -25,7 +25,7 @@ sp = fullfile(filesep,'media','filippo','Data','Filippo','PHD_heavyweight',...
 %% *LOAD ALL METADATA AVAILABLE*
 syn2ann_case_list;
 % _select analyses : selected_case = [a,b,...,d]_
-selected_case = [1,3];
+selected_case = [3];
 
 %% *DEFINE REAL RECORDS METADATA*
 % _path to record files_
@@ -112,7 +112,7 @@ mon.ci = mon.ci(:);
 
 %% *DEFINE HYBRIDIZATION METADATA*
 % _SP96 metadata_
-hybrid_type='sp96';
+hybrid_type='both';
 mtd.sp96.na = mon.na;
 for m_ = 1:mtd.sp96.na
     for n_ = 1:fnn.mtdd.sp96
