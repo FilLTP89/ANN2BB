@@ -46,7 +46,6 @@ function [varargout]=plot_set_up
 %                    0.800 0.060 0.460];
 %     color_order=[color_order;varycolor(100)];    
 %     set(0,'defaultaxescolororder',color_order);
-    
     %% DEFAULT GUI APPEARANCE
     set(0,'defaultuicontrolbackgroundcolor',[0.94 0.94 0.94]);
     set(0,'defaultuicontrolbusyaction','cancel');% So multiple pushes don't stack.

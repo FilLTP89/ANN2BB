@@ -21,16 +21,16 @@ clr0f = [rgb('Navy');rgb('Navy');rgb('Navy')];
 % records-pbs
 clr0 = [rgb('Navy');rgb('IntenseBlue')];
 % fil-fil-pbs-empirical/stochastic-hybrid
-clr10 = [rgb('IntenseBlue');rgb('IntenseGreen');rgb('Orange')];
-clr11 = [rgb('DarkGrey');rgb('DarkGrey');rgb('IntenseBlue');rgb('IntenseGreen');rgb('Orange')];
+clr10 = [rgb('IntenseBlue');rgb('IntenseGreen');rgb('OrangeRed')];
+clr11 = [rgb('DarkGrey');rgb('DarkGrey');rgb('IntenseBlue');rgb('IntenseGreen');rgb('OrangeRed')];
 % records-pbs-empirical/stochastic-hybrid
-clr12 = [rgb('Navy');rgb('IntenseBlue');rgb('IntenseGreen');rgb('Orange')];
+clr12 = [rgb('Navy');rgb('IntenseBlue');rgb('IntenseGreen');rgb('OrangeRed')];
 % records-pbs-hybrid-hybrid
-clr121 = [rgb('Navy');rgb('Orange');rgb('Magenta')];
+clr121 = [rgb('Navy');rgb('OrangeRed');rgb('Magenta')];
 % record-hybrid-ann-spectral-matched
-clr2 = [rgb('Navy');rgb('Orange');rgb('Red');rgb('Red')];
+clr2 = [rgb('Navy');rgb('OrangeRed');rgb('Red');rgb('Red')];
 % records-spectral-matched
-clr21 = [rgb('Navy');rgb('Red');rgb('Orange');rgb('IntenseGreen')];
+clr21 = [rgb('Navy');rgb('Red');rgb('OrangeRed');rgb('IntenseGreen')];
 % records-spectral-matched
 clr3 = [rgb('Navy');rgb('Red')];
 cpp = {'e';'n';'z'};
@@ -44,9 +44,9 @@ pfg.fth = [0 0 30 20];
 %
 pfg.fsa = [0 0 14 14];
 xlm.fsa = {10.^([log10(0.1),log10(40)])};
-ylm.fsa = {10.^([-4,1])};
+ylm.fsa = {10.^([-3,1])};
 xtk.fsa = {10.^([-1,0,log10(5),1,log10(40)])};
-ytk.fsa = {10.^(-4:1)};
+ytk.fsa = {10.^(-3:1)};
 xlb.fsa = {'f [Hz]'};
 ylb.fsa = {'FS [m/s]','',''};
 scl.fsa = {'log','log','log'};
@@ -85,6 +85,13 @@ for mm_ = 1:bhr.ns
             tha_lim = [-4e2;4e2];
             thv_lim = [-30;30];
             thd_lim = [-30;30];
+            % lin-plot
+            xlm.psa = {[0;3]};
+            ylm.psa = {[0;1200]};
+            xtk.psa = {(0:3)'};
+            ytk.psa = {(0:200:1200)'};
+            scl.psa = {'lin','lin','lin'};
+
         case 'AQU'
             % *======================== AQU ==============================*
             disp('PLOTTING AQU')
@@ -99,18 +106,12 @@ for mm_ = 1:bhr.ns
     % * _PSEUDO-ACCELERATION RESPONSE SPECTRA_
     %
     pfg.psa = [0 0 14 14];
-%     % log-plot
+%     %     % log-plot
 %     xlm.psa = {10.^([log10(0.05);1])};
-%     ylm.psa = {10.^(1:3:4)'};
-%     xtk.psa = {10.^([log10(0.05);(-1:1)'])};
-%     ytk.psa = {10.^(1:4)'};
+%     ylm.psa = {10.^[1,3]};
+%     xtk.psa = {10.^[log10(0.05);(-1:1)']};
+%     ytk.psa = {10.^(1:3)'};
 %     scl.psa = {'log';'log';'log'};
-    % lin-plot
-    xlm.psa = {[0;3]};
-    ylm.psa = {[0;2500]};
-    xtk.psa = {(0:3)'};
-    ytk.psa = {(0:500:2500)'};
-    scl.psa = {'lin','lin','lin'};
     xlb.psa = {'T [s]'};
     ylb.psa = {'PSA [cm/s/s]','',''};
     grd.psa = {'minor'};
@@ -169,24 +170,24 @@ for mm_ = 1:bhr.ns
     mrk.pgd = {'o'};
     tit.thd = {'DISPLACEMENT TIME-HISTORY'};
     utd.thd = 100;
-    %%
-    %     switch lower(hybrid_type)
-    %         case 'sp96'
-    %             %
-    %             % _SABETTA & PUGLIESE 1996_
-    %             %
-    %             syn2ann_plot_res_station_sp96;
-    %         case 'exsim'
-    %             %
-    %             % _EXSIM_
-    %             %
-    %             syn2ann_plot_res_station_exsim;
-    %         case 'both'
-    %             %
-    %             % _BOTH_
-    %             %
-    %             syn2ann_plot_res_station_both;
-    %     end
-    syn2ann_fancy_plot;
+    %
+    switch lower(hybrid_type)
+        case 'sp96'
+            %
+            % _SABETTA & PUGLIESE 1996_
+            %
+            syn2ann_plot_res_station_sp96;
+        case 'exsim'
+            %
+            % _EXSIM_
+            %
+            syn2ann_plot_res_station_exsim;
+        case 'both'
+            %
+            % _BOTH_
+            %
+            syn2ann_plot_res_station_both;
+    end
+    %     syn2ann_fancy_plot;
     
 end

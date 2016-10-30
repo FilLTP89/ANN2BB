@@ -331,6 +331,7 @@ function [varargout] = fpplot(varargin)
                 hpl(idx,end+1)=plot(haxt,inp.Results.xpl{m_},inp.Results.ypl{m_},...
                     'marker',mrk{m_});
             end
+            hpl(n_,1).MarkerFaceColor = hpl(n_,1).Color;
             flag_modify(m_)=0;
         else
             n_=n_+1;
@@ -342,9 +343,9 @@ function [varargout] = fpplot(varargin)
                     'marker',mrk{m_},'linestyle',lst{m_});
             else
                 hpl(n_,1)=plot(haxt,inp.Results.xpl{m_},inp.Results.ypl{m_},...
-                    'marker',mrk{m_});
+                    'marker',mrk{m_}');
             end
-            
+            hpl(n_,1).MarkerFaceColor = hpl(n_,1).Color;
             flag_modify(m_)=1;
         end
         
@@ -435,8 +436,8 @@ function [varargout] = fpplot(varargin)
             end
             %%
             % _format axes_
-            format_figures_multi(hax(m_));
-            %format_figures(hax(m_));
+            %format_figures_multi(hax(m_));
+            format_figures(hax(m_));
             
         end
     end
