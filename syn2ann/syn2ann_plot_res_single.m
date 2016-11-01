@@ -17,25 +17,23 @@ global pfg xlm xlb xtk ylm ylb ytk grd scl mrk tit utd
 cd(wd);close all;
 % _color sets_
 % fancy plot
-clr0f = [rgb('Navy');rgb('Navy');rgb('Navy')];
+clr.rec_pbs_spm = [rgb('Navy');rgb('IntenseBlue');rgb('Red')];
 % records-pbs
-clr0 = [rgb('Navy');rgb('IntenseBlue')];
+clr.rec_pbs    = [rgb('Navy');rgb('IntenseBlue')];
 % fil-fil-pbs-empirical/stochastic-hybrid
-clr10 = [rgb('IntenseBlue');rgb('IntenseGreen');rgb('OrangeRed')];
-clr11 = [rgb('DarkGrey');rgb('DarkGrey');rgb('IntenseBlue');rgb('IntenseGreen');rgb('OrangeRed')];
+clr.pbs_emp_hyb_ths = [rgb('IntenseBlue');rgb('IntenseGreen');rgb('OrangeRed')];
+clr.pbs_emp_hyb_fss = [rgb('DarkGrey');rgb('DarkGrey');rgb('IntenseBlue');rgb('IntenseGreen');rgb('OrangeRed')];
 % records-pbs-empirical/stochastic-hybrid
-clr12 = [rgb('Navy');rgb('IntenseBlue');rgb('IntenseGreen');rgb('OrangeRed')];
-% records-pbs-hybrid-hybrid
-clr121 = [rgb('Navy');rgb('OrangeRed');rgb('Magenta')];
-% record-hybrid-ann-spectral-matched
-clr2 = [rgb('Navy');rgb('OrangeRed');rgb('Red');rgb('Red')];
+clr.rec_pbs_emp_hyb = [rgb('Navy');rgb('IntenseBlue');rgb('IntenseGreen');rgb('OrangeRed')];
+% records-spm-empirical-spm-stochastic-ann
+clr.rec_spmemp_spmsto_ann = [rgb('Navy');rgb('IntenseGreen');rgb('Orange');rgb('Red')];
+% records-pbs-spm
+clr.rec_pbs_spmemp_spmsto = [rgb('Navy');rgb('IntenseBlue');rgb('OrangeRed');rgb('OrangeRed')];
 % records-spectral-matched
-clr21 = [rgb('Navy');rgb('Red');rgb('OrangeRed');rgb('IntenseGreen')];
-% records-spectral-matched
-clr3 = [rgb('Navy');rgb('Red')];
+clr.rec_spm = [rgb('Navy');rgb('Red')];
 cpp = {'e';'n';'z'};
-pfg.fsp = [0 0 20 30];
-pfg.fth = [0 0 30 20];
+pfg.fsp = [0 0 28 14];
+pfg.fth = [0 0 28 18.000];
 %
 % _COMPUTE TIME SHIFT FOR RECORD PLOT_
 %
@@ -67,6 +65,13 @@ for mm_ = 1:bhr.ns
             tha_lim = [-9e2;9e2];
             thv_lim = [-60;60];
             thd_lim = [-30;30];
+            % lin-plot
+            xlm.psa = {[0;3]};
+            ylm.psa = {[0;1200]};
+            xtk.psa = {(0:3)'};
+            ytk.psa = {(0:200:1200)'};
+            scl.psa = {'lin','lin','lin'};
+            
         case 'MIR08'
             % *======================== MIR08 ============================*
             disp('PLOTTING MIR08')
@@ -76,6 +81,13 @@ for mm_ = 1:bhr.ns
             tha_lim = [-6e2;6e2];
             thv_lim = [-50;50];
             thd_lim = [-20;20];
+            % lin-plot
+            xlm.psa = {[0;3]};
+            ylm.psa = {[0;1200]};
+            xtk.psa = {(0:3)'};
+            ytk.psa = {(0:200:1200)'};
+            scl.psa = {'lin','lin','lin'};
+            
         case 'AQK'
             % *======================== AQK ==============================*
             disp('PLOTTING AQK')
@@ -188,6 +200,6 @@ for mm_ = 1:bhr.ns
             %
             syn2ann_plot_res_station_both;
     end
-    %     syn2ann_fancy_plot;
+%     syn2ann_fancy_plot;
     
 end

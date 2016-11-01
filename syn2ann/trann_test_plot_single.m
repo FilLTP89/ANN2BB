@@ -33,9 +33,7 @@ clr21 = [rgb('Navy');rgb('Red');rgb('Orange');rgb('IntenseGreen')];
 clr3 = [rgb('Navy');rgb('Red')];
 cpp.rec = {'ew';'ns';'ud'};
 dlg = cell(3,1);
-dlg(1,1) = {'EW'};
-dlg(2,1) = {'NS'};
-dlg(3,1) = {'UD'};
+dlg = {'EW';'NS';'UD'};
 pfg.fat = [0 0 30 22];
 %
 % * _FOURIER SPECTRA_
@@ -73,15 +71,7 @@ mrk.psa = {'none'};
 tit.psa = {'PSEUDO-ACCELERATION SPECTRUM (5%)'};
 utd.psa = 100;
 
-vtm_shift=zeros(1,2);
-% for kk_ = 1:tst.mtd.nr
-%     cpp.ann = tst.mtd.cpp{kk_};
-%     flag.ann = seismo_dir_conversion(cpp.ann);
-%     for mm_ = 1:bhr.ns
-%         trann_plot_res_station;
-%
-%     end
-% end
+spp = '/home/filippo/Scrivania/ann/';
 
 %% *FANCY PLOT*
 for mm_ = 1:bhr.ns
@@ -117,8 +107,8 @@ for mm_ = 1:bhr.ns
             tha_lim = [-4e2;4e2];
             %             thv_lim = [-30;30];
             %             thd_lim = [-30;30];
-            ylm.psa = {[0;1800]};
-            ytk.psa = {(0:600:1800)'};
+            ylm.psa = {[0;1200]};
+            ytk.psa = {(0:400:1200)'};
         case {'KMM2'}
             % *======================== KMM ==============================*
             disp('PLOTTING KMM')

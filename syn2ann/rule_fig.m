@@ -2,7 +2,7 @@ function rule_fig(fig)
     
     hax = get(fig,'children'); 
     leg = findobj(hax,'type','legend');
-    set(leg,'box','off','fontweight','bold','fontsize',15,'interpreter','none');
+    %set(leg,'box','off','fontweight','bold','fontsize',15,'interpreter','none');
     hax = findobj(hax,'type','axes');
     ti_all  = get(hax,'tightinset');
     pos_all = get(hax,'position');

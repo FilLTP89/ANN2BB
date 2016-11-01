@@ -124,7 +124,7 @@ function [varargout] = fpplot(varargin)
         catch
             spg = inp.Results.spg;
         end
-                
+        
         %%
         % _x-limits_
         try any(validatestring('xlm',inp.UsingDefaults));
@@ -314,46 +314,57 @@ function [varargout] = fpplot(varargin)
     
     %% PLOT FIGURE
     flg = zeros(spn,1);
-    paxt = cell2mat(pax);
+    paxt = [];% cell2mat(pax);
     n_ = 0;
     flag_modify=-ones(spn,1);
-    
     for m_ = 1:spn
         %%
         % _plot_
-        if ismember(pax{m_},paxt(1:m_-1))
-            idx = find(paxt(1:m_-1)==pax{m_},1,'first');
+        %if ismember(pax{m_},paxt(1:m_-1))
+            % idx = find(paxt(1:m_-1)==pax{m_},1,'first');
+        if ismember(pax{m_},paxt)
+            count(n_) = count(n_)+1;
+            idx = find(paxt==pax{m_},1,'first');
             haxt = hax(idx);
             if flst
-                hpl(idx,end+1)=plot(haxt,inp.Results.xpl{m_},inp.Results.ypl{m_},...
+                hpl(idx,count(n_))=plot(haxt,inp.Results.xpl{m_},inp.Results.ypl{m_},...
                     'marker',mrk{m_},'linestyle',lst{m_});
             else
-                hpl(idx,end+1)=plot(haxt,inp.Results.xpl{m_},inp.Results.ypl{m_},...
+                hpl(idx,count(n_))=plot(haxt,inp.Results.xpl{m_},inp.Results.ypl{m_},...
                     'marker',mrk{m_});
             end
-            hpl(n_,1).MarkerFaceColor = hpl(n_,1).Color;
-            flag_modify(m_)=0;
+            hpl(idx,count(n_)).MarkerFaceColor = hpl(idx,count(n_)).Color;
         else
             n_=n_+1;
+            count(n_) = 1;
+            paxt = [paxt;pax{m_}];
             haxt = subplot(spg(1),spg(2),pax{m_},'parent',hfg);
             hold(haxt,'all');
             hax(n_) = haxt;
             if flst
-                hpl(n_,1)=plot(haxt,inp.Results.xpl{m_},inp.Results.ypl{m_},...
+                hpl(n_,count(n_))=plot(haxt,inp.Results.xpl{m_},inp.Results.ypl{m_},...
                     'marker',mrk{m_},'linestyle',lst{m_});
             else
-                hpl(n_,1)=plot(haxt,inp.Results.xpl{m_},inp.Results.ypl{m_},...
+                hpl(n_,count(n_))=plot(haxt,inp.Results.xpl{m_},inp.Results.ypl{m_},...
                     'marker',mrk{m_}');
             end
-            hpl(n_,1).MarkerFaceColor = hpl(n_,1).Color;
-            flag_modify(m_)=1;
+            hpl(n_,count(n_)).MarkerFaceColor = hpl(n_,count(n_)).Color;
+            flag_modify(n_) = 1;
         end
         
     end
     %% AXES SET UP
     for mm_ = 1:numel(paxt)
         if logical(flag_modify(mm_))
-            m_ = pax{mm_};
+            m_ = paxt(mm_);
+            %%
+            % _legend_
+            idx = ~strcmpi(inp.Results.leg{m_},'');
+            
+            if any(idx)
+                legg=legend(hax(m_),hpl(m_,idx),inp.Results.leg{m_}(idx));
+                set(legg,'interpreter','latex','box','off');
+            end
             %%
             % _axes labels_
             xlabel(hax(m_),xlb{m_});
@@ -444,19 +455,8 @@ function [varargout] = fpplot(varargin)
     %%
     % _crop figure_
     rule_fig(hfg);
-    %%
-    % _legend_
-    try any(validatestring('leg',inp.UsingDefaults));
-    catch
-        for m_ = 1:numel(hax)
-            idx = ~strcmpi(inp.Results.leg{m_},'');
-            if any(idx)
-                legg=legend(hax(m_),hpl(m_,idx),inp.Results.leg{m_}(idx));
-                set(legg,'interpreter','latex','box','off');
-            end
-        end
-    end
-    %% OUTPUT
+
+    %% *OUTPUT*
     varargout{1} = hfg;
     varargout{2} = hax;
     varargout{3} = hpl;
