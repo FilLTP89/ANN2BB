@@ -62,7 +62,7 @@ function [varargout] = idc_tha(varargin)
         thd = filtfilt(bfb,bfa,thd);
         
         %% *FINAL ACC/VEL/DIS*
-        disp('--->IDC_THA: BACK TO ACCELEARATION')
+        disp('--->IDC_THA: BACK TO ACCELERATION')
         % velocity 
         thv = avd_diff(dtm,thd);
         % acceleration
