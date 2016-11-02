@@ -51,7 +51,7 @@ function [varargout] = fpplot(varargin)
     % title
     def.tit = {''};
     % legend
-    def.leg = '';
+    def.leg = {''};
     % grid
     def.grd = {'off'};
     fxlm=0;fylm=0;fxtk=0;fytk=0;fpax=0;flst=0;

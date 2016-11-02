@@ -13,19 +13,25 @@ ccc;
 fprintf('---------------------\n0. SETUP\n---------------------\n');
 
 %% *DEFINE WORKDIR*
-% _main workdir_
-wd = fullfile(filesep,'media','filippo','Data','Filippo','PHD_heavyweight',...
-    'EMILIA_2905');
+% % _main workdir_
+% wd = fullfile(filesep,'media','filippo','Data','Filippo','PHD_heavyweight',...
+%     'EMILIA_2905');
+% fprintf('Workdir: %s\n',wd);
+% % _save path_
+% sp = fullfile(filesep,'media','filippo','Data','Filippo','PHD_heavyweight',...
+%     'heavy_images');
+% % eval(sprintf('!mkdir -p %s',sp));
+% % _main workdir_
+wd = '/tmp1/gattif/EMILIA_2905';
 fprintf('Workdir: %s\n',wd);
 % _save path_
-sp = fullfile(filesep,'media','filippo','Data','Filippo','PHD_heavyweight',...
-    'heavy_images');
-% eval(sprintf('!mkdir -p %s',sp));
+sp = '/tmp1/gattif/heavy_images_new';
+
 
 %% *LOAD ALL METADATA AVAILABLE*
 syn2ann_case_list;
 % _select analyses : selected_case = [a,b,...,d]_
-selected_case = 1:2;
+selected_case = [1,3];
 
 %% *DEFINE REAL RECORDS METADATA*
 % _path to record files_
