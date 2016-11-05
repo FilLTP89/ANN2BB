@@ -1,0 +1,66 @@
+         modeling parameters     
+Fault Strike              =   144.00
+Fault dip                 =    54.00
+Fault depth to upper edge =     0.00
+Fault Length              =    20.00
+Fault Width               =    18.50
+ratio of rupture to s-wave velocity =     0.71
+FaultLat                  =    42.43
+FaultLon                  =    13.41
+No.of subs along strike   =       20
+No.of subs along dip      =       14
+subfault length           =     1.00
+subfault width            =     1.32
+i_rise_time (1=orig,2=1/f0) =  2
+iseed, nsims =          399   40
+-----------------------------------------------
+input hypocenter at subfault    =    7  11
+n_hypocenters    =    1
+Mag.                      =     6.30
+-----------------------------------------------
+FFTpoints                 =        0
+dt (sec)                  =     0.01
+beta (km/s)               =     3.80
+density (rho), gr/cm3     =     2.80
+pulsing Percentage        =    75.00
+iflagscalefactor (1=vel^2; 2=acc^2;  3=asymptotic acc^2 (dmb)) = 2
+flocut, nslope            =   0.000  8
+iflagfas_avg              = 3
+iflagpsa_avg              = 2
+stress parameter (bars)   =    92.00
+kappa                     =     0.04
+-----------------------------------------------
+         Corner Frequency    
+Dynamic Corner Frequency Flag is  ON =    1
+-----------------------------------------------
+ fr1, qr1, s1, ft1, ft2, fr2, qr2, s2, c_q  = 
+  0.1000000       275.0000      -2.000000      0.2000000      0.6000000    
+   1.000000       88.00000      0.9000000       3.600000    
+-----------------------------------------------
+rMin in duration model      =     10.00
+1st hinge in duration model =     70.00
+2nd hinge in duration model =    130.00
+1st slope in duration model =      0.16
+2nd slope in duration model =     -0.03
+3rd slope in duration model =      0.04
+Min of duration             =      0.00
+-----------------------------------------------
+ gspread: i, nsprd_segs, r_ref, rlow, a_s, b_s, m_s
+           1           3   1.000000       1.000000      -1.000000    
+  0.0000000E+00   6.500000    
+           2           3   1.000000       70.00000      0.0000000E+00
+  0.0000000E+00   6.500000    
+           3           3   1.000000       140.0000     -0.5000000    
+  0.0000000E+00   6.500000    
+-----------------------------------------------
+window applied               = tapered boxcar
+-----------------------------------------------
+amplification as in file fdt_AQK.h2                    
+-----------------------------------------------
+-----------------------------------------------
+         Analytical Pulse parameters     
+-----------------------------------------------
+Analytical Flag is  OFF   =     0
+ 
+tpadl, tpadt, dt(sec)                     :     5.000     5.000     0.010
+For site   1 siteLocation coordinates 1&2 =     42.35    13.40

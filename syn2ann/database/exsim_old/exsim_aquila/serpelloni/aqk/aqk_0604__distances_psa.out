@@ -1,0 +1,2 @@
+ isite sitecoord(1) sitecoord(2) isitecoordflag site_lat_degrees site_lon_degrees     d_jb   d_cd2f       freq   psa-1.00       freq   psa99.00       freq   psa00.10       freq   psa00.50       freq   psa01.00       freq   psa05.00
+     1       42.345       13.401              1           42.345           13.401     0.00     3.84 -1.000E+00  6.133E+01  9.900E+01  4.599E+02  1.000E-01  6.328E+01  5.000E-01  3.235E+02  1.000E+00  5.378E+02  5.000E+00  1.017E+03

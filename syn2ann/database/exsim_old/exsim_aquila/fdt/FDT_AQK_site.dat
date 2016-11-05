@@ -1,0 +1,19 @@
+**numero strati (escluso il bedrock!!)**
+1
+**freq max **
+25
+**df**
+0.1
+**spessori strati (m)**
+   250 
+**densita' (t/m^3)**
+1.9 2.6     
+**velocita' S (m/s)**
+500 1531 
+**smorzamento**
+0.005 0.005 
+**nome output H1**
+fdt_AQK_site.h1
+**nome output H2 (substrato affiorante)**
+fdt_AQK_site.h2
+

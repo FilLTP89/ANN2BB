@@ -1,0 +1,96 @@
+!Control file for program exsim_dmb
+! Revision of program involving a change in the control file on this date:
+   02/18/09
+!Title
+  New Aquila 06.04.09 AQG
+!Write acc, psa, husid files for each site?
+ Y
+!MW, Stress, flag (0=fmax; 1=kappa), fmax or kappa
+  6.3 92.0  1  0.04          
+!lat and lon of upper edge of fault
+  42.43457 13.40704 
+!strike,dip, depth of fault(km)
+  140.0 50.0 0              
+!fault type (S=strikeslip; R=reverse; N=normal; U=undifferentiated) 
+! (Only used if Wells and Coppersmith is used to obtain FL and FW).
+  N                               
+!fault length and width, dl, dw, stress_ref
+!Note: Force program to use Wells and Coppersmith for FL and/or FW if either entry = 0.0
+ 26.0  21 2 2.1 100 ! used for WC scaling (need an entry as a placeholder even if not used_
+!y (=vrup/beta)
+  0.711             
+!hypo location in (i,j) sub; number of iterations over hypocenter (need an entry, but only used if 
+!at least one of the first two values are 0 for a random location)
+ 7 11 1                           
+!Enter type of risetime (1=original, 2=1/f0)
+ 2
+!tpadl, tpadt, delta t
+ 5.0 5.0 0.01                 
+!beta , rho
+  3.797 2.8                   
+!gsprd: r_ref, nsegs, (rlow(i), a_s, b_s, m_s(i))  (Usually set r_ref = 1.0 km)
+    1.0
+    3
+      1.0 -1.0 0.0 6.5
+     70.0  0.0 0.0 6.5
+    140.0 -0.5 0.0 6.5
+!q: fr1, Qr1, s1, ft1, ft2, fr2, qr2, s2, c_q
+    0.1 275 -2.0 0.2 0.6 1.0 88.0 0.9 3.6   
+!trilinear duration and properties (rmin,rd1,rd2,durmin,b1,b2,b3)
+   10. 70. 130. 0.0 0.16 -0.03 0.04   
+!Type of window: 1 for Saragoni-Hart taper windows, 0 for tapered boxcar window
+  0                              
+!low-cut filter corner, nslope (0 ==> no filter)
+ 0.00 8
+! %damping of response spectra
+ 5.0
+!# of f and Min and Max F for response spectra
+  50 0.2  10.                
+!no. of frequencies for summary output (10 max):
+ 6 
+!frequency (-1.0, 99.0 for pgv, pga):
+ -1.0 99.0 0.1 0.5 1 5
+!Output file names stem:
+  aqg_0604_
+!Name of crustal amplification file:
+  fdt_AQG.h2
+!No. of frequencies in the crustal amplification file
+  250                              
+!Name of site amplification file:
+  fdt_one.txt
+!No. of frequencies in the site amplification file (0 to skip)
+  0                               
+!DynamicFlag (0=no), PulsingPercent
+  1   75.0                    
+!iflagscalefactor (1=vel^2; 2=acc^2; 3=asymptotic acc^2 (dmb))
+  2                               
+!iflagfas_avg (1=arithmetic; 2=geometric, 3=rms: USE 3!)
+  3                               
+!iflagpsa_avg (1=arithmetic; 2=geometric: USE 2!, 3=rms)
+  2                               
+!deterministic flag,gama,nu,t0, impulse peak
+  0   1.0  90.0  4.0  10.    
+!iseed, # of trials 
+  399 40                      
+!Number of Sites, coord flag (1=lat,long; 2=R,Az; 3=N,E)
+  1 1                        
+!Coordinates of each site aqg, aqk, aqv
+42.3735 13.3370	
+!Move the sites to the midpoint and end of the surface projection 
+!of the upper edge of the fault if isitecoordflag = 3 and 
+!siteLocation(1) = 0 (center) and siteLocation(2) = 0 (end), respectively
+!(this only makes sense if the strike of the fault = 0.0)?
+ N
+!islipweight=-1 -> unity slip for all subfaults,=0 -> specify slips below, =1 -> random weights
+  0                         
+!Matrix of slip weights
+0.01031	0.09609	0.11566	0.12541	0.09584	0.15033	0.24912	0.07297	0.01370	0.06583	0.00100	0.03124	0.01889
+0.06244	0.12261	0.16620	0.09591	0.10829	0.09286	0.05390	0.10888	0.10376	0.10424	0.13039	0.06316	0.03791
+0.09903	0.15826	0.13028	0.48053	0.38326	0.31221	0.41134	0.13713	0.07880	0.00066	0.00083	0.23290	0.09884
+0.09605	0.11149	0.13020	0.34448	0.60744	0.45268	0.40282	0.43784	0.34212	0.06707	0.09255	0.08627	0.09596
+0.06017	0.00029	0.10542	0.36769	0.65159	0.33921	0.36521	0.57644	0.58778	0.26394	0.14389	0.07270	0.09867
+0.09988	0.00019	0.17492	0.17752	0.33054	0.36340	0.38560	0.67013	0.68820	0.28497	0.09259	0.18997	0.09996
+0.09982	0.00031	0.00035	0.02718	0.06330	0.38073	0.47632	0.52668	0.46521	0.23432	0.13358	0.20236	0.09989
+0.09950	0.10262	0.00193	0.16035	0.22602	0.31649	0.26330	0.27098	0.20468	0.06688	0.00350	0.00787	0.00677
+0.07535	0.02573	0.03413	0.16259	0.24634	0.16208	0.13594	0.13371	0.09160	0.02191	0.00106	0.03769	0.09600
+0.09615	0.09309	0.06840	0.07733	0.09409	0.09005	0.03445	0.00193	0.04659	0.07099	0.07008	0.09459	0.09979
