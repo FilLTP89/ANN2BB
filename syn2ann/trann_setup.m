@@ -13,18 +13,18 @@ ccc;
 fprintf('---------------------\n0. SETUP\n---------------------\n');
 %% *WORKDIR*
 % _main workdir_
-% wd = fullfile(filesep,'media','filippo','Data','Filippo','aeolus',...
-%     'EMILIA_2905');
-% sp = fullfile(filesep,'media','filippo','Data','Filippo','aeolus',...
-%     'heavy_images');
-% ann.wd = fullfile(wd,'training');
-% % _database_
-% dbn = fullfile(filesep,'media','filippo','Data','Filippo',...
-%     'PHD_passing_through_heavyweight','simbad_v05','SIMBAD_v05_1.mat');
-wd = fullfile(filesep,'tmp1','gattif','EMILIA_2905');
-sp = fullfile(filesep,'tmp1','gattif','heavy_images_new');
+wd = fullfile(filesep,'media','filippo','Data','Filippo','PHD_heavyweight',...
+    'EMILIA_2905');
+sp = fullfile(filesep,'media','filippo','Data','Filippo','aeolus',...
+    'heavy_images');
+
 % _database_
-dbn = fullfile(filesep,'mssmat2','home','gattif','Documents','SIMBAD_v05_1.mat');
+dbn = fullfile(filesep,'media','filippo','Data','Filippo',...
+    'PHD_passing_through_heavyweight','simbad_v05','SIMBAD_v05_1.mat');
+% wd = fullfile(filesep,'tmp1','gattif','EMILIA_2905');
+% sp = fullfile(filesep,'tmp1','gattif','heavy_images_new');
+% _database_
+% dbn = fullfile(filesep,'mssmat2','home','gattif','Documents','SIMBAD_v05_1.mat');
 ann.trn.wd = fullfile(wd,'training');
 fprintf('Training Workdir: %s\n',ann.trn.wd);
 fprintf('Training Database: %s\n',dbn);
@@ -32,7 +32,7 @@ fprintf('Training Database: %s\n',dbn);
 %% *LOAD ALL METADATA AVAILABLE*
 trann_test_list;
 % _select test case : selected_case = [a,b,...,d]_
-selected_case = 1:4;
+selected_case = 3;
 
 %% *DEFINE REAL RECORDS METADATA*
 % _path to record files_

@@ -31,5 +31,5 @@ trann_load;
 trann_test;
 
 %% *PLOTTING TEST RESULTS*
-trann_test_plot_single;
-%trann_test_plot_compare;
+%trann_test_plot_single;
+trann_test_plot_compare;

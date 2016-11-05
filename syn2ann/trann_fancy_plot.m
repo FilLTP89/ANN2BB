@@ -12,6 +12,7 @@
 global pfg xlm xlb xtk ylm ylb ytk grd scl mrk tit utd
 
 st = bhr.nm{mm_};
+fprintf('-----------------------------\n');
 fprintf('%s-with HYBRID\n',bhr.nm{mm_});
 set(0,'defaultaxescolororder',clr0f)
 %% *POST-PROCESS - RECORDS vs ANN*
@@ -34,11 +35,18 @@ plt.leg = cell(6,1);
 plt.tit = cell(6,1);
 for j_ = 1:numel(cpp.rec)
     flag.rec = seismo_dir_conversion(cpp.rec{j_});
+    fprintf('*  REC: %s - ',cpp.rec{j_});
+    cellfun(@(x) fprintf('%s ',x),flag.rec);
+    fprintf('\n');
     for kk_ = 1:tst.mtd.nr
         cpp.ann = tst.mtd.cpp{kk_};
         flag.ann = seismo_dir_conversion(cpp.ann);
+        fprintf('** ANN: %s - ',cpp.ann);
+        cellfun(@(x) fprintf('%s ',x),flag.ann);
+        fprintf('\n');
         if any(strcmpi(flag.rec,flag.ann))
-            [~,tha_lab] = get_axis_tick(tha_lim,tha_lim,1,200);
+            fprintf('-->FOUND TRAINED ANN!\n\n')
+            [~,tha_lab] = get_axis_tick(tha_lim,tha_lim,1,tha_lim(1)/2);
             % x-plot
             plt.xpl{j_,1}   = rec.mon.vtm{mm_};
             plt.xpl{3+2*j_-1,1} = rec.mon.vTn;
@@ -68,7 +76,7 @@ for j_ = 1:numel(cpp.rec)
             plt.leg(j_,1)   = {strcat('REC-',dlg(j_))};
             plt.leg(j_+3,1) = {{sprintf('REC-%s',dlg{j_});sprintf('ANN-%s',dlg{j_})}}; 
             
-            fnm = fullfile(spp,sprintf('%s_rec_%s_tha_%s',st,tst.mtd.scl{kk_},cpp.rec{j_}));
+            fnm = fullfile(spp,sprintf('%s_rec_%s_tha_%s_%u',st,tst.mtd.scl{kk_},cpp.rec{j_},round(100*tst.mtd.TnC{kk_})));
             fpplot('xpl',plt.xpl(j_,1),'ypl',plt.ypl(j_,1),...
                 'pfg',[0 0 14 5.25],...
                 'scl',plt.scl(j_,1),'grd',plt.grd(j_,1),...
@@ -78,7 +86,7 @@ for j_ = 1:numel(cpp.rec)
 %             saveas(gcf,fnm,'jpg');
             saveas(gcf,fnm,'epsc');
             
-            fnm = fullfile(spp,sprintf('%s_rec_%s_psa_%s',st,tst.mtd.scl{kk_},cpp.rec{j_}));
+            fnm = fullfile(spp,sprintf('%s_rec_%s_psa_%s_%u',st,tst.mtd.scl{kk_},cpp.rec{j_},round(100*tst.mtd.TnC{kk_})));
             fpplot('xpl',plt.xpl(3+2*j_-1:3+2*j_,1),'ypl',plt.ypl(3+2*j_-1:3+2*j_,1),...
                 'pfg',[0 0 14 14],...
                 'scl',plt.scl(j_+3,1),'grd',plt.grd(j_+3,1),...
@@ -87,16 +95,18 @@ for j_ = 1:numel(cpp.rec)
                 'leg',{{'REC';'ANN'}},'tit',dlg(j_),'mrk',{'none';'o'},'lst',{'-';':'});
 %             saveas(gcf,fnm,'jpg');
             saveas(gcf,fnm,'epsc');
+        else
+            fprintf('-->Skipping ANN...\n\n\n')
         end
     end
 end
 
-fnm = fullfile(spp,sprintf('%s_rat_%s',st,tst.mtd.scl{kk_}));
-fpplot('xpl',plt.xpl,'ypl',plt.ypl,...
-    'pfg',pfg.fat,'spg',plt.spg,'pax',plt.pax,...
-    'scl',plt.scl,'grd',plt.grd,...
-    'xlm',plt.xlm,'xtk',plt.xtk,'xlb',plt.xlb,...
-    'ylm',plt.ylm,'ytk',plt.ytk,'ylb',plt.ylb,...
-    'leg',plt.leg,'mrk',plt.mrk,'lst',plt.lst);
-% saveas(gcf,fnm,'jpg');
-saveas(gcf,fnm,'epsc');
+%fnm = fullfile(spp,sprintf('%s_rat_%s',st,tst.mtd.scl{kk_}));
+%fpplot('xpl',plt.xpl,'ypl',plt.ypl,...
+%    'pfg',pfg.fat,'spg',plt.spg,'pax',plt.pax,...
+%    'scl',plt.scl,'grd',plt.grd,...
+%    'xlm',plt.xlm,'xtk',plt.xtk,'xlb',plt.xlb,...
+%    'ylm',plt.ylm,'ytk',plt.ytk,'ylb',plt.ylb,...
+%    'leg',plt.leg,'mrk',plt.mrk,'lst',plt.lst);
+%% saveas(gcf,fnm,'jpg');
+%saveas(gcf,fnm,'epsc');

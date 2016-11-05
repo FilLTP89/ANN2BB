@@ -26,7 +26,7 @@ clr121 = [rgb('Navy');rgb('Orange');rgb('Magenta')];
 % record-hybrid-ann-spectral-matched
 clr2 = [rgb('Navy');rgb('Orange');rgb('Red');rgb('Red')];
 % records-spectral-matched
-clr21 = [rgb('DarkOrange');rgb('black');rgb('black');rgb('black')];
+clr21 = [rgb('Navy');rgb('IntenseBlue');rgb('Red');rgb('Orange')];
 % records-spectral-matched
 clr3 = [rgb('Navy');rgb('Red')];
 cpp.rec = {'ew';'ns';'ud'};
@@ -52,23 +52,8 @@ grd.fsa = {'minor'};
 mrk.fsa = {'none'};
 tit.fsa = {'FOURIER SPECTRUM'};
 utd.fsa = 1;
-%
-% * _PSEUDO-ACCELERATION RESPONSE SPECTRA_
-%
-pfg.psa = [0 0 14 14];
-xlm.psa = {[0.1;5]};
-ylm.psa = {[0;2000]};
-xtk.psa = {[0.1;(1:4)']};
-ytk.psa = {(0:500:2000)'};
-xlb.psa = {'T [s]'};
-ylb.psa = {'PSA [cm/s/s]','',''};
-scl.psa = {'lin','lin','lin'};
-grd.psa = {'minor'};
-mrk.psa = {'none'};
-tit.psa = {'PSEUDO-ACCELERATION SPECTRUM (5%)'};
-utd.psa = 100;
-
 vtm_shift=zeros(1,tst.mtd.nr+1);
+spp = '/home/filippo/Scrivania/ann';
 % _check tested ann motion direction (ew/ns/gh/ud)_
 cpp.ann = cell(tst.mtd.nr,1);
 for kk_=1:tst.mtd.nr
@@ -76,12 +61,16 @@ for kk_=1:tst.mtd.nr
 end
 cpp.ann = unique(cpp.ann);
 if size(cpp.ann)==1
+    disp('COMPARE BY SITE CLASS!');
     flag.ann = seismo_dir_conversion(cpp.ann);
     ann.scp = cell(tst.mtd.nr,1);
     for kk_=1:tst.mtd.nr
         ann.scp(kk_,1) = ann.tst(kk_);
     end
     for mm_ = 1:bhr.ns
+        syn2ann_setup_axes;
         trann_plot_res_compare_siteclass;
     end
+else
+    disp('ERROR: ANN TRAINED ON DIFFERENT COMPONENTS!');
 end
