@@ -13,8 +13,8 @@ ccc;
 fprintf('---------------------\n0. SETUP\n---------------------\n');
 %% *WORKDIR*
 % _main workdir_
-wd = fullfile(filesep,'media','filippo','Data','Filippo','PHD_heavyweight',...
-    'EMILIA_2905');
+wd = fullfile(filesep,'media','filippo','Data','Filippo',...
+    'PHD_passing_through_polimi','syn2ann','database');
 sp = fullfile(filesep,'media','filippo','Data','Filippo','aeolus',...
     'heavy_images');
 
@@ -32,7 +32,7 @@ fprintf('Training Database: %s\n',dbn);
 %% *LOAD ALL METADATA AVAILABLE*
 trann_test_list;
 % _select test case : selected_case = [a,b,...,d]_
-selected_case = 3;
+selected_case = 4;
 
 %% *DEFINE REAL RECORDS METADATA*
 % _path to record files_

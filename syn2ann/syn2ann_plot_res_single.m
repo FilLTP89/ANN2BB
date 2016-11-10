@@ -91,7 +91,7 @@ for mm_ = 1:bhr.ns
         case 'AQK'
             % *======================== AQK ==============================*
             disp('PLOTTING AQK')
-            vtm_shift(:) = 1.25;
+            vtm_shift(:) = 1.35*ones(1,2);
             vtm_lim = [0;25];
             vtm_lab = (vtm_lim(1):5:vtm_lim(end));
             tha_lim = [-4e2;4e2];
@@ -107,7 +107,7 @@ for mm_ = 1:bhr.ns
         case 'AQU'
             % *======================== AQU ==============================*
             disp('PLOTTING AQU')
-            vtm_shift(:) = 1.9*ones(1,2);
+            vtm_shift(:) = 2.15*ones(1,2);
             vtm_lim = [0;25];
             vtm_lab = (vtm_lim(1):5:vtm_lim(end));
             tha_lim = [-4e2;4e2];

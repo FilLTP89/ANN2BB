@@ -46,7 +46,7 @@ for j_ = 1:numel(cpp.rec)
         fprintf('\n');
         if any(strcmpi(flag.rec,flag.ann))
             fprintf('-->FOUND TRAINED ANN!\n\n')
-            [~,tha_lab] = get_axis_tick(tha_lim,tha_lim,1,tha_lim(1)/2);
+            [~,tha_lab] = get_axis_tick(tha_lim,tha_lim,1,tha_lim(2)/2);
             % x-plot
             plt.xpl{j_,1}   = rec.mon.vtm{mm_};
             plt.xpl{3+2*j_-1,1} = rec.mon.vTn;
@@ -76,7 +76,7 @@ for j_ = 1:numel(cpp.rec)
             plt.leg(j_,1)   = {strcat('REC-',dlg(j_))};
             plt.leg(j_+3,1) = {{sprintf('REC-%s',dlg{j_});sprintf('ANN-%s',dlg{j_})}}; 
             
-            fnm = fullfile(spp,sprintf('%s_rec_%s_tha_%s_%u',st,tst.mtd.scl{kk_},cpp.rec{j_},round(100*tst.mtd.TnC{kk_})));
+            fnm = fullfile(spp,sprintf('%s_rec_tha_%s',st,cpp.rec{j_}));
             fpplot('xpl',plt.xpl(j_,1),'ypl',plt.ypl(j_,1),...
                 'pfg',[0 0 14 5.25],...
                 'scl',plt.scl(j_,1),'grd',plt.grd(j_,1),...

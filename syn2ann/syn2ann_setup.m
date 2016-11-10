@@ -22,16 +22,16 @@ fprintf('---------------------\n0. SETUP\n---------------------\n');
 %     'heavy_images');
 % % eval(sprintf('!mkdir -p %s',sp));
 % % _main workdir_
-wd = '/tmp1/gattif/EMILIA_2905';
+wd = '/media/filippo/Data/Filippo/PHD_passing_through_polimi/syn2ann/database';
 fprintf('Workdir: %s\n',wd);
 % _save path_
-sp = '/tmp1/gattif/heavy_images_new';
+sp = '/home/filippo/Scrivania/ann';
 
 
 %% *LOAD ALL METADATA AVAILABLE*
 syn2ann_case_list;
 % _select analyses : selected_case = [a,b,...,d]_
-selected_case = [1,3];
+selected_case = 3:4;
 
 %% *DEFINE REAL RECORDS METADATA*
 % _path to record files_
@@ -82,7 +82,7 @@ fprintf('---------------------------------------------------------------\n');
 
 %% *DEFINE SPEED MONITORS METADATA*
 % _path to monitor files_
-mon.pt  = fullfile(wd,'monitor');
+mon.pt  = fullfile(wd,'monitors');
 fprintf('--> Monitor Path: %s\n',mon.pt);
 % _metadata filename_
 mon.fnm  = fullfile(wd,'SM_Stations_Monitors.csv');
@@ -118,7 +118,7 @@ mon.ci = mon.ci(:);
 
 %% *DEFINE HYBRIDIZATION METADATA*
 % _SP96 metadata_
-hybrid_type='sp96';
+hybrid_type='exsim';
 mtd.sp96.na = mon.na;
 for m_ = 1:mtd.sp96.na
     for n_ = 1:fnn.mtdd.sp96

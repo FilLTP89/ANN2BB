@@ -78,7 +78,7 @@ tst.mtd.scl = {'AB';'CD';'ALL'};
 % _corner period for each ANN_
 tst.mtd.TnC = {0.5;0.5;0.5};
 % _ANN motion component : gh,ud (geometric mean horizontal, updip)_
-tst.mtd.cpp = {'gh';'gh';'gh'};
+tst.mtd.cpp = {'ud';'ud';'ud'};
 for i_ = 1:tst.mtd.nr
     tst.mtd.nl(i_) = {sprintf('net_%u_%s_%s.mat',...
         round(tst.mtd.TnC{i_}*100),tst.mtd.scl{i_},tst.mtd.cpp{i_})};
