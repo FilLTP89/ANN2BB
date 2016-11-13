@@ -31,7 +31,7 @@ sp = '/home/filippo/Scrivania/ann';
 %% *LOAD ALL METADATA AVAILABLE*
 syn2ann_case_list;
 % _select analyses : selected_case = [a,b,...,d]_
-selected_case = 3:4;
+selected_case = [1,3];
 
 %% *DEFINE REAL RECORDS METADATA*
 % _path to record files_
@@ -61,7 +61,7 @@ end
 
 % _reference system_
 bhr.rs = {'e';'n';'z'};
-bhr.cp = {'e';'n';'z'};
+bhr.cp = {'n'};
 bhr.nc = numel(bhr.cp);
 [~,bhr.ci] = ismember(bhr.cp,bhr.rs);
 fprintf('--> Reference system : ');
@@ -118,7 +118,7 @@ mon.ci = mon.ci(:);
 
 %% *DEFINE HYBRIDIZATION METADATA*
 % _SP96 metadata_
-hybrid_type='exsim';
+hybrid_type='sp96';
 mtd.sp96.na = mon.na;
 for m_ = 1:mtd.sp96.na
     for n_ = 1:fnn.mtdd.sp96
