@@ -16,11 +16,12 @@ fprintf('---------------------\n0. SETUP\n---------------------\n');
 wd = fullfile(filesep,'media','filippo','Data','Filippo',...
     'PHD_passing_through_polimi','syn2ann','database');
 sp = fullfile(filesep,'media','filippo','Data','Filippo','aeolus',...
-    'heavy_images');
+    'image_database');
 
 % _database_
-dbn = fullfile(filesep,'media','filippo','Data','Filippo',...
-    'PHD_passing_through_heavyweight','simbad_v05','SIMBAD_v05_1.mat');
+% dbn = fullfile(filesep,'media','filippo','Data','Filippo',...
+%     'PHD_passing_through_heavyweight','simbad_v05','SIMBAD_v05_1.mat');
+dbn = '/media/filippo/Data/Filippo/PHD_heavyweight/simbad_v05/SIMBAD_v05_1.mat';
 % wd = fullfile(filesep,'tmp1','gattif','EMILIA_2905');
 % sp = fullfile(filesep,'tmp1','gattif','heavy_images_new');
 % _database_

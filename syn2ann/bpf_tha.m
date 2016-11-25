@@ -85,6 +85,8 @@ function [varargout] = bpf_tha(varargin)
         % number of padding points (Boore&Bommer,2005)
         npd0 = ceil(1.5*bfo./min([lfr;hfr])./dtm);
         npd1 = ceil(1.5*bfo./min([lfr;hfr])./dtm);
+%         npd0 = 0;
+%         npd1 = 0;
         %
         % _padding acceleration_
         %
