@@ -12,6 +12,7 @@
 global pfg xlm xlb xtk ylm ylb ytk grd scl mrk tit utd
 
 st = bhr.nm{mm_};
+ev = bhr.st{mm_}.ev{1};
 fprintf('-----------------------------\n');
 fprintf('%s-with HYBRID\n',bhr.nm{mm_});
 set(0,'defaultaxescolororder',clr0f)
@@ -76,7 +77,7 @@ for j_ = 1:numel(cpp.rec)
             plt.leg(j_,1)   = {strcat('REC-',dlg(j_))};
             plt.leg(j_+3,1) = {{sprintf('REC-%s',dlg{j_});sprintf('ANN-%s',dlg{j_})}}; 
             
-            fnm = fullfile(spp,sprintf('%s_rec_tha_%s',st,cpp.rec{j_}));
+            fnm = fullfile(spp,sprintf('%s_%s_rec_tha_%s',st,ev,cpp.rec{j_}));
             fpplot('xpl',plt.xpl(j_,1),'ypl',plt.ypl(j_,1),...
                 'pfg',[0 0 14 5.25],...
                 'scl',plt.scl(j_,1),'grd',plt.grd(j_,1),...
@@ -86,7 +87,7 @@ for j_ = 1:numel(cpp.rec)
 %             saveas(gcf,fnm,'jpg');
             saveas(gcf,fnm,'epsc');
             
-            fnm = fullfile(spp,sprintf('%s_rec_%s_psa_%s_%u',st,tst.mtd.scl{kk_},cpp.rec{j_},round(100*tst.mtd.TnC{kk_})));
+            fnm = fullfile(spp,sprintf('%s_%s_rec_%s_psa_%s_%u',st,ev,tst.mtd.scl{kk_},cpp.rec{j_},round(100*tst.mtd.TnC{kk_})));
             fpplot('xpl',plt.xpl(3+2*j_-1:3+2*j_,1),'ypl',plt.ypl(3+2*j_-1:3+2*j_,1),...
                 'pfg',[0 0 14 14],...
                 'scl',plt.scl(j_+3,1),'grd',plt.grd(j_+3,1),...

@@ -71,8 +71,8 @@ mrk.psa = {'none'};
 tit.psa = {'PSEUDO-ACCELERATION SPECTRUM (5%)'};
 utd.psa = 100;
 
-spp = '/home/filippo/Scrivania/ann/';
-%spp = fullfile(filesep,'tmp!','gattif','heavy_images_new');
+% spp = '/home/filippo/Scrivania/ann/';
+spp = fullfile(filesep,'tmp1','gattif','heavy_images_new');
 
 %% *FANCY PLOT*
 for mm_ = 1:bhr.ns

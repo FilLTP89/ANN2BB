@@ -53,7 +53,9 @@ mrk.fsa = {'none'};
 tit.fsa = {'FOURIER SPECTRUM'};
 utd.fsa = 1;
 vtm_shift=zeros(1,tst.mtd.nr+1);
-spp = '/home/filippo/Scrivania/ann';
+% spp = '/home/filippo/Scrivania/ann';
+spp = fullfile(filesep,'tmp1','gattif','heavy_images_new');
+
 % _check tested ann motion direction (ew/ns/gh/ud)_
 cpp.ann = cell(tst.mtd.nr,1);
 for kk_=1:tst.mtd.nr

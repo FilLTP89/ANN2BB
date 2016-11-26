@@ -13,19 +13,21 @@ ccc;
 fprintf('---------------------\n0. SETUP\n---------------------\n');
 %% *WORKDIR*
 % _main workdir_
-wd = fullfile(filesep,'media','filippo','Data','Filippo',...
-    'PHD_passing_through_polimi','syn2ann','database');
-sp = fullfile(filesep,'media','filippo','Data','Filippo','aeolus',...
-    'image_database');
+% wd = fullfile(filesep,'media','filippo','Data','Filippo',...
+%     'PHD_passing_through_polimi','syn2ann','database');
+% sp = fullfile(filesep,'media','filippo','Data','Filippo','aeolus',...
+%     'image_database');
 
 % _database_
 % dbn = fullfile(filesep,'media','filippo','Data','Filippo',...
 %     'PHD_passing_through_heavyweight','simbad_v05','SIMBAD_v05_1.mat');
-dbn = '/media/filippo/Data/Filippo/PHD_heavyweight/simbad_v05/SIMBAD_v05_1.mat';
-% wd = fullfile(filesep,'tmp1','gattif','EMILIA_2905');
-% sp = fullfile(filesep,'tmp1','gattif','heavy_images_new');
+% dbn = '/media/filippo/Data/Filippo/PHD_heavyweight/simbad_v05/SIMBAD_v05_1.mat';
+wd = fullfile(filesep,'mssmat2','home','gattif','Documents',...
+    'PHD_passing_through_polimi','syn2ann','database');
+sp = fullfile(filesep,'tmp1','gattif','heavy_images_new');
 % _database_
-% dbn = fullfile(filesep,'mssmat2','home','gattif','Documents','SIMBAD_v05_1.mat');
+dbn = fullfile(filesep,'mssmat2','home','gattif','Documents',...
+    'PHD_passing_through_heavyweight','simbad_v05','SIMBAD_v05_1.mat');
 ann.trn.wd = fullfile(wd,'training');
 fprintf('Training Workdir: %s\n',ann.trn.wd);
 fprintf('Training Database: %s\n',dbn);
@@ -33,7 +35,7 @@ fprintf('Training Database: %s\n',dbn);
 %% *LOAD ALL METADATA AVAILABLE*
 trann_test_list;
 % _select test case : selected_case = [a,b,...,d]_
-selected_case = 4;
+selected_case = 9:14;
 
 %% *DEFINE REAL RECORDS METADATA*
 % _path to record files_
@@ -70,7 +72,7 @@ fprintf('--> Directions: ');
 cellfun(@(x) fprintf('%s ',x),bhr.cp);
 fprintf('\n');
 % _motion components_
-bhr.rc = {'a','v','d'};
+bhr.rc = {'a'};
 bhr.nr = numel(bhr.rc);
 fprintf('--> Components: ');
 cellfun(@(x) fprintf('%s; ',x),bhr.rc);

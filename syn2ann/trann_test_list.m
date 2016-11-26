@@ -11,39 +11,80 @@
 
 %% *RECORDING STATION: bhrr*
 % _station identity_
-bhrr.st{1}.id = {'AMT'};
-bhrr.st{1}.ni = {'';'.AVD'};
-bhrr.st{2}.id = {'NRC'};
-bhrr.st{2}.ni = {'';'.AVD'};
-bhrr.st{3}.id = {'KMM16'};
-bhrr.st{3}.ni = {'H';''};
-bhrr.st{4}.id = {'KMM16'};
-bhrr.st{4}.ni = {'H';''};
-bhrr.st{5}.id = {'KMM14'};
-bhrr.st{5}.ni = {'H';''};
-bhrr.st{6}.id = {'KMM14'};
-bhrr.st{6}.ni = {'H';''};
+bhrr.st{1}.id = {'ACC'};
+bhrr.st{1}.ni = {'IT';'HG'};
+bhrr.st{2}.id = {'ACC'};
+bhrr.st{2}.ni = {'IT';'HG'};
+bhrr.st{3}.id = {'ACC'};
+bhrr.st{3}.ni = {'IT';'HG'};
+bhrr.st{4}.id = {'NRC'};
+bhrr.st{4}.ni = {'IT';'HG'};
+bhrr.st{5}.id = {'NRC'};
+bhrr.st{5}.ni = {'IT';'HG'};
+bhrr.st{6}.id = {'NRC'};
+bhrr.st{6}.ni = {'IT';'HG'};
+bhrr.st{7}.id = {'NRC'};
+bhrr.st{7}.ni = {'IT';'HG'};
+bhrr.st{8}.id = {'NRC'};
+bhrr.st{8}.ni = {'IT';'HG'};
+bhrr.st{9}.id = {'KMM16'};
+bhrr.st{9}.ni = {'H';''};
+bhrr.st{10}.id = {'KMM16'};
+bhrr.st{10}.ni = {'H';''};
+bhrr.st{11}.id = {'KMM16'};
+bhrr.st{11}.ni = {'H';''};
+bhrr.st{12}.id = {'KMM16'};
+bhrr.st{12}.ni = {'H';''};
+bhrr.st{13}.id = {'KMM16'};
+bhrr.st{13}.ni = {'H';''};
+bhrr.st{14}.id = {'KMM14'};
+bhrr.st{14}.ni = {'H';''};
 % _recorded events_
-bhrr.st{1}.ev = {''};
-bhrr.st{2}.ev = {''};
-bhrr.st{3}.ev = {'1604160125'};
-bhrr.st{4}.ev = {'1604160125'};
-bhrr.st{5}.ev = {'1604160125'};
-bhrr.st{6}.ev = {'1604160125'};
+bhrr.st{1}.ev  = {'20161026.171036'};
+bhrr.st{2}.ev  = {'20161026.191806'};
+bhrr.st{3}.ev  = {'20161030.064018'};
+bhrr.st{4}.ev  = {'20160824.013632'};
+bhrr.st{5}.ev  = {'20160824.023329'};
+bhrr.st{6}.ev  = {'20161026.171036'};
+bhrr.st{7}.ev  = {'20161026.191806'};
+bhrr.st{8}.ev  = {'20161030.064018'};
+bhrr.st{9}.ev  = {'1604142126'};
+bhrr.st{10}.ev = {'1604142207'};
+bhrr.st{11}.ev = {'1604150003'};
+bhrr.st{12}.ev = {'1604160125'};
+bhrr.st{13}.ev = {'1604160146'};
+bhrr.st{14}.ev = {'1604142126'};
+bhrr.st{15}.ev = {'1604150003'};
 % _device list_
 bhrr.st{1}.dv = {''};
 bhrr.st{2}.dv = {''};
-bhrr.st{3}.dv = {'1'};
-bhrr.st{4}.dv = {'2'};
-bhrr.st{5}.dv = {'1'};
-bhrr.st{6}.dv = {'2'};
+bhrr.st{3}.dv = {''};
+bhrr.st{4}.dv = {''};
+bhrr.st{5}.dv = {''};
+bhrr.st{6}.dv = {''};
+bhrr.st{7}.dv = {''};
+bhrr.st{8}.dv = {''};
+bhrr.st{9}.dv  = {'1'};
+bhrr.st{10}.dv = {'1'};
+bhrr.st{11}.dv = {'1'};
+bhrr.st{12}.dv = {'1'};
+bhrr.st{13}.dv = {'1'};
+bhrr.st{14}.dv = {'1'};
 % _database_
-bhrr.st{1}.tp = {'avd'};
-bhrr.st{2}.tp = {'avd'};
-bhrr.st{3}.tp = {'knet'};
-bhrr.st{4}.tp = {'knet'};
-bhrr.st{3}.tp = {'knet'};
-bhrr.st{4}.tp = {'knet'};
+bhrr.st{1}.tp = {'itaca'};
+bhrr.st{2}.tp = {'itaca'};
+bhrr.st{3}.tp = {'itaca'};
+bhrr.st{4}.tp = {'itaca'};
+bhrr.st{5}.tp = {'itaca'};
+bhrr.st{6}.tp = {'itaca'};
+bhrr.st{7}.tp = {'itaca'};
+bhrr.st{8}.tp = {'itaca'};
+bhrr.st{9}.tp = {'kiknet'};
+bhrr.st{10}.tp = {'kiknet'};
+bhrr.st{11}.tp = {'kiknet'};
+bhrr.st{12}.tp = {'kiknet'};
+bhrr.st{13}.tp = {'kiknet'};
+bhrr.st{14}.tp = {'kiknet'};
 % _bhrr field names_
 fni.bhrr = fieldnames(bhrr);
 fnn.bhrr = numel(fni.bhrr);
@@ -83,11 +124,11 @@ end
 % _number of ann to be tested_
 tst.mtd.nr = 3;
 % _site class considered : ALL,AB,CD_
-tst.mtd.scl = {'AB';'CD';'ALL'};
+tst.mtd.scl = {'CD';'CD';'CD'};
 % _corner period for each ANN_
-tst.mtd.TnC = {0.5;0.5;0.5};
+tst.mtd.TnC = {0.5;0.75;1};
 % _ANN motion component : gh,ud (geometric mean horizontal, updip)_
-tst.mtd.cpp = {'ud';'ud';'ud'};
+tst.mtd.cpp = {'gh';'gh';'gh'};
 for i_ = 1:tst.mtd.nr
     tst.mtd.nl(i_) = {sprintf('net_%u_%s_%s.mat',...
         round(tst.mtd.TnC{i_}*100),tst.mtd.scl{i_},tst.mtd.cpp{i_})};
