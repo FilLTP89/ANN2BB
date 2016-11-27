@@ -43,7 +43,7 @@ function [varargout] = fpplot(varargin)
     exp.scl = ['lin','slx','sly','log'];
     % marker
     def.mrk = {'none'};
-    
+    def.lwd = 1.5;
     % x-label
     def.xlb = {''};
     % y-label
@@ -80,6 +80,7 @@ function [varargout] = fpplot(varargin)
     addParameter(inp,'zpl',def.zpl,@iscell);
     addParameter(inp,'pax',def.pax,@iscell);
     addParameter(inp,'lst',@iscell);
+    addParameter(inp,'lwd',def.lwd,@isnumeric);
     addParameter(inp,'mrk',def.mrk,@iscell);
     addParameter(inp,'grd',def.grd,@iscell);
     
@@ -183,6 +184,15 @@ function [varargout] = fpplot(varargin)
             lst = inp.Results.lst;
             if numel(lst)==1
                 lst = repmat(lst,spn,1);
+            end
+        end
+        try any(validatestring('lwd',inp.UsingDefaults));
+            
+        catch
+            flwd=1;
+            lwd = inp.Results.lwd;
+            if numel(lwd)==1
+                lwd = repmat(lwd,spn,1);
             end
         end
         
@@ -303,6 +313,11 @@ function [varargout] = fpplot(varargin)
             lst = inp.Results.lst;
             flst = 1;
         end
+        try any(validatestring('lwd',inp.UsingDefaults));
+        catch
+            lwd = inp.Results.lwd;
+            flwd = 1;
+        end
         %%
         % _subplot indexes_
         try any(validatestring('scl',inp.UsingDefaults));
@@ -333,6 +348,9 @@ function [varargout] = fpplot(varargin)
                 hpl(idx,count(n_))=plot(haxt,inp.Results.xpl{m_},inp.Results.ypl{m_},...
                     'marker',mrk{m_});
             end
+            if flwd 
+                hpl(idx,count(n_)).LineWidth = lwd(m_);
+            end
             hpl(idx,count(n_)).MarkerFaceColor = hpl(idx,count(n_)).Color;
         else
             n_=n_+1;
@@ -347,6 +365,9 @@ function [varargout] = fpplot(varargin)
             else
                 hpl(n_,count(n_))=plot(haxt,inp.Results.xpl{m_},inp.Results.ypl{m_},...
                     'marker',mrk{m_}');
+            end
+            if flwd 
+                hpl(n_,count(n_)).LineWidth = lwd(m_);
             end
             hpl(n_,count(n_)).MarkerFaceColor = hpl(n_,count(n_)).Color;
             flag_modify(n_) = 1;
@@ -447,8 +468,8 @@ function [varargout] = fpplot(varargin)
             end
             %%
             % _format axes_
-            %format_figures_multi(hax(m_));
-            format_figures(hax(m_));
+            syn2ann_format_figures(hax(m_));
+%             format_figures(hax(m_));
             
         end
     end
