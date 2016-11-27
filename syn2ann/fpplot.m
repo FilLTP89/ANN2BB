@@ -54,7 +54,7 @@ function [varargout] = fpplot(varargin)
     def.leg = {''};
     % grid
     def.grd = {'off'};
-    fxlm=0;fylm=0;fxtk=0;fytk=0;fpax=0;flst=0;
+    fxlm=0;fylm=0;fxtk=0;fytk=0;fpax=0;flst=0;flwd=0;
     %%
     % _parser parameters_
     inp = inputParser;

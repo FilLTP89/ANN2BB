@@ -13,6 +13,8 @@ global pfg xlm xlb xtk ylm ylb ytk grd scl mrk tit utd
 
 st = bhr.nm{mm_};
 ev = bhr.st{mm_}.ev{1};
+ev(strfind(ev,'.')) = '_';
+
 fprintf('-----------------------------\n');
 fprintf('%s-with HYBRID\n',bhr.nm{mm_});
 set(0,'defaultaxescolororder',clr0f)

@@ -43,6 +43,22 @@ bhrr.st{15}.id = {'KMMH14'};
 bhrr.st{15}.ni = {'';''};
 bhrr.st{16}.id = {'KMMH14'};
 bhrr.st{16}.ni = {'';''};
+bhrr.st{17}.id = {'KMMH16'};
+bhrr.st{17}.ni = {'';''};
+bhrr.st{18}.id = {'KMMH16'};
+bhrr.st{18}.ni = {'';''};
+bhrr.st{19}.id = {'KMMH16'};
+bhrr.st{19}.ni = {'';''};
+bhrr.st{20}.id = {'KMMH16'};
+bhrr.st{20}.ni = {'';''};
+bhrr.st{21}.id = {'KMMH16'};
+bhrr.st{21}.ni = {'';''};
+bhrr.st{22}.id = {'KMMH14'};
+bhrr.st{22}.ni = {'';''};
+bhrr.st{23}.id = {'KMMH14'};
+bhrr.st{23}.ni = {'';''};
+bhrr.st{24}.id = {'KMMH14'};
+bhrr.st{24}.ni = {'';''};
 % _recorded events_
 bhrr.st{1}.ev  = {'20161026.171036'};
 bhrr.st{2}.ev  = {'20161026.191806'};
@@ -60,6 +76,14 @@ bhrr.st{13}.ev = {'1604160146'};
 bhrr.st{14}.ev = {'1604142126'};
 bhrr.st{15}.ev = {'1604150003'};
 bhrr.st{16}.ev = {'1604160125'};
+bhrr.st{17}.ev  = {'1604142126'};
+bhrr.st{18}.ev = {'1604142207'};
+bhrr.st{19}.ev = {'1604150003'};
+bhrr.st{20}.ev = {'1604160125'};
+bhrr.st{21}.ev = {'1604160146'};
+bhrr.st{22}.ev = {'1604142126'};
+bhrr.st{23}.ev = {'1604150003'};
+bhrr.st{24}.ev = {'1604160125'};
 % _device list_
 bhrr.st{1}.dv = {''};
 bhrr.st{2}.dv = {''};
@@ -77,6 +101,14 @@ bhrr.st{13}.dv = {'1'};
 bhrr.st{14}.dv = {'1'};
 bhrr.st{15}.dv = {'1'};
 bhrr.st{16}.dv = {'1'};
+bhrr.st{17}.dv = {'2'};
+bhrr.st{18}.dv = {'2'};
+bhrr.st{19}.dv = {'2'};
+bhrr.st{20}.dv = {'2'};
+bhrr.st{21}.dv = {'2'};
+bhrr.st{22}.dv = {'2'};
+bhrr.st{23}.dv = {'2'};
+bhrr.st{24}.dv = {'2'};
 % _database_
 bhrr.st{1}.tp = {'itaca'};
 bhrr.st{2}.tp = {'itaca'};
@@ -94,6 +126,14 @@ bhrr.st{13}.tp = {'kiknet'};
 bhrr.st{14}.tp = {'kiknet'};
 bhrr.st{15}.tp = {'kiknet'};
 bhrr.st{16}.tp = {'kiknet'};
+bhrr.st{17}.tp = {'kiknet'};
+bhrr.st{18}.tp = {'kiknet'};
+bhrr.st{19}.tp = {'kiknet'};
+bhrr.st{20}.tp = {'kiknet'};
+bhrr.st{21}.tp = {'kiknet'};
+bhrr.st{22}.tp = {'kiknet'};
+bhrr.st{23}.tp = {'kiknet'};
+bhrr.st{24}.tp = {'kiknet'};
 % _bhrr field names_
 fni.bhrr = fieldnames(bhrr);
 fnn.bhrr = numel(fni.bhrr);
@@ -131,13 +171,13 @@ end
 
 %% *DEFINE ANN TEST METADATA*
 % _number of ann to be tested_
-tst.mtd.nr = 3;
+tst.mtd.nr = 2;
 % _site class considered : ALL,AB,CD_
-tst.mtd.scl = {'CD';'CD';'CD'};
+tst.mtd.scl = {'ALL';'CD'};
 % _corner period for each ANN_
-tst.mtd.TnC = {0.5;0.75;1};
+tst.mtd.TnC = {0.75;0.75};
 % _ANN motion component : gh,ud (geometric mean horizontal, updip)_
-tst.mtd.cpp = {'gh';'gh';'gh'};
+tst.mtd.cpp = {'gh';'gh'};
 for i_ = 1:tst.mtd.nr
     tst.mtd.nl(i_) = {sprintf('net_%u_%s_%s.mat',...
         round(tst.mtd.TnC{i_}*100),tst.mtd.scl{i_},tst.mtd.cpp{i_})};

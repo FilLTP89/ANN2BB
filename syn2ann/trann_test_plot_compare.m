@@ -71,6 +71,7 @@ if size(cpp.ann)==1
     end
     for mm_ = 1:bhr.ns
         syn2ann_setup_axes;
+%         trann_plot_res_compare_periods;
         trann_plot_res_compare_siteclass;
     end
 else
