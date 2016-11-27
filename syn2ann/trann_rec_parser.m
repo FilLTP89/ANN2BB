@@ -110,7 +110,7 @@ function [varargout] = trann_rec_parser(varargin)
                     % _monitor identity_
                     rec.mon.nc=0;
                     rec.mon.nr=0;
-                    bhr.nm{count_na} = sprintf('%s%s',bhr.st{i_}.id{1},bhr.st{i_}.dv{j_});
+                    bhr.nm{count_na} = sprintf('%s(%s)',bhr.st{i_}.id{1},bhr.st{i_}.dv{j_});
                     % _directions_
                     for ii_ = 1:bhr.nc
                         rec.mon.cp{ii_} = bhr.cp{ii_};
@@ -147,7 +147,6 @@ function [varargout] = trann_rec_parser(varargin)
                     end
                 end
         end
-        bhr.st{i_}.ev{1}(strfind(bhr.st{i_}.ev{1},'.')) = '_';
     end
     rec.bhr = bhr;
     %% *OUTPUT*

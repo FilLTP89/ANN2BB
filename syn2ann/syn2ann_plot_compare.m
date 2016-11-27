@@ -1,5 +1,5 @@
 function syn2ann_plot_compare(varargin)
-    global pfg xlm xlb xtk ylm ylb ytk grd scl mrk mrka tit utd
+    global pfg xlm xlb xtk ylm ylb ytk grd scl mrk mrka utd tit
     
     %% *SET-UP*
     flags = logical(varargin{1});
