@@ -14,7 +14,8 @@ global pfg xlm xlb xtk ylm ylb ytk grd scl mrk utd tit
 
 st = bhr.nm{mm_};
 ev = bhr.st{mm_}.ev{1};
-ev(strfind(ev,'.')) = '_';
+ev(strfind(ev,'.')) = '';
+ev = ev(1:10);
 
 fprintf('--------------------------\n');
 fprintf('%s-%s\n',st,ev);

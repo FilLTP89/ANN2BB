@@ -57,7 +57,6 @@ function train_ann_justPSA(varargin)
     for i_=1:db.nr
         db.simbad(i_) = db.SIMBAD(idx_cl1(i_));
     end
-    
     %
     % _define training/validation set_
     %
@@ -137,7 +136,7 @@ function train_ann_justPSA(varargin)
     [~,id_min] = min(perfs);
     net = nets(id_min);
     net = net{1,1};
-    save(fullfile(wd,sprintf('net_%u_%s_%s.mat',...
+    save(fullfile(wd,sprintf('net_%u_%s_%s_new.mat',...
         round(ann.TnC*100),ann.scl,ann.cp)),...
         'net','idx_train','idx_valid');
     %     % Plot

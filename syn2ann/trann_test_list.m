@@ -141,27 +141,27 @@ fnn.bhrr = numel(fni.bhrr);
 %% *ANN METADATA ann*
 ann.trn.nr = 6;
 % gh <---> AB
-ann.trn.mtd(1).TnC = 1.0;
+ann.trn.mtd(1).TnC = 0.5;
 ann.trn.mtd(1).cp = 'gh';
 ann.trn.mtd(1).scl = 'AB';
 % ud <---> AB
-ann.trn.mtd(2).TnC = 1.0;
+ann.trn.mtd(2).TnC = 0.5;
 ann.trn.mtd(2).cp = 'ud';
 ann.trn.mtd(2).scl = 'AB';
 % gh <---> CD
-ann.trn.mtd(3).TnC = 1.0;
+ann.trn.mtd(3).TnC = 0.5;
 ann.trn.mtd(3).cp = 'gh';
 ann.trn.mtd(3).scl = 'CD';
 % ud <---> CD
-ann.trn.mtd(4).TnC = 1.0;
+ann.trn.mtd(4).TnC = 0.5;
 ann.trn.mtd(4).cp = 'ud';
 ann.trn.mtd(4).scl = 'CD';
 % gh <---> ALL
-ann.trn.mtd(5).TnC = 1.0;
+ann.trn.mtd(5).TnC = 0.5;
 ann.trn.mtd(5).cp = 'gh';
 ann.trn.mtd(5).scl = 'ALL';
 % ud <---> ALL
-ann.trn.mtd(6).TnC = 1.0;
+ann.trn.mtd(6).TnC = 0.5;
 ann.trn.mtd(6).cp = 'ud';
 ann.trn.mtd(6).scl = 'ALL';
 % _database_
@@ -171,13 +171,13 @@ end
 
 %% *DEFINE ANN TEST METADATA*
 % _number of ann to be tested_
-tst.mtd.nr = 2;
+tst.mtd.nr = 3;
 % _site class considered : ALL,AB,CD_
-tst.mtd.scl = {'ALL';'CD'};
+tst.mtd.scl = {'ALL';'ALL';'ALL'};
 % _corner period for each ANN_
-tst.mtd.TnC = {0.75;0.75};
+tst.mtd.TnC = {0.5;0.75;1};
 % _ANN motion component : gh,ud (geometric mean horizontal, updip)_
-tst.mtd.cpp = {'gh';'gh'};
+tst.mtd.cpp = {'gh';'gh';'gh'};
 for i_ = 1:tst.mtd.nr
     tst.mtd.nl(i_) = {sprintf('net_%u_%s_%s.mat',...
         round(tst.mtd.TnC{i_}*100),tst.mtd.scl{i_},tst.mtd.cpp{i_})};

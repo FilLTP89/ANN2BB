@@ -22,7 +22,7 @@ clr11 = [rgb('DarkGrey');rgb('DarkGrey');rgb('IntenseBlue');rgb('IntenseGreen');
 % records-pbs-empirical/stochastic-hybrid
 clr12 = [rgb('Navy');rgb('IntenseBlue');rgb('IntenseGreen');rgb('Orange')];
 % records-pbs-hybrid-hybrid
-clr121 = [rgb('OrangeRed');rgb('Black');rgb('DarkGrey');rgb('Black')];
+clr121 = [rgb('OrangeRed');rgb('Black');[0.5 0.5 0.5];rgb('Black')];
 % [rgb('Navy');rgb('IntenseBlue');rgb('Red');rgb('IntenseGreen')];
 %[rgb('DarkOrange');rgb('Black');[0.5 0.5 0.5];[0.7 0.7 0.7]];
 % record-hybrid-ann-spectral-matched
@@ -42,7 +42,7 @@ dlg{3} = 'UD';
 %
 % * _FOURIER SPECTRA_
 %
-pfg.fsa = [0 0 10 10];
+pfg.fsa = [0 0 12 12];
 xlm.fsa = {10.^([log10(0.05),log10(40)])};
 ylm.fsa = {10.^([-4,1])};
 xtk.fsa = {10.^([log10(0.05),-1,0,log10(5),1,log10(40)])};
@@ -55,8 +55,8 @@ mrk.fsa = {'none'};
 tit.fsa = {'FOURIER SPECTRUM'};
 utd.fsa = 1;
 vtm_shift=zeros(1,tst.mtd.nr+1);
-% spp = '/home/filippo/Scrivania/ann';
-spp = fullfile(filesep,'tmp1','gattif','heavy_images_new');
+spp = '/home/filippo/Scrivania/ann';
+% spp = fullfile(filesep,'tmp1','gattif','heavy_images_new');
 
 % _check tested ann motion direction (ew/ns/gh/ud)_
 cpp.ann = cell(tst.mtd.nr,1);
