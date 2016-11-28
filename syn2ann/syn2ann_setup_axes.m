@@ -1,4 +1,4 @@
-pfg.psa = [0 0 14 14];
+pfg.psa = [0 0 12 12];
 xlm.psa = {[0;3]};
 xtk.psa = {(0:.5:3)'};
 xlb.psa = {'T [s]'};
