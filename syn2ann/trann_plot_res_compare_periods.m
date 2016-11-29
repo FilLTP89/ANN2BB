@@ -12,19 +12,12 @@
 
 global pfg xlm xlb xtk ylm ylb ytk grd scl mrk utd tit
 
-st = bhr.nm{mm_};
-ev = bhr.st{mm_}.ev{1};
-ev(strfind(ev,'.')) = '';
-ev = ev(1:10);
-
-fprintf('--------------------------\n');
-fprintf('%s-%s\n',st,ev);
 
 %% *POST-PROCESS - RECORDS vs ANN*
 for j_ = 1:numel(cpp.rec)
     flag.rec = seismo_dir_conversion(cpp.rec{j_});
     if any(strcmpi(flag.rec,flag.ann))
-        fnm = fullfile(spp,sprintf('%s_%s_rec_ann%s_cpc',st,ev,ann.scp{1}.scl));
+        fnm = fullfile(spp,sprintf('%s_%s_rec_ann%s_cpc',st,fgn,ann.scp{1}.scl));
         set(0,'defaultaxescolororder',clr121);
         
         syn2ann_plot_compare(...
@@ -35,8 +28,8 @@ for j_ = 1:numel(cpp.rec)
             (cpp.rec{j_}),ttt,...
             fnm,...
             zeros(4,1),...
-            {'none';'o';'s';'v'},...
-            {'-';':';'-';':'},...
-            [4,1,0.75,0.75]);
+            {'none';'none';'s';'v'},...
+            {'-';'-';'-';'--'},...
+            [6,2,0.8,1.5]);
     end
 end

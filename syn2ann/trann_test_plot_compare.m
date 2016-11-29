@@ -22,7 +22,7 @@ clr11 = [rgb('DarkGrey');rgb('DarkGrey');rgb('IntenseBlue');rgb('IntenseGreen');
 % records-pbs-empirical/stochastic-hybrid
 clr12 = [rgb('Navy');rgb('IntenseBlue');rgb('IntenseGreen');rgb('Orange')];
 % records-pbs-hybrid-hybrid
-clr121 = [rgb('OrangeRed');rgb('Black');[0.5 0.5 0.5];rgb('Black')];
+clr121 = [rgb('OrangeRed');rgb('Black');[0.4 0.4 0.4];rgb('Black')];
 % [rgb('Navy');rgb('IntenseBlue');rgb('Red');rgb('IntenseGreen')];
 %[rgb('DarkOrange');rgb('Black');[0.5 0.5 0.5];[0.7 0.7 0.7]];
 % record-hybrid-ann-spectral-matched
@@ -73,8 +73,8 @@ if size(cpp.ann)==1
     end
     for mm_ = 1:bhr.ns
         syn2ann_setup_axes;
-%         trann_plot_res_compare_periods;
-        trann_plot_res_compare_siteclass;
+        trann_plot_res_compare_periods;
+%         trann_plot_res_compare_siteclass;
     end
 else
     disp('ERROR: ANN TRAINED ON DIFFERENT COMPONENTS!');

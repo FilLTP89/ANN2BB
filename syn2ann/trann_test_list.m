@@ -76,7 +76,7 @@ bhrr.st{13}.ev = {'1604160146'};
 bhrr.st{14}.ev = {'1604142126'};
 bhrr.st{15}.ev = {'1604150003'};
 bhrr.st{16}.ev = {'1604160125'};
-bhrr.st{17}.ev  = {'1604142126'};
+bhrr.st{17}.ev = {'1604142126'};
 bhrr.st{18}.ev = {'1604142207'};
 bhrr.st{19}.ev = {'1604150003'};
 bhrr.st{20}.ev = {'1604160125'};
@@ -179,6 +179,6 @@ tst.mtd.TnC = {0.5;0.75;1};
 % _ANN motion component : gh,ud (geometric mean horizontal, updip)_
 tst.mtd.cpp = {'gh';'gh';'gh'};
 for i_ = 1:tst.mtd.nr
-    tst.mtd.nl(i_) = {sprintf('net_%u_%s_%s.mat',...
+    tst.mtd.nl(i_) = {sprintf('net_%u_%s_%s_new.mat',...
         round(tst.mtd.TnC{i_}*100),tst.mtd.scl{i_},tst.mtd.cpp{i_})};
 end

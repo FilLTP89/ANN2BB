@@ -23,13 +23,13 @@
 %% *TRAIN SET-UP*
 trann_setup;
 
-%% *TRAIN ANN*
-trann_train;
+% %% *TRAIN ANN*
+% trann_train;
 
-% %% *TEST TRAINED ANN*
-% trann_load;
-% trann_test;
-% 
-% %% *PLOTTING TEST RESULTS*
-% % trann_test_plot_single;
-% trann_test_plot_compare;
+%% *TEST TRAINED ANN*
+trann_load;
+trann_test;
+
+%% *PLOTTING TEST RESULTS*
+% trann_test_plot_single;
+trann_test_plot_compare;
