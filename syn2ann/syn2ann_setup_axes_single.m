@@ -1,6 +1,5 @@
-global pfg xlm xlb xtk ylm ylb ytk grd scl mrk tit utd
+global xlm xtk ylm ytk utd
 %% *SET-UP*
-
 [evt,fgn] = evt2tit(bhr.st{mm_}.ev{1},bhr.st{mm_}.tp{1});
 ttt = strcat(bhr.nm{mm_},{' '},evt);
 ttt = ttt{1};
@@ -15,79 +14,87 @@ fprintf('\n');
 switch  ttt
     case 'MRN 2012-05-29 07:00'
         vtm_shift(:) = 0.5;
-        vtm_lim = [0;25];
-        vtm_lab = (vtm_lim(1):5:vtm_lim(end));
-        tha_lim = [-9e2;9e2];
-        thv_lim = [-60;60];
-        thd_lim = [-30;30];
+        xlm.tha = [0;25];
+        xtk.tha = (xlm.tha(1):5:xlm.tha(end));
     case 'MIR08'
         vtm_shift(:) = 0.73;
-        vtm_lim = [0;25];
-        vtm_lab = (vtm_lim(1):5:vtm_lim(end));
-        tha_lim = [-6e2;6e2];
-        thv_lim = [-50;50];
-        thd_lim = [-20;20];
+        xlm.tha = [0;25];
+        xtk.tha = (xlm.tha(1):5:xlm.tha(end));
     case 'AQK-2009-04-06 01:32'
-        vtm_shift(:) = 1.35*ones(1,2);
-        vtm_lim = [0;25];
-        vtm_lab = (vtm_lim(1):5:vtm_lim(end));
-        tha_lim = [-4e2;4e2];
-        thv_lim = [-30;30];
-        thd_lim = [-30;30];
+        vtm_shift(:) = 1.35;
+        xlm.tha = [0;25];
+        xtk.tha = (xlm.tha(1):5:xlm.tha(end));
     case 'AQU'
-        vtm_shift(:) = 2.15*ones(1,2);
-        vtm_lim = [0;25];
-        vtm_lab = (vtm_lim(1):5:vtm_lim(end));
-        tha_lim = [-4e2;4e2];
-        thv_lim = [-30;30];
-        thd_lim = [-20;20];
+        vtm_shift(:) = 2.15;
+        xlm.tha = [0;25];
+        xtk.tha = (xlm.tha(1):5:xlm.tha(end));
 end
-%
-% * _ACCELERATION TIME-HISTORY_
-%
-
-xlm.tha = {vtm_lim;vtm_lim;vtm_lim};
-xtk.tha = {vtm_lab;vtm_lab;vtm_lab};
-ylm.tha = {tha_lim;tha_lim;tha_lim};
-for i_=1:3
-    [~,ytk.tha{i_}]=get_axis_tick(xlm.tha{i_},ylm.tha{i_},1,diff(ylm.tha{i_})/4);
-end
-xlb.tha = {'t [s]'};
-ylb.tha = {'a(t) [cm/s/s]','a(t) [cm/s/s]','a(t) [cm/s/s]'};
-scl.tha = {'lin','lin','lin'};
-grd.tha = {'on'};
-mrk.tha = {'none'};
-mrk.pga = {'o'};
-utd.tha = 100;
-%
-% * _VELOCITY TIME-HISTORY_
-%
+xlm.tha = xlm.tha;
+xtk.tha = xtk.tha;
 xlm.thv = xlm.tha;
-ylm.thv = {thv_lim;thv_lim;thv_lim};
 xtk.thv = xtk.tha;
-for i_=1:3
-    [~,ytk.thv{i_}]=get_axis_tick(xlm.thv{i_},ylm.thv{i_},1,diff(ylm.thv{i_})/4);
-end
-xlb.thv = xlb.tha;
-ylb.thv = {'v(t) [cm/s]','v(t) [cm/s]','v(t) [cm/s]'};
-scl.thv = {'lin','lin','lin'};
-grd.thv = {'on'};
-mrk.pgv = {'o'};
-utd.thv = 100;
-%
-% * _DISPLACEMENT TIME-HISTORY_
-%
 xlm.thd = xlm.tha;
-ylm.thd = {thd_lim;thd_lim;thd_lim};
 xtk.thd = xtk.tha;
-for i_=1:3
-    [~,ytk.thd{i_}]=get_axis_tick(xlm.thd{i_},ylm.thd{i_},1,diff(ylm.thd{i_})/4);
+
+%% *DEFINE TIME-HISTORY YLIM*
+tha_lim = 0;
+thv_lim = 0;
+thd_lim = 0;
+psa_lim = 0;
+for j_ = 1:numel(cpp)
+    tha_lim = max([tha_lim;abs(rec.org.syn{mm_}.pga.(cpp{j_})(2))]);
+    thv_lim = max([thv_lim;abs(rec.org.syn{mm_}.pgv.(cpp{j_})(2))]);
+    thd_lim = max([thd_lim;abs(rec.org.syn{mm_}.pgd.(cpp{j_})(2))]);
+    tha_lim = max([tha_lim;abs(nss.org.syn{mm_}.pga.(cpp{j_})(2))]);
+    thv_lim = max([thv_lim;abs(nss.org.syn{mm_}.pgv.(cpp{j_})(2))]);
+    thd_lim = max([thd_lim;abs(nss.org.syn{mm_}.pgd.(cpp{j_})(2))]);
+    psa_lim = max([psa_lim;max(abs(rec.org.syn{mm_}.psa.(cpp{j_})))]);
 end
-xlb.thd = xlb.tha;
-ylb.thd = {'d(t) [cm]','d(t) [cm]','d(t) [cm]'};
-scl.thd = {'lin','lin','lin'};
-grd.thd = {'on'};
-mrk.thd = {'none'};
-mrk.pgd = {'o'};
-utd.thd = 100;
-%
+switch lower(hybrid_type)
+    case 'sp96'
+        for j_ = 1:numel(cpp)
+            tha_lim = max([tha_lim;abs(hbs.sps.syn{mm_}.pga.(cpp{j_})(2))]);
+            thv_lim = max([thv_lim;abs(hbs.sps.syn{mm_}.pgv.(cpp{j_})(2))]);
+            thd_lim = max([thd_lim;abs(hbs.sps.syn{mm_}.pgd.(cpp{j_})(2))]);
+            psa_lim = max([psa_lim;max(abs(hbs.sps.syn{mm_}.psa.(cpp{j_})))]);
+            tha_lim = max([tha_lim;abs(spm.sps.(cpp{j_}).syn{mm_}.pga.(cpp{j_})(2))]);
+            thv_lim = max([thv_lim;abs(spm.sps.(cpp{j_}).syn{mm_}.pgv.(cpp{j_})(2))]);
+            thd_lim = max([thd_lim;abs(spm.sps.(cpp{j_}).syn{mm_}.pgd.(cpp{j_})(2))]);
+            psa_lim = max([psa_lim;max(abs(spm.sps.(cpp{j_}).syn{mm_}.psa.(cpp{j_})))]);
+        end
+    case 'exsim'
+        for j_ = 1:numel(cpp)
+            tha_lim = max([tha_lim;abs(hbs.exs.syn{mm_}.pga.(cpp{j_})(2))]);
+            thv_lim = max([thv_lim;abs(hbs.exs.syn{mm_}.pgv.(cpp{j_})(2))]);
+            thd_lim = max([thd_lim;abs(hbs.exs.syn{mm_}.pgd.(cpp{j_})(2))]);
+            psa_lim = max([psa_lim;max(abs(hbs.exs.syn{mm_}.psa.(cpp{j_})))]);
+            tha_lim = max([tha_lim;abs(spm.exs.(cpp{j_}).syn{mm_}.pga.(cpp{j_})(2))]);
+            thv_lim = max([thv_lim;abs(spm.exs.(cpp{j_}).syn{mm_}.pgv.(cpp{j_})(2))]);
+            thd_lim = max([thd_lim;abs(spm.exs.(cpp{j_}).syn{mm_}.pgd.(cpp{j_})(2))]);
+            psa_lim = max([psa_lim;max(abs(spm.exs.(cpp{j_}).syn{mm_}.psa.(cpp{j_})))]);
+        end
+end
+tha_lim = tha_lim*utd.tha;
+thv_lim = thv_lim*utd.thv;
+thd_lim = thd_lim*utd.thd;
+psa_lim = psa_lim*utd.psa;
+
+ylm.tha = [-ceil(tha_lim/4)*4,ceil(tha_lim/4)*4];
+[~,ytk.tha] = get_axis_tick(ylm.tha,ylm.tha,ceil(tha_lim/2),ceil(tha_lim/2));
+ylm.tha = ylm.tha;
+ytk.tha = ytk.tha;
+
+ylm.thv = [-ceil(thv_lim/4)*4,ceil(thv_lim/4)*4];
+[~,ytk.thv] = get_axis_tick(ylm.thv,ylm.thv,ceil(thv_lim/2),ceil(thv_lim/2));
+ylm.thv = ylm.thv;
+ytk.thv = ytk.thv;
+
+ylm.thd = [-ceil(thd_lim/4)*4,ceil(thd_lim/4)*4];
+[~,ytk.thd] = get_axis_tick(ylm.thd,ylm.thd,ceil(thd_lim/2),ceil(thd_lim/4));
+ylm.thd = ylm.thd;
+ytk.thd = ytk.thd;
+
+ylm.psa = [0,ceil(psa_lim/4)*4];
+[~,ytk.psa] = get_axis_tick(ylm.psa,ylm.psa,ceil(psa_lim/4),ceil(psa_lim/4));
+ylm.psa = ylm.psa;
+ytk.psa = ytk.psa;

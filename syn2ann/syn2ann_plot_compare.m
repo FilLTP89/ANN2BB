@@ -1,5 +1,5 @@
 function syn2ann_plot_compare(varargin)
-    global pfg xlm xlb xtk ylm ylb ytk grd scl mrk mrka utd tit max_val
+    global pfg xlm xlb xtk ylm ylb ytk grd scl utd tit
     
     %% *SET-UP*
     flags = logical(varargin{1});
@@ -31,12 +31,13 @@ function syn2ann_plot_compare(varargin)
         std{1,1+i_} = {''};
     end
     %% *PSA SPECTRUM*
-    if flag(1)
+    
+    if flags(1)
         syn2ann_plot_psa;
         close all;
     end
     %% *FOURIER SPECTRUM*
-    if flag(2)
+    if flags(2)
         syn2ann_plot_fsa;
         close all;
     end

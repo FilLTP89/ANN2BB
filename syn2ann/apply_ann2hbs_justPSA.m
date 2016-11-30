@@ -25,7 +25,7 @@ function [varargout] = apply_ann2hbs_justPSA(varargin)
     for j_ = 1:hbs.mon.nc
         cpp = (hbs.mon.cp{j_});
         [trs.(cpp).iid,trs.(cpp).tid] = ...
-        trann_check_vTn(ann.(cpp).inp,ann.(cpp).tar,hbs.mon,1e-8);
+            trann_check_vTn(ann.(cpp).inp,ann.(cpp).tar,hbs.mon,1e-8);
     end
     
     inn = cell(hbs.mon.nc,1);
@@ -48,14 +48,10 @@ function [varargout] = apply_ann2hbs_justPSA(varargin)
             [ann.(hbs.mon.cp{j_}).tar.vTn;ann.(hbs.mon.cp{j_}).inp.vTn];
         trs.(hbs.mon.cp{j_}).mon.nT = numel(trs.(hbs.mon.cp{j_}).mon.vTn);
         for i_ = 1:hbs.mon.na
-            try
-                out = 10.^(sim(ann.(hbs.mon.cp{j_}).net,inp(i_,:)'));
-                out = out./100;
-                trs.(hbs.mon.cp{j_}).syn{i_}.psa.(hbs.mon.cp{j_}) = ...
-                    [out(:);inn{j_}(i_,:)'];
-            catch
-                keyboard
-            end
+            out = 10.^(sim(ann.(hbs.mon.cp{j_}).net,inp(i_,:)'));
+            out = out./100;
+            trs.(hbs.mon.cp{j_}).syn{i_}.psa.(hbs.mon.cp{j_}) = ...
+                [out(:);inn{j_}(i_,:)'];
         end
     end
     
