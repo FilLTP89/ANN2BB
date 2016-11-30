@@ -22,10 +22,11 @@ function [varargout] = syn2ann_rec_parser(varargin)
     count_na = 0;
     count_fn = 0;
     rec.mon.na = bhr.na;
-    switch bhr.typ{1}
-        case 'itaca'
-            % stations
-            for i_ = 1:bhr.ns
+    
+    % stations
+    for i_ = 1:bhr.ns
+        switch lower(bhr.st{i_}.tp{1})
+            case 'itaca'
                 % devices
                 for j_ = 1:bhr.nd(i_)
                     count_na = count_na+1;
@@ -37,6 +38,10 @@ function [varargout] = syn2ann_rec_parser(varargin)
                     for ii_ = 1:bhr.nc
                         rec.mon.cp{ii_} = bhr.cp{ii_};
                         rec.mon.nc = rec.mon.nc+1;
+                        cpn = bhr.cp{ii_}(1);
+                        if strcmpi(cpn,'u')
+                            cpn = 'z';
+                        end
                         % _components_
                         for jj_ = 1:bhr.nr
                             count_fn = count_fn+1;
@@ -45,33 +50,30 @@ function [varargout] = syn2ann_rec_parser(varargin)
                             % _file-name_
                             bhr.fnm{count_fn} = itaca_monitor_name...
                                 (bhr.st{i_}.id{1},bhr.st{i_}.ev{1},bhr.st{i_}.dv{j_},...
-                                bhr.cp{ii_},bhr.rc{jj_},bhr.st{i_}.ni,bhr.pt);
+                                cpn,bhr.rc{jj_},bhr.st{i_}.ni,bhr.pt);
                             fprintf('filename: %s\n',bhr.fnm{count_fn});
                             switch strcat(bhr.st{i_}.id{1},bhr.st{i_}.dv{j_})
                                 case {'MRN','MIR08'}
-                                rec.mon.dtm(count_na)=0.005;
-                                rec.syn{count_na}.(strcat('th',bhr.rc{jj_})).(bhr.cp{ii_})=...
-                                    cor.(bhr.nm{count_na}).(strcat('th',bhr.rc{jj_})).(bhr.cp{ii_});
-                                rec.syn{count_na}.(strcat('th',bhr.rc{jj_})).(bhr.cp{ii_})= ...
-                                    rec.syn{count_na}.(strcat('th',bhr.rc{jj_})).(bhr.cp{ii_})...
-                                    (~isnan(rec.syn{count_na}.(strcat('th',bhr.rc{jj_})).(bhr.cp{ii_})));
-                                rec.mon.ntm(count_na)=numel(rec.syn{count_na}.(strcat('th',bhr.rc{jj_})).(bhr.cp{ii_}));
-                                rec.mon.vtm{count_na} = (0:rec.mon.ntm(count_na)-1)*rec.mon.dtm(count_na);
-                            case {'AQK','AQU'}
-                                % _parsing_
-                                [rec.mon.dtm(count_na),...
-                                    rec.mon.ntm(count_na),...
-                                    rec.mon.vtm{count_na},...
-                                    rec.syn{count_na}.(strcat('th',bhr.rc{jj_})).(bhr.cp{ii_})] = ...
-                                    parse_itaca_file_new(bhr.fnm{count_fn});
+                                    rec.mon.dtm(count_na)=0.005;
+                                    rec.syn{count_na}.(strcat('th',bhr.rc{jj_})).(bhr.cp{ii_})=...
+                                        cor.(bhr.nm{count_na}).(strcat('th',bhr.rc{jj_})).(bhr.cp{ii_});
+                                    rec.syn{count_na}.(strcat('th',bhr.rc{jj_})).(bhr.cp{ii_})= ...
+                                        rec.syn{count_na}.(strcat('th',bhr.rc{jj_})).(bhr.cp{ii_})...
+                                        (~isnan(rec.syn{count_na}.(strcat('th',bhr.rc{jj_})).(bhr.cp{ii_})));
+                                    rec.mon.ntm(count_na)=numel(rec.syn{count_na}.(strcat('th',bhr.rc{jj_})).(bhr.cp{ii_}));
+                                    rec.mon.vtm{count_na} = (0:rec.mon.ntm(count_na)-1)*rec.mon.dtm(count_na);
+                                case {'AQK','AQU'}
+                                    % _parsing_
+                                    [rec.mon.dtm(count_na),...
+                                        rec.mon.ntm(count_na),...
+                                        rec.mon.vtm{count_na},...
+                                        rec.syn{count_na}.(strcat('th',bhr.rc{jj_})).(bhr.cp{ii_})] = ...
+                                        parse_itaca_file_new(bhr.fnm{count_fn});
                             end
                         end
                     end
                 end
-            end
-        case 'kknpp'
-            % stations
-            for i_ = 1:bhr.ns
+            case 'kknpp'
                 % devices
                 for j_ = 1:bhr.nd(i_)
                     count_na = count_na+1;
@@ -98,7 +100,7 @@ function [varargout] = syn2ann_rec_parser(varargin)
                             parse_kknpp_file(bhr.fnm{count_fn},bhr.cp);
                     end
                 end
-            end
+        end
     end
     
     %% *ACCELERATION/VELOCITY/DISPLACEMENT*

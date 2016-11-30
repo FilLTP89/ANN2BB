@@ -36,25 +36,7 @@ dlg = cell(3,1);
 dlg{1} = 'EW';
 dlg{2} = 'NS';
 dlg{3} = 'UD';
-%
-% _COMPUTE TIME SHIFT FOR RECORD PLOT_
-%
-%
-% * _FOURIER SPECTRA_
-%
-pfg.fsa = [0 0 12 12];
-xlm.fsa = {10.^([log10(0.05),log10(40)])};
-ylm.fsa = {10.^([-4,1])};
-xtk.fsa = {10.^([log10(0.05),-1,0,log10(5),1,log10(40)])};
-ytk.fsa = {10.^(-4:1)};
-xlb.fsa = {'f [Hz]'};
-ylb.fsa = {'FS [m/s]','',''};
-scl.fsa = {'log','log','log'};
-grd.fsa = {'minor'};
-mrk.fsa = {'none'};
-tit.fsa = {'FOURIER SPECTRUM'};
-utd.fsa = 1;
-vtm_shift=zeros(1,tst.mtd.nr+1);
+
 spp = '/home/filippo/Scrivania/ann';
 % spp = fullfile(filesep,'tmp1','gattif','heavy_images_new');
 

@@ -29,6 +29,11 @@ bhrr.st{1}.dv = {''};
 bhrr.st{2}.dv = {'08'};
 bhrr.st{3}.dv = {''};
 bhrr.st{4}.dv = {''};
+% _database_
+bhrr.st{1}.tp = {'itaca'};
+bhrr.st{2}.tp = {'itaca'};
+bhrr.st{3}.tp = {'itaca'};
+bhrr.st{4}.tp = {'itaca'};
 
 % _bhrr field names_
 fni.bhrr = fieldnames(bhrr);
