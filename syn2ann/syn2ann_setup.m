@@ -31,7 +31,7 @@ sp = '/home/filippo/Scrivania/ann';
 %% *LOAD ALL METADATA AVAILABLE*
 syn2ann_case_list;
 % _select analyses : selected_case = [a,b,...,d]_
-selected_case = [1,3];
+selected_case = 1;
 
 %% *DEFINE REAL RECORDS METADATA*
 % _path to record files_
@@ -132,7 +132,7 @@ end
 % _site class considered : ALL,AB,CD_
 ann.mtd.scl = {'ALL';'ALL';'ALL'};
 % _corner period for each ANN_
-ann.mtd.TnC = {1;1;1};
+ann.mtd.TnC = {0.75;0.75;0.75};
 % _ANN motion component : gh,ud (geometric mean horizontal, updip)_
 ann.mtd.cpn = {'gh';'gh';'ud'};
 for i_ = 1:numel(ann.mtd.TnC)

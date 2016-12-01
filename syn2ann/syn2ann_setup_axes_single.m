@@ -15,22 +15,20 @@ switch  ttt
     case 'MRN 2012-05-29 07:00'
         vtm_shift(:) = 0.5;
         xlm.tha = [0;25];
-        xtk.tha = (xlm.tha(1):5:xlm.tha(end));
+        xtk.tha = (xlm.tha(1):5:xlm.tha(end))';
     case 'MIR08'
         vtm_shift(:) = 0.73;
         xlm.tha = [0;25];
-        xtk.tha = (xlm.tha(1):5:xlm.tha(end));
-    case 'AQK-2009-04-06 01:32'
+        xtk.tha = (xlm.tha(1):5:xlm.tha(end))';
+    case 'AQK 2009-04-06 01:32'
         vtm_shift(:) = 1.35;
         xlm.tha = [0;25];
-        xtk.tha = (xlm.tha(1):5:xlm.tha(end));
+        xtk.tha = (xlm.tha(1):5:xlm.tha(end))';
     case 'AQU'
         vtm_shift(:) = 2.15;
         xlm.tha = [0;25];
-        xtk.tha = (xlm.tha(1):5:xlm.tha(end));
+        xtk.tha = (xlm.tha(1):5:xlm.tha(end))';
 end
-xlm.tha = xlm.tha;
-xtk.tha = xtk.tha;
 xlm.thv = xlm.tha;
 xtk.thv = xtk.tha;
 xlm.thd = xlm.tha;
@@ -80,21 +78,21 @@ thd_lim = thd_lim*utd.thd;
 psa_lim = psa_lim*utd.psa;
 
 ylm.tha = [-ceil(tha_lim/4)*4,ceil(tha_lim/4)*4];
-[~,ytk.tha] = get_axis_tick(ylm.tha,ylm.tha,ceil(tha_lim/2),ceil(tha_lim/2));
+[~,ytk.tha] = get_axis_tick(ylm.tha,ylm.tha,ceil(ylm.tha(2)/2),ceil(ylm.tha(2)/2));
 ylm.tha = ylm.tha;
 ytk.tha = ytk.tha;
 
 ylm.thv = [-ceil(thv_lim/4)*4,ceil(thv_lim/4)*4];
-[~,ytk.thv] = get_axis_tick(ylm.thv,ylm.thv,ceil(thv_lim/2),ceil(thv_lim/2));
+[~,ytk.thv] = get_axis_tick(ylm.thv,ylm.thv,ceil(ylm.thv(2)/2),ceil(ylm.thv(2)/2));
 ylm.thv = ylm.thv;
 ytk.thv = ytk.thv;
 
 ylm.thd = [-ceil(thd_lim/4)*4,ceil(thd_lim/4)*4];
-[~,ytk.thd] = get_axis_tick(ylm.thd,ylm.thd,ceil(thd_lim/2),ceil(thd_lim/4));
+[~,ytk.thd] = get_axis_tick(ylm.thd,ylm.thd,ceil(ylm.thd(2)/2),ceil(ylm.thd(2)/4));
 ylm.thd = ylm.thd;
 ytk.thd = ytk.thd;
 
 ylm.psa = [0,ceil(psa_lim/4)*4];
-[~,ytk.psa] = get_axis_tick(ylm.psa,ylm.psa,ceil(psa_lim/4),ceil(psa_lim/4));
+[~,ytk.psa] = get_axis_tick(ylm.psa,ylm.psa,ceil(ylm.psa(2)/4),ceil(ylm.psa(2)/4));
 ylm.psa = ylm.psa;
 ytk.psa = ytk.psa;
