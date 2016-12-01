@@ -130,7 +130,7 @@ for m_ = 1:mtd.exsim.na
 end
 %% *DEFINE ANN METADATA*
 % _site class considered : ALL,AB,CD_
-ann.mtd.scl = {'ALL';'ALL';'ALL'};
+ann.mtd.scl = {'CD';'CD';'CD'};
 % _corner period for each ANN_
 ann.mtd.TnC = {0.75;0.75;0.75};
 % _ANN motion component : gh,ud (geometric mean horizontal, updip)_
