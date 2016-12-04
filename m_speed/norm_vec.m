@@ -22,7 +22,10 @@
 % along with SPEED.  If not, see <http://www.gnu.org/licenses/>.
 %**************************************************************************
 
-function [n] = norm_vec(phi,lambda,delta)
+function [n] = norm_vec(varargin)
+    phi    = varargin{1};
+    lambda = varargin{2};
+    delta  = varargin{3};
     %
     % norm_vec.m calculates the  normal fault vector for
     % a given fault geometry
@@ -42,19 +45,26 @@ function [n] = norm_vec(phi,lambda,delta)
     %                Y = NORTH
     %                Z = UP
     
+    ref_sys = 0;
+    if nargin>3
+        ref_sys = varargin{4};
+    end
     
-    phi = phi*pi/180; % STRIKE (DEG)
+    phi    = phi*pi/180;    % STRIKE (DEG)
     lambda = lambda*pi/180; % RAKE (DEG)
-    delta = delta*pi/180; % DIP (DEG)
+    delta  = delta*pi/180;  % DIP (DEG)
     
     % NORMAL FAULT VECTOR n
     n = zeros(3,1);
-    n(1) = +sin(delta)*cos(phi);
-    n(2) = -sin(delta)*sin(phi);
-    n(3) = cos(delta);
-    
+    if ref_sys==0
+        n(1) = +sin(delta)*cos(phi);
+        n(2) = -sin(delta)*sin(phi);
+        n(3) = +cos(delta);
+    elseif ref_sys==1
+        n(1) = -sin(delta)*sin(phi);
+        n(2) = +sin(delta)*cos(phi);
+        n(3) = -cos(delta);
+    end
     n = round(n.*1e8).*1e-8;
-    
-    
     return
 end

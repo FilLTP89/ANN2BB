@@ -22,21 +22,20 @@ function [varargout] = apply_ann2hbs_justPSA(varargin)
     %
     % _check input/target natural periods with hbs_
     %
-    for j_ = 1:hbs.mon.nc
-        cpp = (hbs.mon.cp{j_});
-        [trs.(cpp).iid,trs.(cpp).tid] = ...
-            trann_check_vTn(ann.(cpp).inp,ann.(cpp).tar,hbs.mon,1e-8);
-    end
-    
     inn = cell(hbs.mon.nc,1);
-    
     for j_ = 1:hbs.mon.nc
+        %
+        cpp.hbs = (hbs.mon.cp{j_});
+        %
+        [trs.(cpp.hbs).iid,trs.(cpp.hbs).tid] = ...
+            trann_check_vTn(ann.(cpp.hbs).inp,ann.(cpp.hbs).tar,hbs.mon,1e-8);
+        %
         psa = -999*ones(hbs.mon.na,hbs.mon.nT);
-        cpp = hbs.mon.cp{j_};
         for i_ = 1:hbs.mon.na
-            psa(i_,:) = hbs.syn{i_}.psa.(cpp)(:)';
+            psa(i_,:) = hbs.syn{i_}.psa.(cpp.hbs)(:)';
         end
-        inn{j_} = psa(:,trs.(cpp).iid);
+        %
+        inn{j_} = psa(:,trs.(cpp.hbs).iid);
     end
     
     %% *ANN SIMULATION*

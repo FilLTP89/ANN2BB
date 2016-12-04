@@ -22,7 +22,11 @@
 % along with SPEED.  If not, see <http://www.gnu.org/licenses/>.
 %**************************************************************************
 
-function [s] = slip_vec(phi,lambda,delta)
+function [s] = slip_vec(varargin)
+    phi    = varargin{1};
+    lambda = varargin{2};
+    delta  = varargin{3};
+    
     %
     % slip_vec.m calculates the slip vector for a given fault geometry
     %
@@ -31,30 +35,47 @@ function [s] = slip_vec(phi,lambda,delta)
     % - lambda = RAKE  ( measured counter clockwise from horiz. strike direc.,
     %                    as in Aki&Richard )
     % - delta =  DIP   ( measured down from the horizontal)
-    %
+    % - varargin = reference system convention
     % OUTPUTS:
     % - s = slip vector (dimension = 3x1)
-    %   IMPORTANT:
+    %   N.B.:
+    %   if ref_sys = 0
     %       the vecor is given with respet to
     %       the UTM geographic coordinate system (X,Y,Z):
     %                X = EAST
     %                Y = NORTH
     %                Z = UP
+    %   if ref_sys = 1
+    %       the vecor is given with respet to
+    %       the HISADA geographic coordinate system (X,Y,Z):
+    %                X = NORTH
+    %                Y = EAST
+    %                Z = DOWN
     
+    ref_sys = 0;
+    if nargin>3
+        ref_sys = varargin{4};
+    end
     
-    phi = phi*pi/180; % STRIKE (DEG)
+    phi    = phi*pi/180;    % STRIKE (DEG)
     lambda = lambda*pi/180; % RAKE (DEG)
-    delta = delta*pi/180; % DIP (DEG)
+    delta  = delta*pi/180;  % DIP (DEG)
     
     % SLIP VECTOR s
     s = zeros(3,1);
-    s(1) = +cos(lambda)*sin(phi) - sin(lambda)*cos(delta)*cos(phi);
-    s(2) = +cos(lambda)*cos(phi) + sin(lambda)*cos(delta)*sin(phi);
-    s(3) = sin(lambda)*sin(delta);
+    if ref_sys==0
+        disp('UTM REFSYS');
+        s(1) = +cos(lambda)*sin(phi) - sin(lambda)*cos(delta)*cos(phi);
+        s(2) = +cos(lambda)*cos(phi) + sin(lambda)*cos(delta)*sin(phi);
+        s(3) = sin(lambda)*sin(delta);
+    elseif ref_sys==1
+        disp('HISADA REFSYS');
+        s(1) = +cos(lambda)*cos(phi) + sin(lambda)*cos(delta)*sin(phi);
+        s(2) = +cos(lambda)*sin(phi) - sin(lambda)*cos(delta)*cos(phi);
+        s(3) = -sin(lambda)*sin(delta);
+    end
     
     s = round(s.*1e8).*1e-8;
     
     return
 end
-    
-    

@@ -17,7 +17,9 @@ for j_ = 1:mon.nc
     fnm = fullfile(wd,'training',ann.mtd.nl{ib});
     TnC  = ann.mtd.TnC{ib};
     ann.cp{j_} = mon.cp{j_};
-    ann.(mon.cp{j_}) = syn2ann_ann_parser(TnC,fnm,mon.cp{j_},ann.mtd.scl{j_});
+    ann.(mon.cp{j_}) = syn2ann_ann_parser(TnC,fnm,mon.cp{j_},ann.mtd.scl{ib});
+    ann.(mon.cp{j_}).nl = sprintf('%s_%u_%s',...
+        ann.mtd.scl{ib},round(TnC*100),ann.cp{j_});
 end
 
 switch lower(hybrid_type)
@@ -28,7 +30,7 @@ switch lower(hybrid_type)
         [~,~,ib] = intersect(hbs.sps.mon.cp,ann.cp,'stable');
         ann.cp   = ann.cp(ib);
         % _ apply trained ANN on hybrid accelerograms_
-        fprintf('--> Apply\n');
+        fprintf('--> Apply:\n');
         trs.sps = apply_ann2hbs_justPSA(hbs.sps,ann);
     case 'exsim'
         %
