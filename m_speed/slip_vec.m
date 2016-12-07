@@ -21,13 +21,7 @@
 % You should have received a copy of the GNU Affero General Public License
 % along with SPEED.  If not, see <http://www.gnu.org/licenses/>.
 %**************************************************************************
-
-function [s] = slip_vec(varargin)
-    phi    = varargin{1};
-    lambda = varargin{2};
-    delta  = varargin{3};
-    
-    %
+%
     % slip_vec.m calculates the slip vector for a given fault geometry
     %
     % INPUTS:
@@ -37,7 +31,7 @@ function [s] = slip_vec(varargin)
     % - delta =  DIP   ( measured down from the horizontal)
     % - varargin = reference system convention
     % OUTPUTS:
-    % - s = slip vector (dimension = 3x1)
+    % - slp = slip vector (dimension = 3x1)
     %   N.B.:
     %   if ref_sys = 0
     %       the vecor is given with respet to
@@ -51,31 +45,31 @@ function [s] = slip_vec(varargin)
     %                X = NORTH
     %                Y = EAST
     %                Z = DOWN
-    
+function [varargout] = slip_vec(varargin)
+    %% *SET-UP*
+    phi    = varargin{1}*pi/180; % STRIKE (DEG)
+    lambda = varargin{2}*pi/180; % RAKE (DEG)
+    delta  = varargin{3}*pi/180; % DIP (DEG)
     ref_sys = 0;
     if nargin>3
         ref_sys = varargin{4};
     end
     
-    phi    = phi*pi/180;    % STRIKE (DEG)
-    lambda = lambda*pi/180; % RAKE (DEG)
-    delta  = delta*pi/180;  % DIP (DEG)
-    
-    % SLIP VECTOR s
-    s = zeros(3,1);
+    %% *SLIP VECTOR slp*
+    slp = zeros(3,1);
     if ref_sys==0
         disp('UTM REFSYS');
-        s(1) = +cos(lambda)*sin(phi) - sin(lambda)*cos(delta)*cos(phi);
-        s(2) = +cos(lambda)*cos(phi) + sin(lambda)*cos(delta)*sin(phi);
-        s(3) = sin(lambda)*sin(delta);
+        slp(1) = +cos(lambda)*sin(phi) - sin(lambda)*cos(delta)*cos(phi);
+        slp(2) = +cos(lambda)*cos(phi) + sin(lambda)*cos(delta)*sin(phi);
+        slp(3) = sin(lambda)*sin(delta);
     elseif ref_sys==1
         disp('HISADA REFSYS');
-        s(1) = +cos(lambda)*cos(phi) + sin(lambda)*cos(delta)*sin(phi);
-        s(2) = +cos(lambda)*sin(phi) - sin(lambda)*cos(delta)*cos(phi);
-        s(3) = -sin(lambda)*sin(delta);
+        slp(1) = +cos(lambda)*cos(phi) + cos(delta)*sin(lambda)*sin(phi);
+        slp(2) = +cos(lambda)*sin(phi) - cos(delta)*sin(lambda)*cos(phi);
+        slp(3) = -sin(lambda)*sin(delta);
     end
     
-    s = round(s.*1e8).*1e-8;
-    
+    %% *OUTPUT*
+    varargout{1} = round(slp.*1e8).*1e-8;
     return
 end
