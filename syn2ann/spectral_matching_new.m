@@ -1,7 +1,8 @@
 %%%%%%%%%%%%%%%%%%%%
 %Funzione per accelerogrammi spettro-compatibili da accelerogrammi reali%
 %%%%%%%%%%%%%%%%%%%%
-function  [out_t,out_acc,out_vel,out_dis,out_T,out_Se,out_freq,out_FAS] = CORREZIONE(target_Se,acc_,niter,tol_u,tol_l)   
+function  [out_t,out_acc,out_vel,out_dis,out_T,out_Se,out_freq,out_FAS] = ...
+        spectral_matching_new(target_Se,acc_,niter,tol_u,tol_l)   
 
 %%%%%%%%%%%%%%%%%%%%%%%% IMPORTANT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % target_Se. acc spectrum should be in m/s2, first column should be periods
@@ -50,7 +51,8 @@ acc(npun+1:Nfft) = 0;
 ACC=dt*fft(acc,Nfft); 
 
 for i=2:length(T_in)
-Sp_acc(i)=newmark_sa(acc',T_in(i),0.05,0.01);
+    
+Sp_acc(i)=4*pi^2*disp_spectra(acc',0.01,T_in(i),0.05)./T_in(i)^2;
 freq_in(length(T_in)-i+2)=1/T_in(i);
 Rapp_spe_in(length(T_in)-i+2)=Sp_acc(i)/Sp_in(i); % fattore di correzione
 end
@@ -86,7 +88,7 @@ for k=1:niter  % lavora tante volte sull'accelerogramma (niter = per tutti)
     acc_pro=detrend(acc_pro,'constant');
 
 	for i=1:length(T_in)
-    Sp_acc_pro(i,k)=newmark_sa(acc_pro',T_in(i),0.05,0.01);
+    Sp_acc_pro(i,k)=4*pi^2*disp_spectra(acc_pro',0.01,T_in(i),0.05)./T_in(i)^2;
     end
 	
 	Sp_acc_pro(1,k)=max(abs(acc_pro));
@@ -245,7 +247,7 @@ dis_pro = cumsum(vel_pro)*dt;
 
 
 for i=2:length(T_in)
-        Sp_acc_pro_final(i)=newmark_sa(acc_pro,T_in(i),0.05,dt);
+        Sp_acc_pro_final(i)=4*pi^2*disp_spectra(acc_pro,dt,T_in(i),0.05)./T_in(i)^2;
 end
  	Sp_acc_pro_final(1)=max(abs(acc_pro));
     
