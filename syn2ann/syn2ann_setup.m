@@ -31,7 +31,7 @@ sp = '/home/filippo/Scrivania/ann';
 %% *LOAD ALL METADATA AVAILABLE*
 syn2ann_case_list;
 % _select analyses : selected_case = [a,b,...,d]_
-selected_case = 2;
+selected_case = 5:6;
 
 %% *DEFINE REAL RECORDS METADATA*
 % _path to record files_
@@ -57,7 +57,7 @@ end
 
 % _reference system_
 bhr.rs = {'ew';'ns';'ud'};
-bhr.cp = {'ew';'ns'};
+bhr.cp = {'ew';'ns';'ud'};
 bhr.nc = numel(bhr.cp);
 [~,bhr.ci] = ismember(bhr.cp,bhr.rs);
 fprintf('--> Reference system : ');
@@ -121,13 +121,13 @@ for m_ = 1:mtd.sp96.na
         mtd.sp96.(fni.mtdd.sp96{n_})(m_) = mtdd.sp96.(fni.mtdd.sp96{n_})(selected_case(m_));
     end
 end
-% _EXSIM metadata_
-mtd.exsim.na = mon.na;
-for m_ = 1:mtd.exsim.na
-    for n_ = 1:fnn.mtdd.exsim
-        mtd.exsim.(fni.mtdd.exsim{n_})(m_) = mtdd.exsim.(fni.mtdd.exsim{n_})(selected_case(m_));
-    end
-end
+% % _EXSIM metadata_
+% mtd.exsim.na = mon.na;
+% for m_ = 1:mtd.exsim.na
+%     for n_ = 1:fnn.mtdd.exsim
+%         mtd.exsim.(fni.mtdd.exsim{n_})(m_) = mtdd.exsim.(fni.mtdd.exsim{n_})(selected_case(m_));
+%     end
+% end
 %% *DEFINE ANN METADATA*
 % _site class considered : ALL,AB,CD_
 ann.mtd.scl = {'CD';'CD';'CD'};

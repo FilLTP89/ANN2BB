@@ -16,6 +16,14 @@ switch  ttt
         vtm_shift(:) = 0.5;
         xlm.tha = [0;25];
         xtk.tha = (xlm.tha(1):5:xlm.tha(end))';
+    case 'MIR01 2012-05-29 07:00'
+        vtm_shift(:) = 0.;
+        xlm.tha = [0;25];
+        xtk.tha = (xlm.tha(1):5:xlm.tha(end))';
+    case 'MIR02 2012-05-29 07:00'
+        vtm_shift(:) = 0.;
+        xlm.tha = [0;25];
+        xtk.tha = (xlm.tha(1):5:xlm.tha(end))';
     case 'MIR08 2012-05-29 07:00'
         vtm_shift(:) = 0.73;
         xlm.tha = [0;25];
@@ -28,7 +36,7 @@ switch  ttt
         vtm_shift(:) = 2.15;
         xlm.tha = [0;25];
         xtk.tha = (xlm.tha(1):5:xlm.tha(end))';
-    otherwise 
+    otherwise
         error('SET UP AXES FOR %s!',ttt)
 end
 
