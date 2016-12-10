@@ -1,58 +1,12 @@
 %Programma per accelerogrammi spettro-compatibili da accelerogrammi reali%
 function [varargout] = spectral_matching(varargin)
+    %% *SET-UP*
     dt    = varargin{1};
     acc1  = varargin{2};
     T_in  = varargin{3};
     Sp_in = varargin{4};
-% clear all;
-% close all;
-% clc;
-% warning off;
-
-% Caricamento dati%
-
-% load 'syn2ann_res_ALL';
-% i=1;
-% record originale (struttura dati rec.org):
-        %rec.org.syn{1}.tha.e (.n,.z) : time-histories in accelerazione (tha) dell' i-esima stazione nella direzione ew (ns,z). 
-        %NB: i=1 ==> MRN; i=3 ==> AQK
-%         Rec_orig=rec.org.syn{i}.tha.n % : time-histories in accelerazione (tha) dell' i-esima stazione nella direzione ew (ns,z). 
-
-%     * Numerical Simulations (SPEED) originale (struttura dati nss.org): 
-%         nss.org.syn{i}.tha.e (.n,.z) : time-histories in accelerazione (tha) dell' i-esima stazione nella direzione ew (ns,z). 
-%         NB: i=1 ==> MRN; i=3 ==> AQK
-%          Rec_sim=nss.org.syn{i}.tha.n % : time-histories in accelerazione (tha) dell' i-esima stazione nella direzione ew (ns,z). 
-
-%     * Hybrids con SP96 (struttura dati hbs.sps):
-%         hbs.sps.syn{i}.tha.e (.n,.z) : time-histories in accelerazione (tha) dell' i-esima stazione nella direzione ew (ns,z). 
-%         NB: i=1 ==> MRN; i=3 ==> AQK
-%           hybrid=hbs.sps.syn{i}.tha.n % : time-histories in accelerazione (tha) dell' i-esima stazione nella direzione ew (ns,z). 
-
-
-%     * Spectral Matched con ibrid basati su SP96 (struttura dati spm.sps):
-%         spm.sps.e(.n,.z).syn{i}.psa.e(.n,.z) : pseudo-spectral acceleration (psa) dell' i-esima stazione nella direzione ew (ns,z). 
-%         NB: i=1 ==> MRN; i=3 ==> AQK
-%         NB: la direzione viene ripetuta due volte e deve coincidere : spm.sps.e.syn{i}.psa.e
     
-%           Sp_in=spm.sps.n.syn{i}.psa.n %: pseudo-spectral acceleration (psa) dell' i-esima stazione nella direzione ew (ns,z). 
-%     * time steps:
-%         nss.org.mon.dtm(i) : delta time (dtm) dell' i-esima stazione.
-%         NB: i=1 ==> MRN; i=3 ==> AQK
-%         NB: chiaramente, questo vale anche per le altre strutture, come rec.org, hbs.sps
-%           dt=nss.org.mon.dtm(i); 
-
-%     * time vector:
-%         nss.org.mon.vtm{i} : time vector (vtm) dell' i-esima stazione.
-%         NB: i=1 ==> MRN; i=3 ==> AQK
-%         NB: chiaramente, questo vale anche per le altre strutture, come rec.org, hbs.sps
-%           t=nss.org.mon.vtm{i}; 
-
-%     * natural periods
-%         spm.sps.e(.n,.z).mon.vTn : natural periods vector (vTn) (lo stesso per tutte le stazioni)
-%           T_in=spm.sps.n.mon.vTn;
-
-% nomefile2='Pippo.dat'; %nome del file da salvare%
-
+    %% *PRELIMINARY ACC CORRECTION*
     scala=1;
     dt1=dt;
     fac=1;
@@ -95,37 +49,10 @@ function [varargout] = spectral_matching(varargin)
     dis=cumsum(vel).*dt;
     npun=Nfft;
     t=[0:dt:(npun-1)*dt];
-    ACC=dt*fft(acc,Nfft); %trasformata di Fourier dell'accelerogramma non corretto%
-    %Fine calcolo della FFT dell'accelerogramma%
+    ACC=dt*fft(acc,Nfft); 
 
-    % Grafici %
-
-    % %Accelerogramma non corretto e relativo Spettro di Fourier%
-    % figure(1) 
-    %  
-    % subplot ('position',[0.1 0.55 0.75 0.25])
-    % ax1 = gca;
-    % set(ax1,'FontSize',12);
-    % plot(t,acc,'k','linewidth',1);
-    % title ('Accelerogramma');
-    % axis([0 durata -1.2*max(abs(acc)) 1.2*max(abs(acc))]);
-    % xlabel('t(s)');
-    % ylabel('m/s^2');
-    % grid on;
-    % 
-    % subplot ('position',[0.1 0.15 0.75 0.25])
-    % ax1 = gca;
-    % set(ax1,'FontSize',12);
-    % loglog(freq,abs(ACC(1:Nfft/2)),'k','linewidth',2);
-    % title ('Spettro di Fourier');
-    % xlabel('f(Hz)');
-    % grid on;
-    % hold on;
     ACC=fft(acc);
 
-    % loglog(freq,abs(ACC(1:Nfft/2))*dt,'r','linewidth',2);
-
-    % Compute the PSA response spectrum of the input accelerogram
     for i=2:length(T_in),
         Sp_acc(i)=4*pi^2*disp_spectra(acc,dt,T_in(i),0.05)./T_in(i)^2;
     end
@@ -214,29 +141,3 @@ function [varargout] = spectral_matching(varargin)
     varargout{6} = dis_pro(:);
     return
 end
-%     figure (2);
-%     % plot (T_in,Sp_in,'r',T_in,Sp_acc,'k',T_out,Sp_acc_pro,'b',T_out,Sp_acc2,'g')
-%     loglog (T_in,Sp_in,'r',T_in,Sp_acc,'k',T_out,Sp_acc_pro,'b'); grid on;
-%     xlim([0 5])
-% 
-%     figure (3)
-%     lRec=length(Rec_sim);
-%     plot(t(1:lRec),acc(1:lRec),'k','linewidth',1);
-%     hold on;
-%     plot(t(1:lRec),acc_pro(1:lRec),'b','linewidth',1);
-%     hold on;
-%     plot(t(1:lRec),Rec_sim,'g','linewidth',1);
-%     % hold on;
-%     % plot(t(1:lRec),Rec_orig(1:lRec),'m','linewidth',1);
-% 
-%     figure (4)
-%     loglog (freq, abs(ACC(1:nfreq)),'k',freq, abs(ACC_PRO(1:nfreq)),'b')
-% 
-%     figure (5)
-%     subplot (2,1,1), plot (t,vel,'k',t,vel_pro,'b');
-%     subplot (2,1,2), plot (t,dis,'k',t,dis_pro,'b');
-% 
-%     %Salvataggio file con accelerazione corretta%
-%     fid = fopen(nomefile2,'w');
-%     fprintf(fid,'%4.12f\n',acc_pro); 
-%     fclose(fid); 
