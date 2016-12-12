@@ -468,8 +468,8 @@ function [varargout] = fpplot(varargin)
             end
             %%
             % _format axes_
-%             syn2ann_format_figures(hax(m_));
-            format_figures(hax(m_));
+            syn2ann_format_figures(hax(m_));
+%             format_figures(hax(m_));
             
         end
     end
