@@ -46,7 +46,7 @@ function [varargout] = syn2ann_sm(varargin)
                 trs.(trs.mon.cp{j_}).mon.vTn,...
                 trs.(trs.mon.cp{j_}).syn{i_}.psa.(trs.mon.cp{j_}));
             
-            keyboard
+            
             
             spm.(hbs.mon.cp{j_}).mon.ntm(i_) = numel(spm.(hbs.mon.cp{j_}).syn{i_}.tha.(hbs.mon.cp{j_}));
             %

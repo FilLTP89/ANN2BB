@@ -35,6 +35,9 @@ syn2ann_ann_drive;
 %% *HYB-ANN SPECTRAL MATCHING*
 syn2ann_scaling_drive;
 
+%% *HYB-ANN SPECTRAL MATCHING*
+syn2ann_coherency_drive;
+
 %% *SAVE RESULTS*
 %syn2ann_save_res;
 

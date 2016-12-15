@@ -31,7 +31,7 @@ sp = '/home/filippo/Scrivania/ann';
 %% *LOAD ALL METADATA AVAILABLE*
 syn2ann_case_list;
 % _select analyses : selected_case = [a,b,...,d]_
-selected_case = 6;
+selected_case = [1:2,5:6];
 
 %% *DEFINE REAL RECORDS METADATA*
 % _path to record files_
