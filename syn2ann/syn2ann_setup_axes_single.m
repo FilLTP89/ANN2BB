@@ -54,9 +54,9 @@ for j_ = 1:numel(cpp)
     tha_lim = max([tha_lim;abs(rec.org.syn{mm_}.pga.(cpp{j_})(2))]);
     thv_lim = max([thv_lim;abs(rec.org.syn{mm_}.pgv.(cpp{j_})(2))]);
     thd_lim = max([thd_lim;abs(rec.org.syn{mm_}.pgd.(cpp{j_})(2))]);
-    tha_lim = max([tha_lim;abs(nss.org.syn{mm_}.pga.(cpp{j_})(2))]);
-    thv_lim = max([thv_lim;abs(nss.org.syn{mm_}.pgv.(cpp{j_})(2))]);
-    thd_lim = max([thd_lim;abs(nss.org.syn{mm_}.pgd.(cpp{j_})(2))]);
+    tha_lim = max([tha_lim;abs(pbs.org.syn{mm_}.pga.(cpp{j_})(2))]);
+    thv_lim = max([thv_lim;abs(pbs.org.syn{mm_}.pgv.(cpp{j_})(2))]);
+    thd_lim = max([thd_lim;abs(pbs.org.syn{mm_}.pgd.(cpp{j_})(2))]);
     psa_lim = max([psa_lim;max(abs(rec.org.syn{mm_}.psa.(cpp{j_})))]);
 end
 switch lower(hybrid_type)

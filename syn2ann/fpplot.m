@@ -336,7 +336,7 @@ function [varargout] = fpplot(varargin)
         %%
         % _plot_
         %if ismember(pax{m_},paxt(1:m_-1))
-            % idx = find(paxt(1:m_-1)==pax{m_},1,'first');
+        % idx = find(paxt(1:m_-1)==pax{m_},1,'first');
         if ismember(pax{m_},paxt)
             count(n_) = count(n_)+1;
             idx = find(paxt==pax{m_},1,'first');
@@ -348,7 +348,7 @@ function [varargout] = fpplot(varargin)
                 hpl(idx,count(n_))=plot(haxt,inp.Results.xpl{m_},inp.Results.ypl{m_},...
                     'marker',mrk{m_});
             end
-            if flwd 
+            if flwd
                 hpl(idx,count(n_)).LineWidth = lwd(m_);
             end
             hpl(idx,count(n_)).MarkerFaceColor = hpl(idx,count(n_)).Color;
@@ -366,7 +366,7 @@ function [varargout] = fpplot(varargin)
                 hpl(n_,count(n_))=plot(haxt,inp.Results.xpl{m_},inp.Results.ypl{m_},...
                     'marker',mrk{m_}');
             end
-            if flwd 
+            if flwd
                 hpl(n_,count(n_)).LineWidth = lwd(m_);
             end
             hpl(n_,count(n_)).MarkerFaceColor = hpl(n_,count(n_)).Color;
@@ -468,15 +468,15 @@ function [varargout] = fpplot(varargin)
             end
             %%
             % _format axes_
-            syn2ann_format_figures(hax(m_));
-%             format_figures(hax(m_));
+            %             syn2ann_format_figures(hax(m_));
+            format_figures(hax(m_));
             
         end
     end
     %%
     % _crop figure_
     rule_fig(hfg);
-
+    
     %% *OUTPUT*
     varargout{1} = hfg;
     varargout{2} = hax;

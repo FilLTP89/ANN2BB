@@ -30,16 +30,16 @@ syn2ann_emp_sto_drive;
 syn2ann_hybrid_drive;
 
 %% *PARSE AND SIMULATE TRAINED ANN*
-syn2ann_ann_drive;
+% syn2ann_ann_drive;
 
-% %% *HYB-ANN SPECTRAL MATCHING*
+%% *HYB-ANN SPECTRAL MATCHING*
 % syn2ann_scaling_drive;
 % 
-% % %% *HYB-ANN SPECTRAL MATCHING*
-% % % syn2ann_coherency_drive;
-% 
-% % %% *SAVE RESULTS*
-% % syn2ann_save_res;
+% %% *HYB-ANN SPECTRAL MATCHING*
+% syn2ann_coherency_drive;
+%
+% %% *SAVE RESULTS*
+syn2ann_save_res;
 % 
 % %% *PLOT RESULTS*
 % syn2ann_plot_res_single;
