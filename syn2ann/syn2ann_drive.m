@@ -10,7 +10,7 @@
 %% *N.B.*
 % Need for:
 % _syn2ann_setup.m,syn2ann_rec_drive.m, syn2ann_sim_drive.m,
-% syn2ann_emp_sto_drive.m, syn2ann_hybrid_drive.m, syn2ann_ann_drive.m, 
+% syn2ann_emp_sto_drive.m, syn2ann_hybrid_drive.m, syn2ann_ann_drive.m,
 % syn2ann_scaling_drive.m, syn2ann_save_res, syn2ann_plot_res_single.m_
 %% *REFERENCES*
 
@@ -21,7 +21,7 @@ syn2ann_setup;
 syn2ann_rec_drive;
 
 %% *PARSE NUMERICAL SIMULATIONS*
-syn2ann_sim_drive;
+syn2ann_pbs_drive;
 
 %% *GENERATE EMPIRICAL - PARSE STOCHASTIC*
 syn2ann_emp_sto_drive;
@@ -29,17 +29,17 @@ syn2ann_emp_sto_drive;
 %% *LF-HF CLASSIC HYBRIDIZATION*
 syn2ann_hybrid_drive;
 
-%% *PARSE ANN DATABASE*
+%% *PARSE AND SIMULATE TRAINED ANN*
 syn2ann_ann_drive;
 
 %% *HYB-ANN SPECTRAL MATCHING*
 syn2ann_scaling_drive;
 
-%% *HYB-ANN SPECTRAL MATCHING*
-syn2ann_coherency_drive;
+% %% *HYB-ANN SPECTRAL MATCHING*
+% % syn2ann_coherency_drive;
 
-%% *SAVE RESULTS*
-%syn2ann_save_res;
+% %% *SAVE RESULTS*
+% syn2ann_save_res;
 
 %% *PLOT RESULTS*
 syn2ann_plot_res_single;

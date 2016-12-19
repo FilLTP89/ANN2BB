@@ -30,11 +30,11 @@ function [varargout] = create_butter_filter(varargin)
     elseif (~isempty(lfr))&&(isempty(hfr))
         % LF filter definition
         [bfb,bfa] = butter(bfo,lfr./fNy,'high');
-%          fprintf('\nhigh-pass filtering: %.2f Hz\n',lfr);
+        fprintf('\nhigh-pass filtering: %.2f Hz\n',lfr);
     elseif (isempty(lfr))&&(~isempty(hfr))
         % LF filter definition
         [bfb,bfa] = butter(bfo,hfr./fNy,'low');
-%         fprintf('\nlow-pass filtering: %.2f Hz\n',hfr);
+        fprintf('\nlow-pass filtering: %.2f Hz\n',hfr);
     elseif (isempty(lfr))&&(isempty(hfr))
         flag=false;
         bfb = -1;

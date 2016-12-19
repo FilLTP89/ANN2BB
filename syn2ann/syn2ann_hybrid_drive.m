@@ -1,7 +1,7 @@
 %% *LF-HF HYBRIDIZATION*
 fprintf('---------------------\n4. HYBRIDIZATION\n---------------------\n');
 % % ============ DEBUG CODE---> CHECK WITH BBSYNT ============================
-% [BB_DTIME,BB_ACC,BB_FREQ,BB_AMP] = bbsynt_original(nss.org.mon.dtm(1),nss.org.syn{1}.tha.e,...
+% [BB_DTIME,BB_ACC,BB_FREQ,BB_AMP] = bbsynt_original(pbs.org.mon.dtm(1),pbs.org.syn{1}.tha.e,...
 %     sps.org.mon.dtm(1),sps.org.syn{1}.tha.e,mon.fa(1),mon.fb(1));
 % BB_TIME = BB_DTIME*(0:numel(BB_ACC)-1);
 % BB_VEL = cumtrapz(BB_ACC)*BB_DTIME;

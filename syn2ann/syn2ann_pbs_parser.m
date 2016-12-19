@@ -4,16 +4,16 @@
 % DICA - Politecnico di Milano
 % Copyright 2016_
 %% NOTES
-% _syn2ann_sim_parser_: function to parse synthetics from speed/hisada
+% _syn2ann_pbs_parser_: function to parse synthetics from speed/hisada
 %% INPUT:
 % * _mon (monitor structure)_
 %% OUTPUT:
 % * _mon (monitor structure)_
-% * _nss (structure of numerical simulations)_
+% * _pbs (structure of numerical simulations)_
 %% N.B.
 % Need for _speed_monitor_name.m,hisada_monitor_name.m,vel2acc.m,
 % dis2acc.m,PGAVD_eval.m_
-function [varargout] = syn2ann_sim_parser(varargin)
+function [varargout] = syn2ann_pbs_parser(varargin)
     I1 = 0.05;
     %% SET-UP
     % _monitor structure_
@@ -41,7 +41,7 @@ function [varargout] = syn2ann_sim_parser(varargin)
             keyboard
         end
     end
-    nss.mon = mon;
+    pbs.mon = mon;
     %%
     % _parsing records_
     switch(lower(mon.typ))
@@ -57,39 +57,39 @@ function [varargout] = syn2ann_sim_parser(varargin)
                 % read monitor file
                 str = importdata(str);
                 % time-step
-                nss.mon.dtm(i_) = mean(diff(str(:,1)));
+                pbs.mon.dtm(i_) = mean(diff(str(:,1)));
                 % parse acceleration components
                 fprintf('components: \n');
                 for j_ = 1:mon.nc
                     cpp = mon.cp{j_};
                     disp(cpp);
-                    nss.syn{i_}.(strcat('th',mon.rc{1})).(cpp) = str(:,mon.ci(j_)+1);
+                    pbs.syn{i_}.(strcat('th',mon.rc{1})).(cpp) = str(:,mon.ci(j_)+1);
                     switch mon.rc{1}
                         case 'v'
-                            [nss.syn{i_}.tha.(cpp),...
-                                nss.syn{i_}.thv.(cpp),...
-                                nss.syn{i_}.thd.(cpp)] = ...
-                                bpf_thv(nss.mon.dtm(i_),...
-                                nss.syn{i_}.thv.(cpp),mon.lfr,mon.hfr);
+                            [pbs.syn{i_}.tha.(cpp),...
+                                pbs.syn{i_}.thv.(cpp),...
+                                pbs.syn{i_}.thd.(cpp)] = ...
+                                bpf_thv(pbs.mon.dtm(i_),...
+                                pbs.syn{i_}.thv.(cpp),mon.lfr,mon.hfr);
                         case 'd'
-                            [nss.syn{i_}.tha.(cpp),...
-                                nss.syn{i_}.thv.(cpp),...
-                                nss.syn{i_}.thd.(cpp)] = ...
-                                bpf_thd_speed(nss.mon.dtm(i_),...
-                                nss.syn{i_}.thd.(cpp),mon.lfr,mon.hfr);
+                            [pbs.syn{i_}.tha.(cpp),...
+                                pbs.syn{i_}.thv.(cpp),...
+                                pbs.syn{i_}.thd.(cpp)] = ...
+                                bpf_thd_speed(pbs.mon.dtm(i_),...
+                                pbs.syn{i_}.thd.(cpp),mon.lfr,mon.hfr);
                     end
                 end
                 % time-step number
-                nss.mon.ntm(i_) = numel(nss.syn{i_}.tha.(cpp));
+                pbs.mon.ntm(i_) = numel(pbs.syn{i_}.tha.(cpp));
                 % time-vector
-                nss.mon.vtm{i_} = nss.mon.dtm(i_)*(0:nss.mon.ntm(i_)-1);
+                pbs.mon.vtm{i_} = pbs.mon.dtm(i_)*(0:pbs.mon.ntm(i_)-1);
                 
             end
     end
-    nss.mon.rc  = {'a';'v';'d'};
-    nss.mon.nr  = numel(nss.mon.rc);
+    pbs.mon.rc  = {'a';'v';'d'};
+    pbs.mon.nr  = numel(pbs.mon.rc);
     %% OUTPUT
     varargout{1} = mon;
-    varargout{2} = nss;
+    varargout{2} = pbs;
     return
 end

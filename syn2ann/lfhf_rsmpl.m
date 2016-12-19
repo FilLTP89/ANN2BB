@@ -7,17 +7,17 @@
 % _lfhf_rsmpl_: function that resamples lf and hf records to have
 % the same dt and number of points.
 %% INPUT:
-% * _nss (numerical simulation structure)_
+% * _pbs (numerical simulation structure)_
 % * _sps (Sabetta/Pugliese synthetics structure)_
 %% OUTPUT:
-% * _nss (numerical simulation structure)_
+% * _pbs (numerical simulation structure)_
 % * _sps (Sabetta/Pugliese synthetics structure)_
 function [varargout] = lfhf_rsmpl(varargin)
     %% SET-UP
-    nss = varargin{1};
+    pbs = varargin{1};
     sps = varargin{2};
     %  _check time-step_
-    [status,dtm,idx1,idx2] = check_dt(nss.mon.dtm,sps.mon.dtm);
+    [status,dtm,idx1,idx2] = check_dt(pbs.mon.dtm,sps.mon.dtm);
     
     if status
     %% RESAMPLING
@@ -33,19 +33,19 @@ function [varargout] = lfhf_rsmpl(varargin)
                 sps.mon.dtm(j_) = new_dtm.(sps.mon.cp{1});
                 sps.mon.vtm{j_} = new_vtm.(sps.mon.cp{1});
             else
-                fac = nss.mon.dtm(j_)/dtm(j_);
-                [new_dtm,nss.syn{j_}.tha,new_ntm,new_vtm] = ...
-                    structfun(@(v) seismo_rsmpl(nss.mon.dtm(j_),v,...
-                    fac),nss.syn{j_}.tha,'UniformOutput',0);
+                fac = pbs.mon.dtm(j_)/dtm(j_);
+                [new_dtm,pbs.syn{j_}.tha,new_ntm,new_vtm] = ...
+                    structfun(@(v) seismo_rsmpl(pbs.mon.dtm(j_),v,...
+                    fac),pbs.syn{j_}.tha,'UniformOutput',0);
                 
-                nss.mon.dtm(j_) = new_dtm.(sps.mon.cp{1});
-                nss.mon.ntm(j_) = new_ntm.(sps.mon.cp{1});
-                nss.mon.vtm{j_} = new_vtm.(sps.mon.cp{1});
+                pbs.mon.dtm(j_) = new_dtm.(sps.mon.cp{1});
+                pbs.mon.ntm(j_) = new_ntm.(sps.mon.cp{1});
+                pbs.mon.vtm{j_} = new_vtm.(sps.mon.cp{1});
             end
         end
     end
     
-    varargout{1} = nss;
+    varargout{1} = pbs;
     varargout{2} = sps;
     return
 end

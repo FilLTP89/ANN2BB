@@ -5,12 +5,13 @@ fprintf('--> Parsing\n');
 % _original_
 mon.lfr = 0.05;
 mon.hfr = [];
-[mon,nss.org]= syn2ann_sim_parser(mon,bhr);
+%% PARSE ORIGINAL PBS RECORDS
+[mon,pbs.org]= syn2ann_pbs_parser(mon,bhr);
 
 %% *PGA-PGV-PGD & ARIAS INTENSITY*
 fprintf('--> Peak Values and Arias\n');
-nss.org = syn2ann_thp(nss.org);
+pbs.org = syn2ann_thp(pbs.org);
 
 %% *SPECTRA*
 fprintf('--> Spectra\n');
-[nss.org] = syn2ann_spp(nss.org);
+[pbs.org] = syn2ann_spp(pbs.org);
