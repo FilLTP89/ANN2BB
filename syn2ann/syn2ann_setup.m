@@ -31,7 +31,7 @@ sp = '/home/filippo/Scrivania/ann';
 %% *LOAD ALL METADATA AVAILABLE*
 syn2ann_case_list;
 % _select analyses : selected_case = [a,b,...,d]_
-selected_case = [1:2,5:6];
+selected_case = 1;
 
 %% *DEFINE REAL RECORDS METADATA*
 % _path to record files_
@@ -39,7 +39,8 @@ bhr.pt  = fullfile(wd,'records');
 fprintf('--> Record Path: %s\n',bhr.pt);
 
 bhr.ns = numel(selected_case);
-for m_ = 1:bhr.ns
+ns = bhr.ns;
+for m_ = 1:ns
     for n_ = 1:fnn.bhrr
         bhr.(fni.bhrr{n_}){m_} = bhrr.(fni.bhrr{n_}){selected_case(m_)};
     end
@@ -111,7 +112,7 @@ cellfun(@(x) fprintf('%s ',x),mon.rc);
 fprintf('\n---------------------------------------------------------------\n');
 mon.cp = mon.cp(:);
 mon.ci = mon.ci(:);
-
+mon.hyb = 'butter';
 %% *DEFINE HYBRIDIZATION METADATA*
 % _SP96 metadata_
 hybrid_type='sp96';
