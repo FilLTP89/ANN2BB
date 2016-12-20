@@ -24,11 +24,11 @@ syn2ann_rec_drive;
 syn2ann_pbs_drive;
 
 %% *PARSE AND SIMULATE TRAINED ANN*
-syn2ann_ann_setup;
+syn2ann_ann_drive;
     
 for NIT=1:MAXIT
     fprintf('____________________________________________________________\n');
-    fprintf('ITERATION %u\n',NIT);
+    fprintf('ITERATION: %u\n',NIT);
     %% *GENERATE EMPIRICAL - PARSE STOCHASTIC*
     syn2ann_emp_sto_drive;
     

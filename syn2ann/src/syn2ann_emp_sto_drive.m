@@ -9,5 +9,10 @@
 %% *N.B.*
 % Need for:
 % _syn2ann_sp96_drive.m,syn2ann_exsim_drive.m_
-fprintf('---------------------\n3. EMPIRICAL-STOCHASTIC\n---------------------\n');
+fprintf('============================\n');
+fprintf('---------4. EMP/STO---------\n');
+fprintf('============================\n');
+
+%% *GENERATE EMPIRICAL RECORDS*
+fprintf('--> Generate SP96 \n');
 syn2ann_sp96_drive;

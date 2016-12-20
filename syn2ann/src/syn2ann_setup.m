@@ -9,8 +9,11 @@
 %% *N.B.*
 % Need for:
 % _ccc.m,syn2ann_case_list.m_
+
 ccc;
-fprintf('---------------------\n0. SETUP\n---------------------\n');
+fprintf('============================\n');
+fprintf('----------0. SETUP----------\n');
+fprintf('============================\n');
 
 %% *DEFINE WORKDIR*
 % % _main workdir_
@@ -26,7 +29,6 @@ wd = '/media/filippo/Data/Filippo/PHD_passing_through_polimi/syn2ann/database';
 fprintf('Workdir: %s\n',wd);
 % _save path_
 sp = '/home/filippo/Scrivania/ann';
-
 
 %% *LOAD ALL METADATA AVAILABLE*
 syn2ann_case_list;
@@ -58,7 +60,7 @@ end
 
 % _reference system_
 bhr.rs = {'ew';'ns';'ud'};
-bhr.cp = {'ew';'ns';'ud'};
+bhr.cp = {'ud'};
 bhr.nc = numel(bhr.cp);
 [~,bhr.ci] = ismember(bhr.cp,bhr.rs);
 fprintf('--> Reference system : ');
@@ -115,6 +117,7 @@ mon.ci = mon.ci(:);
 mon.hyb = 'butter';
 
 %% *DEFINE HYBRIDIZATION METADATA*
+% number of iteration for hybrid selections
 MAXIT = 10;
 % _SP96 metadata_
 hybrid_type='sp96';

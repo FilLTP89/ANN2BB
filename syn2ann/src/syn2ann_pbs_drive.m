@@ -1,11 +1,22 @@
-%% *NUMERICAL SIMULATIONS*
-fprintf('---------------------\n2. NUMERICAL SIMULATIONS\n---------------------\n');
-%% *PARSING*
+%% *GENERATION OF STRONG GROUND MOTION SIGNALS BY COUPLING PHYSICS-BASED ANALYSIS WITH ARTIFICIAL NEURAL NETWORKS*
+% _Editor: Filippo Gatti
+% CentraleSupélec - Laboratoire MSSMat
+% DICA - Politecnico di Milano
+% Copyright 2016_
+%% *NOTES*
+% _syn2ann_pbs_drive_: function to parse PBS records
+%% *N.B.*
+% Need for:
+% _syn2ann_pbs_parser.m,syn2ann_thp.m,syn2ann_spp.m_
+
+fprintf('============================\n');
+fprintf('------2. PB SIMULATIONS-----\n');
+fprintf('============================\n');
+
+%% *PARSING ORIGINAL NUMERICAL SIMULATIONS*
 fprintf('--> Parsing\n');
-% _original_
 mon.lfr = 0.05;
 mon.hfr = [];
-%% PARSE ORIGINAL PBS RECORDS
 [mon,pbs.org]= syn2ann_pbs_parser(mon,bhr);
 
 %% *PGA-PGV-PGD & ARIAS INTENSITY*

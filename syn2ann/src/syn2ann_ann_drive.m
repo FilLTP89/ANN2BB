@@ -4,15 +4,17 @@
 % DICA - Politecnico di Milano
 % Copyright 2016_
 %% *NOTES*
-% _syn2ann_ann_drive_: function to parse and simulate ANN upon numerical
+% _syn2ann_ann_drive_: function to parse and simulate ANN upon PBS numerical
 % simulations
 %% *N.B.*
 % Need for:
 % ismember.m,syn2ann_ann_parser.m,intersect.m,apply_ann2hbs_justPSA.m_
-fprintf('---------------------\n5. SETUP ANN\n---------------------\n');
+fprintf('============================\n');
+fprintf('------3. ANN SIMULATIONS----\n');
+fprintf('============================\n');
 
 %% *PARSE ANN NETWORK ON EACH MOTION COMPONENT*
-fprintf('--> Parsing \n');
+fprintf('--> Parsing ANN \n');
 for j_ = 1:mon.nc
     [~,ib] = ismember(mon.cp{j_},mon.rs);
     fnm = fullfile(wd,'training',ann.mtd.nl{ib});
@@ -26,5 +28,5 @@ end
 ann.cp   = ann.cp(ib);
 
 %% *DEFINE TARGET SPECTRUM UPON NUMERICAL SIMULATIONS*
-fprintf('--> Apply:\n');
+fprintf('--> Apply ANN:\n');
 trs.sps = apply_ann2hbs_justPSA(pbs.org,ann);

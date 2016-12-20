@@ -8,7 +8,10 @@
 %% *N.B.*
 % Need for:
 % _importdata.m,syn2ann_rec_parser.m,syn2ann_blc.m,syn2ann_thp.m,syn2ann_spp.m_
-fprintf('---------------------\n1. RECORDS\n---------------------\n');
+fprintf('============================\n');
+fprintf('----------1. RECORDINGS-----\n');
+fprintf('============================\n');
+
 %% *PARSING RECORDS*
 fprintf('--> Parsing\n');
 % _original_
