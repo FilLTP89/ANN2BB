@@ -23,35 +23,38 @@ syn2ann_rec_drive;
 %% *PARSE NUMERICAL SIMULATIONS*
 syn2ann_pbs_drive;
 
+%% *PARSE AND SIMULATE TRAINED ANN*
+syn2ann_ann_setup;
+    
 for NIT=1:MAXIT
     fprintf('____________________________________________________________\n');
-    fprintf('ITERATION %u\n\n',NIT);
+    fprintf('ITERATION %u\n',NIT);
     %% *GENERATE EMPIRICAL - PARSE STOCHASTIC*
     syn2ann_emp_sto_drive;
     
     %% *LF-HF CLASSIC HYBRIDIZATION*
     syn2ann_hybrid_drive;
     
-    %   target_spectra;
-    %   if x==1
-    %     setup_score;
-    %   end
-    %   score;
+    %% *SCORE THE HYBRID TIME HISTORIES*
+    if NIT==1
+        syn2ann_score_setup;
+    end
+    
+%     syn2ann_score_compute;
     fprintf('____________________________________________________________\n');
 end
 
 
-%% *PARSE AND SIMULATE TRAINED ANN*
-% syn2ann_ann_drive;
+
 
 %% *HYB-ANN SPECTRAL MATCHING*
 % syn2ann_scaling_drive;
-% 
+%
 % %% *HYB-ANN SPECTRAL MATCHING*
 % syn2ann_coherency_drive;
 %
 % %% *SAVE RESULTS*
-syn2ann_save_res;
-% 
+% syn2ann_save_res;
+%
 % %% *PLOT RESULTS*
 % syn2ann_plot_res_single;
