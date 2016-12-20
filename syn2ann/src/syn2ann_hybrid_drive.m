@@ -16,32 +16,32 @@ fprintf('============================\n');
 
 %% *RESAMPLING*
 fprintf('--> Resampling\n');
-[pbs.sps,sps.org] = lfhf_rsmpl(pbs.org,sps.org);
+[pbs.sps{NIT},sps.org{NIT}] = lfhf_rsmpl(pbs.org,sps.org{NIT});
 
 %% *PAD LF/HF*
 fprintf('--> Padding/Tapering\n');
-[pbs.sps,sps.org] = lfhf_pad(pbs.sps,sps.org);
+[pbs.sps{NIT},sps.org{NIT}] = lfhf_pad(pbs.sps{NIT},sps.org{NIT});
 
 %% *ALIGN LF/HF*
 fprintf('--> Align records\n');
-[pbs.sps,sps.org] = lfhf_shift(pbs.sps,sps.org);
-pbs.sps = syn2ann_thp(pbs.sps);
-sps.org = syn2ann_thp(sps.org);
-pbs.sps = syn2ann_spp(pbs.sps);
-sps.org = syn2ann_spp(sps.org);
+[pbs.sps{NIT},sps.org{NIT}] = lfhf_shift(pbs.sps{NIT},sps.org{NIT});
+pbs.sps{NIT} = syn2ann_thp(pbs.sps{NIT});
+sps.org{NIT} = syn2ann_thp(sps.org{NIT});
+pbs.sps{NIT} = syn2ann_spp(pbs.sps{NIT});
+sps.org{NIT} = syn2ann_spp(sps.org{NIT});
 
 %% *SPECTRAL MASHUP LF/HF*
 fprintf('--> Hybridization\n');
-[pbs.hyb.sps,sps.hyb,hbs.sps] = lfhf_mashup(pbs.sps,sps.org);
+[pbs.hyb.sps{NIT},sps.hyb{NIT},hbs.sps{NIT}] = lfhf_mashup(pbs.sps{NIT},sps.org{NIT});
 
 %% *PGA-PGV-PGD & ARIAS INTENSITY*
 fprintf('--> Peak Values and Arias\n');
-pbs.hyb.sps = syn2ann_thp(pbs.hyb.sps);
-sps.hyb = syn2ann_thp(sps.hyb);
-hbs.sps = syn2ann_thp(hbs.sps);
+pbs.hyb.sps{NIT} = syn2ann_thp(pbs.hyb.sps{NIT});
+sps.hyb{NIT} = syn2ann_thp(sps.hyb{NIT});
+hbs.sps{NIT} = syn2ann_thp(hbs.sps{NIT});
 
 %% *SPECTRA*
 fprintf('--> Spectra\n');
-pbs.hyb.sps = syn2ann_spp(pbs.hyb.sps);
-sps.hyb = syn2ann_spp(sps.hyb);
-hbs.sps = syn2ann_spp(hbs.sps);
+pbs.hyb.sps{NIT} = syn2ann_spp(pbs.hyb.sps{NIT});
+sps.hyb{NIT} = syn2ann_spp(sps.hyb{NIT});
+hbs.sps{NIT} = syn2ann_spp(hbs.sps{NIT});

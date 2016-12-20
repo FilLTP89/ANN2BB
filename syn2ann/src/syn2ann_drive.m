@@ -37,10 +37,10 @@ for NIT=1:MAXIT
     
     %% *SCORE THE HYBRID TIME HISTORIES*
     if NIT==1
-        syn2ann_score_setup;
+        syn2ann_gof_setup;
     end
+%     syn2ann_gof_compute;
     
-%     syn2ann_score_compute;
     fprintf('____________________________________________________________\n');
 end
 
