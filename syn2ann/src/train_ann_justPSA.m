@@ -93,19 +93,95 @@ function train_ann_justPSA(varargin)
         tar.simbad(i_,1:db.nr) = log10(PSA(1:db.nr,tar.idx(i_)))';
     end
     
-    % Create Network
+    
+    %% *DEFINE NEURON FEATURES*
+    % _ACTIVATION FUNCTIONS_
+    % func = 'tansig';
+    % func = 'purelin';
+    % func = 'hardlim';
+    % func = 'logsig';
+    % The training function BTF can be any of the backprop training
+    % functions such as TRAINLM, TRAINBFG, TRAINRP, TRAINGD, etc.
+    % *WARNING*: TRAINLM is the default training function because it
+    % is very fast, but it requires a lot of memory to run.  If you get
+    % an "out-of-memory" error when training try doing one of these:
+    %  
+    % (1) Slow TRAINLM training, but reduce memory requirements, by
+    %     setting NET.efficiency.memoryReduction to 2 or more. (See HELP TRAINLM.)
+    % (2) Use TRAINBFG, which is slower but more memory efficient than TRAINLM.
+    % (3) Use TRAINRP which is slower but more memory efficient than TRAINBFG.
+    %     trainlm is a network training function that updates weight and bias values according to Levenberg-Marquardt optimization.
+    %     trainlm is often the fastest backpropagation algorithm in the toolbox, and is highly recommended as a first-choice supervised algorithm, although it does require more memory than other algorithms.
+    %     net.trainFcn = 'trainlm' sets the network trainFcn property.
+    % Feed-forward networks consist of Nl layers using the DOTPROD
+    % weight function, NETSUM net input function, and the specified
+    % transfer functions.
+    % The first layer has weights coming from the input.  Each subsequent
+    % layer has a weight coming from the previous layer.  All layers
+    % have biases.  The last layer is the network output.
+    % Each layer's weights and biases are initialized with INITNW.
+    % Adaption is done with TRAINS which updates weights with the
+    % specified learning function. Training is done with the specified
+    % training function. Performance is measured according to the specified
+    % performance function.
+    % There are many types of neural networks.
+    % MultiLayerPerceptrons (MLPs) are neural networks with a multiple parallel
+    % node-layer topology.
+    % Backpropagation (BP) is an algorithm designed for training neural networks
+    % with multiple node-layer topologies.
+    % There is no such thing as a Backpropagation Network.
+    % The obsolete (but still available) functions
+    % NEWFIT, NEWPR, NEWFF
+    % and the current functions
+    % FITNET, PATTERNNET AND FEEDFORWARDNET
+    % are all MLPs that, in the default mode, are trained using BP.
+    % An alternative time-consuming training approach is to use a
+    % genetic algorithm (e.g., GA).
+    % NEWFIT (regression and curve-fitting) and NEWPR (classification
+    % and pattern-recognition) are specialized algorithms that call
+    % NEWFF.
+    % FITNET (regression and curve-fitting) and PATTERNNET
+    % (classification and pattern-recognition) are specialized algorithms
+    % that call FEEDFORWARDNET.
+    % The basic difference between FEEDFORWARDNET and FITNET
+    % is that the latter yields an additional output: a plot of the output
+    % vs target fit.
+    % The basic differences between FEEDFORWARDNET and
+    % PATTERNNET in the default configurations include
+    % 1. Training algorithm: TRAINLM vs TRAINSCG
+    % 2. Performance function: MSE vs CROSSENTROPY
+    % 3. Output Transfer function: PURELIN vs SOFTMAX
+    % 4. Plot Functions
+    % All function properties can be obtained by eliminating the ending semicolon
+    % in the creation statement. For example:
+    % net = patternnet
+    
+    
+    %% *CREATE 2LFF-LM (MLP) NETWORK*
     numHiddenNeurons = 30;  % Adjust as desired
     net = newfit(inp.simbad(:,idx_train),tar.simbad(:,idx_train),numHiddenNeurons);
+    net1 = fitnet(numHiddenNeurons);
+    net1 = train(net1,inp.simbad(:,idx_train),tar.simbad(:,idx_train));
+        
     net.trainParam.show = 50;
     net.trainParam.lr = 0.05;
     net.trainParam.epochs = 500;
     net.trainParam.goal = 1e-3;
     net.divideParam.trainRatio = 85/100;  % Adjust as desired
-    net.divideParam.valRatio = 10/100;    % Adjust as desired
-    net.divideParam.testRatio = 5/100;    % Adjust as desired
+    net.divideParam.valRatio   = 10/100;  % Adjust as desired
+    net.divideParam.testRatio  =  5/100;  % Adjust as desired
     view(net)
+    net1.trainParam.show = 50;
+    net1.trainParam.lr = 0.05;
+    net1.trainParam.epochs = 500;
+    net1.trainParam.goal = 1e-3;
+    net1.divideParam.trainRatio = 85/100;  % Adjust as desired
+    net1.divideParam.valRatio   = 10/100;  % Adjust as desired
+    net1.divideParam.testRatio  =  5/100;  % Adjust as desired
+    view(net1)
+    keyboard
     % numNN neural networks are trained and tested
-    numNN = 3;
+    numNN = 50;
     nets = cell(1,numNN);
     tr   = cell(1,numNN);
     for i=1:numNN
@@ -145,16 +221,16 @@ function train_ann_justPSA(varargin)
     net = nets(id_min);
     net = net{1,1};
     
-%     save(fullfile(wd,sprintf('net_%u_%s_%s_new.mat',...
-%         round(ann.TnC*100),ann.scl,ann.cp)),...
-%         'net','idx_train','idx_valid');
-        % Plot
-%         outputs1= sim(net,inp.simbad(:,idx_train));
-        
-        keyboard
-%         plotregression(targets1(1,:),outputs1(1,:),'1',targets1(2,:),outputs1(2,:),'2',...
-%             targets1(3,:),outputs1(3,:),'3',targets1(4,:),outputs1(4,:),'4',...
-%             targets1(5,:),outputs1(5,:),'5',targets1(6,:),outputs1(6,:),'6');
+    %     save(fullfile(wd,sprintf('net_%u_%s_%s_new.mat',...
+    %         round(ann.TnC*100),ann.scl,ann.cp)),...
+    %         'net','idx_train','idx_valid');
+    % Plot
+    %         outputs1= sim(net,inp.simbad(:,idx_train));
+    
+    keyboard
+    %         plotregression(targets1(1,:),outputs1(1,:),'1',targets1(2,:),outputs1(2,:),'2',...
+    %             targets1(3,:),outputs1(3,:),'3',targets1(4,:),outputs1(4,:),'4',...
+    %             targets1(5,:),outputs1(5,:),'5',targets1(6,:),outputs1(6,:),'6');
     return
 end
 
