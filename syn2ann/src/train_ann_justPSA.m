@@ -157,65 +157,106 @@ function train_ann_justPSA(varargin)
     % net = patternnet
     
     
-    %% *CREATE 2LFF-LM (MLP) NETWORK*
-    numHiddenNeurons = 30;  % Adjust as desired
-    net = newfit(inp.simbad(:,idx_train),tar.simbad(:,idx_train),numHiddenNeurons);
-    net1 = fitnet(numHiddenNeurons);
-    net1 = train(net1,inp.simbad(:,idx_train),tar.simbad(:,idx_train));
-        
-    net.trainParam.show = 50;
-    net.trainParam.lr = 0.05;
-    net.trainParam.epochs = 500;
-    net.trainParam.goal = 1e-3;
-    net.divideParam.trainRatio = 85/100;  % Adjust as desired
-    net.divideParam.valRatio   = 10/100;  % Adjust as desired
-    net.divideParam.testRatio  =  5/100;  % Adjust as desired
-    view(net)
-    net1.trainParam.show = 50;
-    net1.trainParam.lr = 0.05;
-    net1.trainParam.epochs = 500;
-    net1.trainParam.goal = 1e-3;
-    net1.divideParam.trainRatio = 85/100;  % Adjust as desired
-    net1.divideParam.valRatio   = 10/100;  % Adjust as desired
-    net1.divideParam.testRatio  =  5/100;  % Adjust as desired
-    view(net1)
-    keyboard
-    % numNN neural networks are trained and tested
-    numNN = 50;
-    nets = cell(1,numNN);
-    tr   = cell(1,numNN);
-    for i=1:numNN
-        disp(['Training ' num2str(i) '/' num2str(numNN)])
-        [nets{i},tr{i}] = train(net,inp.simbad(:,idx_train),tar.simbad(:,idx_train));
+    %% *CREATE BASE NETWORK - 2LFF-LM (MLP)*
+    % Number of Hidden Neurons
+    nhn = 30;
+    % set up base ANN structure
+    % ann.base = newfit(inp.simbad(:,idx_train),tar.simbad(:,idx_train),nhn);
+    ann.base = feedforwardnet(nhn);
+    % no show gui
+    ann.base.trainParam.showWindow  = false;
+    % ann.base.trainParam.show   = 50;
+    ann.base.trainParam.lr     = 0.05;
+    % Maximum number of epochs to train
+    ann.base.trainParam.epochs = 500;
+    % performance goal
+    ann.base.trainParam.goal   = 1e-3;
+    % _percentage of input for training_
+    ann.base.divideParam.trainRatio = 85/100;
+    % percentage of input for validation
+    ann.base.divideParam.valRatio   = 10/100;
+    % percentage of input for test
+    ann.base.divideParam.testRatio  =  5/100;
+    
+    %% *TRAIN ANN NETWORKS*
+    % number of trained ANNs
+    ann.ntr = 50;
+    % ANN-net structure
+    ann.net = cell(1,ann.ntr);
+    % ANN-training record structure
+    ann.trs = cell(1,ann.ntr);
+    % train ANNs
+    for i_=1:ann.ntr
+        disp(['Training ' num2str(i_) '/' num2str(ann.ntr)])
+        [ann.net{i_},ann.trs{i_}] = ...
+            train(ann.base,inp.simbad,tar.simbad);
+        plotperf(ann.trs{i_});
+        ann.trn{i_}.out = ann.net{i_}(ann.trs{i_}.trainInd);
+        ann.val{i_}.out = ann.net{i_}(ann.trs{i_}.valInd);
+        ann.tst{i_}.out = ann.net{i_}(ann.trs{i_}.testInd);
     end
     
+    % ann.trs{i_} contains all of the information concerning the training 
+    % of the network. For example, tr.trainInd, tr.valInd and tr.testInd 
+    % contain the indices of the data points that were used in the training, 
+    % validation and test sets, respectively. 
+    % If you want to retrain the network using the same division of data, 
+    % you can set net.divideFcn to 'divideInd', net.divideParam.trainInd to 
+    % tr.trainInd, net.divideParam.valInd to tr.valInd, net.divideParam.testInd to tr.testInd.
+    % The tr structure also keeps track of several variables during the 
+    % course of training, such as the value of the performance function, 
+    % the magnitude of the gradient, etc. 
+    % You can use the training record to plot the performance progress by 
+    % using the plotperf command: plotperf(ann.trs{i_})
+    % The property tr.best_epoch indicates the iteration at which the
+    % validation performance reached a minimum. The training continued for 
+    % 6 more iterations before the training stopped.
+    % The validation and test curves are very similar. 
+    % If the test curve had increased significantly before the validation 
+    % curve increased, then it is possible that some overfitting might have 
+    % occurred. The next step in validating the network is to create a 
+    % regression plot, which shows the relationship between the outputs of 
+    % the network and the targets. If the training were perfect, the network
+    % outputs and the targets would be exactly equal, but the relationship
+    % is rarely perfect in practice. 
+    % For the housing example, we can create a regression plot with the 
+    % following commands. 
+    % houseOutputs = net(houseInputs);
+    % trOut = houseOutputs(tr.trainInd);
+    % vOut = houseOutputs(tr.valInd);
+    % tsOut = houseOutputs(tr.testInd);
+    % trTarg = houseTargets(tr.trainInd);
+    % vTarg = houseTargets(tr.valInd);
+    % tsTarg = houseTargets(tr.testInd);
+    % plotregression(trTarg,trOut,'Train',vTarg,vOut,'Validation',...
+    % tsTarg,tsOut,'Testing')
+    % The first command calculates the trained network
+    % response to all of the inputs in the data set. 
+    % The following six commands extract the outputs and targets that 
+    % belong to the training, validation and test subsets.
+    % The final command creates three regression plots for training, testing and validation.
     
+    %% *TEST ANNs AND CHECK BEST PERFORMANCE*
     % Next, each network is tested on the second dataset
     % with both individual performances and the performance for
     % the average output calculated.
     
-    perfs = zeros(1,numNN);
+    
+    perfs = zeros(1,ann.ntr);
     output2Total = 0;
-    figure(1)
-    hold all
-    figure(2)
-    hold all
-    for i=1:numNN
-        neti         = nets{i};
-        tri          = tr{i};
-        output2      = sim(neti,inp.simbad(:,idx_valid));
-        perfs(i)     = mse(output2-tar.simbad(:,idx_valid));
-        output2Total = output2Total + output2;
-        figure(1)
-        plot(perfs(i),'ok');
-        figure(2)
-        plotperf(tri);
-        plotfit(neti,inp.simbad(:,idx_train),tar.simbad(:,idx_train));
-    end
-    output2AverageOutput = output2Total/numNN;
+    
+%     for i_=1:ann.ntr
+%         neti         = nets{i_};
+%         tri          = tr{i_};
+%         output2      = sim(neti,inp.simbad(:,idx_valid));
+%         perfs(i_)     = mse(output2-tar.simbad(:,idx_valid));
+%         output2Total = output2Total + output2;
+% %         plotfit(neti,inp.simbad(:,idx_train),tar.simbad(:,idx_train));
+%     end
+    output2AverageOutput = output2Total/ann.ntr;
     perfAveragedOutputs  = mse(tar.simbad(:,idx_valid)-output2AverageOutput);
     figure(1)
-    plot([1:numNN],[perfAveragedOutputs].*ones(numNN,1),'--r');
+    plot([1:ann.ntr],[perfAveragedOutputs].*ones(ann.ntr,1),'--r');
     % save trained network with the best performance
     [~,id_min] = min(perfs);
     net = nets(id_min);
