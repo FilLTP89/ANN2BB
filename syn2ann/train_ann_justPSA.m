@@ -96,7 +96,7 @@ function train_ann_justPSA(varargin)
     % Create Network
     numHiddenNeurons = 30;  % Adjust as desired
     net = newfit(inp.simbad(:,idx_train),tar.simbad(:,idx_train),numHiddenNeurons);
-    net.trainParam.show = 50;
+    net.trainParam.showWindow = false;% = 50;
     net.trainParam.lr = 0.05;
     net.trainParam.epochs = 500;
     net.trainParam.goal = 1e-3;
@@ -125,16 +125,19 @@ function train_ann_justPSA(varargin)
         perfs(i)     = mse(output2-tar.simbad(:,idx_valid));
         output2Total = output2Total + output2;
     end
-%     output2AverageOutput = output2Total/numNN;
-%     perfAveragedOutputs  = mse(targets2-output2AverageOutput);
-    %     figure(1)
-    %     plot(perfs,'ok');
-    %     hold on
-    %     plot([1:numNN],[perfAveragedOutputs].*ones(numNN,1),'--r');
+    output2AverageOutput = output2Total/numNN;
+    perfAveragedOutputs  = mse(tar.simbad(:,idx_valid)-output2AverageOutput);
+    figure(1)
+    plot(1:numNN,perfs,'ok');
+    hold all
+    plot(1:numNN,perfAveragedOutputs.*ones(numNN,1),'--r');
     
     % save trained network with the best performance
     [~,id_min] = min(perfs);
     net = nets(id_min);
+    vline(id_min);
+    hline(perf(id_min));
+    keyboard
     net = net{1,1};
     save(fullfile(wd,sprintf('net_%u_%s_%s_new.mat',...
         round(ann.TnC*100),ann.scl,ann.cp)),...
