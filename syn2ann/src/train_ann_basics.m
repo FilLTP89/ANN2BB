@@ -1,0 +1,53 @@
+%% *GENERATION OF STRONG GROUND MOTION SIGNALS BY COUPLING PHYSICS-BASED ANALYSIS WITH ARTIFICIAL NEURAL NETWORKS*
+% _Editor: Filippo Gatti
+% CentraleSupélec - Laboratoire MSSMat
+% DICA - Politecnico di Milano
+% Copyright 2016_
+%% *NOTES*
+% _train_ann_basics_: function to design basics ANN
+%% *N.B.*
+% Need for:_trann_tv_sets.m,ANN MATLAB tool_
+
+function [varargout] = train_ann_basics(varargin)
+    %% *SET-UP*
+    ann = varargin{1};
+    nbs = varargin{2};
+    
+    %% *CREATE BASE NETWORK - 2LFF-LM (MLP)*
+    % ANN name
+    dsg.fnm = sprintf('net_%u_%s_%s_dvl',round(ann.TnC*100),ann.scl,ann.cp);
+    % Number of Hidden Neurons
+    dsg.nhn = 30;
+    % set up base ANN structure
+    % dsg.net = newfit(inp.simbad(:,idx_train),tar.simbad(:,idx_train),nhn);
+    % dsg.net = fitnet(nhn,'trainlm');
+    % dsg.net = fitnet(nhn,'trainbr');
+    dsg.net = feedforwardnet(dsg.nhn);
+    % no show gui
+    dsg.net.trainParam.showWindow  = false;
+    % NNs.base.trainParam.show   = 50;
+    dsg.net.trainParam.lr     = 0.05;
+    % Maximum number of epochs to train
+    dsg.net.trainParam.epochs = 500;
+    % performance goal
+    dsg.net.trainParam.goal   = 1e-3;
+    % number of trained ANNs
+    dsg.ntr = 50;
+    
+    % Set up Division of Data for Training, Validation, Testing
+    % _percentage of input for training_
+    dsg.net.divideParam.trainRatio = 85/100;
+    % percentage of input for validation
+    dsg.net.divideParam.valRatio   = 10/100;
+    % percentage of input for test
+    dsg.net.divideParam.testRatio  =  5/100;
+    %     
+    % dsg.net.divideParam.trainRatio = 70/100;
+    % dsg.net.divideParam.valRatio = 15/100;
+    % dsg.net.divideParam.testRatio = 15/100;
+    [dsg.idx.trn,dsg.idx.vld] = trann_tv_sets(nbs,5/100);
+    
+    %% *OUTPUT*
+    varargout{1} = dsg;
+    return
+end

@@ -7,9 +7,10 @@
 % _train_ann_justPSA_: function train ANN on PSA values
 %% *N.B.*
 % Need for:
-% _trann_define_inout.m, trann_check_vTn.m, trann_tv_sets.m_
-% _ANN MATLAB tool_
+% _trann_define_inout.m, trann_check_vTn.m,ANN MATLAB tool_
 %% *REFERENCES*
+% https://fr.mathworks.com/help/nnet/ug/improve-neural-network-generalization-and-avoid-overfitting.html
+% http://www.cs.cmu.edu/afs/cs/Web/Groups/AI/html/faqs/ai/neural/faq.html
 function train_ann_justPSA(varargin)
     %% *SET-UP*
     wd  = varargin{1};
@@ -80,6 +81,7 @@ function train_ann_justPSA(varargin)
             end
     end
     
+    %% *DEFINE INPUT/TARGET PSA POOL (LOG)*
     inp.simbad  = -999*ones(inp.nT,db.nr);
     tar.simbad  = -999*ones(tar.nT,db.nr);
     for i_=1:inp.nT
@@ -88,6 +90,54 @@ function train_ann_justPSA(varargin)
     for i_=1:tar.nT
         tar.simbad(i_,1:db.nr) = log10(PSA(1:db.nr,tar.idx(i_)))';
     end
+    
+    %% *DESIGN BASIC ANN*
+    dsg = train_ann_basics(ann,db.nr);
+    NNs = cell(dsg.ntr,1);
+    prf.vld = -999*ones(dsg.ntr,1);
+    for i_=1:dsg.ntr
+        
+        fprintf('ANN %u/%u: \n',i_,dsg.ntr);
+        
+        %% *DEFINE INPUTS/TARGETS*
+        % _ALL INPUT/TARGET TRAINING VALUES_
+        NNs{i_}.inp.trn = inp.simbad(:,dsg.idx.trn);
+        NNs{i_}.tar.trn = tar.simbad(:,dsg.idx.trn);
+        % _ALL INPUT/TARGET VALIDATION VALUES_
+        NNs{i_}.inp.vld = inp.simbad(:,dsg.idx.vld);
+        NNs{i_}.tar.vld = tar.simbad(:,dsg.idx.vld);
+        
+        %% *TRAINING ANN*
+        % getting net and infos on training sets and performances
+        fprintf('TRAINING...\n');
+        [NNs{i_}.net,NNs{i_}.trs] = train(dsg.net,NNs{i_}.inp.trn,NNs{i_}.tar.trn);
+        
+        %% *TEST/VALIDATE ANN PERFORMANCE*
+        NNs{i_} = train_ann_valid(NNs{i_});
+        prf.vld(i_) = NNs{i_}.prf.vld;
+    end
+    
+    [bst.prf,bst.idx] = min(prf.vld);
+    plt.net = view(NNs{bst.idx}.net);
+    saveas(gcf,fullfile(wd,strcat(dsg.fnm,'_bst_net')));
+    % _PLOT PERFORMANCES_
+    set(0,'defaultaxescolororder',[0,0,0;1,0,0;0,0,1]);
+    fpplot('xpl',{(1:dsg.ntr)';[1;dsg.ntr];[bst.idx;bst.idx]},...
+        'ypl',{prf.vld;[mean(prf.vld);mean(prf.vld)];[0;1.01*max(prf.vld)]},...
+        'pfg',[0,0,15,10],'tit',{'ANN-performance'},...
+        'xlb',{'ANN-id'},'xlm',{[0;dsg.ntr+1]},'xtk',{[1;(5:5:dsg.ntr)']},...
+        'ylb',{'MSE [1]'},'ylm',{[0;1.05*max(prf.vld)]},...
+        'lst',{'none';'--';'--'},'lwd',[0.1;2;2],'mrk',{'o';'none';'none'});
+    saveas(gcf,fullfile(wd,strcat(dsg.fnm,'_all_perf')));
+    close(gcf);
+    plt.prf = plotperf(NNs{bst.idx}.trs);
+    saveas(gcf,fullfile(wd,strcat(dsg.fnm,'_bst_perf')));
+    close(gcf);
+    %     plt.reg = plotregression(NNs{bst.idx}.tar.trn,NNs{bst.idx}.out_trn.trn,'Train',...
+%         NNs{bst.idx}.tar.vld,NNs{bst.idx}.out.vld,'Validation',...
+%         NNs{bst.idx}.tar.tst,NNs{bst.idx}.out.tst,'Testing');
+%     saveas(gcf,fullfile(wd,strcat(dsg.fnm,'_bst_regr')));
+%     close(gcf);
     
     
     %% *DEFINE NEURON FEATURES*
