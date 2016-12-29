@@ -17,6 +17,7 @@ fprintf('============================\n');
 %% *RESAMPLING*
 fprintf('--> Resampling\n');
 [pbs.sps{NIT},sps.org{NIT}] = lfhf_rsmpl(pbs.org,sps.org{NIT});
+pbs.sps{NIT}.mon = pbs.org.mon;
 
 %% *PAD LF/HF*
 fprintf('--> Padding/Tapering\n');

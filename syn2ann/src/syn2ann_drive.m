@@ -25,7 +25,7 @@ syn2ann_pbs_drive;
 
 %% *PARSE AND SIMULATE TRAINED ANN*
 syn2ann_ann_drive;
-    
+
 for NIT=1:MAXIT
     fprintf('____________________________________________________________\n');
     fprintf('ITERATION: %u\n',NIT);
@@ -39,10 +39,13 @@ for NIT=1:MAXIT
     if NIT==1
         syn2ann_gof_setup;
     end
-%     syn2ann_gof_compute;
+    syn2ann_gof_compute;
     
     fprintf('____________________________________________________________\n');
 end
+
+%% *COMPUTE BEST GOF*
+syn2ann_gof_best;
 
 
 

@@ -53,8 +53,14 @@ fnn.bhrr = numel(fni.bhrr);
 monn.id = [16928,15045,1,2,18446,18437];
 
 % _hybridization frequencies_
-monn.fa = [1.3,1.3,1.3,1.3,1.3,1.3]; % in Hz
-monn.fb = [1.5,1.5,1.5,1.5,1.5,1.5]; % in Hz
+% horizontal components
+monn.fl.ew = [1.3,1.3,1.3,1.3,1.3,1.3]; % in Hz
+monn.fh.ew = [1.5,1.5,1.5,1.5,1.5,1.5]; % in Hz
+monn.fl.ns = monn.fl.ew;                % in Hz
+monn.fh.ns = monn.fh.ew;                % in Hz
+% vertical components
+monn.fl.ud = monn.fl.ew;                % in Hz
+monn.fh.ud = [3.0;3.0;3.0;3.0;3.0;3.0]; % in Hz
 
 % _monn field names_
 fni.monn = fieldnames(monn);

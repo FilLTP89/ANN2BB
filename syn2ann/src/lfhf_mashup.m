@@ -52,12 +52,21 @@ function [varargout] = lfhf_hybridator(varargin)
     %% *BROAD-BAND SIGNALS*
     switch hyb.mon.hyb
         case 'original'
+            %
+            % _LOOP OVER THE MONITORS_
+            %
             for i_ = 1:slf.mon.na
-                nfa = round(hyb.mon.fa(i_)/hyb.mon.dfr(i_));
-                nfb = round(hyb.mon.fb(i_)/hyb.mon.dfr(i_));
-                fac = pi./(hyb.mon.dfr(i_)*(nfb-nfa-1));
+                %
+                % _LOOP OVER THE DIRECTIONS_
+                %
                 for j_ = 1:slf.mon.nc
+                    % _current direction_
                     cpp = slf.mon.cp{j_};
+                    % _find corner frequencies_
+                    nfa = round(hyb.mon.fl.(cpp)(i_)/hyb.mon.dfr(i_));
+                    nfb = round(hyb.mon.fh.(cpp)(i_)/hyb.mon.dfr(i_));
+                    fac = pi./(hyb.mon.dfr(i_)*(nfb-nfa-1));
+                    
                     %% *FOURIER TRANSFORM*
                     slf.syn{i_}.tha.(cpp)(slf.mon.ntm+1:hyb.mon.nfr(i_))=0;
                     shf.syn{i_}.tha.(cpp)(shf.mon.ntm+1:hyb.mon.nfr(i_))=0;
@@ -108,10 +117,21 @@ function [varargout] = lfhf_hybridator(varargin)
                 
             end
         case 'butter'
+            %
+            % _LOOP OVER THE MONITORS_
+            %
             for i_ = 1:slf.mon.na
-                
+                %
+                % _LOOP OVER THE DIRECTIONS_
+                %
                 for j_ = 1:slf.mon.nc
                     cpp = slf.mon.cp{j_};
+                    
+                    % _find corner frequencies_
+                    nfa = round(hyb.mon.fl.(cpp)(i_)/hyb.mon.dfr(i_));
+                    nfb = round(hyb.mon.fh.(cpp)(i_)/hyb.mon.dfr(i_));
+                    fac = pi./(hyb.mon.dfr(i_)*(nfb-nfa-1));
+                    
                     slf.syn{i_}.tha.(cpp)(slf.mon.ntm+1:hyb.mon.nfr(i_))=0;
                     shf.syn{i_}.tha.(cpp)(shf.mon.ntm+1:hyb.mon.nfr(i_))=0;
                     
@@ -119,11 +139,11 @@ function [varargout] = lfhf_hybridator(varargin)
                     %
                     % _LF PAD (LOW-PASS)_
                     %
-                    [bfb.slf,bfa.slf,~] = create_butter_filter(2,[],hyb.mon.fa,1/2/hyb.mon.dtm(i_));
+                    [bfb.slf,bfa.slf,~] = create_butter_filter(2,[],hyb.mon.fl.(cpp)(i_),1/2/hyb.mon.dtm(i_));
                     %
                     % _HF PAD (HIGH-PASS)_
                     %
-                    [bfb.shf,bfa.shf,~] = create_butter_filter(2,hyb.mon.fb,[],1/2/hyb.mon.dtm(i_));
+                    [bfb.shf,bfa.shf,~] = create_butter_filter(2,hyb.mon.fh.(cpp)(i_),[],1/2/hyb.mon.dtm(i_));
                     
                     %% *TIME-HISTORIES*
                     slf.syn{i_}.thd.(cpp) = filtfilt(bfb.slf,bfa.slf,slf.syn{i_}.thd.(cpp));

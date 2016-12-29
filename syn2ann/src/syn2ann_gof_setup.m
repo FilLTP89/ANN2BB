@@ -15,8 +15,7 @@ fprintf('============================\n');
 for i_=1:mon.na
     for j_ = 1:mon.nc
         cpn = mon.cp{j_};
-        err.sng{i_}.tha.(cpn) = zeros(hbs.sps{1}.mon.ntm,MAXIT);
-        err.sng{i_}.psa.(cpn) = zeros(hbs.sps{1}.mon.nT,MAXIT);
+        err.sng{i_}.psa.(cpn) = zeros(trs.sps.(cpn).mon.nT,MAXIT);
         err.avg{i_}.tha.(cpn) = zeros(MAXIT,1);
         err.avg{i_}.psa.(cpn) = zeros(MAXIT,1);
         err.max{i_}.tha.(cpn) = zeros(MAXIT,1);
@@ -25,7 +24,5 @@ for i_=1:mon.na
         err.nav{i_}.psa.(cpn) = zeros(MAXIT,1);
         err.nmx{i_}.tha.(cpn) = zeros(MAXIT,1);
         err.nmx{i_}.psa.(cpn) = zeros(MAXIT,1);
-        gof{i_}.(cpn)         = zeros(MAXIT,1);
     end
-    gof{i_}.all           = zeros(MAXIT,1);
 end
