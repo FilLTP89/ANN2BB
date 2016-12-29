@@ -22,11 +22,13 @@ for i_=1:mon.na
         % normalized maximum error over the iterations
         err.nmx{i_}.psa.(cpn)(:,1) = err.max{i_}.psa.(cpn)(:,1)./max(err.max{i_}.psa.(cpn)(:,1));
         % gof along each direction
-        err.gof{i_}.psa.(cpn)(:,1) = 1.00.*err.nav{i_}.psa.(cpn)(:,1)+...
-            0.00.*err.nmx{i_}.psa.(cpn)(:,1);
+        err.gof{i_}.psa.(cpn)(:,1) = 0.67.*err.nav{i_}.psa.(cpn)(:,1)+...
+            0.33.*err.nmx{i_}.psa.(cpn)(:,1);
         % gof along each direction
+        wgt = 0.25+0.25*(strcmpi(cpn,'ud'));
+        
         err.gof{i_}.psa.all(:,1) = err.gof{i_}.psa.all(:,1) + ...
-            0.33.*err.gof{i_}.psa.(cpn)(:,1);
+            wgt.*err.gof{i_}.psa.(cpn)(:,1);
         [err.mgo{i_}.psa.(cpn),err.igo{i_}.psa.(cpn)] = min(err.gof{i_}.psa.(cpn)(:,1));
     end
     [err.mgo{i_}.psa.all,err.igo{i_}.psa.all] = min(err.gof{i_}.psa.all(:,1));
