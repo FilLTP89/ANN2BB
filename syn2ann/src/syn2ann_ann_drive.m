@@ -23,6 +23,7 @@ for j_ = 1:mon.nc
     ann.(mon.cp{j_}) = syn2ann_ann_parser(TnC,fnm,mon.cp{j_},ann.mtd.scl{ib});
     ann.(mon.cp{j_}).nl = sprintf('%s_%u_%s',...
         ann.mtd.scl{ib},round(TnC*100),ann.cp{j_});
+    ann.(mon.cp{j_}).tol = 
 end
 [~,~,ib] = intersect(pbs.org.mon.cp,ann.cp,'stable');
 ann.cp   = ann.cp(ib);

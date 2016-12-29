@@ -145,3 +145,15 @@ for i_ = 1:numel(ann.mtd.TnC)
     ann.mtd.nl(i_) = {sprintf('net_%u_%s_%s_new.mat',...
         round(ann.mtd.TnC{i_}*100),ann.mtd.scl{i_},ann.mtd.cpn{i_})};
 end
+% tolerances
+ann.mtd.tol.gh.low.psa = 0.15;
+ann.mtd.tol.gh.low.pga = 0.15;
+ann.mtd.tol.gh.hgh.psa = 0.15;
+ann.mtd.tol.gh.hgh.pga = 0.15;
+ann.mtd.tol.ud.low.psa = 0.15;
+ann.mtd.tol.ud.low.pga = 0.15;
+ann.mtd.tol.ud.hgh.psa = 0.15;
+ann.mtd.tol.ud.hgh.pga = 0.15;
+
+ann.mtd.nit.gh = 1000;
+ann.mtd.nit.ud = 4000;

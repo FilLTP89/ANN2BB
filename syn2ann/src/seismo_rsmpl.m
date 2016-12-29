@@ -10,9 +10,9 @@
 % * _tha (original record)_
 % * _fac (resampling rate)_
 % * _scl (scale factor)_
-% OUTPUT:
-% * _tha_rsmpl (resampled record)_
+%% OUTPUT:
 % * _dtm_rsmpl (resampled time-step)_
+% * _tha_rsmpl (resampled record)_
 % * _ntm_rsmpl (resampled time-points)_
 % * _vtm_rsmpl (resampled time-vector)_
 function [varargout] = seismo_rsmpl(varargin)

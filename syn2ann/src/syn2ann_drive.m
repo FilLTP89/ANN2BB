@@ -47,11 +47,9 @@ end
 %% *COMPUTE BEST GOF*
 syn2ann_gof_best;
 
-
-
-
 %% *HYB-ANN SPECTRAL MATCHING*
-% syn2ann_scaling_drive;
+syn2ann_scaling_drive;
+
 %
 % %% *HYB-ANN SPECTRAL MATCHING*
 % syn2ann_coherency_drive;
