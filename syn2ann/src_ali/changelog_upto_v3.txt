@@ -1,0 +1,49 @@
+Change log
+
+MAIN.m
+- Loop is added to create n number of synthetics
+(it was 500, now I changed it to 10 as prof. Paolucci wrote)
+- score.m and get_the_best.m are created to get the closest syn.
+- output visualization part is modified by Maria (See the last step)
+- target spectrum is calculated here (though it may be taken out of loop)
+
+LF_HF_Hybridization.m
+- Lines 74-78: 
+f_low and f_high are seperated a little from each other
+f_high_up is significantly modified
+Comment: f_high may be further translated (but how much?)
+ 
+ANN_Combination.m
+- Lines 29-34: Different tolerances 
+(used if variability is activated & control of convergence)
+- niter_h and niter_v: two different numbers 
+(niter_h should be kept small after today's discussion, around 10)
+(niter_v? boh? Maybe around 20-30?)
+The bottom line is to be between 20% error band and use as low as
+possible
+- A control condition is added. n<27 (out of 29 points) gives 3
+points to remain outside the specified limits. Strict condition.
+- hybrid motion related parts (acc, vel, dis, RSA) are changed to 
+the best hybrid rather than the last hybrid.
+
+SpectralMatching.m
+- Short/Long period of response spectrum is treated differently (lines 30-31)
+- One extra period point is added (See line 49-54): Enhances the short
+period match
+- Correction is being made between 0.03-49 Hz (controlled by Nyq. crit)
+- Initial acausal oscillations removed (line 180-197)
+- Signal is tapered by using a Tukey window
+- PGA correction made double-sided (reduces velocity problems)
+lines(210-260)
+- finally residual velocity is calculated and negative of this value is
+added to very initial 4 points around Ia=0.1% 
+C:This sounds not good, I know. Almost always, the corrected velocity is very small.
+This small velocity disagreement is caused when solving the initial osc. problems
+If not corrected, ends up with not reasonable displacement evolution.
+In most of the cases, the change is not recognisable.
+
+Postprocessing part (PART 5)
+- All arranged by Maria according to Prof. Paolucci's reccomendations
+
+
+
