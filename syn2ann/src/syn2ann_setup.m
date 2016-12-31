@@ -17,14 +17,6 @@ fprintf('============================\n');
 
 %% *DEFINE WORKDIR*
 % % _main workdir_
-% wd = fullfile(filesep,'media','filippo','Data','Filippo','PHD_heavyweight',...
-%     'EMILIA_2905');
-% fprintf('Workdir: %s\n',wd);
-% % _save path_
-% sp = fullfile(filesep,'media','filippo','Data','Filippo','PHD_heavyweight',...
-%     'heavy_images');
-% % eval(sprintf('!mkdir -p %s',sp));
-% % _main workdir_
 wd = '/media/filippo/Data/Filippo/PHD_passing_through_polimi/syn2ann/database';
 fprintf('Workdir: %s\n',wd);
 % _save path_
@@ -135,8 +127,9 @@ end
 %     end
 % end
 %% *DEFINE ANN METADATA*
+% ANN vector follow the reference system mon.rs
 % _site class considered : ALL,AB,CD_
-ann.mtd.scl = {'CD';'CD';'CD'};
+ann.mtd.scl = {'ALL';'ALL';'ALL'};
 % _corner period for each ANN_
 ann.mtd.TnC = {0.75;0.75;0.75};
 % _ANN motion component : gh,ud (geometric mean horizontal, updip)_
@@ -144,16 +137,10 @@ ann.mtd.cpn = {'gh';'gh';'ud'};
 for i_ = 1:numel(ann.mtd.TnC)
     ann.mtd.nl(i_) = {sprintf('net_%u_%s_%s_new.mat',...
         round(ann.mtd.TnC{i_}*100),ann.mtd.scl{i_},ann.mtd.cpn{i_})};
+    ann.mtd.tol(i_).low.psa = 0.15;
+    ann.mtd.tol(i_).low.pga = 0.15;
+    ann.mtd.tol(i_).hgh.psa = 0.15;
+    ann.mtd.tol(i_).hgh.pga = 0.15;
 end
 % tolerances
-ann.mtd.tol.gh.low.psa = 0.15;
-ann.mtd.tol.gh.low.pga = 0.15;
-ann.mtd.tol.gh.hgh.psa = 0.15;
-ann.mtd.tol.gh.hgh.pga = 0.15;
-ann.mtd.tol.ud.low.psa = 0.15;
-ann.mtd.tol.ud.low.pga = 0.15;
-ann.mtd.tol.ud.hgh.psa = 0.15;
-ann.mtd.tol.ud.hgh.pga = 0.15;
-
-ann.mtd.nit.gh = 1000;
-ann.mtd.nit.ud = 4000;
+ann.mtd.nit = [1000;1000;4000];
