@@ -62,10 +62,10 @@ end
 switch lower(hybrid_type)
     case 'sp96'
         for j_ = 1:numel(cpp)
-            tha_lim = max([tha_lim;abs(hbs.sps.syn{mm_}.pga.(cpp{j_})(2))]);
-            thv_lim = max([thv_lim;abs(hbs.sps.syn{mm_}.pgv.(cpp{j_})(2))]);
-            thd_lim = max([thd_lim;abs(hbs.sps.syn{mm_}.pgd.(cpp{j_})(2))]);
-            psa_lim = max([psa_lim;max(abs(hbs.sps.syn{mm_}.psa.(cpp{j_})))]);
+            tha_lim = max([tha_lim;abs(hbs.bst.syn{mm_}.pga.(cpp{j_})(2))]);
+            thv_lim = max([thv_lim;abs(hbs.bst.syn{mm_}.pgv.(cpp{j_})(2))]);
+            thd_lim = max([thd_lim;abs(hbs.bst.syn{mm_}.pgd.(cpp{j_})(2))]);
+            psa_lim = max([psa_lim;max(abs(hbs.bst.syn{mm_}.psa.(cpp{j_})))]);
             tha_lim = max([tha_lim;abs(spm.sps.(cpp{j_}).syn{mm_}.pga.(cpp{j_})(2))]);
             thv_lim = max([thv_lim;abs(spm.sps.(cpp{j_}).syn{mm_}.pgv.(cpp{j_})(2))]);
             thd_lim = max([thd_lim;abs(spm.sps.(cpp{j_}).syn{mm_}.pgd.(cpp{j_})(2))]);

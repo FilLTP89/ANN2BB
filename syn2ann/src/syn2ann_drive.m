@@ -25,9 +25,9 @@ syn2ann_pbs_drive;
 
 %% *PARSE AND SIMULATE TRAINED ANN*
 syn2ann_ann_drive;
-
+fprintf('____________________________________________________________\n');
 for NIT=1:MAXIT
-    fprintf('____________________________________________________________\n');
+    
     fprintf('ITERATION: %u\n',NIT);
     %% *GENERATE EMPIRICAL - PARSE STOCHASTIC*
     syn2ann_emp_sto_drive;
@@ -41,8 +41,8 @@ for NIT=1:MAXIT
     end
     syn2ann_gof_compute;
     
-    fprintf('____________________________________________________________\n');
 end
+fprintf('____________________________________________________________\n');
 
 %% *COMPUTE BEST GOF*
 syn2ann_gof_best;
@@ -57,5 +57,5 @@ syn2ann_scaling_drive;
 % %% *SAVE RESULTS*
 % syn2ann_save_res;
 %
-% %% *PLOT RESULTS*
-% syn2ann_plot_res_single;
+%% *PLOT RESULTS*
+syn2ann_plot_res_single;
