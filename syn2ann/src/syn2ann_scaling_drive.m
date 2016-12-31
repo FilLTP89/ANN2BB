@@ -9,18 +9,15 @@
 %% *N.B.*
 % Need for:
 % _syn2ann_sm.m,syn2ann_thp.m,syn2ann_spp.m_
-fprintf('---------------------\n6. SPECTRAL MATCHING (JUST PSA)\n---------------------\n');
-%% *MATCHING*
-fprintf('--> Matching (just PSA)\n');
+fprintf('============================\n');
+fprintf('----9. SPECTRAL MATCHING----\n');
+fprintf('============================\n');
 
-%
-% _SABETTA & PUGLIESE 1996_
-%
+%% *SPECTRAL MATCHING*
 spm.sps = syn2ann_sm(hbs.bst,trs.sps);
 %% *PGA-PGV-PGD & ARIAS INTENSITY*
-fprintf('--> Peak Values and Arias\n');
-
-for j_ = 1:hbs.sps.mon.nc
-    spm.sps.(hbs.sps.mon.cp{j_}) = syn2ann_thp(spm.sps.(hbs.sps.mon.cp{j_}));
-    spm.sps.(hbs.sps.mon.cp{j_}) = syn2ann_spp(spm.sps.(hbs.sps.mon.cp{j_}));
+fprintf('--> Peak Values/Arias/Spectra\n');
+for j_ = 1:hbs.bst.mon.nc
+    spm.sps.(hbs.bst.mon.cp{j_}) = syn2ann_thp(spm.sps.(hbs.bst.mon.cp{j_}));
+    spm.sps.(hbs.bst.mon.cp{j_}) = syn2ann_spp(spm.sps.(hbs.bst.mon.cp{j_}));
 end
