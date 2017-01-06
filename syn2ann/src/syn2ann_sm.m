@@ -49,6 +49,18 @@ function [varargout] = syn2ann_sm(varargin)
                 trs.(trs.mon.cp{j_}).mon.tol.hgh.pga,...
                 trs.(trs.mon.cp{j_}).mon.tol.low.pga,trs.mon.cp{j_});
             
+            spm.(hbs.mon.cp{j_}).syn{i_}.tha.(hbs.mon.cp{j_}) = ...
+                spm.(hbs.mon.cp{j_}).syn{i_}.tha.(hbs.mon.cp{j_})./100;
+            
+            spm.(hbs.mon.cp{j_}).syn{i_}.thv.(hbs.mon.cp{j_}) = ...
+                spm.(hbs.mon.cp{j_}).syn{i_}.thv.(hbs.mon.cp{j_})./100;
+            
+            spm.(hbs.mon.cp{j_}).syn{i_}.thd.(hbs.mon.cp{j_}) = ...
+                spm.(hbs.mon.cp{j_}).syn{i_}.thd.(hbs.mon.cp{j_})./100;
+            
+            spm.(hbs.mon.cp{j_}).syn{i_}.psa.(hbs.mon.cp{j_}) = ...
+                spm.(hbs.mon.cp{j_}).syn{i_}.psa.(hbs.mon.cp{j_})./100;
+            
             spm.(hbs.mon.cp{j_}).mon.dtm(i_) = mean(diff(spm.(hbs.mon.cp{j_}).mon.vtm{i_}));
             %
             spm.(hbs.mon.cp{j_}).mon.ntm(i_) = numel(spm.(hbs.mon.cp{j_}).mon.vtm{i_});

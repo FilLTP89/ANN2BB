@@ -6,10 +6,13 @@
 %% NOTES
 % _fpplot_: function plot fancy images from data
 %% INPUT:
-%
+% * _xpl (cell with x-axis vector)_
+% * _ypl (cell with y-axis vector)_
+
 %% OUTPUT:
 %
 %% N.B.
+% 
 %Need for _plot_set_up.m, format_figures.m, rule_fig.m_
 function [varargout] = fpplot(varargin)
     
