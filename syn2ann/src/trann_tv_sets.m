@@ -32,13 +32,14 @@ function [varargout] = trann_tv_sets(varargin)
     %% *DEFINE PERCENTAGES*
     Q1   = floor(nr*pt);
     Q2   = nr-Q1;
+    
     idx.all(:,1) = randperm(nr);
-    idx.valid    = idx.all(1:Q1,1);
-    idx.train    = idx.all(Q1+(1:Q2),1);
+    idx.vld    = idx.all(1:Q1,1);
+    idx.trn    = idx.all(Q1+(1:Q2),1);
     
     %% *OUTPUT*
-    varargout{1} = idx.train;
-    varargout{2} = idx.valid;
+    varargout{1} = idx.trn;
+    varargout{2} = idx.vld;
     
     return
 end

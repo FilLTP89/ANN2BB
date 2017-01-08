@@ -61,6 +61,7 @@ function train_ann_justPSA(varargin)
     
     %% *DEFINE ANN INPUTS/TARGETS (PSA-T*)*
     PSA = -999*ones(db.nr,db.nT);
+    keyboard
     switch ann.cp
         % _HORIZONTAL COMPONENT 1_
         case {'h1'}
