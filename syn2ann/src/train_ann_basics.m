@@ -33,19 +33,29 @@ function [varargout] = train_ann_basics(varargin)
     dsg.net.trainParam.goal   = 1e-3;
     % number of trained ANNs
     dsg.ntr = 1;
+    % For early stopping, you must be careful not to use an algorithm that
+    % converges too rapidly. If you are using a fast algorithm (like trainlm),
+    % set the training parameters so that the convergence is relatively slow.
+    % For example, set mu to a relatively large value, such as 1, and set
+    % mu_dec and mu_inc to values close to 1, such as 0.8 and 1.5, respectively.
+    dsg.net.trainParam.mu = 1.0;
+    dsg.net.trainParam.mu_dec = 0.8;
+    dsg.net.trainParam.mu_inc = 1.5;
+    
+    %The training functions trainscg and trainbr usually work well with early stopping.
     
     % Set up Division of Data for Training, Validation, Testing
-%     % _percentage of input for training_
-%     dsg.net.divideParam.trainRatio = 85/100;
-%     % percentage of input for validation
-%     dsg.net.divideParam.valRatio   = 10/100;
-%     % percentage of input for test
-%     dsg.net.divideParam.testRatio  =  5/100;
-    %     
-    dsg.net.divideParam.trainRatio = 70/100;
-    dsg.net.divideParam.valRatio = 15/100;
-    dsg.net.divideParam.testRatio = 15/100;
-    [dsg.idx.trn,dsg.idx.vld] = trann_tv_sets(nbs,5/100);
+    %     % _percentage of input for training_
+    %     dsg.net.divideParam.trainRatio = 85/100;
+    %     % percentage of input for validation
+    %     dsg.net.divideParam.valRatio   = 10/100;
+    %     % percentage of input for test
+    %     dsg.net.divideParam.testRatio  =  5/100;
+    %
+    %     dsg.net.divideParam.trainRatio = 70/100;
+    %     dsg.net.divideParam.valRatio = 15/100;
+    %     dsg.net.divideParam.testRatio = 15/100;
+    [dsg.idx.trn,dsg.idx.vld] = trann_tv_sets(nbs,10/100);
     
     %% *OUTPUT*
     varargout{1} = dsg;

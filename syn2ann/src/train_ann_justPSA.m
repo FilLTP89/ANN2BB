@@ -61,7 +61,7 @@ function train_ann_justPSA(varargin)
     
     %% *DEFINE ANN INPUTS/TARGETS (PSA-T*)*
     PSA = -999*ones(db.nr,db.nT);
-    keyboard
+    
     switch ann.cp
         % _HORIZONTAL COMPONENT 1_
         case {'h1'}
@@ -100,6 +100,7 @@ function train_ann_justPSA(varargin)
     dsg = train_ann_basics(ann,db.nr);
     NNs = cell(dsg.ntr,1);
     prf.vld = -999*ones(dsg.ntr,1);
+    out.prf = 0.0;
     for i_=1:dsg.ntr
         
         fprintf('ANN %u/%u: \n',i_,dsg.ntr);
@@ -118,9 +119,13 @@ function train_ann_justPSA(varargin)
         [NNs{i_}.net,NNs{i_}.trs] = train(dsg.net,NNs{i_}.inp.trn,NNs{i_}.tar.trn);
         
         %% *TEST/VALIDATE ANN PERFORMANCE*
-        NNs{i_} = train_ann_valid(NNs{i_});
+        [NNs{i_},out.prf] = train_ann_valid(NNs{i_},out.prf);
         prf.vld(i_) = NNs{i_}.prf.vld;
+        % test mse versus perf
+        
     end
+    out.avg = out.prf/dsg.ntr;
+    prf.avg = mse(NNs{1}.net,NNs{1}.tar.vld,out.avg);
     
     [bst.prf,bst.idx] = min(prf.vld);
     
