@@ -17,7 +17,7 @@ function [varargout] = train_ann_basics(varargin)
     % ANN name
     dsg.fnm = sprintf('net_%u_%s_%s_dvl',round(ann.TnC*100),ann.scl,ann.cp);
     % Number of Hidden Neurons
-    dsg.nhn = 10;
+    dsg.nhn = 40;
     % set up base ANN structure
     % dsg.net = newfit(inp.simbad(:,idx_train),tar.simbad(:,idx_train),nhn);
     % dsg.net = fitnet(nhn,'trainlm');
