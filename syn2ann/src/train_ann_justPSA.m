@@ -132,13 +132,13 @@ function train_ann_justPSA(varargin)
         'xlb',{'ANN-id'},'xlm',{[0;dsg.ntr+1]},'xtk',{[1;(5:5:dsg.ntr)']},...
         'ylb',{'MSE [1]'},'ylm',{[0;1.05*max(prf.vld)]},'ytk',{[0;1.0*max(prf.vld)]},...
         'lst',{'none';'--';'--';'none'},'lwd',[0.1;2;2;.1],'mrk',{'o';'none';'none';'p'});
-    saveas(gcf,fullfile(wd,strcat(dsg.fnm,'_all_perf_',num2str(dsg.nhn),'nhn')),'epsc');
+    saveas(gcf,fullfile(wd,strcat(dsg.fnm,'_all_prf_',num2str(dsg.nhn),'n')),'epsc');
     close(gcf);
     
     % _BEST ANN PERFORMANCE_
-    set(0,'defaultaxescolororder',[0,0,1;0,1,0;1,0,0;0,0,0;0,0,0]);
+    set(0,'defaultaxescolororder',[0,0,0]);
     xlm = [NNs{bst.idx}.trs.epoch(1);NNs{bst.idx}.trs.epoch(end)];
-    ylm = [1e-3;1e1];
+    ylm = [1e-2;1e1];
     fpplot(...
         'xpl',{NNs{bst.idx}.trs.epoch';NNs{bst.idx}.trs.epoch';NNs{bst.idx}.trs.epoch';...
         [NNs{bst.idx}.trs.best_epoch;NNs{bst.idx}.trs.best_epoch];xlm},...
@@ -148,27 +148,150 @@ function train_ann_justPSA(varargin)
         NNs{bst.idx}.trs.vperf(NNs{bst.idx}.trs.best_epoch)]},...
         'pfg',[0,0,10,10],'tit',{'ANN-performance'},'scl',{'sly'},...
         'xlb',{'Epochs'},'xlm',{xlm},'leg',{{'TRAIN';'VALID';'TEST'}},...
-        'ylb',{'MSE [1]'},'ylm',{ylm},'ytk',{10.^(-3:1)'},...
-        'lst',{'-';'-';'-';'--';'--'},'lwd',[2;2;2;2;2]);
-    saveas(gcf,fullfile(wd,strcat(dsg.fnm,'_bst_perf_',num2str(dsg.nhn),'nhn')),'epsc');
+        'ylb',{'MSE [1]'},'ylm',{ylm},'ytk',{10.^(-2:1)'},...
+        'mrk',{'o';'d';'v';'none';'none'},...
+        'lst',{'-';'--';':';'-';'-'},'lwd',[1;1;1;1;1]);
+    saveas(gcf,fullfile(wd,strcat(dsg.fnm,'_bst_prf_',num2str(dsg.nhn),'n')),'epsc');
     close(gcf);
     
     % _PLOT REGRESSION_
     % _train set_
-    plt.reg.vld = plotregression(NNs{bst.idx}.out_tar.trn,NNs{bst.idx}.out_trn.trn,'Train');
-    saveas(gcf,fullfile(wd,strcat(dsg.fnm,'_bst_regr_trn_',num2str(dsg.nhn),'nhn')),'epsc');
-    % validation set
-    plt.reg.vld = plotregression(NNs{bst.idx}.out_tar.vld,NNs{bst.idx}.out_trn.vld,'Validation');
-    saveas(gcf,fullfile(wd,strcat(dsg.fnm,'_bst_regr_vld_',num2str(dsg.nhn),'nhn')),'epsc');
-    % test set
-    plt.reg.tst = plotregression(NNs{bst.idx}.out_tar.tst,NNs{bst.idx}.out_trn.tst,'Test');
-    saveas(gcf,fullfile(wd,strcat(dsg.fnm,'_bst_regr_tst_',num2str(dsg.nhn),'nhn')),'epsc');
+    % maximum-minimum values
+    col             = jet(size(NNs{bst.idx}.out_trn.trn,1));
+    cols            = [col;col;0,0,0];
+    set(0,'defaultaxescolororder',cols);
     
+    clear xlm ylm
+    
+    % train set
+    xlm.trn = [min(NNs{bst.idx}.out_trn.trn(:));...
+        max(NNs{bst.idx}.out_trn.trn(:))];
+    ylm.trn = [min(NNs{bst.idx}.out_tar.trn(:));...
+        max(NNs{bst.idx}.out_tar.trn(:))];
+    xpl.trn = cell(2*size(NNs{bst.idx}.out_trn.trn,1)+1,1);
+    ypl.trn = cell(2*size(NNs{bst.idx}.out_trn.trn,1)+1,1);
+    % validation set
+    xlm.vld = [min(NNs{bst.idx}.out_trn.vld(:));...
+        max(NNs{bst.idx}.out_trn.vld(:))];
+    ylm.vld = [min(NNs{bst.idx}.out_tar.vld(:));...
+        max(NNs{bst.idx}.out_tar.vld(:))];
+    xpl.vld = cell(2*size(NNs{bst.idx}.out_trn.vld,1)+1,1);
+    ypl.vld = cell(2*size(NNs{bst.idx}.out_trn.vld,1)+1,1);
+    % test set
+    xlm.tst = [min(NNs{bst.idx}.out_trn.tst(:));...
+        max(NNs{bst.idx}.out_trn.tst(:))];
+    ylm.tst = [min(NNs{bst.idx}.out_tar.tst(:));...
+        max(NNs{bst.idx}.out_tar.tst(:))];
+    xpl.tst = cell(2*size(NNs{bst.idx}.out_trn.tst,1)+1,1);
+    ypl.tst = cell(2*size(NNs{bst.idx}.out_trn.tst,1)+1,1);
+    
+    mrk = cell(2*size(NNs{bst.idx}.out_trn.trn,1)+1,1);
+    lst = cell(2*size(NNs{bst.idx}.out_trn.trn,1)+1,1);
+    lwd = -999*ones(2*size(NNs{bst.idx}.out_trn.trn,1)+1,1);
+    leg = cell(2*size(NNs{bst.idx}.out_trn.trn,1)+1,1);
+    
+    % compute misfit at each period
+    for i_=1:size(NNs{bst.idx}.out_trn.trn,1)
+        % _TRAIN SET_
+        xpl.trn{i_,1} = NNs{bst.idx}.out_trn.trn(i_,:);   % data
+        xpl.trn{size(NNs{bst.idx}.out_trn.trn,1)+i_,1} = xlm.trn;                              % linear fit
+        ypl.trn{i_,1} = NNs{bst.idx}.out_tar.trn(i_,:);   % data
+        % polyfit coefficients
+        cfc.trn = polyfit(xpl.trn{i_,1},ypl.trn{i_,1},1);
+        % compute linear trend
+        ypl.trn{size(NNs{bst.idx}.out_trn.trn,1)+i_,1} = polyval(cfc.trn,xlm.trn);
+        % compute Rsquared
+        [r2.trn(i_),rmse.trn(i_)] = ...
+            rsquare(ypl.trn{i_,1},polyval(cfc.trn,xpl.trn{i_,1}));
+        
+        % _VALIDATION SET_
+        xpl.vld{i_,1} = NNs{bst.idx}.out_trn.vld(i_,:);   % data
+        xpl.vld{size(NNs{bst.idx}.out_trn.vld,1)+i_,1} = xlm.vld;                              % linear fit
+        ypl.vld{i_,1} = NNs{bst.idx}.out_tar.vld(i_,:);   % data
+        % polyfit coefficients
+        cfc.vld = polyfit(xpl.vld{i_,1},ypl.vld{i_,1},1);
+        % compute linear trend
+        ypl.vld{size(NNs{bst.idx}.out_trn.vld,1)+i_,1} = polyval(cfc.vld,xlm.vld);
+        % compute Rsquared
+        [r2.vld(i_),rmse.vld(i_)] = ...
+            rsquare(ypl.vld{i_,1},polyval(cfc.vld,xpl.vld{i_,1}));
+        
+        % _TEST SET_
+        xpl.tst{i_,1} = NNs{bst.idx}.out_trn.tst(i_,:);   % data
+        xpl.tst{size(NNs{bst.idx}.out_trn.tst,1)+i_,1} = xlm.tst;                              % linear fit
+        ypl.tst{i_,1} = NNs{bst.idx}.out_tar.tst(i_,:);   % data
+        % polyfit coefficients
+        cfc.tst = polyfit(xpl.tst{i_,1},ypl.tst{i_,1},1);
+        % compute linear trend
+        ypl.tst{size(NNs{bst.idx}.out_trn.tst,1)+i_,1} = polyval(cfc.tst,xlm.tst);
+        % compute Rsquared
+        [r2.tst(i_),rmse.tst(i_)] = ...
+            rsquare(ypl.tst{i_,1},polyval(cfc.tst,xpl.tst{i_,1}));
+        
+        mrk{i_,1} = 'o';
+        mrk{size(NNs{bst.idx}.out_trn.trn,1)+i_,1} = 'none';
+        lst{i_,1} = 'none';
+        lst{size(NNs{bst.idx}.out_trn.trn,1)+i_,1} = '-';
+        lwd(i_)   = 0.1;
+        lwd(size(NNs{bst.idx}.out_trn.trn,1)+i_,1)   = 3.0;
+        leg{i_,1} = '';
+        leg{size(NNs{bst.idx}.out_trn.trn,1)+i_,1} = ...
+            strcat('$T = ',num2str(tar.vTn(i_),'%.2f'),'$');
+    end
+    xlm.all(1,1) = floor(min([xlm.trn(1),xlm.vld(1),xlm.tst(1),...
+        ylm.trn(1),ylm.vld(1),ylm.tst(1)]));
+    xlm.all(2,1) =  ceil(max([xlm.trn(1),xlm.vld(1),xlm.tst(1),...
+        ylm.trn(2),ylm.vld(2),ylm.tst(2)]));
+    ylm.all = xlm.all;
+    [xtk,ytk] = get_axis_tick(xlm.all,ylm.all,...
+        abs(diff(xlm.all))/4,abs(diff(ylm.all))/4);
+    
+    xpl.trn{end,1} = xlm.all;
+    xpl.vld{end,1} = xlm.all;
+    xpl.tst{end,1} = xlm.all;
+    ypl.trn{end,1} = ylm.all;
+    ypl.vld{end,1} = ylm.all;
+    ypl.tst{end,1} = ylm.all;
+    leg{end,1} = '';
+    lwd(end)   = 1;
+    lst{end,1} = '--';
+    mrk{end,1} = 'none';
+    
+    % _TRAIN SET_
+    fpplot('xpl',xpl.trn,'ypl',ypl.trn,'pfg',[0,0,12,10],...
+        'mrk',mrk,'lwd',lwd,'lst',lst,'tit',{'Training Set'},...
+        'xlb',{'log_10(PSA-ANN)'},'xlm',{xlm.all+[0;1]},'xtk',{xtk},...
+        'ylb',{'log_10(PSA-TAR)'},'ylm',{ylm.all},'ytk',{ytk},'leg',{leg});
+    saveas(gcf,fullfile(wd,strcat(dsg.fnm,'_bst_rgr_trn_',num2str(dsg.nhn),'n')),'epsc');
+    
+    % _VALIDATION SET_
+    fpplot('xpl',xpl.vld,'ypl',ypl.vld,'pfg',[0,0,12,10],...
+        'mrk',mrk,'lwd',lwd,'lst',lst,'tit',{'Validation Set'},...
+        'xlb',{'log_10(PSA-ANN)'},'xlm',{xlm.all+[0;1]},'xtk',{xtk},...
+        'ylb',{'log_10(PSA-TAR)'},'ylm',{ylm.all},'ytk',{ytk},'leg',{leg});
+    saveas(gcf,fullfile(wd,strcat(dsg.fnm,'_bst_rgr_vld_',num2str(dsg.nhn),'n')),'epsc');
+    
+    % _TEST SET_
+    fpplot('xpl',xpl.tst,'ypl',ypl.tst,'pfg',[0,0,12,10],...
+        'mrk',mrk,'lwd',lwd,'lst',lst,'tit',{'Testing Set'},...
+        'xlb',{'log_10(PSA-ANN)'},'xlm',{xlm.all+[0;1]},'xtk',{xtk},...
+        'ylb',{'log_10(PSA-TAR)'},'ylm',{ylm.all},'ytk',{ytk},'leg',{leg});
+    saveas(gcf,fullfile(wd,strcat(dsg.fnm,'_bst_rgr_tst_',num2str(dsg.nhn),'n')),'epsc');
+    
+    set(0,'defaultaxescolororder',[0,0,0]);
+    fpplot('xpl',{tar.vTn;tar.vTn;tar.vTn},'ypl',{r2.trn;r2.vld;r2.tst},...
+        'pfg',[0,0,10,10],'scl',{'sly'},'leg',{{'TRAIN';'VALID';'TEST'}},...
+        'mrk',{'o';'d';'v'},'lwd',[1;1;1],'lst',{'-';'--';':'},...
+        'xlb',{'T [s]'},'xlm',{[0;tar.vTn(end)]},'xtk',{0:.1:tar.vTn(end)},...
+        'ylb',{'R^2 [1]'},'ylm',{[1e-1;1]},'ytk',{(1:10)./10});
+    saveas(gcf,fullfile(wd,strcat(dsg.fnm,'_bst_r2_trn_',num2str(dsg.nhn),'n')),'epsc');
     close all;
     
+    
+    %% *OUTPUT*
     clear net
     net = NNs{bst.idx};
-    save(fullfile(wd,sprintf('net_%u_%s_%s_%unhn.mat',...
+    save(fullfile(wd,sprintf('net_%u_%s_%s_%un.mat',...
         round(ann.TnC*100),ann.scl,ann.cp,dsg.nhn)),'net');
     return
 end
