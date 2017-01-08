@@ -1,11 +1,13 @@
 function [varargout] = train_ann_valid(varargin)
     %% *SET-UP*
     ann = varargin{1};
+    out_prf = varargin{2};
     
     %% *ANN VALIDATION*
     fprintf('VALIDATING...\n');
     ann.out_trn.all = ann.net(ann.inp.trn);
     ann.out_vld.all = ann.net(ann.inp.vld);
+    out_prf = out_prf+ann.out_vld.all;
     
     %% *DEFINE INPUTS/TARGETS SUBSETS FROM TRAIN PROCEDURE*
     % _TRANING/VALIDATION/TEST SUBSET VALUES_
@@ -25,5 +27,6 @@ function [varargout] = train_ann_valid(varargin)
     
     %% *OUTPUT*
     varargout{1} = ann;
+    varargout{2} = out_prf;
     return
 end

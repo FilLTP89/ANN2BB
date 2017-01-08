@@ -61,7 +61,7 @@ function train_ann_justPSA(varargin)
     
     %% *DEFINE ANN INPUTS/TARGETS (PSA-T*)*
     PSA = -999*ones(db.nr,db.nT);
-    keyboard
+    
     switch ann.cp
         % _HORIZONTAL COMPONENT 1_
         case {'h1'}
@@ -100,6 +100,7 @@ function train_ann_justPSA(varargin)
     dsg = train_ann_basics(ann,db.nr);
     NNs = cell(dsg.ntr,1);
     prf.vld = -999*ones(dsg.ntr,1);
+    out.prf = 0.0;
     for i_=1:dsg.ntr
         
         fprintf('ANN %u/%u: \n',i_,dsg.ntr);
@@ -118,21 +119,25 @@ function train_ann_justPSA(varargin)
         [NNs{i_}.net,NNs{i_}.trs] = train(dsg.net,NNs{i_}.inp.trn,NNs{i_}.tar.trn);
         
         %% *TEST/VALIDATE ANN PERFORMANCE*
-        NNs{i_} = train_ann_valid(NNs{i_});
+        [NNs{i_},out.prf] = train_ann_valid(NNs{i_},out.prf);
         prf.vld(i_) = NNs{i_}.prf.vld;
+        % test mse versus perf
+        
     end
-    
     [bst.prf,bst.idx] = min(prf.vld);
+    out.avg = out.prf/dsg.ntr;
+    prf.avg = mse(NNs{bst.idx}.net,NNs{bst.idx}.tar.vld,out.avg);
+    
     
     %% *PLOT PERFORMANCES*
     % _COMPARE TRAINING_
-    set(0,'defaultaxescolororder',[0,0,0;1,0,0;0,0,1;0,1,0]);
-    fpplot('xpl',{(1:dsg.ntr)';[1;dsg.ntr];[bst.idx;bst.idx];bst.idx},...
-        'ypl',{prf.vld;[mean(prf.vld);mean(prf.vld)];[0;1.01*max(prf.vld)];bst.prf},...
-        'pfg',[0,0,15,10],'tit',{'ANN-performance'},...
-        'xlb',{'ANN-id'},'xlm',{[0;dsg.ntr+1]},'xtk',{[1;(5:5:dsg.ntr)']},...
-        'ylb',{'MSE [1]'},'ylm',{[0;1.05*max(prf.vld)]},'ytk',{[0;1.0*max(prf.vld)]},...
-        'lst',{'none';'--';'--';'none'},'lwd',[0.1;2;2;.1],'mrk',{'o';'none';'none';'p'});
+    set(0,'defaultaxescolororder',[0.65,0.65,0.65;0,0,0;0,0,0;0,0,0]);
+    fpplot('xpl',{(1:dsg.ntr)';bst.idx;[bst.idx;bst.idx];[1;dsg.ntr]},...
+        'ypl',{prf.vld;bst.prf;[0.01;0.1];[prf.avg;prf.avg]},...
+        'pfg',[0,0,10,10],'tit',{'ANN-performance'},'scl',{'sly'},...
+        'xlb',{'ANN-ID'},'xlm',{[0;dsg.ntr+1]},'xtk',{[1;(5:5:dsg.ntr)']},...
+        'ylb',{'MSE [1]'},'ylm',{[0.01;0.1]},'ytk',{(1:10)./100},...
+        'lst',{'none';'none';'--';'--'},'lwd',[0.1;0.1;1;2],'mrk',{'o';'x';'none';'none'});
     saveas(gcf,fullfile(wd,strcat(dsg.fnm,'_all_prf_',num2str(dsg.nhn),'n')),'epsc');
     close(gcf);
     
@@ -150,7 +155,7 @@ function train_ann_justPSA(varargin)
         'pfg',[0,0,10,10],'tit',{'ANN-performance'},'scl',{'sly'},...
         'xlb',{'Epochs'},'xlm',{xlm},'leg',{{'TRAIN';'VALID';'TEST'}},...
         'ylb',{'MSE [1]'},'ylm',{ylm},'ytk',{10.^(-2:1)'},...
-        'mrk',{'o';'d';'v';'none';'none'},...
+        'mrk',{'none';'none';'none';'none';'none'},...
         'lst',{'-';'--';':';'-';'-'},'lwd',[1;1;1;1;1]);
     saveas(gcf,fullfile(wd,strcat(dsg.fnm,'_bst_prf_',num2str(dsg.nhn),'n')),'epsc');
     close(gcf);
@@ -204,7 +209,6 @@ function train_ann_justPSA(varargin)
         % compute Rsquared
         [r2.trn(i_),rmse.trn(i_)] = ...
             rsquare(ypl.trn{i_,1},polyval(cfc.trn,xpl.trn{i_,1}));
-        
         % _VALIDATION SET_
         xpl.vld{i_,1} = NNs{bst.idx}.out_trn.vld(i_,:);   % data
         xpl.vld{size(NNs{bst.idx}.out_trn.vld,1)+i_,1} = xlm.vld;                              % linear fit
@@ -234,7 +238,7 @@ function train_ann_justPSA(varargin)
         lst{i_,1} = 'none';
         lst{size(NNs{bst.idx}.out_trn.trn,1)+i_,1} = '-';
         lwd(i_)   = 0.1;
-        lwd(size(NNs{bst.idx}.out_trn.trn,1)+i_,1)   = 3.0;
+        lwd(size(NNs{bst.idx}.out_trn.trn,1)+i_,1)   = 2.0;
         leg{i_,1} = '';
         leg{size(NNs{bst.idx}.out_trn.trn,1)+i_,1} = ...
             strcat('$T = ',num2str(tar.vTn(i_),'%.2f'),'$');
