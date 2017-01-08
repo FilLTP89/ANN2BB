@@ -32,7 +32,7 @@ function [varargout] = train_ann_basics(varargin)
     % performance goal
     dsg.net.trainParam.goal   = 1e-3;
     % number of trained ANNs
-    dsg.ntr = 50;
+    dsg.ntr = 1;
     
     % Set up Division of Data for Training, Validation, Testing
     % _percentage of input for training_
