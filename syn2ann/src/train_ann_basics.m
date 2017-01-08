@@ -17,7 +17,7 @@ function [varargout] = train_ann_basics(varargin)
     % ANN name
     dsg.fnm = sprintf('net_%u_%s_%s_dvl',round(ann.TnC*100),ann.scl,ann.cp);
     % Number of Hidden Neurons
-    dsg.nhn = 30;
+    dsg.nhn = 10;
     % set up base ANN structure
     % dsg.net = newfit(inp.simbad(:,idx_train),tar.simbad(:,idx_train),nhn);
     % dsg.net = fitnet(nhn,'trainlm');
@@ -28,7 +28,7 @@ function [varargout] = train_ann_basics(varargin)
     % NNs.base.trainParam.show   = 50;
     dsg.net.trainParam.lr     = 0.05;
     % Maximum number of epochs to train
-    dsg.net.trainParam.epochs = 500;
+    dsg.net.trainParam.epochs = 100;
     % performance goal
     dsg.net.trainParam.goal   = 1e-3;
     % number of trained ANNs
