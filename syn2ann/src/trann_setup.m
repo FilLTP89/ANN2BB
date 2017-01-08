@@ -20,14 +20,6 @@ sp = fullfile(filesep,'media','filippo','Data','Filippo','aeolus',...
 % _database_
 dbn = fullfile(filesep,'media','filippo','Data','Filippo',...
     'PHD_passing_through_heavyweight','simbad_v05','SIMBAD_v05_1.mat');
-
-% _main workdir_
-% wd = fullfile(filesep,'mssmat2','home','gattif','Documents',...
-%     'PHD_passing_through_polimi','syn2ann','database');
-% sp = fullfile(filesep,'tmp1','gattif','heavy_images_new');
-% % _database_
-% dbn = fullfile(filesep,'mssmat2','home','gattif','Documents',...
-%     'PHD_passing_through_heavyweight','simbad_v05','SIMBAD_v05_1.mat');
 ann.trn.wd = fullfile(wd,'training');
 fprintf('Training Workdir: %s\n',ann.trn.wd);
 fprintf('Training Database: %s\n',dbn);
