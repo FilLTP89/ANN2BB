@@ -104,7 +104,7 @@ function train_ann_justPSA(varargin)
     for i_=1:dsg.ntr
         
         fprintf('ANN %u/%u: \n',i_,dsg.ntr);
-        
+        [dsg.idx.trn,dsg.idx.vld] = trann_tv_sets(db.nr,5/100); 
         %% *DEFINE INPUTS/TARGETS*
         % _ALL INPUT/TARGET TRAINING VALUES_
         NNs{i_}.inp.trn = inp.simbad(:,dsg.idx.trn);

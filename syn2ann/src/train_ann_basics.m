@@ -19,9 +19,7 @@ function [varargout] = train_ann_basics(varargin)
     % _number of Hidden Neurons_
     dsg.nhn = 30;
     % _number of trained ANNs_
-    dsg.ntr = 75;
-    % _select input records_
-    [dsg.idx.trn,dsg.idx.vld] = trann_tv_sets(nbs,5/100);
+    dsg.ntr = 100;
     % _set up base ANN structure_
     
     dsg.net = feedforwardnet(dsg.nhn,'trainlm');
@@ -53,13 +51,13 @@ function [varargout] = train_ann_basics(varargin)
     
     % Set up Division of Data for Training, Validation, Testing
     % _percentage of input for training_
-    dsg.net.divideParam.trainRatio = 85/100;
+    dsg.net.divideParam.trainRatio = 60/100;
     % dsg.net.divideParam.trainRatio = 70/100;
     % _percentage of input for validation_
-    dsg.net.divideParam.valRatio   = 10/100;
+    dsg.net.divideParam.valRatio   = 20/100;
     % dsg.net.divideParam.valRatio = 15/100;
     % _percentage of input for test_
-    dsg.net.divideParam.testRatio  =  5/100;
+    dsg.net.divideParam.testRatio  = 20/100;
     % dsg.net.divideParam.testRatio = 15/100;
     
     %% *OUTPUT*
