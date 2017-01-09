@@ -17,11 +17,11 @@ function [varargout] = train_ann_basics(varargin)
     % ANN name
     dsg.fnm = sprintf('net_%u_%s_%s_dvl',round(ann.TnC*100),ann.scl,ann.cp);
     % _number of Hidden Neurons_
-    dsg.nhn = 50;
+    dsg.nhn = 30;
     % _number of trained ANNs_
-    dsg.ntr = 50;
+    dsg.ntr = 75;
     % _select input records_
-    [dsg.idx.trn,dsg.idx.vld] = trann_tv_sets(nbs,10/100);
+    [dsg.idx.trn,dsg.idx.vld] = trann_tv_sets(nbs,5/100);
     % _set up base ANN structure_
     
     dsg.net = feedforwardnet(dsg.nhn,'trainlm');
@@ -38,9 +38,9 @@ function [varargout] = train_ann_basics(varargin)
     
     switch dsg.net.trainFcn
         case 'trainlm'
-            % dsg.net.trainParam.mu = 1.0;
-            % dsg.net.trainParam.mu_dec = 0.8;
-            % dsg.net.trainParam.mu_inc = 1.5;
+            dsg.net.trainParam.mu = 1.0;
+            dsg.net.trainParam.mu_dec = 0.8;
+            dsg.net.trainParam.mu_inc = 1.5;
         case 'trainbfg'
             dsg.net.performParam.regularization = 0.5;
     end

@@ -13,13 +13,16 @@ ccc;
 fprintf('---------------------\n0. SETUP\n---------------------\n');
 %% *WORKDIR*
 % _main workdir_
-wd = fullfile(filesep,'media','filippo','Data','Filippo',...
-    'PHD_passing_through_polimi','syn2ann','database');
-sp = fullfile(filesep,'media','filippo','Data','Filippo','aeolus',...
-    'image_database');
+%wd = fullfile(filesep,'media','filippo','Data','Filippo',...
+%    'PHD_passing_through_polimi','syn2ann','database');
+%sp = fullfile(filesep,'media','filippo','Data','Filippo','aeolus',...
+%    'image_database');
 % _database_
-dbn = fullfile(filesep,'media','filippo','Data','Filippo',...
-    'PHD_passing_through_heavyweight','simbad_v05','SIMBAD_v05_1.mat');
+%dbn = fullfile(filesep,'media','filippo','Data','Filippo',...
+%    'PHD_passing_through_heavyweight','simbad_v05','SIMBAD_v05_1.mat');
+wd = '/mssmat2/home/gattif/Documents/PHD_passing_through_polimi/syn2ann/database';
+sp = '/mssmat2/home/gattif/Documents/PHD_passing_through_polimi/syn2ann/database';
+dbn= '/mssmat2/home/gattif/Documents/PHD_passing_through_heavyweight/simbad_v05/SIMBAD_v05_1_vigne.mat';
 ann.trn.wd = fullfile(wd,'training');
 fprintf('Training Workdir: %s\n',ann.trn.wd);
 fprintf('Training Database: %s\n',dbn);
