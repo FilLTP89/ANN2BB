@@ -209,6 +209,7 @@ function train_ann_justPSA(varargin)
         % compute Rsquared
         [r2.trn(i_),rmse.trn(i_)] = ...
             rsquare(ypl.trn{i_,1},polyval(cfc.trn,xpl.trn{i_,1}));
+
         % _VALIDATION SET_
         xpl.vld{i_,1} = NNs{bst.idx}.out_trn.vld(i_,:);   % data
         xpl.vld{size(NNs{bst.idx}.out_trn.vld,1)+i_,1} = xlm.vld;                              % linear fit

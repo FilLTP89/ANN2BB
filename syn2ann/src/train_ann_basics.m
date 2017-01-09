@@ -30,7 +30,7 @@ function [varargout] = train_ann_basics(varargin)
     % _show/hide gui_
     dsg.net.trainParam.showWindow  = false;
     % _learning rate_
-%     dsg.net.trainParam.lr     = 0.05;
+    % dsg.net.trainParam.lr     = 0.05;
     % _maximum number of epochs to train_
     dsg.net.trainParam.epochs = 500;
     % _performance goal_
@@ -38,9 +38,9 @@ function [varargout] = train_ann_basics(varargin)
     
     switch dsg.net.trainFcn
         case 'trainlm'
-%             dsg.net.trainParam.mu = 1.0;
-%             dsg.net.trainParam.mu_dec = 0.8;
-%             dsg.net.trainParam.mu_inc = 1.5;
+            % dsg.net.trainParam.mu = 1.0;
+            % dsg.net.trainParam.mu_dec = 0.8;
+            % dsg.net.trainParam.mu_inc = 1.5;
         case 'trainbfg'
             dsg.net.performParam.regularization = 0.5;
     end
@@ -54,13 +54,13 @@ function [varargout] = train_ann_basics(varargin)
     % Set up Division of Data for Training, Validation, Testing
     % _percentage of input for training_
     dsg.net.divideParam.trainRatio = 85/100;
-%     dsg.net.divideParam.trainRatio = 70/100;
+    % dsg.net.divideParam.trainRatio = 70/100;
     % _percentage of input for validation_
     dsg.net.divideParam.valRatio   = 10/100;
-%     dsg.net.divideParam.valRatio = 15/100;
+    % dsg.net.divideParam.valRatio = 15/100;
     % _percentage of input for test_
     dsg.net.divideParam.testRatio  =  5/100;
-%     dsg.net.divideParam.testRatio = 15/100;
+    % dsg.net.divideParam.testRatio = 15/100;
     
     %% *OUTPUT*
     varargout{1} = dsg;
