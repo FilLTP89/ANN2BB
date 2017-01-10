@@ -10,6 +10,6 @@ for j_ = 1:tst.mtd.nr
 end
 %% *LOAD TEST SET*
 fprintf('---------------------\n2. LOAD TEST SET\n---------------------\n');
-[bhr,rec]= trann_rec_parser(bhr);
-rec = syn2ann_thp(rec);
-rec = syn2ann_spp(rec);
+[bhr,rec.org]= trann_rec_parser(bhr);
+rec.org = syn2ann_thp(rec.org);
+rec.org = syn2ann_spp(rec.org);

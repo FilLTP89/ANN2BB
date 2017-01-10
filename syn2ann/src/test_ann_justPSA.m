@@ -38,7 +38,11 @@ function [varargout] = test_ann_justPSA(varargin)
             if any(strcmpi(flag.rec,flag.ann))
                 inp.psa = rec.syn{i_}.psa.(cpp.rec)(:);
                 inp.psa = inp.psa(inp.idx,1);
-                out.psa = 10.^(sim(ann.net,log10(inp.psa*100)));
+                try 
+                    out.psa = 10.^(sim(ann.net,log10(inp.psa*100)));
+                catch
+                    out.psa = 10.^(sim(ann.net.net,log10(inp.psa*100)));
+                end
                 ann.syn{i_}.psa.(cpp.rec) = [out.psa(:)./100;inp.psa(:)];
             end
         end

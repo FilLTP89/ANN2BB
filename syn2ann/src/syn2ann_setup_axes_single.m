@@ -37,7 +37,10 @@ switch  ttt
         xlm.tha = [0;25];
         xtk.tha = (xlm.tha(1):5:xlm.tha(end))';
     otherwise
-        error('SET UP AXES FOR %s!',ttt)
+        vtm_shift(:) = 0.;
+        xlm.tha = [0;25];
+        xtk.tha = (xlm.tha(1):5:xlm.tha(end))';
+        %error('SET UP AXES FOR %s!',ttt)
 end
 
 xlm.thv = xlm.tha;

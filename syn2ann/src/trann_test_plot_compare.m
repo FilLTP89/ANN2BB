@@ -37,8 +37,8 @@ dlg{1} = 'EW';
 dlg{2} = 'NS';
 dlg{3} = 'UD';
 
-spp = '/home/filippo/Scrivania/ann';
-% spp = fullfile(filesep,'tmp1','gattif','heavy_images_new');
+%spp = '/home/filippo/Scrivania/ann';
+spp = fullfile(filesep,'tmp1','gattif','heavy_images_new');
 
 % _check tested ann motion direction (ew/ns/gh/ud)_
 cpp.ann = cell(tst.mtd.nr,1);
@@ -54,9 +54,9 @@ if size(cpp.ann)==1
         ann.scp(kk_,1) = ann.tst(kk_);
     end
     for mm_ = 1:bhr.ns
-        syn2ann_setup_axes;
-        trann_plot_res_compare_periods;
-%         trann_plot_res_compare_siteclass;
+        trann_setup_axes_single;
+%        trann_plot_res_compare_periods;
+        trann_plot_res_compare_siteclass;
     end
 else
     disp('ERROR: ANN TRAINED ON DIFFERENT COMPONENTS!');

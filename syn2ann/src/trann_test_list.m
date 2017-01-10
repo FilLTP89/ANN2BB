@@ -11,12 +11,14 @@
 
 %% *RECORDING STATION: bhrr*
 % _station identity_
+% _ACCUMULI_
 bhrr.st{1}.id = {'ACC'};
 bhrr.st{1}.ni = {'IT';'HG'};
 bhrr.st{2}.id = {'ACC'};
 bhrr.st{2}.ni = {'IT';'HG'};
 bhrr.st{3}.id = {'ACC'};
 bhrr.st{3}.ni = {'IT';'HG'};
+% _NORCIA_
 bhrr.st{4}.id = {'NRC'};
 bhrr.st{4}.ni = {'IT';'HG'};
 bhrr.st{5}.id = {'NRC'};
@@ -27,6 +29,7 @@ bhrr.st{7}.id = {'NRC'};
 bhrr.st{7}.ni = {'IT';'HG'};
 bhrr.st{8}.id = {'NRC'};
 bhrr.st{8}.ni = {'IT';'HG'};
+% _KUMAMOTO_
 bhrr.st{9}.id = {'KMMH16'};
 bhrr.st{9}.ni = {'';''};
 bhrr.st{10}.id = {'KMMH16'};
@@ -173,12 +176,17 @@ end
 % _number of ann to be tested_
 tst.mtd.nr = 3;
 % _site class considered : ALL,AB,CD_
-tst.mtd.scl = {'ALL';'ALL';'ALL'};
+tst.mtd.scl = {'ALL';'AB';'CD'};
 % _corner period for each ANN_
 tst.mtd.TnC = {0.75;0.75;0.75};
 % _ANN motion component : gh,ud (geometric mean horizontal, updip)_
 tst.mtd.cpp = {'gh';'gh';'gh'};
+% for i_ = 1:tst.mtd.nr
+%     tst.mtd.nl(i_) = {sprintf('net_%u_%s_%s_new.mat',...
+%         round(tst.mtd.TnC{i_}*100),tst.mtd.scl{i_},tst.mtd.cpp{i_})};
+% end
 for i_ = 1:tst.mtd.nr
-    tst.mtd.nl(i_) = {sprintf('net_%u_%s_%s_new.mat',...
+    tst.mtd.nl(i_) = {sprintf('net_%u_%s_%s_60n.mat',...
         round(tst.mtd.TnC{i_}*100),tst.mtd.scl{i_},tst.mtd.cpp{i_})};
 end
+

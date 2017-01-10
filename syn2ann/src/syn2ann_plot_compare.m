@@ -20,9 +20,11 @@ function syn2ann_plot_compare(varargin)
     end
     
     spg = numel(xplot);
-    pfg.tha.c = (spg==1)*(pfg.tha.s)+(spg==2)*(pfg.tha.d)+(spg==3)*(pfg.tha.t);
-    pfg.thv.c = pfg.tha.c;
-    pfg.thd.c = pfg.tha.c;
+    if any(flags(3:end))
+        pfg.tha.c = (spg==1)*(pfg.tha.s)+(spg==2)*(pfg.tha.d)+(spg==3)*(pfg.tha.t);
+        pfg.thv.c = pfg.tha.c;
+        pfg.thd.c = pfg.tha.c;
+    end
     spg = [spg,1];
     pax = num2cell([1:spg(1),1:spg(1)]');
     
