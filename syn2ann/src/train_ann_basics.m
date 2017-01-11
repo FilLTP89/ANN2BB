@@ -17,9 +17,9 @@ function [varargout] = train_ann_basics(varargin)
     % ANN name
     dsg.fnm = sprintf('net_%u_%s_%s_dvl',round(ann.TnC*100),ann.scl,ann.cp);
     % _number of Hidden Neurons_
-    dsg.nhn = 60;
+    dsg.nhn = 30;
     % _number of trained ANNs_
-    dsg.ntr = 100;
+    dsg.ntr = 1;
     % _set up base ANN structure_
     
     dsg.net = feedforwardnet(dsg.nhn,'trainlm');
@@ -32,7 +32,7 @@ function [varargout] = train_ann_basics(varargin)
     % _maximum number of epochs to train_
     dsg.net.trainParam.epochs = 500;
     % _performance goal_
-    dsg.net.trainParam.goal   = 1e-5;
+    dsg.net.trainParam.goal   = 1e-3;
     
     switch dsg.net.trainFcn
         case 'trainlm'
@@ -49,15 +49,20 @@ function [varargout] = train_ann_basics(varargin)
     % mu_dec and mu_inc to values close to 1, such as 0.8 and 1.5, respectively.
     % The training functions trainscg and trainbr usually work well with early stopping.
     
+    [dsg.idx.trn,dsg.idx.vld] = trann_tv_sets(nbs,5/100); 
+
     % Set up Division of Data for Training, Validation, Testing
     % _percentage of input for training_
-    dsg.net.divideParam.trainRatio = 60/100;
+    dsg.net.divideParam.trainRatio = 85/100;
+    % dsg.net.divideParam.trainRatio = 60/100;
     % dsg.net.divideParam.trainRatio = 70/100;
     % _percentage of input for validation_
-    dsg.net.divideParam.valRatio   = 20/100;
+    dsg.net.divideParam.valRatio   = 10/100;
+    % dsg.net.divideParam.valRatio   = 20/100;
     % dsg.net.divideParam.valRatio = 15/100;
     % _percentage of input for test_
-    dsg.net.divideParam.testRatio  = 20/100;
+    dsg.net.divideParam.testRatio = 5/100;
+    % dsg.net.divideParam.testRatio  = 20/100;
     % dsg.net.divideParam.testRatio = 15/100;
     
     %% *OUTPUT*

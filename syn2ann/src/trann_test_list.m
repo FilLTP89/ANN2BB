@@ -186,7 +186,7 @@ tst.mtd.cpp = {'gh';'gh';'gh'};
 %         round(tst.mtd.TnC{i_}*100),tst.mtd.scl{i_},tst.mtd.cpp{i_})};
 % end
 for i_ = 1:tst.mtd.nr
-    tst.mtd.nl(i_) = {sprintf('net_%u_%s_%s_60n.mat',...
+    tst.mtd.nl(i_) = {sprintf('net_%u_%s_%s_30n.mat',...
         round(tst.mtd.TnC{i_}*100),tst.mtd.scl{i_},tst.mtd.cpp{i_})};
 end
 

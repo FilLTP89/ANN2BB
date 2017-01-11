@@ -5,14 +5,15 @@ function [varargout] = evt2tit(varargin)
     switch lower(typ)
         case 'itaca'
             evt(strfind(evt,'.')) = '';
+            fgn = evt(1:end);
             evt = evt(1:end-2);
-            fgn = evt(3:end);
         case {'kiknet','knet'}
             fgn = evt;
             evt = strcat('20',evt);
     end
     evt = strcat(evt(1:4),'-',evt(5:6),'-',evt(7:8),{' '},evt(9:10),':',evt(11:12));
-    
+    fgn = strcat(fgn(1:8),'_',fgn(9:14));
+    keyboard 
     varargout{1} = evt;
     varargout{2} = fgn;
     return

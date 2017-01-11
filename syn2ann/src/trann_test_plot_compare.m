@@ -31,21 +31,15 @@ clr2 = [rgb('Navy');rgb('Orange');rgb('Red');rgb('Red')];
 clr21 = [rgb('Navy');rgb('IntenseBlue');rgb('Red');rgb('Orange')];
 % records-spectral-matched
 clr3 = [rgb('Navy');rgb('Red')];
-cpp.rec = {'ew';'ns';'ud'};
-dlg = cell(3,1);
-dlg{1} = 'EW';
-dlg{2} = 'NS';
-dlg{3} = 'UD';
-
+%cpp.rec = {'ew';'ns';'ud'};
+%dlg = cell(3,1);
+%dlg{1} = 'EW';
+%dlg{2} = 'NS';
+%dlg{3} = 'UD';
+%
 %spp = '/home/filippo/Scrivania/ann';
 spp = fullfile(filesep,'tmp1','gattif','heavy_images_new');
-
-% _check tested ann motion direction (ew/ns/gh/ud)_
-cpp.ann = cell(tst.mtd.nr,1);
-for kk_=1:tst.mtd.nr
-    cpp.ann{kk_} = ann.tst{kk_}.cpp;
-end
-cpp.ann = unique(cpp.ann);
+trann_setup_axes_common;
 if size(cpp.ann)==1
     disp('COMPARE BY SITE CLASS!');
     flag.ann = seismo_dir_conversion(cpp.ann);

@@ -15,7 +15,7 @@ function [varargout]=plot_set_up
     set(0,'defaultfigureunits','centimeters');
     
     %% DEFAULT POSITIONS
-    fig_position=[0 0 12 12];
+    fig_position=[0,0,10,10];
     hax_position=[.15 .15 .8 .775];    
     set(0,'defaultfigureposition',fig_position);    
     set(0,'defaultaxesactivepositionproperty','position');

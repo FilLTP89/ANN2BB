@@ -86,4 +86,11 @@ utd.psa = 100;
 %utd.thd = 100;
 %%
 %
-%
+
+% _check tested ann motion direction (ew/ns/gh/ud)_
+cpp.ann = cell(tst.mtd.nr,1);
+for kk_=1:tst.mtd.nr
+    cpp.ann{kk_} = ann.tst{kk_}.cpp;
+end
+cpp.ann = unique(cpp.ann);
+
