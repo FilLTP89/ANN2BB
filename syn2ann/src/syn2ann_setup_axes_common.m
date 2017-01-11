@@ -1,12 +1,12 @@
 global pfg xlm xlb xtk ylm ylb ytk grd scl mrk tit utd
 
 %% *SET-UP*
-cpp.rec = bhr.cp;
+cpp = bhr.cp;
 dlg = cell(3,1);
 dlg{1} = 'ew';
 dlg{2} = 'ns';
 dlg{3} = 'ud';
-dlg = upper(intersect(lower(dlg),lower(cpp.rec)));
+dlg = upper(intersect(lower(dlg),lower(cpp)));
 
 %% *COLORS*
 % fancy plot
@@ -85,5 +85,3 @@ mrk.thd = {'none'};
 mrk.pgd = {'o'};
 utd.thd = 100;
 %
-
-

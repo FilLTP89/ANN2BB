@@ -54,13 +54,13 @@ monn.id = [16928,15045,1,2,18446,18437];
 
 % _hybridization frequencies_
 % horizontal components
-monn.fl.ew = [1.3,1.3,1.3,1.3,1.3,1.3]; % in Hz
-monn.fh.ew = [1.5,1.5,1.5,1.5,1.5,1.5]; % in Hz
-monn.fl.ns = monn.fl.ew;                % in Hz
-monn.fh.ns = monn.fh.ew;                % in Hz
+monn.fl_ew = [1.3,1.3,1.3,1.3,1.3,1.3]; % in Hz
+monn.fh_ew = [1.5,1.5,1.5,1.5,1.5,1.5]; % in Hz
+monn.fl_ns = monn.fl_ew;                % in Hz
+monn.fh_ns = monn.fh_ew;                % in Hz
 % vertical components
-monn.fl.ud = monn.fl.ew;                % in Hz
-monn.fh.ud = [3.0;3.0;3.0;3.0;3.0;3.0]; % in Hz
+monn.fl_ud = monn.fl_ew;                % in Hz
+monn.fh_ud = [3.0;3.0;3.0;3.0;3.0;3.0]; % in Hz
 
 % _monn field names_
 fni.monn = fieldnames(monn);
@@ -74,18 +74,18 @@ mtdd.sp96.scc = [2,1,2,2,2,2];
 mtdd.sp96.sst = zeros(6,1);
 mtdd.sp96.scl = 0.01*ones(6,1);
 
-% _Exsim - reference files_
-mtdd.exsim.fnm{1} = fullfile(wd,'exsim_old','exsim_emilia','MRN_new');
-mtdd.exsim.fnm{2} = fullfile(wd,'exsim_old','exsim_emilia','MIR08_new');
-mtdd.exsim.fnm{3} = fullfile(wd,'exsim_old','exsim_aquila','walters','aqk');
-mtdd.exsim.fnm{4} = fullfile(wd,'exsim_old','exsim_aquila','walters','aqu');
-mtdd.exsim.pf{1} = strcat(mtdd.exsim.fnm{1},filesep,'MRN_exsim_');
-mtdd.exsim.pf{2} = strcat(mtdd.exsim.fnm{2},filesep,'MIR08_exsim_');
-mtdd.exsim.pf{3} = strcat(mtdd.exsim.fnm{3},filesep,'aqk_0604_');
-mtdd.exsim.pf{4} = strcat(mtdd.exsim.fnm{4},filesep,'aqu_0604_');
+%% _Exsim - reference files_
+%mtdd.exsim.fnm{1} = fullfile(wd,'exsim_old','exsim_emilia','MRN_new');
+%mtdd.exsim.fnm{2} = fullfile(wd,'exsim_old','exsim_emilia','MIR08_new');
+%mtdd.exsim.fnm{3} = fullfile(wd,'exsim_old','exsim_aquila','walters','aqk');
+%mtdd.exsim.fnm{4} = fullfile(wd,'exsim_old','exsim_aquila','walters','aqu');
+%mtdd.exsim.pf{1} = strcat(mtdd.exsim.fnm{1},filesep,'MRN_exsim_');
+%mtdd.exsim.pf{2} = strcat(mtdd.exsim.fnm{2},filesep,'MIR08_exsim_');
+%mtdd.exsim.pf{3} = strcat(mtdd.exsim.fnm{3},filesep,'aqk_0604_');
+%mtdd.exsim.pf{4} = strcat(mtdd.exsim.fnm{4},filesep,'aqu_0604_');
 
 % _mtdd field names_
 fni.mtdd.sp96 = fieldnames(mtdd.sp96);
 fnn.mtdd.sp96 = numel(fni.mtdd.sp96);
-fni.mtdd.exsim = fieldnames(mtdd.exsim);
-fnn.mtdd.exsim = numel(fni.mtdd.exsim);
+%fni.mtdd.exsim = fieldnames(mtdd.exsim);
+%fnn.mtdd.exsim = numel(fni.mtdd.exsim);
