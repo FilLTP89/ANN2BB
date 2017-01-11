@@ -108,6 +108,7 @@ function train_ann_justPSA(varargin)
     numNN = 50;
     nets = cell(1,numNN);
     trs  = cell(1,numNN);
+    keyboard
     for i=1:numNN
         disp(['Training ' num2str(i) '/' num2str(numNN)])
         [nets{i},trs{i}] = train(net,inp.simbad(:,idx_train),tar.simbad(:,idx_train));
@@ -141,13 +142,13 @@ function train_ann_justPSA(varargin)
     
     net = nets{1,id_min};
     tr  = trs{1,id_min};
-    save(fullfile(wd,sprintf('net_%u_%s_%s_new.mat',...
-        round(ann.TnC*100),ann.scl,ann.cp)),...
-        'net','idx_train','idx_valid');
+%    save(fullfile(wd,sprintf('net_%u_%s_%s_new.mat',...
+%        round(ann.TnC*100),ann.scl,ann.cp)),...
+%        'net','tr','idx_train','idx_valid');
     % Plot
     outputs1= sim(net,inp.simbad(:,idx_train));
     plotperf(tr);
-    
+     
     saveas(gcf,fullfile(wd,sprintf('plt_prf_%u_%s_%s',...
         round(ann.TnC*100),ann.scl,ann.cp)),'epsc');
 %     plotfit(net,inp.simbad(:,idx_train),tar.simbad(:,idx_train));
@@ -161,6 +162,7 @@ function train_ann_justPSA(varargin)
         tar.simbad(6,idx_train),outputs1(6,:),'6');
     saveas(gcf,fullfile(wd,sprintf('plt_reg_%u_%s_%s',...
         round(ann.TnC*100),ann.scl,ann.cp)),'epsc');
+    keyboard
     return
 end
 
