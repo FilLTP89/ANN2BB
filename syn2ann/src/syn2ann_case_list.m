@@ -52,28 +52,27 @@ fnn.bhrr = numel(fni.bhrr);
 % _station identity_
 monn.id = [16928,15045,1,2,18446,18437];
 
-% _hybridization frequencies_
-% horizontal components
-monn.fl_ew = [1.3,1.3,1.3,1.3,1.3,1.3]; % in Hz
-monn.fh_ew = [1.5,1.5,1.5,1.5,1.5,1.5]; % in Hz
-monn.fl_ns = monn.fl_ew;                % in Hz
-monn.fh_ns = monn.fh_ew;                % in Hz
-% vertical components
-monn.fl_ud = monn.fl_ew;                % in Hz
-monn.fh_ud = [3.0;3.0;3.0;3.0;3.0;3.0]; % in Hz
-
 % _monn field names_
 fni.monn = fieldnames(monn);
 fnn.monn = numel(fni.monn);
 
 %% *EMPIRICAL ANALYSIS: mtdd*
 % _Sabetta&Pugliese 1996 - metadata_
-mtdd.sp96.mw = [6,6,6.3,6.3,6,6];
-mtdd.sp96.dtm_sp96 = [0.01,0.01,0.01,0.01,0.01,0.01];
-mtdd.sp96.scc = [2,1,2,2,2,2];
+% STORED IN COLUMNS
+mtdd.sp96.mw = [6;6;6.3;6.3;6;6];
+mtdd.sp96.dtm_sp96 = [0.01;0.01;0.01;0.01;0.01;0.01];
+mtdd.sp96.scc = [2;1;2;2;2;2];
 mtdd.sp96.sst = zeros(6,1);
 mtdd.sp96.scl = 0.01*ones(6,1);
-
+% _hybridization frequencies_
+% horizontal components (stored in (na x 2) matrix)
+mtdd.sp96.ew = [1.3,1.3,1.3,1.3,1.3,1.3;...
+    1.5,1.5,1.5,1.5,1.5,1.5]'; % in Hz
+mtdd.sp96.ns = [1.3,1.3,1.3,1.3,1.3,1.3;...
+    1.5,1.5,1.5,1.5,1.5,1.5]'; % in Hz
+% vertical components (stored in (na x 2) matrix)  
+mtdd.sp96.ud = [1.3,1.3,1.3,1.3,1.3,1.3;...
+    3.0,3.0,3.0,3.0,3.0,3.0]'; % in Hz
 %% _Exsim - reference files_
 %mtdd.exsim.fnm{1} = fullfile(wd,'exsim_old','exsim_emilia','MRN_new');
 %mtdd.exsim.fnm{2} = fullfile(wd,'exsim_old','exsim_emilia','MIR08_new');

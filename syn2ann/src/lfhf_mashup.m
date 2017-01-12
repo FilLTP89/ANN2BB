@@ -19,7 +19,9 @@ function [varargout] = lfhf_mashup(varargin)
     shf = varargin{2};
     
     hyb.mon = slf.mon;
+    hyb.mtd = shf.mtd;
     hyb.syn = cell(slf.mon.na,1);
+
     %% *HYBRIDIZATION*
     [slf,shf,hyb] = lfhf_hybridator(slf,shf,hyb);
     %% *OUTPUT*
@@ -63,8 +65,8 @@ function [varargout] = lfhf_hybridator(varargin)
                     % _current direction_
                     cpp = slf.mon.cp{j_};
                     % _find corner frequencies_
-                    nfa = round(hyb.mon.fl.(cpp)(i_)/hyb.mon.dfr(i_));
-                    nfb = round(hyb.mon.fh.(cpp)(i_)/hyb.mon.dfr(i_));
+                    nfa = round(hyb.mtd.(cpp)(i_,1)/hyb.mon.dfr(i_));
+                    nfb = round(hyb.mtd.(cpp)(i_,2)/hyb.mon.dfr(i_));
                     fac = pi./(hyb.mon.dfr(i_)*(nfb-nfa-1));
                     
                     %% *FOURIER TRANSFORM*
@@ -128,8 +130,8 @@ function [varargout] = lfhf_hybridator(varargin)
                     cpp = slf.mon.cp{j_};
                     
                     % _find corner frequencies_
-                    nfa = round(hyb.mon.fl.(cpp)(i_)/hyb.mon.dfr(i_));
-                    nfb = round(hyb.mon.fh.(cpp)(i_)/hyb.mon.dfr(i_));
+                    nfa = round(hyb.mtd.(cpp)(i_,1)/hyb.mon.dfr(i_));
+                    nfb = round(hyb.mtd.(cpp)(i_,2)/hyb.mon.dfr(i_));
                     fac = pi./(hyb.mon.dfr(i_)*(nfb-nfa-1));
                     
                     slf.syn{i_}.tha.(cpp)(slf.mon.ntm+1:hyb.mon.nfr(i_))=0;
@@ -139,11 +141,11 @@ function [varargout] = lfhf_hybridator(varargin)
                     %
                     % _LF PAD (LOW-PASS)_
                     %
-                    [bfb.slf,bfa.slf,~] = create_butter_filter(2,[],hyb.mon.fl.(cpp)(i_),1/2/hyb.mon.dtm(i_));
+                    [bfb.slf,bfa.slf,~] = create_butter_filter(2,[],hyb.mtd.(cpp)(1,i_),1/2/hyb.mon.dtm(i_));
                     %
                     % _HF PAD (HIGH-PASS)_
                     %
-                    [bfb.shf,bfa.shf,~] = create_butter_filter(2,hyb.mon.fh.(cpp)(i_),[],1/2/hyb.mon.dtm(i_));
+                    [bfb.shf,bfa.shf,~] = create_butter_filter(2,hyb.mtd.(cpp)(2,i_),[],1/2/hyb.mon.dtm(i_));
                     
                     %% *TIME-HISTORIES*
                     slf.syn{i_}.thd.(cpp) = filtfilt(bfb.slf,bfa.slf,slf.syn{i_}.thd.(cpp));

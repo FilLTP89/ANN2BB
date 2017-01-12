@@ -26,7 +26,7 @@ sp = '/tmp1/gattif/ann';
 %% *LOAD ALL METADATA AVAILABLE*
 syn2ann_case_list;
 % _select analyses : selected_case = [a,b,...,d]_
-selected_case = 1:6;
+selected_case = 1:2;
 
 %% *DEFINE REAL RECORDS METADATA*
 % _path to record files_
@@ -117,7 +117,7 @@ hybrid_type='sp96';
 mtd.sp96.na = mon.na;
 for m_ = 1:mtd.sp96.na
     for n_ = 1:fnn.mtdd.sp96
-        mtd.sp96.(fni.mtdd.sp96{n_})(m_) = mtdd.sp96.(fni.mtdd.sp96{n_})(selected_case(m_));
+        mtd.sp96.(fni.mtdd.sp96{n_})(m_,:) = mtdd.sp96.(fni.mtdd.sp96{n_})(selected_case(m_),:);
     end
 end
 % % _EXSIM metadata_
