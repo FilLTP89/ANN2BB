@@ -144,4 +144,4 @@ for i_ = 1:numel(ann.mtd.TnC)
     ann.mtd.tol(i_).hgh.pga = 0.15;
 end
 % tolerances
-ann.mtd.nit = [1000;1000;4000];
+ann.mtd.nit = [10;10;40];
