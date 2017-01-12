@@ -17,12 +17,12 @@ fprintf('============================\n');
 
 %% *DEFINE WORKDIR*
 % % _main workdir_
-%wd = '/media/filippo/Data/Filippo/PHD_passing_through_polimi/syn2ann/database';
-wd = '/mssmat2/home/gattif/Documents/PHD_passing_through_polimi/syn2ann/database';
+wd = '/media/filippo/Data/Filippo/PHD_passing_through_polimi/syn2ann/database';
+% wd = '/mssmat2/home/gattif/Documents/PHD_passing_through_polimi/syn2ann/database';
 fprintf('Workdir: %s\n',wd);
 % _save path_
-%sp = '/home/filippo/Scrivania/ann';
-sp = '/tmp1/gattif/ann';
+sp = '/home/filippo/Scrivania/ann';
+% sp = '/tmp1/gattif/ann';
 %% *LOAD ALL METADATA AVAILABLE*
 syn2ann_case_list;
 % _select analyses : selected_case = [a,b,...,d]_
