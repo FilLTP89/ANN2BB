@@ -47,6 +47,33 @@ fprintf('____________________________________________________________\n');
 %% *COMPUTE BEST GOF*
 syn2ann_gof_best;
 
+
+figure
+plot(pbs.org.mon.vTn,pbs.org.syn{1}.psa.ew,'k');
+hold all;
+for NIT=1:MAXIT
+    plot(pbs.sps{NIT}.mon.vTn(trs.sps.ew.iid),pbs.sps{NIT}.syn{1}.psa.ew(trs.sps.ew.iid),'go--');
+    plot(pbs.sps{NIT}.mon.vTn(trs.sps.ew.tid),pbs.sps{NIT}.syn{1}.psa.ew(trs.sps.ew.tid),'rd--');
+end
+
+figure
+plot(pbs.org.mon.vTn,pbs.org.syn{1}.psa.ew,'k');
+hold all;
+for NIT=1:MAXIT
+    plot(pbs.hyb.sps{NIT}.mon.vTn(trs.sps.ew.iid),pbs.hyb.sps{NIT}.syn{1}.psa.ew(trs.sps.ew.iid),'go--');
+    plot(pbs.hyb.sps{NIT}.mon.vTn(trs.sps.ew.tid),pbs.hyb.sps{NIT}.syn{1}.psa.ew(trs.sps.ew.tid),'rd--');
+end
+
+keyboard
+
+plot(trs.sps.ew.mon.vTn,trs.sps.ew.syn{1}.psa.ew(:),'r');
+
+plot(pbs.org.mon.vTn(trs.sps.ew.iid),pbs.org.syn{1}.psa.ew(trs.sps.ew.iid),'bo');
+plot(pbs.org.mon.vTn(trs.sps.ew.tid),pbs.org.syn{1}.psa.ew(trs.sps.ew.tid),'kd-');
+
+
+
+
 %% *HYB-ANN SPECTRAL MATCHING*
 syn2ann_scaling_drive;
 

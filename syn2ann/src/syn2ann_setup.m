@@ -53,7 +53,7 @@ end
 
 % _reference system_
 bhr.rs = {'ew';'ns';'ud'};
-bhr.cp = {'ew';'ns'};
+bhr.cp = {'ew';'ns';'ud'};
 bhr.nc = numel(bhr.cp);
 [~,bhr.ci] = ismember(bhr.cp,bhr.rs);
 fprintf('--> Reference system : ');
