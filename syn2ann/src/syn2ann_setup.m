@@ -134,7 +134,7 @@ ann.mtd.scl = {'ALL';'ALL';'ALL'};
 % _corner period for each ANN_
 ann.mtd.TnC = {0.75;0.75;0.75};
 % _ANN motion component : gh,ud (geometric mean horizontal, updip)_
-ann.mtd.cpn = {'gh';'gh';'gh'};
+ann.mtd.cpn = {'gh';'gh';'ud'};
 for i_ = 1:numel(ann.mtd.TnC)
     ann.mtd.nl(i_) = {sprintf('net_%u_%s_%s_new.mat',...
         round(ann.mtd.TnC{i_}*100),ann.mtd.scl{i_},ann.mtd.cpn{i_})};

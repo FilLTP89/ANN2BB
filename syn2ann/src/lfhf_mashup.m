@@ -132,30 +132,41 @@ function [varargout] = lfhf_hybridator(varargin)
                     % _find corner frequencies_
                     nfa = round(hyb.mtd.(cpp)(i_,1)/hyb.mon.dfr(i_));
                     nfb = round(hyb.mtd.(cpp)(i_,2)/hyb.mon.dfr(i_));
+                    
                     fac = pi./(hyb.mon.dfr(i_)*(nfb-nfa-1));
                     
                     slf.syn{i_}.tha.(cpp)(slf.mon.ntm+1:hyb.mon.nfr(i_))=0;
                     shf.syn{i_}.tha.(cpp)(shf.mon.ntm+1:hyb.mon.nfr(i_))=0;
                     
+%                     [vfr_before,fsd_before] = super_fft(slf.mon.dtm(i_),shf.syn{i_}.thv.(cpp),0,[1,2]);
                     %% *CREATE BUTTERWORTH FILTER*
                     %
-                    % _LF PAD (LOW-PASS)_
+                    % _LF FILTER (LOW-PASS)_
                     %
-                    [bfb.slf,bfa.slf,~] = create_butter_filter(2,[],hyb.mtd.(cpp)(1,i_),1/2/hyb.mon.dtm(i_));
+                    [bfb.slf,bfa.slf,~] = create_butter_filter(2,[],hyb.mtd.(cpp)(i_,1),1/2/hyb.mon.dtm(i_));
                     %
-                    % _HF PAD (HIGH-PASS)_
+                    % _HF FILTER (HIGH-PASS)_
                     %
-                    [bfb.shf,bfa.shf,~] = create_butter_filter(2,hyb.mtd.(cpp)(2,i_),[],1/2/hyb.mon.dtm(i_));
+                    [bfb.shf,bfa.shf,~] = create_butter_filter(2,hyb.mtd.(cpp)(i_,2),[],1/2/hyb.mon.dtm(i_));
                     
                     %% *TIME-HISTORIES*
                     slf.syn{i_}.thd.(cpp) = filtfilt(bfb.slf,bfa.slf,slf.syn{i_}.thd.(cpp));
                     slf.syn{i_}.thv.(cpp) = avd_diff(slf.mon.dtm(i_),slf.syn{i_}.thd.(cpp));
                     slf.syn{i_}.tha.(cpp) = avd_diff(slf.mon.dtm(i_),slf.syn{i_}.thv.(cpp));
+                    
                     %
                     shf.syn{i_}.thd.(cpp) = filtfilt(bfb.shf,bfa.shf,shf.syn{i_}.thd.(cpp));
                     shf.syn{i_}.thv.(cpp) = avd_diff(shf.mon.dtm(i_),shf.syn{i_}.thd.(cpp));
                     shf.syn{i_}.tha.(cpp) = avd_diff(shf.mon.dtm(i_),shf.syn{i_}.thv.(cpp));
                     %
+%                     [vfr_after,fsd_after] = super_fft(slf.mon.dtm(i_),shf.syn{i_}.thv.(cpp),0,[1,2]);
+%                     loglog(vfr_before,fsd_before)
+%                     hold all
+%                     loglog(vfr_after,fsd_after)
+%                     vline(hyb.mtd.(cpp)(i_,1),'r--')
+%                     
+%                     vline(hyb.mtd.(cpp)(i_,2),'b--')
+                    
                     hyb.syn{i_}.tha.(cpp) = slf.syn{i_}.tha.(cpp)+shf.syn{i_}.tha.(cpp);
                     
                     %% *HYBRID VELOCITY-DISPLACEMENTS*
