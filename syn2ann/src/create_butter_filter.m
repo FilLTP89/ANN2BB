@@ -26,7 +26,7 @@ function [varargout] = create_butter_filter(varargin)
     if (~isempty(lfr))&&(~isempty(hfr))
         % BP filter definition
         [bfb,bfa] = butter(bfo,[lfr hfr]./fNy,'bandpass');
-%         fprintf('\nbandpass filtering: %.2f-%.2f Hz\n',lfr,hfr);
+        fprintf('\nbandpass filtering: %.2f-%.2f Hz\n',lfr,hfr);
     elseif (~isempty(lfr))&&(isempty(hfr))
         % LF filter definition
         [bfb,bfa] = butter(bfo,lfr./fNy,'high');

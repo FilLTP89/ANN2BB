@@ -138,7 +138,7 @@ function [varargout] = lfhf_hybridator(varargin)
                     slf.syn{i_}.tha.(cpp)(slf.mon.ntm+1:hyb.mon.nfr(i_))=0;
                     shf.syn{i_}.tha.(cpp)(shf.mon.ntm+1:hyb.mon.nfr(i_))=0;
                     
-                    [vfr_before,fsd_before] = super_fft(slf.mon.dtm(i_),shf.syn{i_}.thd.(cpp),0,[1,2]);
+                    [vfr_before,fsd_before] = super_fft(slf.mon.dtm(i_),slf.syn{i_}.thd.(cpp),0,[1,2]);
                     %% *CREATE BUTTERWORTH FILTER*
                     %
                     % _LF FILTER (LOW-PASS)_
@@ -159,12 +159,12 @@ function [varargout] = lfhf_hybridator(varargin)
                     shf.syn{i_}.thv.(cpp) = avd_diff(shf.mon.dtm(i_),shf.syn{i_}.thd.(cpp));
                     shf.syn{i_}.tha.(cpp) = avd_diff(shf.mon.dtm(i_),shf.syn{i_}.thv.(cpp));
                     %
-                    [vfr_after,fsd_after] = super_fft(slf.mon.dtm(i_),shf.syn{i_}.thd.(cpp),0,[1,2]);
+                    [vfr_after,fsd_after] = super_fft(slf.mon.dtm(i_),slf.syn{i_}.thd.(cpp),0,[1,2]);
                     loglog(vfr_before,fsd_before);
                     hold all
                     loglog(vfr_after,fsd_after);
                     legend(gca,'before filter','after filter');
-                    title('displacement MRN')
+                    title('acceleration MRN')
                     vline(hyb.mtd.(cpp)(i_,1),'r--')
                     
                     vline(hyb.mtd.(cpp)(i_,2),'b--')
