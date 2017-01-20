@@ -104,6 +104,9 @@ function [varargout] = spectral_matching(varargin)
         end
         Rapp_spe_pro(1)=1;
         Rapp_spe = interp1(freq_in,Rapp_spe_pro,freq,'linear');
+        %% *ADD DISPLACEMENT CORRECTION*
+        fsv = freq_integrate(acc_pro,1./shf.mon.dtm(i_));
+        pf = -2.*
         f_amax=40;
         for i=1:length(freq)
             if (freq(i)>f_amax) 
