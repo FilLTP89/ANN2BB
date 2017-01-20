@@ -47,27 +47,29 @@ fprintf('____________________________________________________________\n');
 %% *COMPUTE BEST GOF*
 syn2ann_gof_best;
 
-% 
-% figure
-% plot(pbs.org.mon.vTn,pbs.org.syn{1}.psa.ew,'k');
-% hold all;
-% for NIT=1:MAXIT
-%     plot(pbs.sps{NIT}.mon.vTn(trs.sps.ew.iid),pbs.sps{NIT}.syn{1}.psa.ew(trs.sps.ew.iid),'go--');
-%     plot(pbs.sps{NIT}.mon.vTn(trs.sps.ew.tid),pbs.sps{NIT}.syn{1}.psa.ew(trs.sps.ew.tid),'rd--');
-% end
-% 
-% plot(trs.sps.ew.mon.vTn,trs.sps.ew.syn{1}.psa.ew(:),'r');
-% 
-% figure
-% plot(pbs.org.mon.vTn,pbs.org.syn{1}.psa.ew,'k');
-% hold all;
-% for NIT=1:MAXIT
-%     plot(pbs.hyb.sps{NIT}.mon.vTn(trs.sps.ew.iid),pbs.hyb.sps{NIT}.syn{1}.psa.ew(trs.sps.ew.iid),'go--');
-%     plot(pbs.hyb.sps{NIT}.mon.vTn(trs.sps.ew.tid),pbs.hyb.sps{NIT}.syn{1}.psa.ew(trs.sps.ew.tid),'rd--');
-%     plot(hbs.sps{NIT}.mon.vTn(trs.sps.ew.iid),hbs.sps{NIT}.syn{1}.psa.ew(trs.sps.ew.iid),'cs-');
-%     plot(hbs.sps{NIT}.mon.vTn(trs.sps.ew.tid),hbs.sps{NIT}.syn{1}.psa.ew(trs.sps.ew.tid),'bs-');
-%     
-% end
+
+figure
+plot(pbs.org.mon.vTn,pbs.org.syn{1}.psa.ew,'k');
+hold all;
+for NIT=1:MAXIT
+    plot(pbs.sps{NIT}.mon.vTn(trs.sps.ew.iid),pbs.sps{NIT}.syn{1}.psa.ew(trs.sps.ew.iid),'go--');
+    plot(pbs.sps{NIT}.mon.vTn(trs.sps.ew.tid),pbs.sps{NIT}.syn{1}.psa.ew(trs.sps.ew.tid),'rd--');
+end
+
+plot(trs.sps.ew.mon.vTn,trs.sps.ew.syn{1}.psa.ew(:),'r');
+
+ figure
+ plot(pbs.org.mon.vTn,pbs.org.syn{1}.psa.ew,'k');
+ hold all;
+ for NIT=1:MAXIT
+     plot(pbs.hyb.sps{NIT}.mon.vTn(trs.sps.ew.iid),pbs.hyb.sps{NIT}.syn{1}.psa.ew(trs.sps.ew.iid),'go--');
+     plot(pbs.hyb.sps{NIT}.mon.vTn(trs.sps.ew.tid),pbs.hyb.sps{NIT}.syn{1}.psa.ew(trs.sps.ew.tid),'rd--');
+     plot(hbs.sps{NIT}.mon.vTn(trs.sps.ew.iid),hbs.sps{NIT}.syn{1}.psa.ew(trs.sps.ew.iid),'cs-');
+     plot(hbs.sps{NIT}.mon.vTn(trs.sps.ew.tid),hbs.sps{NIT}.syn{1}.psa.ew(trs.sps.ew.tid),'bs-');
+     
+ end
+saveas(gcf,'/mssmat2/home/gattif/Documents/PHD_passing_through_polimi/syn2ann/database/training/prova-thv','epsc');
+keyboard
 % 
 
 % col = jet(MAXIT);

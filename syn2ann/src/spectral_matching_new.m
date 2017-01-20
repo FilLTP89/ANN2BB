@@ -179,11 +179,13 @@ dis_in=cumsum(vel_in).*dt;
 
 % correction of initial acausal oscillations caused after SPM
 [t_idx,idx,Ain] = arias_intensity(acc_in,dt,0.005);% at Ia=0.5%
-
 r = [(t_idx-100*dt):dt:(t_idx+100*dt)]';
+try
 a1 = acc_in((idx-100):(idx+100));
 a2 = acc_pro((idx-100):(idx+100));
-
+catch
+keyboard
+end
 % doing the same thing for velocities
 v1 = vel_in((idx-100):(idx+100));
 v2 = vel_p((idx-100):(idx+100));

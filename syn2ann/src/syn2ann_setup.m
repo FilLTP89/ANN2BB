@@ -107,11 +107,11 @@ cellfun(@(x) fprintf('%s ',x),mon.rc);
 fprintf('\n---------------------------------------------------------------\n');
 mon.cp = mon.cp(:);
 mon.ci = mon.ci(:);
-mon.hyb = 'original';
+mon.hyb = 'butter';
 
 %% *DEFINE HYBRIDIZATION METADATA*
 % number of iteration for hybrid selections
-MAXIT = 1;
+MAXIT = 10;
 % _SP96 metadata_
 hybrid_type='sp96';
 mtd.sp96.na = mon.na;
