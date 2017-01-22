@@ -151,10 +151,11 @@ function [varargout] = lfhf_hybridator(varargin)
                     
                     %% *TIME-HISTORIES*
                     slf.syn{i_}.thd.(cpp) = filtfilt(bfb.slf,bfa.slf,slf.syn{i_}.thd.(cpp));
-%                     slf.syn{i_}.thv.(cpp) = avd_diff(slf.mon.dtm(i_),slf.syn{i_}.thd.(cpp));
-%                     slf.syn{i_}.tha.(cpp) = avd_diff(slf.mon.dtm(i_),slf.syn{i_}.thv.(cpp));
-                    slf.syn{i_}.thv.(cpp) = freq_differentiate(slf.syn{i_}.thd.(cpp),1./slf.mon.dtm(i_));
-                    slf.syn{i_}.tha.(cpp) = freq_differentiate(slf.syn{i_}.thv.(cpp),1./slf.mon.dtm(i_));
+                    slf.syn{i_}.thv1.(cpp) = avd_diff(slf.mon.dtm(i_),slf.syn{i_}.thd.(cpp));
+                    slf.syn{i_}.tha1.(cpp) = avd_diff(slf.mon.dtm(i_),slf.syn{i_}.thv.(cpp));
+                    slf.syn{i_}.thv.(cpp) = vfr_diff(slf.syn{i_}.thd.(cpp),1./slf.mon.dtm(i_));
+                    slf.syn{i_}.tha.(cpp) = vfr_diff(slf.syn{i_}.thv.(cpp),1./slf.mon.dtm(i_));
+                    
                     
                     %
                     shf.syn{i_}.thd.(cpp) = filtfilt(bfb.shf,bfa.shf,shf.syn{i_}.thd.(cpp));

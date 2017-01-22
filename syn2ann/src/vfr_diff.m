@@ -19,20 +19,17 @@ function [varargout] = vfr_diff(varargin)
     ths = varargin{1}(:);
     sps = varargin{2};
     ntm = numel(ths);
-    ths = [zeros(ntm,1);ths;zeros(ntm,1)];
-    ntm = numel(ths);
+    
+    
     nfr = 2^nextpow2(ntm);
     fss = fft(ths,nfr);
+    fss = fftshift(fss);
     dfr = sps/nfr;
-    vfr = dfr*(0:nfr-1)';
-    
-%     omega = zeros(nfr,1);
-    % frequency domain differentation
-%     omega(1:nfr/2+1,1)   = 2*pi*vfr(1:nfr/2+1,1);
-%     omega(nfr/2+2:nfr,1) = -2*pi*vfr(nfr/2:-1:2,1);
-    omega = 2*pi*vfr;
-    thd = sqrt(-1)*omega.*fss;
-    thd = real(ifft(thd,'symmetric'));
+    vfr = dfr*(-nfr/2:nfr/2-1)';
+    omg = 2*pi*vfr;
+    keyboard
+    thd = sqrt(-1)*omg.*fss;
+    thd = real(ifft(ifftshift(thd)));
     
     varargout{1} = thd(1:ntm,1);
     return
