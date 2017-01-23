@@ -30,7 +30,7 @@ function syn2ann_plot_compare(varargin)
     
     std(1,1) = {strcat(stdd,'-',upper(cpp))};
     for i_ = 1:spg-1
-        std{1,1+i_} = {''};
+        std{1,1+i_} = {strcat(stdd,'-',upper(cpp))};
     end
     %% *PSA SPECTRUM*
     
