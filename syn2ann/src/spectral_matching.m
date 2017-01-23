@@ -30,7 +30,9 @@ function [varargout] = spectral_matching(varargin)
     % End input parameters
     
     % baseline correction
+    %% >>>>>>>> FG FIX
 %     acc=detrend(acc,'linear');
+    %% <<<<<<<< FG FIX
     acc=filtfilt(BuB,BuA,acc);
     amax=max(abs(acc));
     
@@ -70,7 +72,8 @@ function [varargout] = spectral_matching(varargin)
     Rapp_spe_in(1)=1;
     Rapp_spe = interp1(freq_in,Rapp_spe_in,freq,'linear');
     nfreq=length(freq);
-    
+
+    %% >>>>>>>> FG FIX
     pf_val = -imag(ACC(1:nfreq))./pi./freq;
     pf_val = pf_val(2:end);
     
@@ -90,6 +93,8 @@ function [varargout] = spectral_matching(varargin)
     rapp_spe(pf_pos) = qf.*rapp_spe(pf_pos);
     rapp_spe(pf_neg) = (1./qf).*rapp_spe(pf_neg);
     Rapp_spe(2:end) = rapp_spe;
+    %% <<<<<<<< FG FIX
+
     niter=5; % number of iterations
     
     acc_pro=acc;
@@ -105,10 +110,12 @@ function [varargout] = spectral_matching(varargin)
         end
         
         acc_pro=real(ifft(ACC_PRO));
+        %% >>>>>>>> FG FIX
 %         acc_pro=detrend(acc_pro,'linear');
-        
+        %% <<<<<<<< FG FIX
         ACC_PRO = fft(acc_pro);
-        
+
+        %% >>>>>>>> FG FIX
         pf_val = -imag(ACC_PRO(1:nfreq))./pi./freq;
         pf_val = pf_val(2:end);
         
@@ -116,7 +123,8 @@ function [varargout] = spectral_matching(varargin)
         %         pf_val = -2*real(fft(thv(:)',numel(freq)));
         pf_pos = find(pf_val>=0);
         pf_neg = find(pf_val<0);
-        
+        %% <<<<<<<< FG FIX
+
         % response spectrum of corrected waveform
         for i=2:length(T_in)
             Sp_acc_pro(i)=4*pi^2*disp_spectra(acc_pro,dt,T_in(i),0.05)./T_in(i)^2;
@@ -134,6 +142,7 @@ function [varargout] = spectral_matching(varargin)
                 Rapp_spe(i)=Sp_acc_pro(1)/Sp_in(1);
             end
         end
+	%% >>>>>>>> FG FIX
         rapp_spe = Rapp_spe(2:end);
         A2 = sum(rapp_spe(pf_pos).*pf_val(pf_pos));
         A1 = -sum(pf_val);
@@ -145,9 +154,9 @@ function [varargout] = spectral_matching(varargin)
         rapp_spe(pf_pos) = qf.*rapp_spe(pf_pos);
         rapp_spe(pf_neg) = (1./qf).*rapp_spe(pf_neg);
         Rapp_spe(2:end) = rapp_spe;
-        
+        %% <<<<<<<< FG FIX
     end
-    
+    %% >>>>>>>> FG FIX
     % final correction for compatibility
     % Band-pass acausal Butterworth filter
     %     acc_pro=filtfilt(BuB,BuA,acc_pro);
@@ -162,7 +171,7 @@ function [varargout] = spectral_matching(varargin)
     %
     %     vel_pro=diff(dis_pro)/dt;vel_pro(length(t))=0;
     %     acc_pro=diff(vel_pro)/dt;acc_pro(length(t))=0;
-    
+    %% <<<<<<<< FG FIX
     T_out= T_in;%[0.01, 0.03:0.01:3];
     for i=2:length(T_out)
         Sp_acc_pro(i)=4*pi^2*disp_spectra(acc_pro,dt,T_out(i),0.05)./T_out(i)^2;

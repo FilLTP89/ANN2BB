@@ -11,13 +11,13 @@ function syn2ann_format_figures(hax)
     %
     set(hax,'ticklength',[.02,.02]);
     ti = get(hax,'title');
-    set(ti,'fontsize',18,'fontweight','bold');%25,30
+    set(ti,'fontsize',20,'fontweight','bold');%25,30
     xl = get(hax,'xlabel');
-    set(xl,'fontsize',14,'fontweight','bold');%20,24
+    set(xl,'fontsize',15,'fontweight','bold');%20,24
     yl = get(hax,'ylabel');
-    set(yl,'fontsize',14,'fontweight','bold');%,20,24
+    set(yl,'fontsize',15,'fontweight','bold');%,20,24
     zl = get(hax,'zlabel');
-    set(zl,'fontsize',14);%20,24
+    set(zl,'fontsize',15);%20,24
     li = get(hax,'children');
     set(li,'markersize',6);%2.5-3
     set(hax,'linewidth',1.6,'fontsize',13);   %2,2-3,20
