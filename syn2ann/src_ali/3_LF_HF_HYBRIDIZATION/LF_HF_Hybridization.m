@@ -72,14 +72,15 @@ end
 % Nyquist frequency
 fNn = 0.5/dt;
 % Cutoff frequency
-f_low  = 1.30;
+f_low  = 1.50;
 f_high = 1.50;
-f_high_up=3.0;
+f_high_up=1.50;
+o=4;
 %fr=1.5;
 
 %% **Filtering: Filter LOW FREQUENCY records (NUMERICAL SIMULATION SPEED)**
 % Butterworth filter's order
-bfo = 2; 
+bfo = o; 
 [bfb,bfa] = butter(bfo,f_low./fNn,'low');
 for i = 1:3 % e,n,z components 
     dt = num_sim.dt;
@@ -94,7 +95,7 @@ for i = 1:3 % e,n,z components
 end
 %% **Filtering: Filter HIGH FREQUENCY records (SYNTHETIC SP96)**
 % Butterworth filter's order
-bfo = 2;
+bfo = o;
 [bfb,bfa] = butter(bfo,f_high./fNn,'high');
 [bfb_z,bfa_z] = butter(bfo,f_high_up./fNn,'high');
 for i = 1:3 % e,n,z components
