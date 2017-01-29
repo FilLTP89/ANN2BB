@@ -25,13 +25,13 @@ fprintf('---------------------\n0. SETUP\n---------------------\n');
 wd = '/media/filippo/Data/Filippo/PHD_passing_through_polimi/syn2ann/database';
 fprintf('Workdir: %s\n',wd);
 % _save path_
-sp = '/home/filippo/Scrivania/ann';
+sp = '/home/filippo/Scrivania/ann_prova';
 
 
 %% *LOAD ALL METADATA AVAILABLE*
 syn2ann_case_list;
 % _select analyses : selected_case = [a,b,...,d]_
-selected_case = 1:6;
+selected_case = 1;
 
 %% *DEFINE REAL RECORDS METADATA*
 % _path to record files_
@@ -57,7 +57,7 @@ end
 
 % _reference system_
 bhr.rs = {'ew';'ns';'ud'};
-bhr.cp = {'ud'};
+bhr.cp = {'ns'};
 bhr.nc = numel(bhr.cp);
 [~,bhr.ci] = ismember(bhr.cp,bhr.rs);
 fprintf('--> Reference system : ');
