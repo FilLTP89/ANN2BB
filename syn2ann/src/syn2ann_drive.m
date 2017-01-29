@@ -25,6 +25,7 @@ syn2ann_pbs_drive;
 
 %% *PARSE AND SIMULATE TRAINED ANN*
 syn2ann_ann_drive;
+
 fprintf('____________________________________________________________\n');
 for NIT=1:MAXIT
     

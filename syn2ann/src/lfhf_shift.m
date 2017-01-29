@@ -21,6 +21,7 @@ function [varargout] = lfhf_shift(varargin)
     %% TIME SHIFTING HF
     for i_ = 1:pbs.mon.na
         for j_ = 1:pbs.mon.nc
+            hf     = -999*ones(pbs.mon.ntm(i_),1);
             idx_lf = pbs.syn{i_}.AI5.(pbs.mon.cp{j_});
             idx_hf = sps.syn{i_}.AI5.(sps.mon.cp{j_});
             idx_df = idx_hf-idx_lf;

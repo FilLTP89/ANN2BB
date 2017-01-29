@@ -18,11 +18,11 @@ fprintf('============================\n');
 fprintf('--> Resampling\n');
 [pbs.sps{NIT},sps.org{NIT}] = lfhf_rsmpl(pbs.org,sps.org{NIT});
 pbs.sps{NIT}.mon = pbs.org.mon;
-keyboard
+
 %% *PAD LF/HF*
 fprintf('--> Padding/Tapering\n');
 [pbs.sps{NIT},sps.org{NIT}] = lfhf_pad(pbs.sps{NIT},sps.org{NIT});
-keyboard
+
 %% *ALIGN LF/HF*
 fprintf('--> Align records\n');
 [pbs.sps{NIT},sps.org{NIT}] = lfhf_shift(pbs.sps{NIT},sps.org{NIT});
@@ -30,7 +30,7 @@ pbs.sps{NIT} = syn2ann_thp(pbs.sps{NIT});
 sps.org{NIT} = syn2ann_thp(sps.org{NIT});
 pbs.sps{NIT} = syn2ann_spp(pbs.sps{NIT});
 sps.org{NIT} = syn2ann_spp(sps.org{NIT});
-keyboard
+
 %% *SPECTRAL MASHUP LF/HF*
 fprintf('--> Hybridization\n');
 [pbs.hyb.sps{NIT},sps.hyb{NIT},hbs.sps{NIT}] = lfhf_mashup(pbs.sps{NIT},sps.org{NIT});
