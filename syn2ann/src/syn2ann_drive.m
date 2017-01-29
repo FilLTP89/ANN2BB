@@ -14,49 +14,61 @@
 % syn2ann_scaling_drive.m, syn2ann_save_res, syn2ann_plot_res_single.m_
 %% *REFERENCES*
 
-%% *ANALYSIS SET-UP*
-syn2ann_setup;
+flag_map = 1;
 
-%% *PARSE RECORDS*
-syn2ann_rec_drive;
-
-%% *PARSE NUMERICAL SIMULATIONS*
-syn2ann_pbs_drive;
-
-%% *PARSE AND SIMULATE TRAINED ANN*
-syn2ann_ann_drive;
-
-fprintf('____________________________________________________________\n');
-for NIT=1:MAXIT
+if flag_map
+        %% *ANALYSIS SET-UP*
+    syn2ann_setup4map;
     
-    fprintf('ITERATION: %u\n',NIT);
-    %% *GENERATE EMPIRICAL - PARSE STOCHASTIC*
-    syn2ann_emp_sto_drive;
+    %% *PARSE NUMERICAL SIMULATIONS*
+    syn2ann_pbs_drive;
     
-    %% *LF-HF CLASSIC HYBRIDIZATION*
-    syn2ann_hybrid_drive;
+    %% *PARSE AND SIMULATE TRAINED ANN*
+    syn2ann_ann_drive;
+else
+    %% *ANALYSIS SET-UP*
+    syn2ann_setup;
     
-    %% *SCORE THE HYBRID TIME HISTORIES*
-    if NIT==1
-        syn2ann_gof_setup;
+    %% *PARSE RECORDS*
+    syn2ann_rec_drive;
+    
+    %% *PARSE NUMERICAL SIMULATIONS*
+    syn2ann_pbs_drive;
+    
+    %% *PARSE AND SIMULATE TRAINED ANN*
+    syn2ann_ann_drive;
+    
+    fprintf('____________________________________________________________\n');
+    for NIT=1:MAXIT
+        
+        fprintf('ITERATION: %u\n',NIT);
+        %% *GENERATE EMPIRICAL - PARSE STOCHASTIC*
+        syn2ann_emp_sto_drive;
+        
+        %% *LF-HF CLASSIC HYBRIDIZATION*
+        syn2ann_hybrid_drive;
+        
+        %% *SCORE THE HYBRID TIME HISTORIES*
+        if NIT==1
+            syn2ann_gof_setup;
+        end
+        syn2ann_gof_compute;
+        
     end
-    syn2ann_gof_compute;
+    fprintf('____________________________________________________________\n');
     
+    %% *COMPUTE BEST GOF*
+    syn2ann_gof_best;
+    
+    %% *HYB-ANN SPECTRAL MATCHING*
+    syn2ann_scaling_drive;
+    
+    % %% *HYB-ANN SPECTRAL MATCHING*
+    % syn2ann_coherency_drive;
+    
+    % %% *SAVE RESULTS*
+    % syn2ann_save_res;
+    
+    %% *PLOT RESULTS*
+    syn2ann_plot_res_single;
 end
-fprintf('____________________________________________________________\n');
-
-%% *COMPUTE BEST GOF*
-syn2ann_gof_best;
-
-%% *HYB-ANN SPECTRAL MATCHING*
-syn2ann_scaling_drive;
-
-%
-% %% *HYB-ANN SPECTRAL MATCHING*
-% syn2ann_coherency_drive;
-%
-% %% *SAVE RESULTS*
-% syn2ann_save_res;
-%
-%% *PLOT RESULTS*
-syn2ann_plot_res_single;

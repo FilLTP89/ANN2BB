@@ -65,6 +65,7 @@ cor.MIR08.thd.ud = ud.data(:,idx+12*2);
 
 bhr.lfr = [];
 bhr.hfr = [];
+
 [bhr,rec.org] = syn2ann_rec_parser(bhr,cor);
 
 %% *BASELINE CORRECTION*

@@ -4,7 +4,7 @@
 % DICA - Politecnico di Milano
 % Copyright 2016_
 %% *NOTES*
-% _syn2ann_setup_: function to select the set of analyses to the 
+% _syn2ann_setup_: function to select the set of analyses to the
 % analyses to be run.
 %% *N.B.*
 % Need for:
@@ -24,7 +24,7 @@ fprintf('Workdir: %s\n',wd);
 sp = '/home/filippo/Scrivania/ann';
 % sp = '/tmp1/gattif/ann';
 %% *LOAD ALL METADATA AVAILABLE*
-syn2ann_case_list;
+syn2ann_case_list4map;
 % _select analyses : selected_case = [a,b,...,d]_
 selected_case = 1:6;
 
@@ -107,26 +107,7 @@ cellfun(@(x) fprintf('%s ',x),mon.rc);
 fprintf('\n---------------------------------------------------------------\n');
 mon.cp = mon.cp(:);
 mon.ci = mon.ci(:);
-mon.hyb = 'butter';
 
-%% *DEFINE HYBRIDIZATION METADATA*
-% number of iteration for hybrid selections
-MAXIT = 10;
-% _SP96 metadata_
-hybrid_type='sp96';
-mtd.sp96.na = mon.na;
-for m_ = 1:mtd.sp96.na
-    for n_ = 1:fnn.mtdd.sp96
-        mtd.sp96.(fni.mtdd.sp96{n_})(m_,:) = mtdd.sp96.(fni.mtdd.sp96{n_})(selected_case(m_),:);
-    end
-end
-% % _EXSIM metadata_
-% mtd.exsim.na = mon.na;
-% for m_ = 1:mtd.exsim.na
-%     for n_ = 1:fnn.mtdd.exsim
-%         mtd.exsim.(fni.mtdd.exsim{n_})(m_) = mtdd.exsim.(fni.mtdd.exsim{n_})(selected_case(m_));
-%     end
-% end
 %% *DEFINE ANN METADATA*
 % ANN vector follow the reference system mon.rs
 % _site class considered : ALL,AB,CD_
