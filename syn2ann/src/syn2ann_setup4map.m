@@ -116,6 +116,7 @@ mon.hyb = 'butter';
 %% *MAP METADATA*
 mon.map.flg = 1;
 mon.map.typ = 'PGA';
+mon.map.stk = 35;
 mon.map.vTn.psa = 0.5;
 mon.map.vTn.rsd = 0.75;
 mon.map.fnm = '/media/filippo/Data/Filippo/PHD_passing_through_polimi/syn2ann/map_mrn';
