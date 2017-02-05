@@ -14,8 +14,14 @@
 % syn2ann_scaling_drive.m, syn2ann_save_res, syn2ann_plot_res_single.m_
 %% *REFERENCES*
 
+flag_map = 1;
+
 %% *ANALYSIS SET-UP*
-syn2ann_setup;
+if flag_map 
+    syn2ann_setup4map;
+else
+    syn2ann_setup;
+end
 
 %% *PARSE RECORDS*
 syn2ann_rec_drive;

@@ -15,19 +15,20 @@ fprintf('---------------------\n7. PLOTTING RESULTS\n---------------------\n');
 %% *SET UP*
 global pfg xlm xlb xtk ylm ylb ytk grd scl mrk tit utd max_val
 cd(wd);close all;
-
-syn2ann_setup_axes_common;
-
-for mm_ = 1:bhr.ns
-    %% *SET-UP*
-    syn2ann_setup_axes_single;
-    switch lower(hybrid_type)
-        case 'sp96'
-            %% *SABETTA & PUGLIESE 1996*
-            syn2ann_plot_res_station_sp96;
-        case 'exsim'
-            %% *EXSIM*
-            syn2ann_plot_res_station_exsim;
+if ~mon.map.flg
+    syn2ann_setup_axes_common;
+    
+    for mm_ = 1:bhr.ns
+        %% *SET-UP*
+        syn2ann_setup_axes_single;
+        switch lower(hybrid_type)
+            case 'sp96'
+                %% *SABETTA & PUGLIESE 1996*
+                syn2ann_plot_res_station_sp96;
+            case 'exsim'
+                %% *EXSIM*
+                syn2ann_plot_res_station_exsim;
+        end
+        %     syn2ann_fancy_plot;
     end
-    %     syn2ann_fancy_plot;
 end

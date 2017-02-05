@@ -26,7 +26,7 @@ sp = '/home/filippo/Scrivania/ann';
 %% *LOAD ALL METADATA AVAILABLE*
 syn2ann_case_list4map;
 % _select analyses : selected_case = [a,b,...,d]_
-selected_case = 1:6;
+selected_case = 1:numel(monn.id);
 
 %% *DEFINE REAL RECORDS METADATA*
 % _path to record files_
@@ -86,7 +86,11 @@ fprintf('--> Type of Simulation: %s\n',mon.typ);
 mon.na = bhr.ns;
 for m_ = 1:mon.na
     for n_ = 1:fnn.monn
-        mon.(fni.monn{n_})(m_) = monn.(fni.monn{n_})(selected_case(m_));
+        try
+            mon.(fni.monn{n_})(m_) = monn.(fni.monn{n_})(selected_case(m_));
+        catch
+            keyboard
+        end
     end
 end
 
@@ -107,6 +111,25 @@ cellfun(@(x) fprintf('%s ',x),mon.rc);
 fprintf('\n---------------------------------------------------------------\n');
 mon.cp = mon.cp(:);
 mon.ci = mon.ci(:);
+mon.hyb = 'butter';
+
+%% *MAP METADATA*
+mon.map.flg = 1;
+mon.map.typ = 'PGA';
+mon.map.vTn.psa = 0.5;
+mon.map.vTn.rsd = 0.75;
+mon.map.fnm = '/media/filippo/Data/Filippo/PHD_passing_through_polimi/syn2ann/map_mrn';
+
+MAXIT = 10;
+% _SP96 metadata_
+hybrid_type='sp96';
+mtd.sp96.na = mon.na;
+for m_ = 1:mtd.sp96.na
+    for n_ = 1:fnn.mtdd.sp96
+        mtd.sp96.(fni.mtdd.sp96{n_})(m_,:) = mtdd.sp96.(fni.mtdd.sp96{n_})(selected_case(m_),:);
+    end
+end
+
 
 %% *DEFINE ANN METADATA*
 % ANN vector follow the reference system mon.rs

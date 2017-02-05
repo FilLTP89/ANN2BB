@@ -24,8 +24,11 @@ if mon.map.flg
     if any(strcmpi(mon.map.typ,'pga'))
         for i_=1:mon.na
             for j_=1:mon.nc
-                map(i_).(strcat('R',mon.cp{j_})) = spm.sps.(mon.cp{j_}).syn{i_}.pga.(mon.cp{j_})(2);
+                map(i_).(strcat('R',mon.cp{j_})) = ...
+                    abs(spm.sps.(mon.cp{j_}).syn{i_}.pga.(mon.cp{j_})(2));
             end
+            map(i_).Rgh = ...
+                sqrt(abs(spm.sps.ew.syn{i_}.pga.ew(2)*spm.sps.ns.syn{i_}.pga.ns(2)));
         end
         shapewrite(map,strcat(mon.map.fnm,'_pga'));
     end
@@ -34,8 +37,11 @@ if mon.map.flg
     if any(strcmpi(mon.map.typ,'pgv'))
         for i_=1:mon.na
             for j_=1:mon.nc
-                map(i_).(strcat('R',mon.cp{j_})) = spm.sps.(mon.cp{j_}).syn{i_}.pgv.(mon.cp{j_})(2);
+                map(i_).(strcat('R',mon.cp{j_})) = ...
+                    abs(spm.sps.(mon.cp{j_}).syn{i_}.pgv.(mon.cp{j_})(2));
             end
+            map(i_).Rgh = ...
+                sqrt(abs(spm.sps.ew.syn{i_}.pgv.ew(2)*spm.sps.ns.syn{i_}.pgv.ns(2)));
         end
         shapewrite(map,strcat(mon.map.fnm,'_pgv'));
     end
@@ -44,8 +50,11 @@ if mon.map.flg
     if any(strcmpi(mon.map.typ,'pgd'))
         for i_=1:mon.na
             for j_=1:mon.nc
-                map(i_).(strcat('R',mon.cp{j_})) = spm.sps.(mon.cp{j_}).syn{i_}.pgd.(mon.cp{j_})(2);
+                map(i_).(strcat('R',mon.cp{j_})) = ...
+                    abs(spm.sps.(mon.cp{j_}).syn{i_}.pgd.(mon.cp{j_})(2));
             end
+            map(i_).Rgh = ...
+                sqrt(abs(spm.sps.ew.syn{i_}.pgd.ew(2)*spm.sps.ns.syn{i_}.pgd.ns(2)));
         end
         shapewrite(map,strcat(mon.map.fnm,'_pgd'));
     end
@@ -57,6 +66,7 @@ if mon.map.flg
             for j_=1:mon.nc
                 map(i_).(strcat('R',mon.cp{j_})) = spm.sps.(mon.cp{j_}).syn{i_}.rsd.(mon.cp{j_})(idx);
             end
+            map(i_).Rgh = sqrt(spm.sps.ew.syn{i_}.rsd.ew(idx)*spm.sps.ns.syn{i_}.rsd.ns(idx));
         end
         shapewrite(map,strcat(mon.map.fnm,'_rsd'));
     end
@@ -66,8 +76,11 @@ if mon.map.flg
         idx = find(spm.sps.ew.mon.vTn==mon.map.vTn.psa);
         for i_=1:mon.na
             for j_=1:mon.nc
-                map(i_).(strcat('R',mon.cp{j_})) = spm.sps.(mon.cp{j_}).syn{i_}.psa.(mon.cp{j_})(idx);
+                map(i_).(strcat('R',mon.cp{j_})) = ...
+                    abs(spm.sps.(mon.cp{j_}).syn{i_}.psa.(mon.cp{j_})(idx));
             end
+            map(i_).Rgh =...
+                sqrt(abs(spm.sps.ew.syn{i_}.psa.ew(idx)*spm.sps.ns.syn{i_}.psa.ns(idx)));
         end
         shapewrite(map,strcat(mon.map.fnm,'_psa'));
     end

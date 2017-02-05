@@ -20,47 +20,22 @@ function [varargout] = syn2ann_bhr_parser(varargin)
     %% *PARSING RECORDS*
     count_na = 0;
     count_fn = 0;
-    switch bhr.tp{1}
-        case 'itaca'
-            % stations
-            for i_ = 1:bhr.ns
-                % devices
-                for j_ = 1:bhr.nd(i_)
-                    count_na = count_na+1;
-                    % _monitor identity_
-                    bhr.nm{count_na} = sprintf('%s%s',bhr.st{i_}.id{1},bhr.st{i_}.dv{j_});
-                    % _directions_
-                    for ii_ = 1:bhr.nc
-                        % _components_
-                        for jj_ = 1:bhr.nr
-                            count_fn = count_fn+1;
-                            % _file-name_
-                            bhr.fn{count_fn} = itaca_monitor_name...
-                                (bhr.st{i_}.id{1},bhr.st{i_}.ev{1},bhr.st{i_}.dv{j_},...
-                                bhr.cp{ii_},bhr.rc{jj_},bhr.st{i_}.ni,bhr.pt);
-                            fprintf('filename: %s\n',bhr.fn{count_fn});
-                        end
-                    end
+    for i_ = 1:bhr.ns
+        % devices
+        for j_ = 1:bhr.nd(i_)
+            count_na = count_na+1;
+            % _monitor identity_
+            bhr.nm{count_na} = '';
+            % _directions_
+            for ii_ = 1:bhr.nc
+                % _components_
+                for jj_ = 1:bhr.nr
+                    count_fn = count_fn+1;
+                    % _file-name_
+                    
                 end
             end
-        case 'kknpp'
-            % stations
-            for i_ = 1:bhr.ns
-                % devices
-                for j_ = 1:bhr.nd(i_)
-                    count_na = count_na+1;
-                    % _monitor identity_
-                    bhr.nm{count_na} = sprintf('%s%s',bhr.st{i_}.id{1},bhr.st{i_}.dv{j_});
-                    % _components_
-                    for jj_ = 1:bhr.nr
-                        count_fn = count_fn+1;
-                        % _file-name_
-                        bhr.fn{count_fn} = kknpp_monitor_name(bhr.st{i_}.id{1},...
-                            bhr.st{i_}.ev{1},bhr.st{i_}.dv{j_},bhr.pt);
-                        fprintf('filename: %s\n',bhr.fn{count_fn});
-                    end
-                end
-            end
+        end
     end
     %% *OUTPUT*
     varargout{1} = bhr;
