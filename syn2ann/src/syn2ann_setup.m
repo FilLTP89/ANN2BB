@@ -108,6 +108,11 @@ fprintf('\n---------------------------------------------------------------\n');
 mon.cp = mon.cp(:);
 mon.ci = mon.ci(:);
 mon.hyb = 'butter';
+mon.map.flg = 1;
+mon.map.typ = 'PGA';
+mon.map.vTn.psa = 0.5;
+mon.map.vTn.rsd = 0.75;
+mon.map.fnm = '/media/filippo/Data/Filippo/PHD_passing_through_polimi/syn2ann/map_mrn';
 
 %% *DEFINE HYBRIDIZATION METADATA*
 % number of iteration for hybrid selections
