@@ -67,4 +67,4 @@ syn2ann_scaling_drive;
 syn2ann_write_maps;
 
 %% *PLOT RESULTS*
-syn2ann_plot_res_single;
+% syn2ann_plot_res_single;
