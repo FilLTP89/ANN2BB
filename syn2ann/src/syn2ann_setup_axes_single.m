@@ -14,27 +14,27 @@ fprintf('\n');
 switch  ttt
     case 'MRN 2012-05-29 07:00'
         vtm_shift(:) = 0.5;
-        xlm.tha = [0;25];
+        xlm.tha = [0;20];
         xtk.tha = (xlm.tha(1):5:xlm.tha(end))';
     case 'MIR01 2012-05-29 07:00'
         vtm_shift(:) = 0.;
-        xlm.tha = [0;25];
+        xlm.tha = [0;20];
         xtk.tha = (xlm.tha(1):5:xlm.tha(end))';
     case 'MIR02 2012-05-29 07:00'
         vtm_shift(:) = 0.;
-        xlm.tha = [0;25];
+        xlm.tha = [0;20];
         xtk.tha = (xlm.tha(1):5:xlm.tha(end))';
     case 'MIR08 2012-05-29 07:00'
         vtm_shift(:) = 0.73;
-        xlm.tha = [0;25];
+        xlm.tha = [0;20];
         xtk.tha = (xlm.tha(1):5:xlm.tha(end))';
     case 'AQK 2009-04-06 01:32'
         vtm_shift(:) = 1.35;
-        xlm.tha = [0;25];
+        xlm.tha = [0;20];
         xtk.tha = (xlm.tha(1):5:xlm.tha(end))';
-    case 'AQU'
+    case 'AQU 2009-04-06 01:32'
         vtm_shift(:) = 2.15;
-        xlm.tha = [0;25];
+        xlm.tha = [0;20];
         xtk.tha = (xlm.tha(1):5:xlm.tha(end))';
     otherwise
         vtm_shift(:) = 0.;
@@ -102,7 +102,7 @@ ylm.thv = ylm.thv;
 ytk.thv = ytk.thv;
 
 ylm.thd = [-ceil(thd_lim/4)*4,ceil(thd_lim/4)*4];
-[~,ytk.thd] = get_axis_tick(ylm.thd,ylm.thd,ceil(ylm.thd(2)/2),ceil(ylm.thd(2)/4));
+[~,ytk.thd] = get_axis_tick(ylm.thd,ylm.thd,ceil(ylm.thd(2)/2),ceil(ylm.thd(2)/2));
 ylm.thd = ylm.thd;
 ytk.thd = ytk.thd;
 

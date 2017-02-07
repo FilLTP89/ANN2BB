@@ -44,6 +44,7 @@ bhrr.st{3}.tp = {'itaca'};
 bhrr.st{4}.tp = {'itaca'};
 bhrr.st{5}.tp = {'itaca'};
 bhrr.st{6}.tp = {'itaca'};
+
 % _bhrr field names_
 fni.bhrr = fieldnames(bhrr);
 fnn.bhrr = numel(fni.bhrr);
@@ -66,13 +67,13 @@ mtdd.sp96.sst = zeros(6,1);
 mtdd.sp96.scl = 0.01*ones(6,1);
 % _hybridization frequencies_
 % horizontal components (stored in (na x 2) matrix)
-mtdd.sp96.ew = [1.3,1.3,1.3,1.3,1.3,1.3;...
+mtdd.sp96.ew = [1.5,1.5,1.5,1.5,1.5,1.5;...
     1.5,1.5,1.5,1.5,1.5,1.5]'; % in Hz
-mtdd.sp96.ns = [1.3,1.3,1.3,1.3,1.3,1.3;...
+mtdd.sp96.ns = [1.5,1.5,1.5,1.5,1.5,1.5;...
     1.5,1.5,1.5,1.5,1.5,1.5]'; % in Hz
 % vertical components (stored in (na x 2) matrix)  
-mtdd.sp96.ud = [1.3,1.3,1.3,1.3,1.3,1.3;...
-    3.0,3.0,3.0,3.0,3.0,3.0]'; % in Hz
+mtdd.sp96.ud = [1.5,1.5,1.5,1.5,1.5,1.5;...
+    1.5,1.5,1.5,1.5,1.5,1.5]'; % in Hz
 %% _Exsim - reference files_
 %mtdd.exsim.fnm{1} = fullfile(wd,'exsim_old','exsim_emilia','MRN_new');
 %mtdd.exsim.fnm{2} = fullfile(wd,'exsim_old','exsim_emilia','MIR08_new');

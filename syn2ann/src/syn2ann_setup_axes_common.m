@@ -51,9 +51,9 @@ utd.psa = 100;
 
 %% *TIME-HISTORIES*
 pfg.fth = [0 0 28 18.000];
-pfg.tha.s = [0 0 14 5.25];
-pfg.tha.d = [0 0 14 15.7500];
-pfg.tha.t = [0 0 14 47.2500];
+pfg.tha.s = [0 0 10  3.75];
+pfg.tha.d = [0 0 10 11.25];
+pfg.tha.t = [0 0 10 33.75];
 
 %
 % * _ACCELERATION TIME-HISTORY_

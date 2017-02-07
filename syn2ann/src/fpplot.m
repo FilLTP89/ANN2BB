@@ -23,7 +23,7 @@ function [varargout] = fpplot(varargin)
     %%
     % _figure parameters_
     % figure position
-    def.pfg = [0 0 16 16];
+    def.pfg = [0,0,12,12];
     def.vfg = 'off';
     %%
     % _axes parameters
@@ -387,7 +387,7 @@ function [varargout] = fpplot(varargin)
             
             if any(idx)
                 legg=legend(hax(m_),hpl(m_,idx),inp.Results.leg{m_}(idx));
-                set(legg,'interpreter','latex','box','off');
+                set(legg,'interpreter','latex','box','off','fontsize',15);
             end
             %%
             % _axes labels_
@@ -471,8 +471,8 @@ function [varargout] = fpplot(varargin)
             end
             %%
             % _format axes_
-            syn2ann_format_figures(hax(m_));
-%             format_figures(hax(m_));
+%             syn2ann_format_figures(hax(m_));
+            format_figures(hax(m_));
             
         end
     end
