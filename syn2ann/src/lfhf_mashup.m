@@ -70,8 +70,8 @@ function [varargout] = lfhf_hybridator(varargin)
                     fac = pi./(hyb.mon.dfr(i_)*(nfb-nfa-1));
                     
                     %% *FOURIER TRANSFORM*
-                    slf.syn{i_}.tha.(cpp)(slf.mon.ntm+1:hyb.mon.nfr(i_))=0;
-                    shf.syn{i_}.tha.(cpp)(shf.mon.ntm+1:hyb.mon.nfr(i_))=0;
+                    slf.syn{i_}.tha.(cpp)(slf.mon.ntm(i_)+1:hyb.mon.nfr(i_))=0;
+                    shf.syn{i_}.tha.(cpp)(shf.mon.ntm(i_)+1:hyb.mon.nfr(i_))=0;
                     
                     slf.syn{i_}.fsa.(cpp) = fft(slf.syn{i_}.tha.(cpp),hyb.mon.nfr(i_)).*...
                         slf.mon.dtm(i_);
@@ -122,6 +122,7 @@ function [varargout] = lfhf_hybridator(varargin)
             %
             % _LOOP OVER THE MONITORS_
             %
+            
             for i_ = 1:slf.mon.na
                 %
                 % _LOOP OVER THE DIRECTIONS_
@@ -130,24 +131,24 @@ function [varargout] = lfhf_hybridator(varargin)
                     cpp = slf.mon.cp{j_};
                     
                     % _find corner frequencies_
-                    nfa = round(hyb.mtd.(cpp)(i_,1)/hyb.mon.dfr(i_));
-                    nfb = round(hyb.mtd.(cpp)(i_,2)/hyb.mon.dfr(i_));
+%                     nfa = round(hyb.mtd.(cpp)(i_,1)/hyb.mon.dfr(i_));
+%                     nfb = round(hyb.mtd.(cpp)(i_,2)/hyb.mon.dfr(i_));
                     
-                    fac = pi./(hyb.mon.dfr(i_)*(nfb-nfa-1));
+%                     fac = pi./(hyb.mon.dfr(i_)*(nfb-nfa-1));
                     
-                    slf.syn{i_}.tha.(cpp)(slf.mon.ntm(i_)+1:hyb.mon.nfr(i_))=0;
-                    shf.syn{i_}.tha.(cpp)(shf.mon.ntm(i_)+1:hyb.mon.nfr(i_))=0;
+%                     slf.syn{i_}.thd.(cpp)(slf.mon.ntm(i_)+1:hyb.mon.nfr(i_))=0;
+%                     shf.syn{i_}.thd.(cpp)(shf.mon.ntm(i_)+1:hyb.mon.nfr(i_))=0;
                     
                     % [vfr_before,fsd_before] = super_fft(shf.mon.dtm(i_),shf.syn{i_}.thv.(cpp),0,[1,2]);
                     %% *CREATE BUTTERWORTH FILTER*
                     %
                     % _LF FILTER (LOW-PASS)_
                     %
-                    [bfb.slf,bfa.slf,~] = create_butter_filter(4,[],hyb.mtd.(cpp)(i_,1),1/2/hyb.mon.dtm(i_));
+                    [bfb.slf,bfa.slf,~] = create_butter_filter(4,[],hyb.mtd.(cpp)(i_,1),1/2/slf.mon.dtm(i_));
                     %
                     % _HF FILTER (HIGH-PASS)_
                     %
-                    [bfb.shf,bfa.shf,~] = create_butter_filter(4,hyb.mtd.(cpp)(i_,2),[],1/2/hyb.mon.dtm(i_));
+                    [bfb.shf,bfa.shf,~] = create_butter_filter(4,hyb.mtd.(cpp)(i_,2),[],1/2/shf.mon.dtm(i_));
                     
                     %% *TIME-HISTORIES*
                     slf.syn{i_}.thd.(cpp) = filtfilt(bfb.slf,bfa.slf,slf.syn{i_}.thd.(cpp));
@@ -155,14 +156,13 @@ function [varargout] = lfhf_hybridator(varargin)
                     slf.syn{i_}.tha.(cpp) = avd_diff(slf.mon.dtm(i_),slf.syn{i_}.thv.(cpp));
                     %                     slf.syn{i_}.thv.(cpp) = freq_differentiate(slf.syn{i_}.thd.(cpp),1./slf.mon.dtm(i_));
                     %                     slf.syn{i_}.tha.(cpp) = freq_differentiate(slf.syn{i_}.thv.(cpp),1./slf.mon.dtm(i_));
-                    
                     %
                     shf.syn{i_}.thd.(cpp) = filtfilt(bfb.shf,bfa.shf,shf.syn{i_}.thd.(cpp));
                     shf.syn{i_}.thv.(cpp) = avd_diff(shf.mon.dtm(i_),shf.syn{i_}.thd.(cpp));
                     shf.syn{i_}.tha.(cpp) = avd_diff(shf.mon.dtm(i_),shf.syn{i_}.thv.(cpp));
                     %                     shf.syn{i_}.thv.(cpp) = vfr_diff(shf.syn{i_}.thd.(cpp),1./shf.mon.dtm(i_));
                     %                     shf.syn{i_}.tha.(cpp) = vfr_diff(shf.syn{i_}.thv.(cpp),1./shf.mon.dtm(i_));
-                    
+
                     hyb.syn{i_}.tha.(cpp) = slf.syn{i_}.tha.(cpp)+shf.syn{i_}.tha.(cpp);
                     %% *HYBRID VELOCITY-DISPLACEMENTS*
                     [~,hyb.syn{i_}.thv.(cpp),hyb.syn{i_}.thd.(cpp)] = ...

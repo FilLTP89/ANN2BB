@@ -39,6 +39,7 @@ function [varargout] = lfhf_pad(varargin)
             sps.syn{i_}.tha.(sps.mon.cp{j_}) = ...
                 padarray(sps.syn{i_}.tha.(sps.mon.cp{j_}),...
                 npad-sps.mon.ntm(i_),0,'post');
+            
         end
         % _update time vector_
         pbs.mon.ntm(i_) = npad;
