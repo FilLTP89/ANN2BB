@@ -135,8 +135,8 @@ function [varargout] = lfhf_hybridator(varargin)
                     
                     fac = pi./(hyb.mon.dfr(i_)*(nfb-nfa-1));
                     
-                    slf.syn{i_}.tha.(cpp)(slf.mon.ntm+1:hyb.mon.nfr(i_))=0;
-                    shf.syn{i_}.tha.(cpp)(shf.mon.ntm+1:hyb.mon.nfr(i_))=0;
+                    slf.syn{i_}.tha.(cpp)(slf.mon.ntm(i_)+1:hyb.mon.nfr(i_))=0;
+                    shf.syn{i_}.tha.(cpp)(shf.mon.ntm(i_)+1:hyb.mon.nfr(i_))=0;
                     
                     % [vfr_before,fsd_before] = super_fft(shf.mon.dtm(i_),shf.syn{i_}.thv.(cpp),0,[1,2]);
                     %% *CREATE BUTTERWORTH FILTER*
