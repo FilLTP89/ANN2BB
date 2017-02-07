@@ -14,7 +14,7 @@
 % syn2ann_scaling_drive.m, syn2ann_save_res, syn2ann_plot_res_single.m_
 %% *REFERENCES*
 
-flag_map = 1;
+flag_map = 0;
 
 %% *ANALYSIS SET-UP*
 if flag_map 
@@ -67,4 +67,4 @@ syn2ann_scaling_drive;
 syn2ann_write_maps;
 
 %% *PLOT RESULTS*
-% syn2ann_plot_res_single;
+syn2ann_plot_res_single;
