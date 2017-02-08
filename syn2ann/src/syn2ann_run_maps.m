@@ -29,7 +29,6 @@ for NJB = 1:job_nb
     syn2ann_setup_maps_rewind;
 end
 
-keyboard
 
 for NJB = 1:job_nb
 
