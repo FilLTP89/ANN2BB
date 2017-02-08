@@ -1,0 +1,14 @@
+*.DS_Store
+*.*~
+*.swp
+*.nfs*
+*.aux
+*.bbl
+*.blg
+*.log
+*.lof
+*.out 
+*.ps
+*.synctex.gz
+*.dvi
+*-eps-converted-to.pdf
