@@ -14,8 +14,9 @@
 
 %% *MONITOR STATION: monn*
 % _station identity_
-monn.id = (1:1000)';
+monn.id = (1:17974)';
 job_nb = 10;
+sel_id = 10000:17974;
 %monn.id = (1:17974)';
 % monn.id = [
 %     18446;   

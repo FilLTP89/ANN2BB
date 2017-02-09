@@ -57,11 +57,7 @@ fprintf('--> Type of Simulation: %s\n',mon.typ);
 mon.na = bhr.ns;
 for m_ = 1:mon.na
     for n_ = 1:fnn.monn
-        try
-            mon.(fni.monn{n_})(m_) = monn.(fni.monn{n_})(selected_case(m_));
-        catch
-            keyboard
-        end
+        mon.(fni.monn{n_})(m_) = monn.(fni.monn{n_})(selected_case(m_));
     end
 end
 
@@ -96,7 +92,8 @@ mon.map.fnm = '/tmp1/gattif/syn2ann_maps/map_mrn';
 mtd.sp96.na = mon.na;
 for m_ = 1:mtd.sp96.na
     for n_ = 1:fnn.mtdd.sp96
-        mtd.sp96.(fni.mtdd.sp96{n_})(m_,:) = mtdd.sp96.(fni.mtdd.sp96{n_})(selected_case(m_),:);
+        mtd.sp96.(fni.mtdd.sp96{n_})(m_,:) = ...
+            mtdd.sp96.(fni.mtdd.sp96{n_})(selected_case(m_),:);
     end
 end
 

@@ -16,19 +16,18 @@
 % Need for:
 
 %% *1). SPLIT IN CHUNKS
-case_chunks.nb = floor(numel(monn.id)/job_nb);
+case_chunks.nb = floor(numel(monn.id(sel_id))/job_nb);
 
 case_chunks.id = cell(job_nb,1);
 for NJB = 1:job_nb-1
-    case_chunks.id{NJB,1} = monn.id(case_chunks.nb*(NJB-1)+1:case_chunks.nb*NJB);
+    case_chunks.id{NJB,1} = monn.id(sel_id(case_chunks.nb*(NJB-1)+1:case_chunks.nb*NJB));
 end     
-case_chunks.id{end,1} = monn.id(case_chunks.nb*(NJB)+1:end);
+case_chunks.id{end,1} = monn.id(sel_id(case_chunks.nb*(NJB)+1:end));
 
 for NJB = 1:job_nb
     selected_case = case_chunks.id{NJB};
     syn2ann_setup_maps_rewind;
 end
-
 
 for NJB = 1:job_nb
 
