@@ -14,7 +14,7 @@ function trann_train_psa_performance(varargin)
     col = [0,0,0];
     mrk = {'o';'d';'v'};
     lst = {'-';'--';':'};
-    leg = {'TRAINING';'VALIDATION';'TEST'};
+    leg = {'ALL';'TRAINING';'VALIDATION';'TEST'};
     set(0,'defaultaxescolororder',col);
     
     %% *DEFINE LIMITS*
@@ -32,14 +32,21 @@ function trann_train_psa_performance(varargin)
     xpl{3,1} = tar.vTn(:)./TnC;
     %
     ypl{1,1} = mean(ann.out_trn.all-ann.tar.trn,2);
-    err{1,1}(:,1) = min(ann.out_trn.all-ann.tar.trn,[],2);
-    err{1,1}(:,2) = max(ann.out_trn.all-ann.tar.trn,[],2);
+    err{1,1}(:,1) = abs(ypl{1,1}-min(ann.out_trn.all-ann.tar.trn,[],2));
+    err{1,1}(:,2) = abs(ypl{1,1}-max(ann.out_trn.all-ann.tar.trn,[],2));
 %     ypl{2,1} = ann.out_trn.vld-ann.out_tar.vld;
 %     ypl{3,1} = ann.out_trn.tst-ann.out_tar.tst;
     figure('position',[0,0,10,10]);
-    erb = errorbar(xpl{1,1},ypl{1,1},err{1,1}(:,1),err{1,1}(:,2),'-ks',...
-        'markersize',10,'markeredgecolor','k','markerfacecolor','k');
-    erb = adjust_errbar_tick(erb);
+    erb = errorbarxy(xpl{1,1},ypl{1,1},...
+        zeros(size(xpl{1,1})),zeros(size(xpl{1,1})),...
+        err{1,1}(:,1),err{1,1}(:,2),...
+        {'ks-', 'k', 'k'});
+    erb.hMain.MarkerSize = 15;
+    erb.hMain.MarkerEdgeColor = [0,0,0];
+    erb.hMain.MarkerFaceColor = [0,0,0];
+    keyboard
+    errorbar_tick;
+    
     xlim(gca,xlm);
     ylim(gca,ylm);
     set(gca,'xtick',xtk,'ytick',ytk);
