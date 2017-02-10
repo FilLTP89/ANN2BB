@@ -148,9 +148,11 @@ function train_ann_justPSA(varargin)
     %% *COMPUTE BEST PERFORMANCE*
     NNs = trann_train_best_performance(NNs,prf,dsg,wd);
     
-    %% *COMPUTE REGRESSIONS*
-    trann_train_regression(NNs,dsg,tar.vTn,wd);
+%     %% *COMPUTE REGRESSIONS*
+%     trann_train_regression(NNs,dsg,tar.vTn,wd);
 
+    %% *COMPUTE REGRESSIONS*
+    trann_train_psa_performance(NNs,inp,tar,wd,dsg);
 
     %% *OUTPUT*
     save(fullfile(wd,sprintf('net_%u_%s_%s_%un.mat',...

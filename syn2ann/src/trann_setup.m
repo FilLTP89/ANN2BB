@@ -21,7 +21,7 @@ fprintf('---------------------\n0. SETUP\n---------------------\n');
 %dbn = fullfile(filesep,'media','filippo','Data','Filippo',...
 %    'PHD_passing_through_heavyweight','simbad_v05','SIMBAD_v05_1.mat');
 wd = '/mssmat2/home/gattif/Documents/PHD_passing_through_polimi/syn2ann/database';
-sp = '/mssmat2/home/gattif/Documents/PHD_passing_through_polimi/syn2ann/database';
+sp = '/tmp1/gattif/ann_train';
 dbn= '/mssmat2/home/gattif/Documents/PHD_passing_through_heavyweight/simbad_v05/SIMBAD_v05_1_vigne.mat';
 ann.trn.wd = fullfile(wd,'training');
 fprintf('Training Workdir: %s\n',ann.trn.wd);
