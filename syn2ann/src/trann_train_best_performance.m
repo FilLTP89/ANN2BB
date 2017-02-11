@@ -8,7 +8,7 @@ function [varargout] = trann_train_best_performance(varargin)
 
     %% *COMPUTE BEST PERFORMANCE*
     [bst.prf,bst.idx] = min(prf.vld);
-    keyboard
+    
     ann = NNs{bst.idx};
     prf.avg = mean(prf.vld);
     prf.std = std(prf.vld);

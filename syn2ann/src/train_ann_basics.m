@@ -20,7 +20,7 @@ function [varargout] = train_ann_basics(varargin)
     % _number of Hidden Neurons_
     dsg.nhn = 30;
     % _number of trained ANNs_
-    dsg.ntr = 100;
+    dsg.ntr = 1;
     % _set up base ANN structure_
     dsg.net = feedforwardnet(dsg.nhn,'trainlm');
     % dsg.net = feedforwardnet(dsg.nhn,'trainbfg');
@@ -39,7 +39,6 @@ function [varargout] = train_ann_basics(varargin)
             dsg.net.trainParam.mu = 1.0;
             dsg.net.trainParam.mu_dec = 0.8;
             dsg.net.trainParam.mu_inc = 1.5;
-            dsg.net.performParam.regularization = 1;
         case 'trainbfg'
             dsg.net.performParam.regularization = 0.5;
     end
