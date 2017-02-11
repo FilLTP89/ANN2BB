@@ -16,13 +16,10 @@ function [varargout] = train_ann_basics(varargin)
 
     %% *CREATE BASE NETWORK - 2LFF-LM (MLP)*
     % ANN name
-    dsg.fnm = sprintf('net_%u_%s_%s_dvl',round(ann.TnC*100),ann.scl,ann.cp);
+    dsg.fnm = sprintf('net_%u_%s_%s_%s',round(ann.TnC*100),ann.scl,ann.cp,train_strategy);
     % _number of Hidden Neurons_
     dsg.nhn = 30;
-    % _number of trained ANNs_
-    dsg.ntr = 100;
     % _set up base ANN structure_
-    
     dsg.net = feedforwardnet(dsg.nhn,'trainlm');
     % dsg.net = feedforwardnet(dsg.nhn,'trainbfg');
     % dsg.net = feedforwardnet(dsg.nhn,'trainlm');
@@ -54,21 +51,30 @@ function [varargout] = train_ann_basics(varargin)
     % Set up Division of Data for Training, Validation, Testing
     switch train_strategy
         case 'classic'
+            % _number of trained ANNs_
+            dsg.set = 1;
+            dsg.ntr = 100;
+            % _subdivide indexes_
             dsg.net.divideFcn = 'dividerand';
             dsg.net.divideParam.trainRatio = 85/100;
             dsg.net.divideParam.valRatio   = 10/100;
             dsg.net.divideParam.testRatio  =  5/100;
             [dsg.idx.trn,dsg.idx.vld] = trann_tv_sets(nbs,5/100); 
         case 'bootstrap'
+            % _number of trained ANNs_
+            dsg.set = 100;
+            dsg.ntr = 25;
+            % _subdivide indexes_
             dsg.net.divideFcn = 'divideind';
-            dsg.net.divideParam.trainRatio = 65/100;
-            dsg.net.divideParam.valRatio   = 20/100;
-            dsg.net.divideParam.testRatio  = 15/100;
-            [dsg.net.divideParam.trainInd,dsg.net.divideParam.valInd,...
+            divideParam.trainRatio = 70/100;
+            divideParam.valRatio   = 15/100;
+            divideParam.testRatio  = 15/100;
+            % base set of training-validation-test
+            [dsg.divideParam.trainInd,dsg.net.divideParam.valInd,...
                 dsg.net.divideParam.testInd] = dividerand(nbs,...
-                dsg.net.divideParam.trainRatio,dsg.net.divideParam.valRatio,...
-                dsg.net.divideParam.testRatio)
-                keyboard
+                divideParam.trainRatio,divideParam.valRatio,...
+                divideParam.testRatio);
+            
     end
     %% *OUTPUT*
     varargout{1} = dsg;

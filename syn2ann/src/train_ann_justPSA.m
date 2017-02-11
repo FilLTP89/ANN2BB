@@ -97,6 +97,8 @@ function train_ann_justPSA(varargin)
     end
     
     %% *DESIGN BASIC ANN*
+    
+%     train_strategy = 'bootstrap';
     train_strategy = 'classic';
     dsg = train_ann_basics(ann,db.nr,train_strategy);
     NNs = cell(dsg.ntr,1);
@@ -106,8 +108,8 @@ function train_ann_justPSA(varargin)
     switch train_strategy
         case 'classic'
             for i_=1:dsg.ntr
+                
                 fprintf('ANN %u/%u: \n',i_,dsg.ntr);
-
                 %% *DEFINE INPUTS/TARGETS*
                 % _ALL INPUT/TARGET TRAINING VALUES_
                 NNs{i_}.inp.trn = inp.simbad(:,dsg.idx.trn);
@@ -125,25 +127,30 @@ function train_ann_justPSA(varargin)
                 NNs{i_} = train_ann_valid(NNs{i_},train_strategy);
                 prf.vld(i_) = NNs{i_}.prf.vld;
             end
-        case 'bootstrap'
-            for i_=1:dsg.ntr
-                fprintf('ANN %u/%u: \n',i_,dsg.ntr);
-
-                %% *DEFINE INPUTS/TARGETS*
-                % _ALL INPUT/TARGET TRAINING VALUES_
-                NNs{i_}.inp.trn = inp.simbad(:,:);
-                NNs{i_}.tar.trn = tar.simbad(:,:);
-                
-                %% *TRAINING ANN*
-                % getting net and infos on training sets and performances
-                fprintf('TRAINING...\n');
-                [NNs{i_}.net,NNs{i_}.trs] = train(dsg.net,NNs{i_}.inp.trn,NNs{i_}.tar.trn);
-                
-                %% *TEST/VALIDATE ANN PERFORMANCE*
-                NNs{i_} = train_ann_valid(NNs{i_},train_strategy);
-                prf.vld(i_) = NNs{i_}.prf.vld;
-            end
             
+        case 'bootstrap'
+            for ii_=1:dsg.set
+                dsg.net.divideParam.trainInd = ...
+                    datasample(dsg.divideParam.trainInd,numel(dsg.divideParam.trainInd)); 
+                for i_=1:dsg.ntr
+                    
+                    fprintf('ANN %u/%u: \n',i_,dsg.ntr);
+                    %% *DEFINE INPUTS/TARGETS*
+                    % _ALL INPUT/TARGET TRAINING VALUES_
+                    NNs{i_}.inp.trn = inp.simbad(:,:);
+                    NNs{i_}.tar.trn = tar.simbad(:,:);
+                    
+                    %% *TRAINING ANN*
+                    % getting net and infos on training sets and performances
+                    fprintf('TRAINING...\n');
+                    keyboard
+                    [NNs{i_}.net,NNs{i_}.trs] = train(dsg.net,NNs{i_}.inp.trn,NNs{i_}.tar.trn);
+                    keyboard
+                    %% *TEST/VALIDATE ANN PERFORMANCE*
+                    NNs{i_} = train_ann_valid(NNs{i_},train_strategy);
+                    prf.vld(i_) = NNs{i_}.prf.vld;
+                end
+            end
     end
     %% *COMPUTE BEST PERFORMANCE*
     NNs = trann_train_best_performance(NNs,prf,dsg,wd);

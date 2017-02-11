@@ -28,8 +28,10 @@ function [varargout] = train_ann_valid(varargin)
             % CHECK WITH MASTER VERSION = 0K (11/01/2017)
             % output2     = sim(ann.net,ann.inp.vld); % == ann.out_vld.all
             % perfs2      = mse(output2(:)-ann.tar.vld(:)); % == ann.prf.vld
+            
         case 'bootstrap'
             %% *ANN VALIDATION*
+            
             fprintf('VALIDATING...\n');
             ann.out_trn.all = ann.net(ann.inp.trn);
             

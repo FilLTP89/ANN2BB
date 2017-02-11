@@ -86,8 +86,9 @@ function trann_train_psa_performance(varargin)
     ylim(gca,ylm);
     set(gca,'xtick',xtk,'ytick',ytk);
     xlabel(gca,'T/T_C [1]');
-    ylabel(gca,'log_{10}(PSA_{ANN}/PSA_{TAR}) [1]');
-    legend(gca,{'ALL';'TRAINING';'VALIDATION';'TEST'});
+    ylabel(gca,'log_{10}(Sa_{ANN}/Sa_{TAR}) [1]');
+    leg=legend(gca,{'ALL';'TRN';'VLD';'TST'});
+    set(leg,'interpreter','latex','location','northoutside');
     syn2ann_format_figures(gca);
     
     rule_fig(gcf);
