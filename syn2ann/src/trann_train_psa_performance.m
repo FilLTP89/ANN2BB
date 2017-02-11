@@ -94,7 +94,6 @@ function trann_train_psa_performance(varargin)
     
     rule_fig(gcf);
     
-    keyboard
     saveas(gcf,fullfile(wd,strcat(dsg.fnm,'_bst_lSa_all_',num2str(dsg.nhn),'n')),'epsc');
     
     

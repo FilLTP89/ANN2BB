@@ -164,7 +164,6 @@ function train_ann_justPSA(varargin)
     
     %% *COMPUTE REGRESSIONS*
     trann_train_psa_performance(NNs,inp,tar,wd,dsg);
-    keyboard
     %% *OUTPUT*
     save(fullfile(wd,sprintf('net_%u_%s_%s_%un.mat',...
         round(ann.TnC*100),ann.scl,ann.cp,dsg.nhn)),'NNs');

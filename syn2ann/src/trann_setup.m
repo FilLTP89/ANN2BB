@@ -36,6 +36,8 @@ trann_test_list;
 % _select test case : selected_case = [a,b,...,d]_
 selected_case = 1:8;
 
+trann_train_list;
+
 %% *DEFINE REAL RECORDS METADATA*
 % _path to record files_
 bhr.pt  = fullfile(wd,'records');
