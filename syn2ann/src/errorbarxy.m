@@ -1,6 +1,6 @@
 function [varargout]=errorbarxy(varargin)
 %   ERRORBARXY is a function to generate errorbars on both x and y axes 
-%   with specified errors modified from codes written by Nils Sjöberg 
+%   with specified errors modified from codes written by Nils Sjï¿½berg 
 %   (http://www.mathworks.com/matlabcentral/fileexchange/5444-xyerrorbar)
 %  
 %   errorbarxy(x, y, lerrx, uerrx, lerry, uerry) plots the data with errorbars on both 
@@ -158,16 +158,16 @@ allh=nan(length(x), 6); % all errorbar handles
 for k=1:length(x)
     if ~isempty(lx) & ~isempty(ly) % both errors are specified
         l1=line([lx(k) ux(k)],[y(k) y(k)]);
-        hold on;
+        hold all;
         l2=line([lx(k) lx(k)],[y(k)-0.1*erry(k) y(k)+0.1*erry(k)]);
         l3=line([ux(k) ux(k)],[y(k)-0.1*erry(k) y(k)+0.1*erry(k)]);
         l4=line([x(k) x(k)],[ly(k) uy(k)]);
-        l5=line([x(k)-0.1*errx(k) x(k)+0.1*errx(k)],[ly(k) ly(k)]);
-        l6=line([x(k)-0.1*errx(k) x(k)+0.1*errx(k)],[uy(k) uy(k)]);
+        l5=line([x(k)-0.05*erry(k) x(k)+0.05*erry(k)],[ly(k) ly(k)]);
+        l6=line([x(k)-0.05*erry(k) x(k)+0.05*erry(k)],[uy(k) uy(k)]);
         allh(k, :)=[l1, l2, l3, l4, l5, l6];
     elseif isempty(lx) & ~isempty(ly) % x errors are not specified
         l4=line([x(k) x(k)],[ly(k) uy(k)]);
-        hold on;
+        hold all;
         errx=nanmean(abs(diff(x)));
         l5=line([x(k)-0.1*errx x(k)+0.1*errx],[ly(k) ly(k)]);
         l6=line([x(k)-0.1*errx x(k)+0.1*errx],[uy(k) uy(k)]);
@@ -193,10 +193,10 @@ end
 arrayfun(@(d) set(get(get(d,'Annotation'),'LegendInformation'), 'IconDisplayStyle','off'), allh(~isnan(allh))); % exclude errorbars from legend
 out.hMain=h;
 out.hErrorbar=allh;
-hold off;
+% hold off;
 
 if flagHold % set the axis to the original status, e.g hold on or off
-    hold on;
+    hold all;
 end
 
 %% handle outputs
