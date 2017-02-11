@@ -48,15 +48,15 @@ function trann_train_psa_performance(varargin)
     err{4,1}(:,1) = abs(ypl{4,1}-min(ann.out_trn.tst-ann.out_tar.tst,[],2));
     err{4,1}(:,2) = abs(ypl{4,1}-max(ann.out_trn.tst-ann.out_tar.tst,[],2));
     
-    figure('position',[0,0,10,10]);
+    figure('position',[0,0,10,11]);
     %
-    erb.all = errorbarxy(xpl{1,1},ypl{1,1},...
-        zeros(size(xpl{1,1})),zeros(size(xpl{1,1})),...
-        err{1,1}(:,1),err{1,1}(:,2),...
-        {'ks--', 'k', 'k'});
-    erb.all.hMain.MarkerSize = 10;
-    erb.all.hMain.MarkerEdgeColor = [0,0,0];
-    erb.all.hMain.MarkerFaceColor = [0,0,0];
+%     erb.all = errorbarxy(xpl{1,1},ypl{1,1},...
+%         zeros(size(xpl{1,1})),zeros(size(xpl{1,1})),...
+%         err{1,1}(:,1),err{1,1}(:,2),...
+%         {'ks--', 'k', 'k'});
+%     erb.all.hMain.MarkerSize = 10;
+%     erb.all.hMain.MarkerEdgeColor = [0,0,0];
+%     erb.all.hMain.MarkerFaceColor = [0,0,0];
     %
     erb.trn = errorbarxy(xpl{1,1},ypl{1,1},...
         zeros(size(xpl{2,1})),zeros(size(xpl{2,1})),...
@@ -87,11 +87,14 @@ function trann_train_psa_performance(varargin)
     set(gca,'xtick',xtk,'ytick',ytk);
     xlabel(gca,'T/T_C [1]');
     ylabel(gca,'log_{10}(Sa_{ANN}/Sa_{TAR}) [1]');
-    leg=legend(gca,{'ALL';'TRN';'VLD';'TST'});
-    set(leg,'interpreter','latex','location','northoutside');
+    leg=legend(gca,{'TRN';'VLD';'TST'});
+    set(leg,'interpreter','latex','location','northoutside',...
+        'orientation','horizontal','box','off');
     syn2ann_format_figures(gca);
     
     rule_fig(gcf);
+    
+    keyboard
     saveas(gcf,fullfile(wd,strcat(dsg.fnm,'_bst_lSa_all_',num2str(dsg.nhn),'n')),'epsc');
     
     

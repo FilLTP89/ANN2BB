@@ -167,11 +167,17 @@ ann.trn.mtd(1).scl = 'ALL';
 ann.trn.mtd(2).TnC = 0.75;
 ann.trn.mtd(2).cp = 'ud';
 ann.trn.mtd(2).scl = 'ALL';
+
+train_strategy = 'bootstrap';
+% train_strategy = 'classic';
+
 % _database_
 for i_ = 1:ann.trn.nr
     ann.trn.mtd(i_).dbn = dbn;
+    ann.trn.mtd(i_).train_strategy = train_strategy;
 end
 
+    
 %% *DEFINE ANN TEST METADATA*
 % _number of ann to be tested_
 tst.mtd.nr = 3;

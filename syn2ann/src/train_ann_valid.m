@@ -1,9 +1,8 @@
 function [varargout] = train_ann_valid(varargin)
     %% *SET-UP*
-    ann = varargin{1};
-    train_strategy = varargin{2};    
+    ann = varargin{1};  
 
-    switch train_strategy
+    switch ann.train_strategy
         case 'classic'
             %% *ANN VALIDATION*
             fprintf('VALIDATING...\n');
@@ -48,9 +47,13 @@ function [varargout] = train_ann_valid(varargin)
 
             %% *COMPUTE PERFORMANCE*
             fprintf('COMPUTING PERFORMANCE...\n');
-            ann.prf.trn = perform(ann.net,ann.tar.trn,ann.out_trn.all);
-                 
+            
+            ann.prf.trn = perform(ann.net,ann.out_tar.trn,ann.out_trn.trn);
+            ann.prf.vld = perform(ann.net,ann.out_tar.vld,ann.out_trn.vld);
+            ann.prf.tst = perform(ann.net,ann.out_tar.tst,ann.out_trn.tst);
+    
     end
+    
     %% *OUTPUT*
     varargout{1} = ann;
     return

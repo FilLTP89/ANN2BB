@@ -8,9 +8,18 @@ function [varargout] = trann_train_best_performance(varargin)
 
     %% *COMPUTE BEST PERFORMANCE*
     [bst.prf,bst.idx] = min(prf.vld);
+    keyboard
     ann = NNs{bst.idx};
-    prf.avg = sum(prf.vld)/dsg.ntr;
-    prf.avg = mse(ann.net,ann.tar.vld,prf.avg);
+    prf.avg = mean(prf.vld);
+    prf.std = std(prf.vld);
+    
+    switch ann.train_strategy
+        
+        case 'classic'
+            prf.mse = mse(ann.net,ann.tar.vld,prf.avg);
+        case 'bootstrap'
+            prf.mse = mse(ann.net,ann.out_tar.vld,prf.avg);
+    end
 
 %     %% *COMPARE TRAINING*
 %     set(0,'defaultaxescolororder',[0.65,0.65,0.65;0,0,0;0,0,0;0,0,0]);
