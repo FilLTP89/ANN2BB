@@ -17,24 +17,24 @@ ann.trn.nr = 4;
 % ann.trn.mtd(4).cp = 'ud';
 % ann.trn.mtd(4).scl = 'CD';
 % gh <---> ALL
-ann.trn.mtd(1).TnC = 0.75;
+ann.trn.mtd(1).TnC = 0.5;
 ann.trn.mtd(1).cp = 'gh';
 ann.trn.mtd(1).scl = 'ALL';
 ann.trn.mtd(1).train_strategy = 'classic';
 % ud <---> ALL
-ann.trn.mtd(2).TnC = 0.75;
+ann.trn.mtd(2).TnC = 0.5;
 ann.trn.mtd(2).cp = 'ud';
 ann.trn.mtd(2).scl = 'ALL';
 ann.trn.mtd(2).train_strategy = 'classic';
 
 % gh <---> ALL
-ann.trn.mtd(3).TnC = 0.75;
+ann.trn.mtd(3).TnC = 0.5;
 ann.trn.mtd(3).cp = 'gh';
 ann.trn.mtd(3).scl = 'ALL';
 ann.trn.mtd(3).train_strategy = 'bootstrap';
 
 % ud <---> ALL
-ann.trn.mtd(4).TnC = 0.75;
+ann.trn.mtd(4).TnC = 0.5;
 ann.trn.mtd(4).cp = 'ud';
 ann.trn.mtd(4).scl = 'ALL';
 ann.trn.mtd(4).train_strategy = 'bootstrap';

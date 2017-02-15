@@ -24,12 +24,12 @@
 trann_setup;
 
 % %% *TRAIN ANN*
-% trann_train;
+trann_train;
 
 %% *TEST TRAINED ANN*
-trann_load;
-trann_SPLP_regression;
-trann_test;
+%trann_load;
+%trann_SPLP_regression;
+%trann_test;
 
 %% *PLOTTING TEST RESULTS*
 % trann_test_plot_single;
