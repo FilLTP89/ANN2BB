@@ -18,7 +18,7 @@ function [varargout] = train_ann_basics(varargin)
     % ANN name
     dsg.fnm = sprintf('net_%u_%s_%s_%s',round(ann.TnC*100),ann.scl,ann.cp,dsg.train_strategy);
     % _number of Hidden Neurons_
-    dsg.nhn = 90;
+    dsg.nhn = ann.nhn;
     % _number of trained ANNs_
     dsg.ntr = 100;
     % _set up base ANN structure_
