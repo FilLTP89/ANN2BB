@@ -75,18 +75,11 @@ function [varargout] = bpf_tha(varargin)
         %
         [tha,~,~] = blc_tha(dtm,tha);
         %
-        % _acceleration cosinus tapering_
-        %
-        tha  = cos_taper(tha);
-        % EQUIVALENT: tha = taper_fun(tha,2.5,1,1);
-        %
         %  _pad definition_
         %
         % number of padding points (Boore&Bommer,2005)
         npd0 = ceil(1.5*bfo./min([lfr;hfr])./dtm);
         npd1 = ceil(1.5*bfo./min([lfr;hfr])./dtm);
-%         npd0 = 0;
-%         npd1 = 0;
         %
         % _padding acceleration_
         %
@@ -99,7 +92,7 @@ function [varargout] = bpf_tha(varargin)
         
         %% *TIME INTEGRATION*
         disp('--->BPF_ACC: CORRECTING ACCELERATION')
-        [tha,thv,thd] = idc_tha(dtm,tha,bfb,bfa);
+        [tha,thv,thd] = idc_tha(dtm,tha);%,bfb,bfa);
         
     else
         npd0 = 0;
