@@ -11,4 +11,5 @@
 *.ps
 *.synctex.gz
 *.dvi
+*.txt
 *-eps-converted-to.pdf
