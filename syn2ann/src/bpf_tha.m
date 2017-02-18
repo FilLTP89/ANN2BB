@@ -4,8 +4,8 @@
 % DICA - Politecnico di Milano
 % Copyright 2014-15_
 %% NOTES
-% _bpf_tha_: function to detrend, filter (band pass) and integrate in
-% time input signal (to get velocity and displacement)
+% _bpf_tha_: function to detrend, band-pass filter and integrate acceleration
+% time histories 
 %% INPUT:
 % * _dtm (sampling time step)_
 % * _tha (input accelerogram)_
@@ -73,6 +73,7 @@ function [varargout] = bpf_tha(varargin)
         %
         % _acceleration base-line correction_
         %
+        % BASE LINE CORRECTION
         [tha,~,~] = blc_tha(dtm,tha);
         %
         %  _pad definition_
@@ -91,8 +92,7 @@ function [varargout] = bpf_tha(varargin)
         tha = filtfilt(bfb,bfa,tha);
         
         %% *TIME INTEGRATION*
-        disp('--->BPF_ACC: CORRECTING ACCELERATION')
-        [tha,thv,thd] = idc_tha(dtm,tha);%,bfb,bfa);
+        [tha,thv,thd] = idc_tha(dtm,tha,bfb,bfa);
         
     else
         npd0 = 0;
