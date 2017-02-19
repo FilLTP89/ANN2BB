@@ -107,7 +107,7 @@ function train_ann_justPSA(varargin)
         
         case 'classic'
             
-            for i_=1:dsg.ntr
+            for i_=1:1%dsg.ntr
                 
                 fprintf('ANN %u/%u: \n',i_,dsg.ntr);
                 %% *DEFINE INPUTS/TARGETS*

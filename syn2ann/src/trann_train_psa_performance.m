@@ -88,8 +88,10 @@ function trann_train_psa_performance(varargin)
     xlabel(gca,'T/T_C [1]');
     ylabel(gca,'log_{10}(Sa_{ANN}/Sa_{TAR}) [1]');
     leg=legend(gca,{'TRN';'VLD';'TST'});
-    set(leg,'interpreter','latex','location','northoutside',...
+    set(leg,'interpreter','latex','location','northeast',...
         'orientation','horizontal','box','off');
+%     text(0.6,-1.5,''parent',gca)
+    keyboard
     syn2ann_format_figures(gca);
     
     rule_fig(gcf);
