@@ -9,7 +9,9 @@ function [varargout] = blc_tha(varargin)
     else
         tp=0;
         try
-            tp = PphasePicker(tha,dtm,'na');
+            tp = PphasePicker(tha,dtm,'na','n');
+        catch
+            warning('P-wave arrival not detected');
         end
     end
     tp = max([tp,0]);

@@ -22,7 +22,7 @@ function trann_train_psa_performance(varargin)
     %% *DEFINE LIMITS*
     % _TRAINING SET_ 
     xlm = [0;1];
-    ylm = [-1;1];
+    ylm = [-2;2];
     [xtk,ytk] = get_axis_tick(xlm,ylm,abs(diff(xlm))/4,abs(diff(ylm))/4);
     
     

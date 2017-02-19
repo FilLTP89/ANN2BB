@@ -1,5 +1,5 @@
 *.DS_Store
-*.*~
+*.m~
 *.swp
 *.nfs*
 *.aux
@@ -11,4 +11,5 @@
 *.ps
 *.synctex.gz
 *.dvi
+*.txt
 *-eps-converted-to.pdf

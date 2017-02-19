@@ -31,14 +31,14 @@ ann.trn.mtd(2).train_strategy = 'classic';
 ann.trn.mtd(2).nhn = 30;
 
 % gh <---> ALL
-ann.trn.mtd(3).TnC = 0.75;
+ann.trn.mtd(3).TnC = 0.5;
 ann.trn.mtd(3).cp = 'gh';
 ann.trn.mtd(3).scl = 'ALL';
 ann.trn.mtd(3).train_strategy = 'classic';
 ann.trn.mtd(3).nhn = 30;
 
 % ud <---> ALL
-ann.trn.mtd(4).TnC = 0.75;
+ann.trn.mtd(4).TnC = 0.5;
 ann.trn.mtd(4).cp = 'ud';
 ann.trn.mtd(4).scl = 'ALL';
 ann.trn.mtd(4).train_strategy = 'classic';

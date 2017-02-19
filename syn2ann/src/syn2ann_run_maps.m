@@ -29,8 +29,8 @@ for NJB = 1:job_nb
     syn2ann_setup_maps_rewind;
 end
 
-for NJB = 6:8
-
+for NJB = 1:job_nb
+    fprintf('JOB : %u',NJB);
     job{NJB} = batch('syn2ann_write_maps', 1, {NJB});
 end
 
