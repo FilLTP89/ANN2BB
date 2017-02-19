@@ -18,7 +18,7 @@ fprintf('============================\n');
 %% *DEFINE WORKDIR*
 % % _main workdir_
 % wd = '/media/filippo/Data/Filippo/PHD_passing_through_polimi/syn2ann/database';
-wd = '/tmp1/gattif/syn2ann_maps_all';
+wd = '/tmp1/gattif/syn2ann_maps';
 fprintf('Workdir: %s\n',wd);
 % _save path_
 % sp = '/home/filippo/Scrivania/ann';

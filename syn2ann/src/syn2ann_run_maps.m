@@ -30,7 +30,7 @@ for NJB = 1:job_nb
 end
 
 for NJB = 1:job_nb
-
+    fprintf('JOB : %u',NJB);
     job{NJB} = batch('syn2ann_write_maps', 1, {NJB});
 end
 

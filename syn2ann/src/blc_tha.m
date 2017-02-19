@@ -24,6 +24,10 @@ function [varargout] = blc_tha(varargin)
     blc  = mean(tha(idx0));
     tha = tha-blc;
     %
+    % _acceleration cosinus tapering_
+    %
+    tha = taper_fun(tha,2.5,1,0);
+    %
     % _quadratic fitting of velocity trace_
     %
     thv  = cumtrapz(tha)*dtm;
@@ -50,7 +54,6 @@ function [varargout] = blc_tha(varargin)
     % _integration_
     %
     [~,thv,thd] = idc_tha(dtm,tha);
-    
     
     %% *OUTPUT*
     varargout{1} = tha(:);
