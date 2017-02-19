@@ -12,4 +12,5 @@
 *.synctex.gz
 *.dvi
 *.txt
+*.mat
 *-eps-converted-to.pdf

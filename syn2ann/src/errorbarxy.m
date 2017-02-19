@@ -184,10 +184,12 @@ for k=1:length(x)
     if exist('l1', 'var')
         h1=[l1, l2, l3]; % all handles
         set(h1, 'color', color{2});
+        out.hError = h1;
     end
     if exist('l4', 'var')
         h1=[l4, l5, l6]; % all handles
         set(h1, 'color', color{3});
+        out.hError = h1;
     end
 end
 arrayfun(@(d) set(get(get(d,'Annotation'),'LegendInformation'), 'IconDisplayStyle','off'), allh(~isnan(allh))); % exclude errorbars from legend
