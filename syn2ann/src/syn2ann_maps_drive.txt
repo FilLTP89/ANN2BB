@@ -21,8 +21,8 @@ Have a nice day
 >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> ============================
 ----------0. SETUP----------
 ============================
-Workdir: /tmp1/gattif/syn2ann_maps_all
---> Record Path: /tmp1/gattif/syn2ann_maps_all/records
+Workdir: /tmp1/gattif/syn2ann_maps
+--> Record Path: /tmp1/gattif/syn2ann_maps/records
 --> N. Stations: 898
 --> Station ID: 
 --> Station ID: 
@@ -5417,8 +5417,8 @@ Workdir: /tmp1/gattif/syn2ann_maps_all
 --> Directions: ew ns 
 --> Components: a; v; d; 
 ---------------------------------------------------------------
---> Monitor Path: /tmp1/gattif/syn2ann_maps_all/monitors
---> Monitor File: /tmp1/gattif/syn2ann_maps_all/SM_Stations_Monitors.csv
+--> Monitor Path: /tmp1/gattif/syn2ann_maps/monitors
+--> Monitor File: /tmp1/gattif/syn2ann_maps/SM_Stations_Monitors.csv
 --> Type of Simulation: S
 --> N. Monitor: 898
 --> Monitor ID: 1 
@@ -6321,7 +6321,7 @@ Workdir: /tmp1/gattif/syn2ann_maps_all
 --> Monitor ID: 898 
 --> Directions: ew ns --> Components: d 
 ---------------------------------------------------------------
---> Record Path: /tmp1/gattif/syn2ann_maps_all/records
+--> Record Path: /tmp1/gattif/syn2ann_maps/records
 --> N. Stations: 898
 --> Station ID: 
 --> Station ID: 
@@ -11716,8 +11716,8 @@ Workdir: /tmp1/gattif/syn2ann_maps_all
 --> Directions: ew ns 
 --> Components: a; v; d; 
 ---------------------------------------------------------------
---> Monitor Path: /tmp1/gattif/syn2ann_maps_all/monitors
---> Monitor File: /tmp1/gattif/syn2ann_maps_all/SM_Stations_Monitors.csv
+--> Monitor Path: /tmp1/gattif/syn2ann_maps/monitors
+--> Monitor File: /tmp1/gattif/syn2ann_maps/SM_Stations_Monitors.csv
 --> Type of Simulation: S
 --> N. Monitor: 898
 --> Monitor ID: 899 
@@ -12620,7 +12620,7 @@ Workdir: /tmp1/gattif/syn2ann_maps_all
 --> Monitor ID: 1796 
 --> Directions: ew ns --> Components: d 
 ---------------------------------------------------------------
---> Record Path: /tmp1/gattif/syn2ann_maps_all/records
+--> Record Path: /tmp1/gattif/syn2ann_maps/records
 --> N. Stations: 898
 --> Station ID: 
 --> Station ID: 
@@ -18015,8 +18015,8 @@ Workdir: /tmp1/gattif/syn2ann_maps_all
 --> Directions: ew ns 
 --> Components: a; v; d; 
 ---------------------------------------------------------------
---> Monitor Path: /tmp1/gattif/syn2ann_maps_all/monitors
---> Monitor File: /tmp1/gattif/syn2ann_maps_all/SM_Stations_Monitors.csv
+--> Monitor Path: /tmp1/gattif/syn2ann_maps/monitors
+--> Monitor File: /tmp1/gattif/syn2ann_maps/SM_Stations_Monitors.csv
 --> Type of Simulation: S
 --> N. Monitor: 898
 --> Monitor ID: 1797 
@@ -18919,7 +18919,7 @@ Workdir: /tmp1/gattif/syn2ann_maps_all
 --> Monitor ID: 2694 
 --> Directions: ew ns --> Components: d 
 ---------------------------------------------------------------
---> Record Path: /tmp1/gattif/syn2ann_maps_all/records
+--> Record Path: /tmp1/gattif/syn2ann_maps/records
 --> N. Stations: 898
 --> Station ID: 
 --> Station ID: 
@@ -24314,8 +24314,8 @@ Workdir: /tmp1/gattif/syn2ann_maps_all
 --> Directions: ew ns 
 --> Components: a; v; d; 
 ---------------------------------------------------------------
---> Monitor Path: /tmp1/gattif/syn2ann_maps_all/monitors
---> Monitor File: /tmp1/gattif/syn2ann_maps_all/SM_Stations_Monitors.csv
+--> Monitor Path: /tmp1/gattif/syn2ann_maps/monitors
+--> Monitor File: /tmp1/gattif/syn2ann_maps/SM_Stations_Monitors.csv
 --> Type of Simulation: S
 --> N. Monitor: 898
 --> Monitor ID: 2695 
@@ -25218,7 +25218,7 @@ Workdir: /tmp1/gattif/syn2ann_maps_all
 --> Monitor ID: 3592 
 --> Directions: ew ns --> Components: d 
 ---------------------------------------------------------------
---> Record Path: /tmp1/gattif/syn2ann_maps_all/records
+--> Record Path: /tmp1/gattif/syn2ann_maps/records
 --> N. Stations: 898
 --> Station ID: 
 --> Station ID: 
@@ -30613,8 +30613,8 @@ Workdir: /tmp1/gattif/syn2ann_maps_all
 --> Directions: ew ns 
 --> Components: a; v; d; 
 ---------------------------------------------------------------
---> Monitor Path: /tmp1/gattif/syn2ann_maps_all/monitors
---> Monitor File: /tmp1/gattif/syn2ann_maps_all/SM_Stations_Monitors.csv
+--> Monitor Path: /tmp1/gattif/syn2ann_maps/monitors
+--> Monitor File: /tmp1/gattif/syn2ann_maps/SM_Stations_Monitors.csv
 --> Type of Simulation: S
 --> N. Monitor: 898
 --> Monitor ID: 3593 
@@ -31517,7 +31517,7 @@ Workdir: /tmp1/gattif/syn2ann_maps_all
 --> Monitor ID: 4490 
 --> Directions: ew ns --> Components: d 
 ---------------------------------------------------------------
---> Record Path: /tmp1/gattif/syn2ann_maps_all/records
+--> Record Path: /tmp1/gattif/syn2ann_maps/records
 --> N. Stations: 898
 --> Station ID: 
 --> Station ID: 
@@ -36912,8 +36912,8 @@ Workdir: /tmp1/gattif/syn2ann_maps_all
 --> Directions: ew ns 
 --> Components: a; v; d; 
 ---------------------------------------------------------------
---> Monitor Path: /tmp1/gattif/syn2ann_maps_all/monitors
---> Monitor File: /tmp1/gattif/syn2ann_maps_all/SM_Stations_Monitors.csv
+--> Monitor Path: /tmp1/gattif/syn2ann_maps/monitors
+--> Monitor File: /tmp1/gattif/syn2ann_maps/SM_Stations_Monitors.csv
 --> Type of Simulation: S
 --> N. Monitor: 898
 --> Monitor ID: 4491 
@@ -37816,7 +37816,7 @@ Workdir: /tmp1/gattif/syn2ann_maps_all
 --> Monitor ID: 5388 
 --> Directions: ew ns --> Components: d 
 ---------------------------------------------------------------
---> Record Path: /tmp1/gattif/syn2ann_maps_all/records
+--> Record Path: /tmp1/gattif/syn2ann_maps/records
 --> N. Stations: 898
 --> Station ID: 
 --> Station ID: 
@@ -43211,8 +43211,8 @@ Workdir: /tmp1/gattif/syn2ann_maps_all
 --> Directions: ew ns 
 --> Components: a; v; d; 
 ---------------------------------------------------------------
---> Monitor Path: /tmp1/gattif/syn2ann_maps_all/monitors
---> Monitor File: /tmp1/gattif/syn2ann_maps_all/SM_Stations_Monitors.csv
+--> Monitor Path: /tmp1/gattif/syn2ann_maps/monitors
+--> Monitor File: /tmp1/gattif/syn2ann_maps/SM_Stations_Monitors.csv
 --> Type of Simulation: S
 --> N. Monitor: 898
 --> Monitor ID: 5389 
@@ -44115,7 +44115,7 @@ Workdir: /tmp1/gattif/syn2ann_maps_all
 --> Monitor ID: 6286 
 --> Directions: ew ns --> Components: d 
 ---------------------------------------------------------------
---> Record Path: /tmp1/gattif/syn2ann_maps_all/records
+--> Record Path: /tmp1/gattif/syn2ann_maps/records
 --> N. Stations: 898
 --> Station ID: 
 --> Station ID: 
@@ -49510,8 +49510,8 @@ Workdir: /tmp1/gattif/syn2ann_maps_all
 --> Directions: ew ns 
 --> Components: a; v; d; 
 ---------------------------------------------------------------
---> Monitor Path: /tmp1/gattif/syn2ann_maps_all/monitors
---> Monitor File: /tmp1/gattif/syn2ann_maps_all/SM_Stations_Monitors.csv
+--> Monitor Path: /tmp1/gattif/syn2ann_maps/monitors
+--> Monitor File: /tmp1/gattif/syn2ann_maps/SM_Stations_Monitors.csv
 --> Type of Simulation: S
 --> N. Monitor: 898
 --> Monitor ID: 6287 
@@ -50414,7 +50414,7 @@ Workdir: /tmp1/gattif/syn2ann_maps_all
 --> Monitor ID: 7184 
 --> Directions: ew ns --> Components: d 
 ---------------------------------------------------------------
---> Record Path: /tmp1/gattif/syn2ann_maps_all/records
+--> Record Path: /tmp1/gattif/syn2ann_maps/records
 --> N. Stations: 898
 --> Station ID: 
 --> Station ID: 
@@ -55809,8 +55809,8 @@ Workdir: /tmp1/gattif/syn2ann_maps_all
 --> Directions: ew ns 
 --> Components: a; v; d; 
 ---------------------------------------------------------------
---> Monitor Path: /tmp1/gattif/syn2ann_maps_all/monitors
---> Monitor File: /tmp1/gattif/syn2ann_maps_all/SM_Stations_Monitors.csv
+--> Monitor Path: /tmp1/gattif/syn2ann_maps/monitors
+--> Monitor File: /tmp1/gattif/syn2ann_maps/SM_Stations_Monitors.csv
 --> Type of Simulation: S
 --> N. Monitor: 898
 --> Monitor ID: 7185 
@@ -56713,7 +56713,7 @@ Workdir: /tmp1/gattif/syn2ann_maps_all
 --> Monitor ID: 8082 
 --> Directions: ew ns --> Components: d 
 ---------------------------------------------------------------
---> Record Path: /tmp1/gattif/syn2ann_maps_all/records
+--> Record Path: /tmp1/gattif/syn2ann_maps/records
 --> N. Stations: 898
 --> Station ID: 
 --> Station ID: 
@@ -62108,8 +62108,8 @@ Workdir: /tmp1/gattif/syn2ann_maps_all
 --> Directions: ew ns 
 --> Components: a; v; d; 
 ---------------------------------------------------------------
---> Monitor Path: /tmp1/gattif/syn2ann_maps_all/monitors
---> Monitor File: /tmp1/gattif/syn2ann_maps_all/SM_Stations_Monitors.csv
+--> Monitor Path: /tmp1/gattif/syn2ann_maps/monitors
+--> Monitor File: /tmp1/gattif/syn2ann_maps/SM_Stations_Monitors.csv
 --> Type of Simulation: S
 --> N. Monitor: 898
 --> Monitor ID: 8083 
@@ -63012,7 +63012,7 @@ Workdir: /tmp1/gattif/syn2ann_maps_all
 --> Monitor ID: 8980 
 --> Directions: ew ns --> Components: d 
 ---------------------------------------------------------------
---> Record Path: /tmp1/gattif/syn2ann_maps_all/records
+--> Record Path: /tmp1/gattif/syn2ann_maps/records
 --> N. Stations: 898
 --> Station ID: 
 --> Station ID: 
@@ -68407,8 +68407,8 @@ Workdir: /tmp1/gattif/syn2ann_maps_all
 --> Directions: ew ns 
 --> Components: a; v; d; 
 ---------------------------------------------------------------
---> Monitor Path: /tmp1/gattif/syn2ann_maps_all/monitors
---> Monitor File: /tmp1/gattif/syn2ann_maps_all/SM_Stations_Monitors.csv
+--> Monitor Path: /tmp1/gattif/syn2ann_maps/monitors
+--> Monitor File: /tmp1/gattif/syn2ann_maps/SM_Stations_Monitors.csv
 --> Type of Simulation: S
 --> N. Monitor: 898
 --> Monitor ID: 8981 
@@ -69311,7 +69311,7 @@ Workdir: /tmp1/gattif/syn2ann_maps_all
 --> Monitor ID: 9878 
 --> Directions: ew ns --> Components: d 
 ---------------------------------------------------------------
---> Record Path: /tmp1/gattif/syn2ann_maps_all/records
+--> Record Path: /tmp1/gattif/syn2ann_maps/records
 --> N. Stations: 898
 --> Station ID: 
 --> Station ID: 
@@ -74706,8 +74706,8 @@ Workdir: /tmp1/gattif/syn2ann_maps_all
 --> Directions: ew ns 
 --> Components: a; v; d; 
 ---------------------------------------------------------------
---> Monitor Path: /tmp1/gattif/syn2ann_maps_all/monitors
---> Monitor File: /tmp1/gattif/syn2ann_maps_all/SM_Stations_Monitors.csv
+--> Monitor Path: /tmp1/gattif/syn2ann_maps/monitors
+--> Monitor File: /tmp1/gattif/syn2ann_maps/SM_Stations_Monitors.csv
 --> Type of Simulation: S
 --> N. Monitor: 898
 --> Monitor ID: 9879 
@@ -75610,7 +75610,7 @@ Workdir: /tmp1/gattif/syn2ann_maps_all
 --> Monitor ID: 10776 
 --> Directions: ew ns --> Components: d 
 ---------------------------------------------------------------
---> Record Path: /tmp1/gattif/syn2ann_maps_all/records
+--> Record Path: /tmp1/gattif/syn2ann_maps/records
 --> N. Stations: 898
 --> Station ID: 
 --> Station ID: 
@@ -81005,8 +81005,8 @@ Workdir: /tmp1/gattif/syn2ann_maps_all
 --> Directions: ew ns 
 --> Components: a; v; d; 
 ---------------------------------------------------------------
---> Monitor Path: /tmp1/gattif/syn2ann_maps_all/monitors
---> Monitor File: /tmp1/gattif/syn2ann_maps_all/SM_Stations_Monitors.csv
+--> Monitor Path: /tmp1/gattif/syn2ann_maps/monitors
+--> Monitor File: /tmp1/gattif/syn2ann_maps/SM_Stations_Monitors.csv
 --> Type of Simulation: S
 --> N. Monitor: 898
 --> Monitor ID: 10777 
@@ -81909,7 +81909,7 @@ Workdir: /tmp1/gattif/syn2ann_maps_all
 --> Monitor ID: 11674 
 --> Directions: ew ns --> Components: d 
 ---------------------------------------------------------------
---> Record Path: /tmp1/gattif/syn2ann_maps_all/records
+--> Record Path: /tmp1/gattif/syn2ann_maps/records
 --> N. Stations: 898
 --> Station ID: 
 --> Station ID: 
@@ -87304,8 +87304,8 @@ Workdir: /tmp1/gattif/syn2ann_maps_all
 --> Directions: ew ns 
 --> Components: a; v; d; 
 ---------------------------------------------------------------
---> Monitor Path: /tmp1/gattif/syn2ann_maps_all/monitors
---> Monitor File: /tmp1/gattif/syn2ann_maps_all/SM_Stations_Monitors.csv
+--> Monitor Path: /tmp1/gattif/syn2ann_maps/monitors
+--> Monitor File: /tmp1/gattif/syn2ann_maps/SM_Stations_Monitors.csv
 --> Type of Simulation: S
 --> N. Monitor: 898
 --> Monitor ID: 11675 
@@ -88208,7 +88208,7 @@ Workdir: /tmp1/gattif/syn2ann_maps_all
 --> Monitor ID: 12572 
 --> Directions: ew ns --> Components: d 
 ---------------------------------------------------------------
---> Record Path: /tmp1/gattif/syn2ann_maps_all/records
+--> Record Path: /tmp1/gattif/syn2ann_maps/records
 --> N. Stations: 898
 --> Station ID: 
 --> Station ID: 
@@ -93603,8 +93603,8 @@ Workdir: /tmp1/gattif/syn2ann_maps_all
 --> Directions: ew ns 
 --> Components: a; v; d; 
 ---------------------------------------------------------------
---> Monitor Path: /tmp1/gattif/syn2ann_maps_all/monitors
---> Monitor File: /tmp1/gattif/syn2ann_maps_all/SM_Stations_Monitors.csv
+--> Monitor Path: /tmp1/gattif/syn2ann_maps/monitors
+--> Monitor File: /tmp1/gattif/syn2ann_maps/SM_Stations_Monitors.csv
 --> Type of Simulation: S
 --> N. Monitor: 898
 --> Monitor ID: 12573 
@@ -94507,7 +94507,7 @@ Workdir: /tmp1/gattif/syn2ann_maps_all
 --> Monitor ID: 13470 
 --> Directions: ew ns --> Components: d 
 ---------------------------------------------------------------
---> Record Path: /tmp1/gattif/syn2ann_maps_all/records
+--> Record Path: /tmp1/gattif/syn2ann_maps/records
 --> N. Stations: 898
 --> Station ID: 
 --> Station ID: 
@@ -99902,8 +99902,8 @@ Workdir: /tmp1/gattif/syn2ann_maps_all
 --> Directions: ew ns 
 --> Components: a; v; d; 
 ---------------------------------------------------------------
---> Monitor Path: /tmp1/gattif/syn2ann_maps_all/monitors
---> Monitor File: /tmp1/gattif/syn2ann_maps_all/SM_Stations_Monitors.csv
+--> Monitor Path: /tmp1/gattif/syn2ann_maps/monitors
+--> Monitor File: /tmp1/gattif/syn2ann_maps/SM_Stations_Monitors.csv
 --> Type of Simulation: S
 --> N. Monitor: 898
 --> Monitor ID: 13471 
@@ -100806,7 +100806,7 @@ Workdir: /tmp1/gattif/syn2ann_maps_all
 --> Monitor ID: 14368 
 --> Directions: ew ns --> Components: d 
 ---------------------------------------------------------------
---> Record Path: /tmp1/gattif/syn2ann_maps_all/records
+--> Record Path: /tmp1/gattif/syn2ann_maps/records
 --> N. Stations: 898
 --> Station ID: 
 --> Station ID: 
@@ -106201,8 +106201,8 @@ Workdir: /tmp1/gattif/syn2ann_maps_all
 --> Directions: ew ns 
 --> Components: a; v; d; 
 ---------------------------------------------------------------
---> Monitor Path: /tmp1/gattif/syn2ann_maps_all/monitors
---> Monitor File: /tmp1/gattif/syn2ann_maps_all/SM_Stations_Monitors.csv
+--> Monitor Path: /tmp1/gattif/syn2ann_maps/monitors
+--> Monitor File: /tmp1/gattif/syn2ann_maps/SM_Stations_Monitors.csv
 --> Type of Simulation: S
 --> N. Monitor: 898
 --> Monitor ID: 14369 
@@ -107105,7 +107105,7 @@ Workdir: /tmp1/gattif/syn2ann_maps_all
 --> Monitor ID: 15266 
 --> Directions: ew ns --> Components: d 
 ---------------------------------------------------------------
---> Record Path: /tmp1/gattif/syn2ann_maps_all/records
+--> Record Path: /tmp1/gattif/syn2ann_maps/records
 --> N. Stations: 898
 --> Station ID: 
 --> Station ID: 
@@ -112500,8 +112500,8 @@ Workdir: /tmp1/gattif/syn2ann_maps_all
 --> Directions: ew ns 
 --> Components: a; v; d; 
 ---------------------------------------------------------------
---> Monitor Path: /tmp1/gattif/syn2ann_maps_all/monitors
---> Monitor File: /tmp1/gattif/syn2ann_maps_all/SM_Stations_Monitors.csv
+--> Monitor Path: /tmp1/gattif/syn2ann_maps/monitors
+--> Monitor File: /tmp1/gattif/syn2ann_maps/SM_Stations_Monitors.csv
 --> Type of Simulation: S
 --> N. Monitor: 898
 --> Monitor ID: 15267 
@@ -113404,7 +113404,7 @@ Workdir: /tmp1/gattif/syn2ann_maps_all
 --> Monitor ID: 16164 
 --> Directions: ew ns --> Components: d 
 ---------------------------------------------------------------
---> Record Path: /tmp1/gattif/syn2ann_maps_all/records
+--> Record Path: /tmp1/gattif/syn2ann_maps/records
 --> N. Stations: 898
 --> Station ID: 
 --> Station ID: 
@@ -118799,8 +118799,8 @@ Workdir: /tmp1/gattif/syn2ann_maps_all
 --> Directions: ew ns 
 --> Components: a; v; d; 
 ---------------------------------------------------------------
---> Monitor Path: /tmp1/gattif/syn2ann_maps_all/monitors
---> Monitor File: /tmp1/gattif/syn2ann_maps_all/SM_Stations_Monitors.csv
+--> Monitor Path: /tmp1/gattif/syn2ann_maps/monitors
+--> Monitor File: /tmp1/gattif/syn2ann_maps/SM_Stations_Monitors.csv
 --> Type of Simulation: S
 --> N. Monitor: 898
 --> Monitor ID: 16165 
@@ -119703,7 +119703,7 @@ Workdir: /tmp1/gattif/syn2ann_maps_all
 --> Monitor ID: 17062 
 --> Directions: ew ns --> Components: d 
 ---------------------------------------------------------------
---> Record Path: /tmp1/gattif/syn2ann_maps_all/records
+--> Record Path: /tmp1/gattif/syn2ann_maps/records
 --> N. Stations: 912
 --> Station ID: 
 --> Station ID: 
@@ -125182,8 +125182,8 @@ Workdir: /tmp1/gattif/syn2ann_maps_all
 --> Directions: ew ns 
 --> Components: a; v; d; 
 ---------------------------------------------------------------
---> Monitor Path: /tmp1/gattif/syn2ann_maps_all/monitors
---> Monitor File: /tmp1/gattif/syn2ann_maps_all/SM_Stations_Monitors.csv
+--> Monitor Path: /tmp1/gattif/syn2ann_maps/monitors
+--> Monitor File: /tmp1/gattif/syn2ann_maps/SM_Stations_Monitors.csv
 --> Type of Simulation: S
 --> N. Monitor: 912
 --> Monitor ID: 17063 
@@ -126100,3 +126100,4 @@ Workdir: /tmp1/gattif/syn2ann_maps_all
 --> Monitor ID: 17974 
 --> Directions: ew ns --> Components: d 
 ---------------------------------------------------------------
+JOB : 1JOB : 2JOB : 3JOB : 4JOB : 5JOB : 6JOB : 7JOB : 8JOB : 9JOB : 10JOB : 11JOB : 12JOB : 13JOB : 14JOB : 15JOB : 16JOB : 17JOB : 18JOB : 19JOB : 20>> >> >> >> 
