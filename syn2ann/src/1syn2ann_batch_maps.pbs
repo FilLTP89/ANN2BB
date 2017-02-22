@@ -1,0 +1,60 @@
+#!/bin/bash
+
+#PBS -S /bin/bash
+#PBS -N matlab
+#PBS -o mo.txt
+#PBS -j oe
+#PBS -l walltime=00:10:00
+#PBS -l select=1:ncpus=1
+#PBS -q iceq
+#PBS -m e -M filippo.gatti@centralesupelec.fr
+
+#chargement des modules
+module purge
+module load matlab/r2015b
+
+#On se place dans le repertoire depouis lequel le job a ete soumis
+cd $PBS_O_WORKDIR
+cd /home/gattif/PHD_passing_through_polimi/syn2ann/src/
+
+matlab -nodesktop -nosplash -nodisplay -r 'syn2ann_drive'
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(1)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(2)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(3)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(4)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(5)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(6)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(7)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(8)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(9)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(10)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(11)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(12)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(13)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(14)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(15)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(16)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(17)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(18)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(19)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(20)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(21)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(22)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(23)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(24)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(25)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(26)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(27)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(28)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(29)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(30)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(31)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(32)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(33)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(34)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(35)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(36)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(37)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(38)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(39)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(40)"

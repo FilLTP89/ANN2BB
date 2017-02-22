@@ -84,7 +84,7 @@ mon.hyb = 'butter';
 mon.map.flg = 1;
 mon.map.typ = {'pga','pgv','psa'};
 mon.map.stk = 95;
-mon.map.vTn.psa = [0.1,0.2,0.5,0.7];
+mon.map.vTn.psa = [0.1,0.2,0.5];
 mon.map.vTn.rsd = 0.75;
 mon.map.fnm = '/workdir/gattif/syn2ann_maps/map_mrn';
 
