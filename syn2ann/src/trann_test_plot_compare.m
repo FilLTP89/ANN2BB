@@ -17,18 +17,18 @@ cd(wd);close all;
 % records-pbs
 clr0 = [rgb('Navy');rgb('IntenseBlue')];
 % fil-fil-pbs-empirical/stochastic-hybrid
-clr10 = [rgb('IntenseBlue');rgb('IntenseGreen');rgb('Orange')];
-clr11 = [rgb('DarkGrey');rgb('DarkGrey');rgb('IntenseBlue');rgb('IntenseGreen');rgb('Orange')];
+clr10 = [rgb('IntenseBlue');rgb('IntenseGreen');rgb('IntenseOrange')];
+clr11 = [rgb('DarkGrey');rgb('DarkGrey');rgb('IntenseBlue');rgb('IntenseGreen');rgb('IntenseOrange')];
 % records-pbs-empirical/stochastic-hybrid
-clr12 = [rgb('Navy');rgb('IntenseBlue');rgb('IntenseGreen');rgb('Orange')];
+clr12 = [rgb('Navy');rgb('IntenseBlue');rgb('IntenseGreen');rgb('IntenseOrange')];
 % records-pbs-hybrid-hybrid
-clr121 = [rgb('OrangeRed');rgb('Black');[0.4 0.4 0.4];rgb('Black')];
+clr121 = [rgb('IntenseOrange');rgb('Black');[0.4 0.4 0.4];rgb('Black')];
 % [rgb('Navy');rgb('IntenseBlue');rgb('Red');rgb('IntenseGreen')];
-%[rgb('DarkOrange');rgb('Black');[0.5 0.5 0.5];[0.7 0.7 0.7]];
+%[rgb('DarkIntenseOrange');rgb('Black');[0.5 0.5 0.5];[0.7 0.7 0.7]];
 % record-hybrid-ann-spectral-matched
-clr2 = [rgb('Navy');rgb('Orange');rgb('Red');rgb('Red')];
+clr2 = [rgb('Navy');rgb('IntenseOrange');rgb('Red');rgb('Red')];
 % records-spectral-matched
-clr21 = [rgb('Navy');rgb('IntenseBlue');rgb('Red');rgb('Orange')];
+clr21 = [rgb('Navy');rgb('IntenseBlue');rgb('Red');rgb('IntenseOrange')];
 % records-spectral-matched
 clr3 = [rgb('Navy');rgb('Red')];
 %cpp.rec = {'ew';'ns';'ud'};
@@ -36,12 +36,14 @@ clr3 = [rgb('Navy');rgb('Red')];
 %dlg{1} = 'EW';
 %dlg{2} = 'NS';
 %dlg{3} = 'UD';
-%
-%spp = '/home/filippo/Scrivania/ann';
-spp = fullfile(filesep,'tmp1','gattif','heavy_images_new');
+
+spp = '/home/filippo/Scrivania/ann';
+if exist(spp,'dir')~=7
+    spp = fullfile(filesep,'tmp1','gattif','heavy_images_new');
+end
 trann_setup_axes_common;
 if size(cpp.ann)==1
-    disp('COMPARE BY SITE CLASS!');
+    
     flag.ann = seismo_dir_conversion(cpp.ann);
     ann.scp = cell(tst.mtd.nr,1);
     for kk_=1:tst.mtd.nr
@@ -49,8 +51,10 @@ if size(cpp.ann)==1
     end
     for mm_ = 1:bhr.ns
         trann_setup_axes_single;
-%        trann_plot_res_compare_periods;
-        trann_plot_res_compare_siteclass;
+        disp('COMPARE BY NATURAL PERIOD!');
+        trann_plot_res_compare_periods;
+%         disp('COMPARE BY SITE CLASS!');
+%         trann_plot_res_compare_siteclass;
     end
 else
     disp('ERROR: ANN TRAINED ON DIFFERENT COMPONENTS!');

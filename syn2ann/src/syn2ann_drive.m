@@ -51,6 +51,7 @@ else
     %% *6). PLOT RESULTS*
     syn2ann_plot_res_single;
 end
+exit
 %    return
 %
 %end

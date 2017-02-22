@@ -13,11 +13,6 @@ function trann_train_psa_performance(varargin)
     xpl = cell(3,1);
     ypl = cell(3,1);
     
-    col = [0,0,0];
-    mrk = {'o';'d';'v'};
-    lst = {'-';'--';':'};
-    leg = {'ALL';'TRAINING';'VALIDATION';'TEST'};
-    set(0,'defaultaxescolororder',col);
     
     %% *DEFINE LIMITS*
     % _TRAINING SET_ 
@@ -26,7 +21,7 @@ function trann_train_psa_performance(varargin)
     [xtk,ytk] = get_axis_tick(xlm,ylm,abs(diff(xlm))/4,abs(diff(ylm))/4);
     
     
-    %% *COMPUTE REGRESSION FOR BEST ANN*
+    %% *COMPUTE ERROR BARS*
     % _TRAINING SET_ 
     %
 %     xpl{1,1} = tar.vTn(:)./TnC;

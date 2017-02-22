@@ -20,32 +20,31 @@ function [varargout] = test_ann_justPSA(varargin)
     % _define input/target natural periods_
     %
     [inp.vTn,tar.vTn,inp.nT,tar.nT] = trann_define_inout(ann.TnC);
+    [inp.idx,tar.idx] = trann_check_vTn(inp,tar,rec.mon,1e-8);
     ann.mon.vTn = [tar.vTn(:);inp.vTn(:)];
     
     for i_=1:rec.mon.na
         %
         % _check input/target natural periods with database_
         %
-        [inp.idx,tar.idx] = trann_check_vTn(inp,tar,rec.mon,1e-8);
-        
+        flag.ann = seismo_dir_conversion(ann.cpp);
+        inp.psa = ones(numel(inp.idx),1);
+        %         if strcmpi(ann.cpp,'gh')
+        fprintf('TESTING ANN ON COMPONENT:\n');
+        count=0;
         for j_ = 1:rec.mon.nc
             cpp.rec = rec.mon.cp{j_};
-            cpp.ann = ann.cpp;
-            
             flag.rec = seismo_dir_conversion(cpp.rec);
-            flag.ann = seismo_dir_conversion(cpp.ann);
             
             if any(strcmpi(flag.rec,flag.ann))
-                inp.psa = rec.syn{i_}.psa.(cpp.rec)(:);
-                inp.psa = inp.psa(inp.idx,1);
-                try 
-                    out.psa = 10.^(sim(ann.net,log10(inp.psa*100)));
-                catch
-                    out.psa = 10.^(sim(ann.net.net,log10(inp.psa*100)));
-                end
-                ann.syn{i_}.psa.(cpp.rec) = [out.psa(:)./100;inp.psa(:)];
+                fprintf('---> %s FOUND!\n',cpp.rec);
+                count = count+1;
+                inp.psa = inp.psa.*rec.syn{i_}.psa.(cpp.rec)(inp.idx,1);
             end
         end
+        inp.psa = inp.psa.^(1/count);
+        out.psa = 10.^(sim(ann.net,log10(inp.psa*100)));
+        ann.syn{i_}.psa.(ann.cpp) = [out.psa(:)./100;inp.psa(:)];
     end
     
     %% *OUTPUT*

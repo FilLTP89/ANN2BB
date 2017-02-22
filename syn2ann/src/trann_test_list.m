@@ -147,11 +147,11 @@ fnn.bhrr = numel(fni.bhrr);
 % _number of ann to be tested_
 tst.mtd.nr = 3;
 % _site class considered : ALL,AB,CD_
-tst.mtd.scl = {'ALL';'ALL';'ALL'};
+tst.mtd.scl = {'ALL';'CD';'ALL'};
 % _corner period for each ANN_
 tst.mtd.TnC = {0.5;0.75;1.00};
 % _ANN motion component : gh,ud (geometric mean horizontal, updip)_
-tst.mtd.cpp = {'gh';'gh';'gh'};
+tst.mtd.cpp = {'ud';'ud';'gh'};
 tst.mtd.Tno = [0.5;0.75;1.00];
 % for i_ = 1:tst.mtd.nr
 %     tst.mtd.nl(i_) = {sprintf('net_%u_%s_%s_new.mat',...
