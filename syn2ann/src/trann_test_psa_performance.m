@@ -5,8 +5,9 @@ function trann_test_psa_performance(varargin)
     identity = varargin{3};
     stdd = varargin{4};
     fnm = varargin{5};
-    
-    mrk = {'d','s','v'};
+    col = [0,0,0;0.4,0.4,0.4;0,0,0];
+    set(0,'defaultaxescolororder',col);
+    mrk = {'none','s','v'};
     lwd = 1;
     plot_set_up;
     xlm = [0;1];
@@ -41,14 +42,13 @@ function trann_test_psa_performance(varargin)
             ';T^\star=',num2str(ann{i_}.TnC,'%.2f'),'s\right)$');
     end
     
-    fpplot('xpl',xpl,'ypl',ypl,'pfg',[0,0,10,10],'vfg','on',...
+    fpplot('xpl',xpl,'ypl',ypl,'pfg',[0,0,10,10],...
         'mrk',mrk,'lwd',lwd,'tit',{stdd},...
         'xlb',{'T/T* [1]'},'xlm',{xlm},'xtk',{xtk},...
         'ylb',{'log_{10}(Sa_{ANN}/Sa_{REC}) [1]'},'ylm',{ylm},'ytk',{ytk},...
         'leg',{leg});
     
     saveas(gcf,strcat(fnm,'_prf'),'epsc');
-    
     
     return
 end

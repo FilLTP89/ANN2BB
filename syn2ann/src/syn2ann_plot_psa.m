@@ -1,10 +1,11 @@
 %% *SA SPECTRA*
 for i_ = 1:spg(1)
-    try
     xpl{i_} = xplot{i_}.mon.vTn;
-    ypl{i_} = abs(xplot{i_}.syn{identity}.psa.(cpp))*utd.psa;
+    try
+        ypl{i_} = abs(xplot{i_}.syn{identity}.psa.(cpp))*utd.psa;
     catch
-        keyboard
+        disp('PLOTTING GEOEMTRIC MEAN PSA!')
+        ypl{i_} = abs(xplot{i_}.syn{identity}.psa.gh)*utd.psa;
     end
 end
 leg = {legplot};

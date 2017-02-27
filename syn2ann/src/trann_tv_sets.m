@@ -34,8 +34,8 @@ function [varargout] = trann_tv_sets(varargin)
     Q2   = nr-Q1;
     
     idx.all(:,1) = randperm(nr);
-    idx.vld    = idx.all(1:Q1,1);
-    idx.trn    = idx.all(Q1+(1:Q2),1);
+    idx.vld      = idx.all(1:Q1,1);
+    idx.trn      = idx.all(Q1+(1:Q2),1);
     
     %% *OUTPUT*
     varargout{1} = idx.trn;
