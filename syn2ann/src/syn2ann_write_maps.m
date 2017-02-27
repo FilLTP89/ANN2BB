@@ -4,10 +4,11 @@
 % DICA - Politecnico di Milano
 % Copyright 2016_
 %% *NOTES*
-% _syn2amon.na_write_map_spms_: function to write contour map_spms
+% _syn2ann_write_maps_: function to write contour maps on csv file and on
+% different procs
 %% *N.B.*
 % Need for:
-% __
+% _syn2ann_run.m,rotationComponent2D.m,super_csvwrite.m_
 
 function [varargout] = syn2ann_write_maps(varargin)
     NJB = varargin{1};
