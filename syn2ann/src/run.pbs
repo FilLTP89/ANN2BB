@@ -2,10 +2,10 @@
 
 #PBS -S /bin/bash
 #PBS -N matlab
-#PBS -o mo.txt
+#PBS -o ro30.txt
 #PBS -j oe
-#PBS -l walltime=00:10:00
-#PBS -l select=1:ncpus=1
+#PBS -l walltime=04:00:00
+#PBS -l select=16:ncpus=12
 #PBS -q iceq
 #PBS -m e -M filippo.gatti@centralesupelec.fr
 
@@ -17,7 +17,6 @@ module load matlab/r2015b
 cd $PBS_O_WORKDIR
 cd /home/gattif/PHD_passing_through_polimi/syn2ann/src/
 
-matlab -nodesktop -nosplash -nodisplay -r 'syn2ann_drive'
 #matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(1)"
 #matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(2)"
 #matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(3)"
@@ -34,20 +33,20 @@ matlab -nodesktop -nosplash -nodisplay -r 'syn2ann_drive'
 #matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(14)"
 #matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(15)"
 #matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(16)"
-#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(17)"
-#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(18)"
-#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(19)"
-#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(20)"
-#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(21)"
-#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(22)"
-#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(23)"
-#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(24)"
-#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(25)"
-#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(26)"
-#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(27)"
-#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(28)"
-#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(29)"
-#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(30)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(17)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(18)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(19)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(20)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(21)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(22)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(23)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(24)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(25)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(26)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(27)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(28)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(29)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(30)"
 #matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(31)"
 #matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(32)"
 #matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(33)"
@@ -57,4 +56,14 @@ matlab -nodesktop -nosplash -nodisplay -r 'syn2ann_drive'
 #matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(37)"
 #matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(38)"
 #matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(39)"
-#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(40)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(41)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(42)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(43)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(44)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(45)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(46)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(47)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(48)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(49)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(50)"
+#
