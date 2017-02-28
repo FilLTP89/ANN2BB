@@ -3,15 +3,17 @@
 % CentraleSupélec - Laboratoire MSSMat
 % DICA - Politecnico di Milano
 % Copyright 2016_
-%% NOTES
-% parse_kiknet_file: function to parse and synchronize records from KIKNET database
-%% INPUT:
-% * fn (file name)
-%% OUTPUT:
-% * dtm (time-step)
-% * ntm (number of time-steps)
-% * vtm (time-vector)
-% * th (structure of parsed th)
+%% *NOTES*
+% _parse_kiknet_file_: function to parse and synchronize records from KIKNET database
+%% *INPUT*
+% * _fn (file name)_
+%% *OUTPUT*
+% * _dtm (time-step)_
+% * _ntm (number of time-steps)_
+% * _vtm (time-vector)_
+% * _th (structure of parsed th)_
+% * _mon_lon (station longitude)_
+% * _mon_lat (station latitude)_
 
 function [varargout] = parse_kiknet_file(varargin)
     %% *SET-UP*
@@ -21,6 +23,11 @@ function [varargout] = parse_kiknet_file(varargin)
     tag_string(3) = {'Memo.'};
     tag_string(4) = {'Record'};
     tag_string(5) = {'Origin'};
+    tag_string(6) = {'Station'};
+    tag_string(7) = {'Long.'};
+    tag_string(8) = {'Lat.'};
+    tag_string(9) = {'Height(m)'};
+    
     
     fid = fopen(fn);
     if fid==-1
@@ -29,9 +36,23 @@ function [varargout] = parse_kiknet_file(varargin)
     
     data = textscan(fid,'%s');
     fclose all;
-    for i_ = 1:numel(tag_string)
+    for i_ = 1:5
         idx(i_) = find(strcmpi(data{1},tag_string{i_})==1)+2;
     end
+    idx(10) = find(strcmpi(data{1},tag_string{9})==1)+1;
+    
+    idx0{1} = strcmpi(data{1},tag_string{6});
+    idx0{2} = strcmpi(data{1},tag_string{7});
+    idx0{3} = strcmpi(data{1},tag_string{8});
+    
+    idx0{4} = -999*idx0{3}+99*idx0{2};
+    idx0{2} = -999*idx0{1}+99*idx0{2};
+    idx0{3} = -999*idx0{1}+99*idx0{3};
+    
+    idx(6) = findstr(idx0{2}', [-999;99]')+2;
+    idx(7) = findstr(idx0{3}', [-999;99]')+2;
+    idx(8) = findstr(idx0{4}', [-999;0;99]')+3;
+    idx(9) = findstr(idx0{4}', [-999;0;99]')+1;
     
     dtm = 1/str2double(data{1}{idx(1)}(1:3));
     
@@ -59,12 +80,27 @@ function [varargout] = parse_kiknet_file(varargin)
 %     end
     ntm = numel(th);
     vtm = dtm*(0:ntm-1)';
+    
+    %% *LON/LAT*
+    mon_lon = str2double(data{1}(idx(6)));
+    mon_lat = str2double(data{1}(idx(7)));
+    mon_hgt = str2double(data{1}(idx(10)));
+    src_lon = str2double(data{1}(idx(8)));
+    src_lat = str2double(data{1}(idx(9)));
+    
     %% *OUTPUT*
     varargout{1} = dtm;
     varargout{2} = ntm;
     varargout{3} = vtm;
     varargout{4} = th;
     varargout{5} = nsample_shift;
+    warning('check output!---> lat/lon added');
+    varargout{6} = mon_lon;
+    varargout{7} = mon_lat;
+    varargout{8} = mon_hgt;
+    varargout{9} = src_lon;
+    varargout{10} = src_lat;
+    
 %     dtm = cell2mat(metadata(32));dtm=str2double(dtm(1:3));
 %     scale_factor=cell2mat(metadata(40));
 %     idx=strfind(scale_factor,'(gal)/');
