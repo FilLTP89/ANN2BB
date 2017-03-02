@@ -31,13 +31,14 @@ function [varargout] = arias_intensity(varargin)
     grv = 9.81;
     
     %% *ARIAS INTENSITY*
-    Ain = cumtrapz(tha(2:end).^2);
+    Ain = cumtrapz(tha(1:end).^2);
     % Ain = cumsum(tha.^2);
     
     %
     % _normalization
     %
     Ain = (0.5.*pi.*dtm./grv).*Ain;
+    varargout{4} = max(Ain);
     Ain = Ain./max(Ain);
     %% *INDEX*
     idx = find(Ain<=idx,1,'last');
@@ -46,5 +47,6 @@ function [varargout] = arias_intensity(varargin)
     varargout{1} = vtm_idx;
     varargout{2} = idx;
     varargout{3} = Ain;
+    
     return
 end
