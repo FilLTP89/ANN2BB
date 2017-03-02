@@ -53,6 +53,7 @@ function [varargout] = parse_kknpp_file(varargin)
     varargout{7} = data.siteZ;
     varargout{8} = data.eventLon;
     varargout{9} = data.eventLat;
+    varargout{10} = str2double(data.eventM);
     
     return
 end

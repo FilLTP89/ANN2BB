@@ -95,6 +95,7 @@ function [varargout] = bpf_tha(varargin)
         [tha,thv,thd] = idc_tha(dtm,tha,bfb,bfa);
         
     else
+        disp('---> TIME-INTEGRATION UNCORRECTED ACCELERATION!')
         npd0 = 0;
         npd1 = 0;
         %% *TIME INTEGRATION*

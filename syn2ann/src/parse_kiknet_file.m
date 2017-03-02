@@ -27,6 +27,7 @@ function [varargout] = parse_kiknet_file(varargin)
     tag_string(7) = {'Long.'};
     tag_string(8) = {'Lat.'};
     tag_string(9) = {'Height(m)'};
+    tag_string(10) = {'Mag.'};
     
     
     fid = fopen(fn);
@@ -40,7 +41,8 @@ function [varargout] = parse_kiknet_file(varargin)
         idx(i_) = find(strcmpi(data{1},tag_string{i_})==1)+2;
     end
     idx(10) = find(strcmpi(data{1},tag_string{9})==1)+1;
-    
+    idx(11) = find(strcmpi(data{1},tag_string{10})==1)+1;
+
     idx0{1} = strcmpi(data{1},tag_string{6});
     idx0{2} = strcmpi(data{1},tag_string{7});
     idx0{3} = strcmpi(data{1},tag_string{8});
@@ -87,6 +89,7 @@ function [varargout] = parse_kiknet_file(varargin)
     mon_hgt = str2double(data{1}(idx(10)));
     src_lon = str2double(data{1}(idx(8)));
     src_lat = str2double(data{1}(idx(9)));
+    M_JMA   = str2double(data{1}(idx(11)));
     
     %% *OUTPUT*
     varargout{1} = dtm;
@@ -100,6 +103,7 @@ function [varargout] = parse_kiknet_file(varargin)
     varargout{8} = mon_hgt;
     varargout{9} = src_lon;
     varargout{10} = src_lat;
+    varargout{11} = M_JMA;
     
 %     dtm = cell2mat(metadata(32));dtm=str2double(dtm(1:3));
 %     scale_factor=cell2mat(metadata(40));

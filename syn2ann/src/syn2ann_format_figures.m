@@ -19,7 +19,7 @@ function syn2ann_format_figures(hax)
     zl = get(hax,'zlabel');
     set(zl,'fontsize',15);%20,24
     li = get(hax,'children');
-    set(li,'markersize',6);%2.5-3
+    set(li,'markersize',8);%2.5-3
     set(hax,'linewidth',1.6,'fontsize',13);   %2,2-3,20
    
 end
