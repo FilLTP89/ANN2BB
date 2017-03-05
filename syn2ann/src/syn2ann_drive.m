@@ -17,7 +17,7 @@
 
 %function syn2ann_drive(varargin)
 
-flag_map = 1;
+flag_map = 0;
 
 %    if nargin>0
 %        flag_map = varargin{1};
@@ -34,8 +34,10 @@ if flag_map
 else
     
     %% *1). ANALYSIS SET-UP*
+    % #checked with Ali/Maria
     syn2ann_setup_fast;
     
+    % #checked with Ali/Maria
     %% *2). PARSING REC*
     syn2ann_rec_drive;
     
