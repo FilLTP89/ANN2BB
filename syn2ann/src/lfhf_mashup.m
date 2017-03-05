@@ -154,22 +154,16 @@ function [varargout] = lfhf_hybridator(varargin)
                     slf.syn{i_}.thd.(cpp) = filtfilt(bfb.slf,bfa.slf,slf.syn{i_}.thd.(cpp));
                     slf.syn{i_}.thv.(cpp) = avd_diff(slf.mon.dtm(i_),slf.syn{i_}.thd.(cpp));
                     slf.syn{i_}.tha.(cpp) = avd_diff(slf.mon.dtm(i_),slf.syn{i_}.thv.(cpp));
-                    %                     slf.syn{i_}.thv.(cpp) = freq_differentiate(slf.syn{i_}.thd.(cpp),1./slf.mon.dtm(i_));
-                    %                     slf.syn{i_}.tha.(cpp) = freq_differentiate(slf.syn{i_}.thv.(cpp),1./slf.mon.dtm(i_));
-                    %
+
                     shf.syn{i_}.thd.(cpp) = filtfilt(bfb.shf,bfa.shf,shf.syn{i_}.thd.(cpp));
                     shf.syn{i_}.thv.(cpp) = avd_diff(shf.mon.dtm(i_),shf.syn{i_}.thd.(cpp));
                     shf.syn{i_}.tha.(cpp) = avd_diff(shf.mon.dtm(i_),shf.syn{i_}.thv.(cpp));
-                    %                     shf.syn{i_}.thv.(cpp) = vfr_diff(shf.syn{i_}.thd.(cpp),1./shf.mon.dtm(i_));
-                    %                     shf.syn{i_}.tha.(cpp) = vfr_diff(shf.syn{i_}.thv.(cpp),1./shf.mon.dtm(i_));
-
+                    
                     hyb.syn{i_}.tha.(cpp) = slf.syn{i_}.tha.(cpp)+shf.syn{i_}.tha.(cpp);
                     %% *HYBRID VELOCITY-DISPLACEMENTS*
                     [~,hyb.syn{i_}.thv.(cpp),hyb.syn{i_}.thd.(cpp)] = ...
                         idc_tha(hyb.mon.dtm(i_),hyb.syn{i_}.tha.(cpp));
                     
-                    %                     hyb.syn{i_}.thv.(cpp) = freq_integrate(hyb.syn{i_}.tha.(cpp),1./hyb.mon.dtm(i_));
-                    %                     hyb.syn{i_}.thd.(cpp) = freq_integrate(hyb.syn{i_}.thv.(cpp),1./hyb.mon.dtm(i_));
                 end
                 slf.mon.ntm(i_) = numel(slf.syn{i_}.tha.(cpp));
                 slf.mon.vtm(i_) = {slf.mon.dtm(i_)*(0:slf.mon.ntm(i_)-1)'};

@@ -24,6 +24,7 @@ for i_=1:mon.na
         cpn = mon.cp{j_};
         
         %% *NORMALIZED AVERAGE ERROR OVER ITERATIONS*
+        keyboard
         err.nav{i_}.psa.(cpn)(:,1) = err.avg{i_}.psa.(cpn)(:,1)./max(err.avg{i_}.psa.(cpn)(:,1));
         
         %% *NORMALIZED MAXIMUM ERROR OVER ITERATIONS*
