@@ -48,10 +48,10 @@ else
     % syn2ann_coherency_drive;
     
     % %% *5). SAVE RESULTS*
-    % syn2ann_save_res;
+    syn2ann_save_res;
     
     %% *6). PLOT RESULTS*
-    syn2ann_plot_res_single;
+%     syn2ann_plot_res_single;
 end
 exit
 %    return

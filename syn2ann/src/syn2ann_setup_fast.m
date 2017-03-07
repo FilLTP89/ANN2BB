@@ -26,7 +26,7 @@ sp = '/home/filippo/Scrivania/ann';
 %% *LOAD ALL METADATA AVAILABLE*
 syn2ann_case_list_fast;
 % _select analyses : selected_case = [a,b,...,d]_
-selected_case = [1,2,5,34,35];
+selected_case = 2;%[1,2,5,34,35];
 
 %% *DEFINE REAL RECORDS METADATA*
 % _path to record files_
@@ -118,7 +118,7 @@ mon.map.fnm = '/tmp1/gattif/syn2ann_maps/map_mrn';
 
 %% *DEFINE HYBRIDIZATION METADATA*
 % number of iteration for hybrid selections
-MAXIT = 10;
+MAXIT = 1;
 % _SP96 metadata_
 hybrid_type='sp96';
 mtd.sp96.na = mon.na;
