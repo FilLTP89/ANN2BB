@@ -8,8 +8,8 @@ function [varargout] = evt2tit(varargin)
             fgn = evt(1:end);
             evt = evt(1:end-2);
         case {'kiknet','knet'}
+            evt = strcat('20',evt,'00');
             fgn = evt;
-            evt = strcat('20',evt);
     end
     evt = strcat(evt(1:4),'-',evt(5:6),'-',evt(7:8),{' '},evt(9:10),':',evt(11:12));
     fgn = strcat(fgn(1:8),'_',fgn(9:14));

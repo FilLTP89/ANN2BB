@@ -20,7 +20,7 @@ function syn2ann_plot_compare(varargin)
     end
     
     spg = numel(xplot);
-    if any(flags(3:end))
+    if any(flags(3:end)>0)
         pfg.tha.c = (spg==1)*(pfg.tha.s)+(spg==2)*(pfg.tha.d)+(spg==3)*(pfg.tha.t);
         pfg.thv.c = pfg.tha.c;
         pfg.thd.c = pfg.tha.c;
