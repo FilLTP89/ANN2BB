@@ -42,20 +42,37 @@ if exist(spp,'dir')~=7
     spp = fullfile(filesep,'tmp1','gattif','heavy_images_new');
 end
 trann_setup_axes_common;
-if size(cpp.ann)==1
-    
-    flag.ann = seismo_dir_conversion(cpp.ann);
-    ann.scp = cell(tst.mtd.nr,1);
-    for kk_=1:tst.mtd.nr
-        ann.scp(kk_,1) = ann.tst(kk_);
-    end
-    for mm_ = 1:bhr.ns
-        trann_setup_axes_single;
-        disp('COMPARE BY NATURAL PERIOD!');
-        trann_plot_res_compare_periods;
-%         disp('COMPARE BY SITE CLASS!');
-%         trann_plot_res_compare_siteclass;
-    end
-else
-    disp('ERROR: ANN TRAINED ON DIFFERENT COMPONENTS!');
+switch(typ_cmp)
+    case 'TnC'
+        if size(cpp.ann)==1
+            
+            flag.ann = seismo_dir_conversion(cpp.ann);
+            ann.scp = cell(tst.mtd.nr,1);
+            for kk_=1:tst.mtd.nr
+                ann.scp(kk_,1) = ann.tst(kk_);
+            end
+            for mm_ = 1:bhr.ns
+                trann_setup_axes_single;
+                disp('COMPARE BY NATURAL PERIOD!');
+                trann_plot_res_compare_periods;
+            end
+        else
+            disp('ERROR: ANN TRAINED ON DIFFERENT COMPONENTS!');
+        end
+    case 'scl'
+        if size(cpp.ann)==1
+            
+            flag.ann = seismo_dir_conversion(cpp.ann);
+            ann.scp = cell(tst.mtd.nr,1);
+            for kk_=1:tst.mtd.nr
+                ann.scp(kk_,1) = ann.tst(kk_);
+            end
+            for mm_ = 1:bhr.ns
+                trann_setup_axes_single;
+                disp('COMPARE BY SITE CLASS!');
+                trann_plot_res_compare_siteclass;
+            end
+        else
+            disp('ERROR: ANN TRAINED ON DIFFERENT COMPONENTS!');
+        end
 end

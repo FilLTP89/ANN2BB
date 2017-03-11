@@ -33,4 +33,5 @@ trann_test;
 
 %% *PLOTTING TEST RESULTS*
 % trann_test_plot_single;
+typ_cmp = 'scl';
 trann_test_plot_compare;
