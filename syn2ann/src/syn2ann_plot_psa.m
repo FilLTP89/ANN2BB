@@ -1,15 +1,17 @@
 %% *SA SPECTRA*
-for i_ = 1:spg(1)
-    xpl{i_} = xplot{i_}.mon.vTn;
-    try
+if flags(1)==1
+    for i_ = 1:spg(1)
+        xpl{i_} = xplot{i_}.mon.vTn;
         ypl{i_} = abs(xplot{i_}.syn{identity}.psa.(cpp))*utd.psa;
-    catch
+    end
+elseif flags(1)==2
+    for i_ = 1:spg(1)
         disp('PLOTTING GEOEMTRIC MEAN PSA!')
+        xpl{i_} = xplot{i_}.mon.vTn;
         ypl{i_} = abs(xplot{i_}.syn{identity}.psa.gh)*utd.psa;
     end
 end
 leg = {legplot};
-
 if logical(mod)
     fpplot('xpl',xpl,'ypl',ypl,'pfg',pfg.psa,...
         'scl',scl.psa,'grd',grd.psa,'mrk',mrkd,'lst',lstd,'lwd',lwdd,...

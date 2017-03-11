@@ -39,6 +39,11 @@ function [varargout] = syn2ann_spp(varargin)
                     sas.mon.dtm(i_),sas.mon.vTn,sas.mon.zeta,[1,2]);
             end
         end
+        if numel(intersect(sas.mon.cp,{'ew','ns'}))>1
+            for i_ = 1:sas.mon.na
+                sas.syn{i_}.psa.gh = geomean([sas.syn{i_}.psa.ew(:),sas.syn{i_}.psa.ns(:)],2);
+            end
+        end
     end
     %% *FOURIER SPECTRUM*
     if any(out_sel==2)
