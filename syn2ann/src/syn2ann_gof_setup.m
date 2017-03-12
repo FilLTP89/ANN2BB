@@ -16,13 +16,9 @@ for i_=1:mon.na
     for j_ = 1:mon.nc
         cpn = mon.cp{j_};
         err.sng{i_}.psa.(cpn) = zeros(trs.sps.(cpn).mon.nT,MAXIT);
-        err.avg{i_}.tha.(cpn) = zeros(MAXIT,1);
         err.avg{i_}.psa.(cpn) = zeros(MAXIT,1);
-        err.max{i_}.tha.(cpn) = zeros(MAXIT,1);
         err.max{i_}.psa.(cpn) = zeros(MAXIT,1);
-        err.nav{i_}.tha.(cpn) = zeros(MAXIT,1);
         err.nav{i_}.psa.(cpn) = zeros(MAXIT,1);
-        err.nmx{i_}.tha.(cpn) = zeros(MAXIT,1);
         err.nmx{i_}.psa.(cpn) = zeros(MAXIT,1);
     end
 end

@@ -118,7 +118,7 @@ mon.map.fnm = '/tmp1/gattif/syn2ann_maps/map_mrn';
 
 %% *DEFINE HYBRIDIZATION METADATA*
 % number of iteration for hybrid selections
-MAXIT = 1;
+MAXIT = 3;
 % _SP96 metadata_
 hybrid_type='sp96';
 mtd.sp96.na = mon.na;

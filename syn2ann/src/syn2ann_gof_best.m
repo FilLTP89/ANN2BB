@@ -12,25 +12,31 @@ fprintf('============================\n');
 fprintf('---------8. BEST GOF--------\n');
 fprintf('============================\n');
 wgt = 1.00/mon.nc;
-%% *LOOP OVER NUMBER OF MONITORS*
+
+% _MONITORS_
 for i_=1:mon.na
     
-    % FINAL CUMULATIVE GOF (ALL)
+    % _FINAL CUMULATIVE GOF (ALL)_
     err.gof{i_}.psa.all = zeros(MAXIT,1);
     
-    %% *LOOP OVER NUMBER OF DIRECTIONS*
+    % _DIRECTIONS_
     for j_ = 1:mon.nc
         
         cpn = mon.cp{j_};
         
         %% *NORMALIZED AVERAGE ERROR OVER ITERATIONS*
         
-        err.nav{i_}.psa.(cpn)(:,1) = err.avg{i_}.psa.(cpn)(:,1)./max(err.avg{i_}.psa.(cpn)(:,1));
+        % # checked with maria
+        err.nav{i_}.psa.(cpn)(:,1) = ...
+            err.avg{i_}.psa.(cpn)(:,1)./max(err.avg{i_}.psa.(cpn)(:,1));
         
         %% *NORMALIZED MAXIMUM ERROR OVER ITERATIONS*
-        err.nmx{i_}.psa.(cpn)(:,1) = err.max{i_}.psa.(cpn)(:,1)./max(err.max{i_}.psa.(cpn)(:,1));
+        % # checked with maria
+        err.nmx{i_}.psa.(cpn)(:,1) = ...
+            err.max{i_}.psa.(cpn)(:,1)./max(err.max{i_}.psa.(cpn)(:,1));
         
         %% *GOF OF SINGLE DIRECTION*
+        % # checked with maria
         %         err.gof{i_}.psa.(cpn)(:,1) = (2/3).*err.nav{i_}.psa.(cpn)(:,1)+...
         %             (1/3).*err.nmx{i_}.psa.(cpn)(:,1);
         err.gof{i_}.psa.(cpn)(:,1) = (1.00).*err.nav{i_}.psa.(cpn)(:,1)+...
@@ -41,6 +47,7 @@ for i_=1:mon.na
         
         
         %% *CUMULATIVE GOF OVER DIRECTIONS*
+        % # checked with maria
         % wgt = 0.25+0.25*(strcmpi(cpn,'ud'));
         err.gof{i_}.psa.all(:,1) = err.gof{i_}.psa.all(:,1) + ...
             wgt.*err.gof{i_}.psa.(cpn)(:,1);
