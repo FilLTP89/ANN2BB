@@ -12,8 +12,7 @@ elseif flags(1)==2
         ypl{i_} = abs(xplot{i_}.syn{identity}.psa.gh)*utd.psa;
     end
     title = std{1};
-    title(end-1:end) = 'GM';
-    title=strcat(title,'H');
+    title(end-1:end) = 'GH';
 end
 leg = {legplot};
 if logical(mod)

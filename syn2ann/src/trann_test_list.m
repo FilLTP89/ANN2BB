@@ -146,13 +146,24 @@ fnn.bhrr = numel(fni.bhrr);
 %% *DEFINE ANN TEST METADATA*
 % _number of ann to be tested_
 tst.mtd.nr = 3;
-% _site class considered : ALL,AB,CD_
-tst.mtd.scl = {'ALL';'AB';'CD'};
-% _corner period for each ANN_
-tst.mtd.TnC = {0.75;0.75;0.75};
-% _ANN motion component : gh,ud (geometric mean horizontal, updip)_
-tst.mtd.cpp = {'gh';'gh';'gh'};
-tst.mtd.Tno = [0.75;0.75;0.75];
+tst.typ_cmp = 'scl';
+
+if strcmpi(tst.typ_cmp,'TnC')
+    % _site class considered : ALL,AB,CD_
+    tst.mtd.scl = {'ALL';'ALL';'ALL'};
+    % _corner period for each ANN_
+    tst.mtd.TnC = {0.50;0.75;1.00};
+    % _ANN motion component : gh,ud (geometric mean horizontal, updip)_
+    tst.mtd.cpp = {'gh';'gh';'gh'};
+    tst.mtd.Tno = [0.50;0.75;1.00];
+elseif strcmpi(tst.typ_cmp,'scl')
+    tst.mtd.scl = {'ALL';'AB';'CD'};
+    % _corner period for each ANN_
+    tst.mtd.TnC = {0.75;0.75;0.75};
+    % _ANN motion component : gh,ud (geometric mean horizontal, updip)_
+    tst.mtd.cpp = {'gh';'gh';'gh'};
+    tst.mtd.Tno = [0.75;0.75;0.75];
+end
 % for i_ = 1:tst.mtd.nr
 %     tst.mtd.nl(i_) = {sprintf('net_%u_%s_%s_new.mat',...
 %         round(tst.mtd.TnC{i_}*100),tst.mtd.scl{i_},tst.mtd.cpp{i_})};

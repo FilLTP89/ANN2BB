@@ -42,7 +42,7 @@ if exist(spp,'dir')~=7
     spp = fullfile(filesep,'tmp1','gattif','heavy_images_new');
 end
 trann_setup_axes_common;
-switch(typ_cmp)
+switch(tst.typ_cmp)
     case 'TnC'
         if size(cpp.ann)==1
             
