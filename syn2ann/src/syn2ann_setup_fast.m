@@ -18,15 +18,17 @@ fprintf('============================\n');
 %% *DEFINE WORKDIR*
 % _main workdir_
 wd = '/media/filippo/Data/Filippo/PHD_passing_through_polimi/syn2ann/database';
-% wd = '/mssmat2/home/gattif/Documents/PHD_passing_through_polimi/syn2ann/database';
 fprintf('Workdir: %s\n',wd);
 % _save path_
 sp = '/home/filippo/Scrivania/ann';
-% sp = '/tmp1/gattif/ann';
+if exist(wd,'dir')~=7
+    wd = '/mssmat2/home/gattif/Documents/PHD_passing_through_polimi/syn2ann/database';
+    sp = '/tmp1/gattif/ann';
+end
 %% *LOAD ALL METADATA AVAILABLE*
 syn2ann_case_list_fast;
 % _select analyses : selected_case = [a,b,...,d]_
-selected_case = 2;%[1,2,5,34,35];
+selected_case = 1:33;%[1,2,5,34,35];
 
 %% *DEFINE REAL RECORDS METADATA*
 % _path to record files_
@@ -53,7 +55,7 @@ end
 
 % _reference system_
 bhr.rs = {'ew';'ns';'ud'};
-bhr.cp = {'ew';'ns'};
+bhr.cp = {'ew';'ns';'ud'};
 bhr.nc = numel(bhr.cp);
 [~,bhr.ci] = ismember(bhr.cp,bhr.rs);
 fprintf('--> Reference system : ');
@@ -118,7 +120,7 @@ mon.map.fnm = '/tmp1/gattif/syn2ann_maps/map_mrn';
 
 %% *DEFINE HYBRIDIZATION METADATA*
 % number of iteration for hybrid selections
-MAXIT = 3;
+MAXIT = 10;
 % _SP96 metadata_
 hybrid_type='sp96';
 mtd.sp96.na = mon.na;

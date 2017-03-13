@@ -16,15 +16,20 @@ fprintf('----------0. SETUP----------\n');
 fprintf('============================\n');
 
 %% *DEFINE WORKDIR*
-% % _main workdir_
-% wd = '/media/filippo/Data/Filippo/PHD_passing_through_polimi/syn2ann/database';
-% wd = '/tmp1/gattif/syn2ann_maps';
-wd = '/workdir/gattif/syn2ann_maps';
-fprintf('Workdir: %s\n',wd);
+% _main workdir_
+wd = '/media/filippo/Data/Filippo/PHD_passing_through_polimi/syn2ann/database';
 % _save path_
-% sp = '/home/filippo/Scrivania/ann';
-sp = '/tmp1/gattif/ann';
+sp = '/home/filippo/Scrivania/ann';
+
+if exist(wd,'dir')~=7
+    % _main workdir_
+    wd = '/mssmat2/home/gattif/Documents/PHD_passing_through_polimi/syn2ann/';
+    % _save path_
+    sp = '/tmp1/gattif/syn2ann_maps';
+end
+
 %% *LOAD ALL METADATA AVAILABLE*
+fprintf('Workdir: %s\n',wd);
 syn2ann_case_list_maps;
 
 hybrid_type='sp96';

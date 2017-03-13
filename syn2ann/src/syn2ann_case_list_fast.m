@@ -22,94 +22,94 @@ bhrr.st{3}.id = {'MIR'};
 bhrr.st{3}.ni = {'TV';'HN'};
 % SAN0
 bhrr.st{4}.id = {'SAN'};
-bhrr.st{4}.ni = {'TV';'HN'};
+bhrr.st{4}.ni = {'IT';'HN'};
 % MIR08
 bhrr.st{5}.id = {'MIR'};
 bhrr.st{5}.ni = {'TV';'HN'};
 % T0802
 bhrr.st{6}.id = {'T08'};
-bhrr.st{6}.ni = {'TV';'HN'};
+bhrr.st{6}.ni = {'IV';'HN'};
 % T0813
 bhrr.st{7}.id = {'T08'};
-bhrr.st{7}.ni = {'TV';'HN'};
+bhrr.st{7}.ni = {'IV';'HN'};
 % MIR03
 bhrr.st{8}.id = {'MIR'};
 bhrr.st{8}.ni = {'TV';'HN'};
 % T0818
 bhrr.st{9}.id = {'T08'};
-bhrr.st{9}.ni = {'TV';'HN'};
+bhrr.st{9}.ni = {'IV';'HN'};
 % MIR04
 bhrr.st{10}.id = {'MIR'};
 bhrr.st{10}.ni = {'TV';'HN'};
 % T0814
 bhrr.st{11}.id = {'T08'};
-bhrr.st{11}.ni = {'TV';'HN'};
+bhrr.st{11}.ni = {'IV';'HN'};
 % T0800
 bhrr.st{12}.id = {'T08'};
-bhrr.st{12}.ni = {'TV';'HN'};
+bhrr.st{12}.ni = {'IV';'HN'};
 % T0811
 bhrr.st{13}.id = {'T08'};
-bhrr.st{13}.ni = {'TV';'HN'};
+bhrr.st{13}.ni = {'IV';'HN'};
 % T0812
 bhrr.st{14}.id = {'T08'};
-bhrr.st{14}.ni = {'TV';'HN'};
+bhrr.st{14}.ni = {'IV';'HN'};
 % MIR05
 bhrr.st{15}.id = {'MIR'};
 bhrr.st{15}.ni = {'TV';'HN'};
 % SMS0
 bhrr.st{16}.id = {'SMS'};
-bhrr.st{16}.ni = {'TV';'HN'};
+bhrr.st{16}.ni = {'IT';'HN'};
 % RAV0
 bhrr.st{17}.id = {'RAV'};
-bhrr.st{17}.ni = {'TV';'HN'};
+bhrr.st{17}.ni = {'IT';'HN'};
 % FIN0
 bhrr.st{18}.id = {'FIN'};
-bhrr.st{18}.ni = {'TV';'HN'};
+bhrr.st{18}.ni = {'IT';'HN'};
 % T0824
-bhrr.st{19}.id = {'T0824'};
-bhrr.st{19}.ni = {'TV';'HN'};
+bhrr.st{19}.id = {'T08'};
+bhrr.st{19}.ni = {'IV';'HN'};
 % MOG0
 bhrr.st{20}.id = {'MOG'};
-bhrr.st{20}.ni = {'TV';'HN'};
+bhrr.st{20}.ni = {'IT';'HN'};
 % CRP
 bhrr.st{21}.id = {'CRP'};
-bhrr.st{21}.ni = {'TV';'HN'};
+bhrr.st{21}.ni = {'IT';'HN'};
 % T0805
 bhrr.st{22}.id = {'T08'};
-bhrr.st{22}.ni = {'TV';'HN'};
+bhrr.st{22}.ni = {'IV';'HN'};
 % MIR06
 bhrr.st{23}.id = {'MIR'};
 bhrr.st{23}.ni = {'TV';'HN'};
 % CNT
 bhrr.st{24}.id = {'CNT'};
-bhrr.st{24}.ni = {'TV';'HN'};
+bhrr.st{24}.ni = {'IT';'HN'};
 % T0803
 bhrr.st{25}.id = {'T08'};
-bhrr.st{25}.ni = {'TV';'HN'};
+bhrr.st{25}.ni = {'IV';'HN'};
 % SERM
 bhrr.st{26}.id = {'SERM'};
-bhrr.st{26}.ni = {'TV';'HN'};
+bhrr.st{26}.ni = {'IV';'HN'};
 % SAG0
 bhrr.st{27}.id = {'SAG'};
-bhrr.st{27}.ni = {'TV';'HN'};
+bhrr.st{27}.ni = {'IT';'HN'};
 % CAS05
 bhrr.st{28}.id = {'CAS'};
 bhrr.st{28}.ni = {'TV';'HN'};
 % CAS0
 bhrr.st{29}.id = {'CAS'};
-bhrr.st{29}.ni = {'TV';'HN'};
+bhrr.st{29}.ni = {'IT';'HN'};
 % BON0
 bhrr.st{30}.id = {'BON'};
-bhrr.st{30}.ni = {'TV';'HN'};
+bhrr.st{30}.ni = {'IT';'HN'};
 % MODE
 bhrr.st{31}.id = {'MODE'};
-bhrr.st{31}.ni = {'TV';'HN'};
+bhrr.st{31}.ni = {'IV';'HN'};
 % MDN
 bhrr.st{32}.id = {'MDN'};
-bhrr.st{32}.ni = {'TV';'HN'};
+bhrr.st{32}.ni = {'IT';'HN'};
 % NVL
 bhrr.st{33}.id = {'NVL'};
-bhrr.st{33}.ni = {'TV';'HN'};
+bhrr.st{33}.ni = {'IT';'HN'};
 % AQK
 bhrr.st{34}.id = {'AQK'};
 bhrr.st{34}.ni = {'IT';'HN'};
