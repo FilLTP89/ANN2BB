@@ -28,7 +28,7 @@ end
 %% *LOAD ALL METADATA AVAILABLE*
 syn2ann_case_list_fast;
 % _select analyses : selected_case = [a,b,...,d]_
-selected_case = 1:33;%[1,2,5,34,35];
+selected_case = 5;%1:33;%[1,2,5,34,35];
 
 %% *DEFINE REAL RECORDS METADATA*
 % _path to record files_
@@ -55,7 +55,7 @@ end
 
 % _reference system_
 bhr.rs = {'ew';'ns';'ud'};
-bhr.cp = {'ew';'ns';'ud'};
+bhr.cp = {'ud'};
 bhr.nc = numel(bhr.cp);
 [~,bhr.ci] = ismember(bhr.cp,bhr.rs);
 fprintf('--> Reference system : ');
@@ -139,7 +139,7 @@ end
 %% *DEFINE ANN METADATA*
 % ANN vector follow the reference system mon.rs
 % _site class considered : ALL,AB,CD_
-ann.mtd.scl = {'ALL';'ALL';'ALL'};
+ann.mtd.scl = {'CD';'CD';'CD'};
 % _corner period for each ANN_
 ann.mtd.TnC = {0.75;0.75;0.75};
 % _ANN motion component : gh,ud (geometric mean horizontal, updip)_
