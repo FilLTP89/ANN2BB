@@ -13,6 +13,7 @@ function syn2ann_write_log(sas,varargin)
     
     %% *WRITE LOG FILE*
     for i_=1:sas.mon.na
+        sts{i_,1} = sas.mon.st{i_};
         E{i_,1} = sas.mon.eutm(i_);
         N{i_,1} = sas.mon.nutm(i_);
         for j_=1:sas.mon.nc
@@ -25,9 +26,9 @@ function syn2ann_write_log(sas,varargin)
         pga.gh{i_,1} = sqrt(abs(sas.syn{i_}.pgv.ew(2)*sas.syn{i_}.pgv.ns(2)));
     end
     super_csvwrite(inp.Results.pfn,...
-        [E,N,pga.ew,pga.ns,pga.gh,pga.pl,pga.pp],...
-        '%20.3f,%20.3f,%20.3f,%20.3f,%20.3f,%20.3f,%20.3f\n',...
-        {'E-UTM - m','N-UTM - m','PGV-EW - m/s2','PGV-NS - m/s2','PGV-GH - m/s2','PGV-FP - m/s2','PGV-FO - m/s2'});
+        [sts,E,N,pga.ew,pga.ns,pga.gh,pga.pl,pga.pp],...
+        '%s,%20.3f,%20.3f,%20.3f,%20.3f,%20.3f,%20.3f,%20.3f\n',...
+        {'STATION','E-UTM - m','N-UTM - m','PGV-EW - m/s','PGV-NS - m/s','PGV-GH - m/s','PGV-FP - m/s','PGV-FO - m/s'});
             
     
     return
