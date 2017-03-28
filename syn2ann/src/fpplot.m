@@ -341,37 +341,37 @@ function [varargout] = fpplot(varargin)
         %if ismember(pax{m_},paxt(1:m_-1))
             % idx = find(paxt(1:m_-1)==pax{m_},1,'first');
         if ismember(pax{m_},paxt)
-            count(n_) = count(n_)+1;
+            cntt(n_) = cntt(n_)+1;
             idx = find(paxt==pax{m_},1,'first');
             haxt = hax(idx);
             if flst
-                hpl(idx,count(n_))=plot(haxt,inp.Results.xpl{m_},inp.Results.ypl{m_},...
+                hpl(idx,cntt(n_))=plot(haxt,inp.Results.xpl{m_},inp.Results.ypl{m_},...
                     'marker',mrk{m_},'linestyle',lst{m_});
             else
-                hpl(idx,count(n_))=plot(haxt,inp.Results.xpl{m_},inp.Results.ypl{m_},...
+                hpl(idx,cntt(n_))=plot(haxt,inp.Results.xpl{m_},inp.Results.ypl{m_},...
                     'marker',mrk{m_});
             end
             if flwd 
-                hpl(idx,count(n_)).LineWidth = lwd(m_);
+                hpl(idx,cntt(n_)).LineWidth = lwd(m_);
             end
             hpl(idx,count(n_)).MarkerFaceColor = hpl(idx,count(n_)).Color;
             %hpl(idx,count(n_)).MarkerEdgeColor = [0,0,0];
         else
             n_=n_+1;
-            count(n_) = 1;
+            cntt(n_) = 1;
             paxt = [paxt;pax{m_}];
             haxt = subplot(spg(1),spg(2),pax{m_},'parent',hfg);
             hold(haxt,'all');
             hax(n_) = haxt;
             if flst
-                hpl(n_,count(n_))=plot(haxt,inp.Results.xpl{m_},inp.Results.ypl{m_},...
+                hpl(n_,cntt(n_))=plot(haxt,inp.Results.xpl{m_},inp.Results.ypl{m_},...
                     'marker',mrk{m_},'linestyle',lst{m_});
             else
-                hpl(n_,count(n_))=plot(haxt,inp.Results.xpl{m_},inp.Results.ypl{m_},...
+                hpl(n_,cntt(n_))=plot(haxt,inp.Results.xpl{m_},inp.Results.ypl{m_},...
                     'marker',mrk{m_}');
             end
             if flwd 
-                hpl(n_,count(n_)).LineWidth = lwd(m_);
+                hpl(n_,cntt(n_)).LineWidth = lwd(m_);
             end
             hpl(n_,count(n_)).MarkerFaceColor = hpl(n_,count(n_)).Color;
             %hpl(n_,count(n_)).MarkerEdgeColor = [0,0,0];
