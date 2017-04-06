@@ -30,9 +30,15 @@ function set_axis_grid(varargin)
     newGrid = cat(1, ...
         line([XTick(idx.x);XTick(idx.x)],YLimit,'Parent',hax,GridStyle), ...
         line(XLimit,[YTick(idx.y);YTick(idx.y)],'Parent',hax,GridStyle));
+    %% FOR MATLAB 2017A
+    for i_=1:numel(newGrid)
+        newGrid(i_).LineStyle='none';
+        newGrid(i_).DisplayName = '';
+    end
     
     % New grid on top or bottom of other objects:
     %set(hax, 'Child', [newGrid; Child(:)]);
+    
     set(hax, 'Child', [Child(:); newGrid]);
     
     % Disable original dashed grid:

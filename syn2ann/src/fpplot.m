@@ -55,6 +55,9 @@ function [varargout] = fpplot(varargin)
     % grid
     def.grd = {'off'};
     fxlm=0;fylm=0;fxtk=0;fytk=0;fpax=0;flst=0;flwd=0;
+    % format_figure
+    def.frf = {'s2a'};
+
     %%
     % _parser parameters_
     inp = inputParser;
@@ -83,6 +86,7 @@ function [varargout] = fpplot(varargin)
     addParameter(inp,'lwd',def.lwd,@isnumeric);
     addParameter(inp,'mrk',def.mrk,@iscell);
     addParameter(inp,'grd',def.grd,@iscell);
+    addParameter(inp,'frf',def.frf,@ischar);
     
     %% PARSE INPUTS
     % _parse input_
@@ -449,9 +453,10 @@ function [varargout] = fpplot(varargin)
                 set(hax(m_),'ytick',ytk{m_});
             end
             % _axes grid
-            if strcmpi(grd{m_},'on')
-                grid(hax(m_),grd{m_});
+            if strcmpi(grd,'cool')
                 set_axis_grid(hax(m_));
+            else
+                grid(hax(m_),grd{m_});
             end
             %%
             % _title_
@@ -470,8 +475,11 @@ function [varargout] = fpplot(varargin)
             end
             %%
             % _format axes_
-            syn2ann_format_figures(hax(m_));
-%             format_figures(hax(m_));
+            if strcmpi(inp.Results.frf,'s2a')
+                syn2ann_format_figures(hax(m_));
+            else
+                format_figures(hax(m_));
+            end
             
         end
     end
