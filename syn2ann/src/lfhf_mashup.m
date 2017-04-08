@@ -144,11 +144,11 @@ function [varargout] = lfhf_hybridator(varargin)
                     %
                     % _LF FILTER (LOW-PASS)_
                     %
-                    [bfb.slf,bfa.slf,~] = create_butter_filter(4,[],hyb.mtd.(cpp)(i_,1),1/2/slf.mon.dtm(i_));
+                    [bfb.slf,bfa.slf,~] = create_butter_filter(3,[],hyb.mtd.(cpp)(i_,1),1/2/slf.mon.dtm(i_));
                     %
                     % _HF FILTER (HIGH-PASS)_
                     %
-                    [bfb.shf,bfa.shf,~] = create_butter_filter(4,hyb.mtd.(cpp)(i_,2),[],1/2/shf.mon.dtm(i_));
+                    [bfb.shf,bfa.shf,~] = create_butter_filter(3,hyb.mtd.(cpp)(i_,2),[],1/2/shf.mon.dtm(i_));
                     
                     %% *TIME-HISTORIES*
                     slf.syn{i_}.thd.(cpp) = filtfilt(bfb.slf,bfa.slf,slf.syn{i_}.thd.(cpp));

@@ -354,8 +354,8 @@ function [varargout] = fpplot(varargin)
             if flwd 
                 hpl(idx,cntt(n_)).LineWidth = lwd(m_);
             end
-            hpl(idx,count(n_)).MarkerFaceColor = hpl(idx,count(n_)).Color;
-            %hpl(idx,count(n_)).MarkerEdgeColor = [0,0,0];
+            hpl(idx,cntt(n_)).MarkerFaceColor = hpl(idx,cntt(n_)).Color;
+            %hpl(idx,cntt(n_)).MarkerEdgeColor = [0,0,0];
         else
             n_=n_+1;
             cntt(n_) = 1;
@@ -373,8 +373,8 @@ function [varargout] = fpplot(varargin)
             if flwd 
                 hpl(n_,cntt(n_)).LineWidth = lwd(m_);
             end
-            hpl(n_,count(n_)).MarkerFaceColor = hpl(n_,count(n_)).Color;
-            %hpl(n_,count(n_)).MarkerEdgeColor = [0,0,0];
+            hpl(n_,cntt(n_)).MarkerFaceColor = hpl(n_,cntt(n_)).Color;
+            %hpl(n_,cntt(n_)).MarkerEdgeColor = [0,0,0];
             flag_modify(n_) = 1;
         end
         

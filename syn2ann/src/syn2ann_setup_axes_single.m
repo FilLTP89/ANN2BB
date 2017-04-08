@@ -14,32 +14,32 @@ fprintf('\n');
 switch  ttt
     case 'MRN 2012-05-29 07:00'
         vtm_shift(:) = 0.5;
-        xlm.tha = [0;20];
-        xtk.tha = (xlm.tha(1):5:xlm.tha(end))';
+        xlm.tha = [0;30];
+        xtk.tha = (xlm.tha(1):3:xlm.tha(end))';
     case 'MIR01 2012-05-29 07:00'
         vtm_shift(:) = 0.;
-        xlm.tha = [0;20];
-        xtk.tha = (xlm.tha(1):5:xlm.tha(end))';
+        xlm.tha = [0;30];
+        xtk.tha = (xlm.tha(1):3:xlm.tha(end))';
     case 'MIR02 2012-05-29 07:00'
         vtm_shift(:) = 0.;
-        xlm.tha = [0;20];
-        xtk.tha = (xlm.tha(1):5:xlm.tha(end))';
+        xlm.tha = [0;30];
+        xtk.tha = (xlm.tha(1):3:xlm.tha(end))';
     case 'MIR08 2012-05-29 07:00'
         vtm_shift(:) = 0.73;
-        xlm.tha = [0;20];
-        xtk.tha = (xlm.tha(1):5:xlm.tha(end))';
+        xlm.tha = [0;30];
+        xtk.tha = (xlm.tha(1):3:xlm.tha(end))';
     case 'AQK 2009-04-06 01:32'
         vtm_shift(:) = 1.35;
-        xlm.tha = [0;20];
-        xtk.tha = (xlm.tha(1):5:xlm.tha(end))';
+        xlm.tha = [0;30];
+        xtk.tha = (xlm.tha(1):3:xlm.tha(end))';
     case 'AQU 2009-04-06 01:32'
         vtm_shift(:) = 2.15;
-        xlm.tha = [0;20];
-        xtk.tha = (xlm.tha(1):5:xlm.tha(end))';
+        xlm.tha = [0;30];
+        xtk.tha = (xlm.tha(1):3:xlm.tha(end))';
     otherwise
         vtm_shift(:) = 0.;
-        xlm.tha = [0;25];
-        xtk.tha = (xlm.tha(1):5:xlm.tha(end))';
+        xlm.tha = [0;30];
+        xtk.tha = (xlm.tha(1):3:xlm.tha(end))';
         %error('SET UP AXES FOR %s!',ttt)
 end
 
@@ -106,7 +106,7 @@ ylm.thd = [-ceil(thd_lim/4)*4,ceil(thd_lim/4)*4];
 ylm.thd = ylm.thd;
 ytk.thd = ytk.thd;
 
-ylm.psa = [0,ceil(psa_lim/4)*4];
-[~,ytk.psa] = get_axis_tick(ylm.psa,ylm.psa,ceil(ylm.psa(2)/4),ceil(ylm.psa(2)/4));
+ylm.psa = [0,ceil(psa_lim/5)*5];
+[~,ytk.psa] = get_axis_tick(ylm.psa,ylm.psa,ceil(ylm.psa(2)/5),ceil(ylm.psa(2)/5));
 ylm.psa = ylm.psa;
 ytk.psa = ytk.psa;
