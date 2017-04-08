@@ -22,7 +22,7 @@ fprintf('---------------------\n0. SETUP\n---------------------\n');
 %     'heavy_images');
 % % eval(sprintf('!mkdir -p %s',sp));
 % % _main workdir_
-wd = '/media/filippo/Data/Filippo/PHD_passing_through_polimi/syn2ann/database';
+wd = '/home/filippo/Data/Filippo/PHD_passing_through_polimi/syn2ann/database';
 fprintf('Workdir: %s\n',wd);
 % _save path_
 sp = '/home/filippo/Scrivania/ann_prova';

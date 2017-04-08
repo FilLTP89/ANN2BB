@@ -9,7 +9,7 @@ function syn2ann_format_figures(hax)
     
     set(hax,'box','on','xminortick','on','yminortick','on');
     %
-    set(hax,'ticklength',[.02,.02]);
+    set(hax,'ticklength',[.05,.05]);
     ti = get(hax,'title');
     set(ti,'fontsize',20,'fontweight','bold');%25,30
     xl = get(hax,'xlabel');
@@ -19,7 +19,7 @@ function syn2ann_format_figures(hax)
     zl = get(hax,'zlabel');
     set(zl,'fontsize',15);%20,24
     li = get(hax,'children');
-    set(li,'markersize',6);%2.5-3
+    set(li,'markersize',10);%2.5-3
     set(hax,'linewidth',1.6,'fontsize',13);   %2,2-3,20
    
 end
