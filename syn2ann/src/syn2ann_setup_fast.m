@@ -20,7 +20,7 @@ fprintf('============================\n');
 wd = '/home/filippo/Data/Filippo/PHD_passing_through_polimi/syn2ann/database';
 fprintf('Workdir: %s\n',wd);
 % _save path_
-sp = '/home/filippo/Scrivania/ann';
+sp = '/home/filippo/Data/Filippo/aeolus/ann_3Hz';
 if exist(wd,'dir')~=7
     wd = '/mssmat2/home/gattif/Documents/PHD_passing_through_polimi/syn2ann/database';
     sp = '/tmp1/gattif/ann';
@@ -28,7 +28,7 @@ end
 %% *LOAD ALL METADATA AVAILABLE*
 syn2ann_case_list_fast;
 % _select analyses : selected_case = [a,b,...,d]_
-selected_case = [1,2,5,34,35];
+selected_case = [1,2,3,5,34,35];
 
 %% *DEFINE REAL RECORDS METADATA*
 % _path to record files_
@@ -55,7 +55,7 @@ end
 
 % _reference system_
 bhr.rs = {'ew';'ns';'ud'};
-bhr.cp = {'ew';'ns'};
+bhr.cp = {'ud'};
 bhr.nc = numel(bhr.cp);
 [~,bhr.ci] = ismember(bhr.cp,bhr.rs);
 fprintf('--> Reference system : ');
