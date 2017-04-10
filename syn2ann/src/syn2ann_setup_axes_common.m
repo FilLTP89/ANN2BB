@@ -33,7 +33,7 @@ col(3,:) = rgb('IntenseGreen');
 col(4,:) = [1,0,0];
 %% *FOURIER SPECTRA*
 pfg.fsp = [0 0 28 14];
-pfg.fsa = [0 0 10 10];
+pfg.fsa = [0,0,8,8];
 xlm.fsa = 10.^([log10(0.1);log10(40)]);
 ylm.fsa = 10.^([-3;1]);
 xtk.fsa = 10.^([-1;0;log10(5);1;log10(40)]);
@@ -46,8 +46,8 @@ utd.fsa = 1;
 
 %% * PSEUDO-ACCELERATION RESPONSE SPECTRA
 pfg.psa = [0,0,8,8];
-xlm.psa = [0;3];
-xtk.psa = (0:.5:3)';
+xlm.psa = [0;5];
+xtk.psa = (0:5)';
 xlb.psa = {'T [s]'};
 ylb.psa = {'Sa [cm/s/s]'};
 scl.psa = {'lin'};
