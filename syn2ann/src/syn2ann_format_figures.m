@@ -9,7 +9,7 @@ function syn2ann_format_figures(hax)
     
     set(hax,'box','on','xminortick','on','yminortick','on');
     %
-    set(hax,'ticklength',[.05,.05]);
+    set(hax,'ticklength',[.02,.02]);
     ti = get(hax,'title');
     set(ti,'fontsize',20,'fontweight','bold');%25,30
     xl = get(hax,'xlabel');
