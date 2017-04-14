@@ -16,17 +16,19 @@ fprintf('----------0. SETUP----------\n');
 fprintf('============================\n');
 
 %% *DEFINE WORKDIR*
-% % _main workdir_
-% wd = '/media/filippo/Data/Filippo/PHD_passing_through_polimi/syn2ann/database';
-wd = '/mssmat2/home/gattif/Documents/PHD_passing_through_polimi/syn2ann/database';
+% _main workdir_
+wd = '/home/filippo/Data/Filippo/PHD_passing_through_polimi/syn2ann/database';
 fprintf('Workdir: %s\n',wd);
 % _save path_
-% sp = '/home/filippo/Scrivania/ann';
-sp = '/tmp1/gattif/ann';
+sp = '/home/filippo/Data/Filippo/aeolus/ann_3Hz';
+if exist(wd,'dir')~=7
+    wd = '/mssmat2/home/gattif/Documents/PHD_passing_through_polimi/syn2ann/database';
+    sp = '/tmp1/gattif/ann';
+end
 %% *LOAD ALL METADATA AVAILABLE*
 syn2ann_case_list_fast;
 % _select analyses : selected_case = [a,b,...,d]_
-selected_case = 1:6;
+selected_case = [1,2,3,5,34,35];
 
 %% *DEFINE REAL RECORDS METADATA*
 % _path to record files_
@@ -42,7 +44,7 @@ for m_ = 1:ns
 end
 
 fprintf('--> N. Stations: %u\n',bhr.ns);
-cellfun(@(y) structfun(@(x) fprintf('--> Station ID: %s\n',x{:}),y,'UniformOutput',0),bhr.st);
+cellfun(@(y) structfun(@(x) fprintf('--> %s\n',x{:}),y,'UniformOutput',0),bhr.st);
 fprintf('---------------------------------------------------------------\n');
 
 bhr.na = 0;
@@ -102,6 +104,7 @@ cellfun(@(x) fprintf('%s ',x),mon.cp);
 % _motion components_
 mon.rc  = {'d'};
 mon.nr  = numel(mon.rc);
+fprintf('\n');
 fprintf('--> Components: ');
 cellfun(@(x) fprintf('%s ',x),mon.rc);
 fprintf('\n---------------------------------------------------------------\n');

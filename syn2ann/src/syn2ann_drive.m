@@ -17,7 +17,7 @@
 
 %function syn2ann_drive(varargin)
 
-flag_map = 1;
+flag_map = 0;
 
 %    if nargin>0
 %        flag_map = varargin{1};
@@ -30,28 +30,26 @@ if flag_map
     
     %% *2). RUN SYN2ANN TO GET SHAKE MAPS*
     syn2ann_run_maps;
-    
+    exit    
 else
     
     %% *1). ANALYSIS SET-UP*
+    % #checked with Ali/Maria
     syn2ann_setup_fast;
     
+    % #checked with Ali/Maria
     %% *2). PARSING REC*
     syn2ann_rec_drive;
     
     %% *3). RUN SYN2ANN ON SINGLE STATIONS*
     syn2ann_run;
     
-    % %% *4). COMPUTE COHERENCY*
-    % syn2ann_coherency_drive;
-    
-    % %% *5). SAVE RESULTS*
-    % syn2ann_save_res;
+    %% *5). SAVE RESULTS*
+    syn2ann_save_res;
     
     %% *6). PLOT RESULTS*
     syn2ann_plot_res_single;
 end
-exit
 %    return
 %
 %end

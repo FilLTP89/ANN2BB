@@ -6,13 +6,10 @@
 %% NOTES
 % _fpplot_: function plot fancy images from data
 %% INPUT:
-% * _xpl (cell with x-axis vector)_
-% * _ypl (cell with y-axis vector)_
-
+%
 %% OUTPUT:
 %
 %% N.B.
-% 
 %Need for _plot_set_up.m, format_figures.m, rule_fig.m_
 function [varargout] = fpplot(varargin)
     
@@ -23,7 +20,7 @@ function [varargout] = fpplot(varargin)
     %%
     % _figure parameters_
     % figure position
-    def.pfg = [0,0,12,12];
+    def.pfg = [0 0 16 16];
     def.vfg = 'off';
     %%
     % _axes parameters
@@ -58,6 +55,9 @@ function [varargout] = fpplot(varargin)
     % grid
     def.grd = {'off'};
     fxlm=0;fylm=0;fxtk=0;fytk=0;fpax=0;flst=0;flwd=0;
+    % format_figure
+    def.frf = {'s2a'};
+
     %%
     % _parser parameters_
     inp = inputParser;
@@ -86,7 +86,7 @@ function [varargout] = fpplot(varargin)
     addParameter(inp,'lwd',def.lwd,@isnumeric);
     addParameter(inp,'mrk',def.mrk,@iscell);
     addParameter(inp,'grd',def.grd,@iscell);
-    
+    addParameter(inp,'frf',def.frf,@ischar);
     %% PARSE INPUTS
     % _parse input_
     
@@ -339,40 +339,42 @@ function [varargout] = fpplot(varargin)
         %%
         % _plot_
         %if ismember(pax{m_},paxt(1:m_-1))
-        % idx = find(paxt(1:m_-1)==pax{m_},1,'first');
+            % idx = find(paxt(1:m_-1)==pax{m_},1,'first');
         if ismember(pax{m_},paxt)
-            count(n_) = count(n_)+1;
+            cntt(n_) = cntt(n_)+1;
             idx = find(paxt==pax{m_},1,'first');
             haxt = hax(idx);
             if flst
-                hpl(idx,count(n_))=plot(haxt,inp.Results.xpl{m_},inp.Results.ypl{m_},...
+                hpl(idx,cntt(n_))=plot(haxt,inp.Results.xpl{m_},inp.Results.ypl{m_},...
                     'marker',mrk{m_},'linestyle',lst{m_});
             else
-                hpl(idx,count(n_))=plot(haxt,inp.Results.xpl{m_},inp.Results.ypl{m_},...
+                hpl(idx,cntt(n_))=plot(haxt,inp.Results.xpl{m_},inp.Results.ypl{m_},...
                     'marker',mrk{m_});
             end
-            if flwd
-                hpl(idx,count(n_)).LineWidth = lwd(m_);
+            if flwd 
+                hpl(idx,cntt(n_)).LineWidth = lwd(m_);
             end
-            hpl(idx,count(n_)).MarkerFaceColor = hpl(idx,count(n_)).Color;
+            hpl(idx,cntt(n_)).MarkerFaceColor = hpl(idx,cntt(n_)).Color;
+            %hpl(idx,cntt(n_)).MarkerEdgeColor = [0,0,0];
         else
             n_=n_+1;
-            count(n_) = 1;
+            cntt(n_) = 1;
             paxt = [paxt;pax{m_}];
             haxt = subplot(spg(1),spg(2),pax{m_},'parent',hfg);
             hold(haxt,'all');
             hax(n_) = haxt;
             if flst
-                hpl(n_,count(n_))=plot(haxt,inp.Results.xpl{m_},inp.Results.ypl{m_},...
+                hpl(n_,cntt(n_))=plot(haxt,inp.Results.xpl{m_},inp.Results.ypl{m_},...
                     'marker',mrk{m_},'linestyle',lst{m_});
             else
-                hpl(n_,count(n_))=plot(haxt,inp.Results.xpl{m_},inp.Results.ypl{m_},...
+                hpl(n_,cntt(n_))=plot(haxt,inp.Results.xpl{m_},inp.Results.ypl{m_},...
                     'marker',mrk{m_}');
             end
-            if flwd
-                hpl(n_,count(n_)).LineWidth = lwd(m_);
+            if flwd 
+                hpl(n_,cntt(n_)).LineWidth = lwd(m_);
             end
-            hpl(n_,count(n_)).MarkerFaceColor = hpl(n_,count(n_)).Color;
+            hpl(n_,cntt(n_)).MarkerFaceColor = hpl(n_,cntt(n_)).Color;
+            %hpl(n_,cntt(n_)).MarkerEdgeColor = [0,0,0];
             flag_modify(n_) = 1;
         end
         
@@ -387,7 +389,7 @@ function [varargout] = fpplot(varargin)
             
             if any(idx)
                 legg=legend(hax(m_),hpl(m_,idx),inp.Results.leg{m_}(idx));
-                set(legg,'interpreter','latex','box','off','fontsize',15);
+                set(legg,'interpreter','latex','box','off');
             end
             %%
             % _axes labels_
@@ -452,8 +454,11 @@ function [varargout] = fpplot(varargin)
                 set(hax(m_),'ytick',ytk{m_});
             end
             % _axes grid
-            grid(hax(m_),grd{m_});
-            set_axis_grid(hax(m_));
+            if strcmpi(grd,'cool')
+                set_axis_grid(hax(m_));
+            else
+                grid(hax(m_),grd{m_});
+            end
             %%
             % _title_
             title(hax(m_),tit{m_});
@@ -471,15 +476,17 @@ function [varargout] = fpplot(varargin)
             end
             %%
             % _format axes_
-%             syn2ann_format_figures(hax(m_));
-            format_figures(hax(m_));
-            
+            if strcmpi(inp.Results.frf,'s2a')
+                syn2ann_format_figures(hax(m_));
+            else
+                format_figures(hax(m_));
+            end
         end
     end
     %%
     % _crop figure_
     rule_fig(hfg);
-    
+
     %% *OUTPUT*
     varargout{1} = hfg;
     varargout{2} = hax;

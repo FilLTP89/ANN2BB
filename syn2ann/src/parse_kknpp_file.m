@@ -3,16 +3,18 @@
 % CentraleSupélec - Laboratoire MSSMat
 % DICA - Politecnico di Milano
 % Copyright 2016_
-%% NOTES
-% _parse_kknpp_file: function to parse and synchronize records from KKNPP database
-%% INPUT:
-% * fn (file name)
-% * cp (motion directions)
-%% OUTPUT:
-% * dtm (time-step)
-% * ntm (number of time-steps)
-% * vtm (time-vector)
-% * th (structure of parsed th)
+%% *NOTES*
+% _parse_kknpp_file_: function to parse and synchronize records from KKNPP database
+%% *INPUT*
+% * _fn (file name)_
+%% *OUTPUT*
+% * _dtm (time-step)_
+% * _ntm (number of time-steps)_
+% * _vtm (time-vector)_
+% * _th (structure of parsed th)_
+% * _mon_lon (station longitude)_
+% * _mon_lat (station latitude)_
+
 function [varargout] = parse_kknpp_file(varargin)
     %% *SET-UP*
     fn = varargin{1};
@@ -23,6 +25,7 @@ function [varargout] = parse_kknpp_file(varargin)
         error('file extension not-valid');
     end
     scale = 1; % m/s2
+    
     %% *READ DATA*
     data = load(fn);
     
@@ -38,10 +41,19 @@ function [varargout] = parse_kknpp_file(varargin)
     ntm = numel(th.(cp{i_}));
     vtm = (0:ntm-1)*dtm;
     
+    
+    %% *OUTPUT*
     varargout{1} = dtm;
     varargout{2} = ntm;
     varargout{3} = vtm;
     varargout{4} = th;
+    warning('check output!---> lat/lon added');
+    varargout{5} = data.siteLon;
+    varargout{6} = data.siteLat;
+    varargout{7} = data.siteZ;
+    varargout{8} = data.eventLon;
+    varargout{9} = data.eventLat;
+    varargout{10} = str2double(data.eventM);
     
     return
 end

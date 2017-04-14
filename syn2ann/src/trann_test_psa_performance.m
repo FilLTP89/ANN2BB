@@ -36,8 +36,8 @@ function trann_test_psa_performance(varargin)
         end
         
         idx = ann{i_}.mon.vTn < ann{i_}.TnC;
-        ypl{i_,1} = log10(ypl{i_,1}./...
-            ann{i_}.syn{identity}.psa.(ann{i_}.cpp)(idx,1));
+        ypl{i_,1} = log10(ann{i_}.syn{identity}.psa.(ann{i_}.cpp)(idx,1)./...
+            ypl{i_,1});
         leg{i_,1} = strcat('$',ann{i_}.scl,'\left(',upper(ann{i_}.cpp),...
             ';T^\star=',num2str(ann{i_}.TnC,'%.2f'),'s\right)$');
     end

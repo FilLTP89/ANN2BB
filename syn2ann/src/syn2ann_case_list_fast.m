@@ -11,39 +11,221 @@
 
 %% *RECORDING STATION: bhrr*
 % _station identity_
-bhrr.st{1}.id = {'MRN'};
-bhrr.st{1}.ni = {'CIT';'HN'};
-bhrr.st{2}.id = {'MIR'};
-bhrr.st{2}.ni = {'TV';'HN'};
-bhrr.st{3}.id = {'AQK'};
-bhrr.st{3}.ni = {'IT';'HN'};
-bhrr.st{4}.id = {'AQU'};
-bhrr.st{4}.ni = {'MN';'HL'};
+% MIR01
+bhrr.st{1}.id = {'MIR'};
+bhrr.st{1}.ni = {'TV';'HN'};
+% MRN
+bhrr.st{2}.id = {'MRN'};
+bhrr.st{2}.ni = {'CIT';'HN'};
+% MIR02
+bhrr.st{3}.id = {'MIR'};
+bhrr.st{3}.ni = {'TV';'HN'};
+% SAN0
+bhrr.st{4}.id = {'SAN'};
+bhrr.st{4}.ni = {'IT';'HN'};
+% MIR08
 bhrr.st{5}.id = {'MIR'};
 bhrr.st{5}.ni = {'TV';'HN'};
-bhrr.st{6}.id = {'MIR'};
-bhrr.st{6}.ni = {'TV';'HN'};
+% T0802
+bhrr.st{6}.id = {'T08'};
+bhrr.st{6}.ni = {'IV';'HN'};
+% T0813
+bhrr.st{7}.id = {'T08'};
+bhrr.st{7}.ni = {'IV';'HN'};
+% MIR03
+bhrr.st{8}.id = {'MIR'};
+bhrr.st{8}.ni = {'TV';'HN'};
+% T0818
+bhrr.st{9}.id = {'T08'};
+bhrr.st{9}.ni = {'IV';'HN'};
+% MIR04
+bhrr.st{10}.id = {'MIR'};
+bhrr.st{10}.ni = {'TV';'HN'};
+% T0814
+bhrr.st{11}.id = {'T08'};
+bhrr.st{11}.ni = {'IV';'HN'};
+% T0800
+bhrr.st{12}.id = {'T08'};
+bhrr.st{12}.ni = {'IV';'HN'};
+% T0811
+bhrr.st{13}.id = {'T08'};
+bhrr.st{13}.ni = {'IV';'HN'};
+% T0812
+bhrr.st{14}.id = {'T08'};
+bhrr.st{14}.ni = {'IV';'HN'};
+% MIR05
+bhrr.st{15}.id = {'MIR'};
+bhrr.st{15}.ni = {'TV';'HN'};
+% SMS0
+bhrr.st{16}.id = {'SMS'};
+bhrr.st{16}.ni = {'IT';'HN'};
+% RAV0
+bhrr.st{17}.id = {'RAV'};
+bhrr.st{17}.ni = {'IT';'HN'};
+% FIN0
+bhrr.st{18}.id = {'FIN'};
+bhrr.st{18}.ni = {'IT';'HN'};
+% T0824
+bhrr.st{19}.id = {'T08'};
+bhrr.st{19}.ni = {'IV';'HN'};
+% MOG0
+bhrr.st{20}.id = {'MOG'};
+bhrr.st{20}.ni = {'IT';'HN'};
+% CRP
+bhrr.st{21}.id = {'CRP'};
+bhrr.st{21}.ni = {'IT';'HN'};
+% T0805
+bhrr.st{22}.id = {'T08'};
+bhrr.st{22}.ni = {'IV';'HN'};
+% MIR06
+bhrr.st{23}.id = {'MIR'};
+bhrr.st{23}.ni = {'TV';'HN'};
+% CNT
+bhrr.st{24}.id = {'CNT'};
+bhrr.st{24}.ni = {'IT';'HN'};
+% T0803
+bhrr.st{25}.id = {'T08'};
+bhrr.st{25}.ni = {'IV';'HN'};
+% SERM
+bhrr.st{26}.id = {'SERM'};
+bhrr.st{26}.ni = {'IV';'HN'};
+% SAG0
+bhrr.st{27}.id = {'SAG'};
+bhrr.st{27}.ni = {'IT';'HN'};
+% CAS05
+bhrr.st{28}.id = {'CAS'};
+bhrr.st{28}.ni = {'TV';'HN'};
+% CAS0
+bhrr.st{29}.id = {'CAS'};
+bhrr.st{29}.ni = {'IT';'HN'};
+% BON0
+bhrr.st{30}.id = {'BON'};
+bhrr.st{30}.ni = {'IT';'HN'};
+% MODE
+bhrr.st{31}.id = {'MODE'};
+bhrr.st{31}.ni = {'IV';'HN'};
+% MDN
+bhrr.st{32}.id = {'MDN'};
+bhrr.st{32}.ni = {'IT';'HN'};
+% NVL
+bhrr.st{33}.id = {'NVL'};
+bhrr.st{33}.ni = {'IT';'HN'};
+% AQK
+bhrr.st{34}.id = {'AQK'};
+bhrr.st{34}.ni = {'IT';'HN'};
+% AQU
+bhrr.st{35}.id = {'AQU'};
+bhrr.st{35}.ni = {'MN';'HL'};
+
 % _recorded events_
-bhrr.st{1}.ev = {'20120529.070002'};
-bhrr.st{2}.ev = {'20120529.070002'};
-bhrr.st{3}.ev = {'20090406.013240'};
-bhrr.st{4}.ev = {'20090406.013240'};
-bhrr.st{5}.ev = {'20120529.070002'};
-bhrr.st{6}.ev = {'20120529.070002'};
+bhrr.st{1}.ev  = {'20120529.070002'};
+bhrr.st{2}.ev  = {'20120529.070002'};
+bhrr.st{3}.ev  = {'20120529.070002'};
+bhrr.st{4}.ev  = {'20120529.070002'};
+bhrr.st{5}.ev  = {'20120529.070002'};
+bhrr.st{6}.ev  = {'20120529.070002'};
+bhrr.st{7}.ev  = {'20120529.070002'};
+bhrr.st{8}.ev  = {'20120529.070002'};
+bhrr.st{9}.ev  = {'20120529.070002'};
+bhrr.st{10}.ev = {'20120529.070002'};
+bhrr.st{11}.ev = {'20120529.070002'};
+bhrr.st{12}.ev = {'20120529.070002'};
+bhrr.st{13}.ev = {'20120529.070002'};
+bhrr.st{14}.ev = {'20120529.070002'};
+bhrr.st{15}.ev = {'20120529.070002'};
+bhrr.st{16}.ev = {'20120529.070002'};
+bhrr.st{17}.ev = {'20120529.070002'};
+bhrr.st{18}.ev = {'20120529.070002'};
+bhrr.st{19}.ev = {'20120529.070002'};
+bhrr.st{20}.ev = {'20120529.070002'};
+bhrr.st{21}.ev = {'20120529.070002'};
+bhrr.st{22}.ev = {'20120529.070002'};
+bhrr.st{23}.ev = {'20120529.070002'};
+bhrr.st{24}.ev = {'20120529.070002'};
+bhrr.st{25}.ev = {'20120529.070002'};
+bhrr.st{26}.ev = {'20120529.070002'};
+bhrr.st{27}.ev = {'20120529.070002'};
+bhrr.st{28}.ev = {'20120529.070002'};
+bhrr.st{29}.ev = {'20120529.070002'};
+bhrr.st{30}.ev = {'20120529.070002'};
+bhrr.st{31}.ev = {'20120529.070002'};
+bhrr.st{32}.ev = {'20120529.070002'};
+bhrr.st{33}.ev = {'20120529.070002'};
+bhrr.st{34}.ev = {'20090406.013240'};
+bhrr.st{35}.ev = {'20090406.013240'};
 % _device list_
-bhrr.st{1}.dv = {''};
-bhrr.st{2}.dv = {'08'};
-bhrr.st{3}.dv = {''};
-bhrr.st{4}.dv = {''};
-bhrr.st{5}.dv = {'01'};
+bhrr.st{1}.dv = {'01'};
+bhrr.st{2}.dv = {''};
+bhrr.st{3}.dv = {'02'};
+bhrr.st{4}.dv = {'0'};
+bhrr.st{5}.dv = {'08'};
 bhrr.st{6}.dv = {'02'};
+bhrr.st{7}.dv = {'13'};
+bhrr.st{8}.dv = {'03'};
+bhrr.st{9}.dv = {'18'};
+bhrr.st{10}.dv = {'04'};
+bhrr.st{11}.dv = {'14'};
+bhrr.st{12}.dv = {'00'};
+bhrr.st{13}.dv = {'11'};
+bhrr.st{14}.dv = {'12'};
+bhrr.st{15}.dv = {'05'};
+bhrr.st{16}.dv = {'0'};
+bhrr.st{17}.dv = {'0'};
+bhrr.st{18}.dv = {'0'};
+bhrr.st{19}.dv = {'24'};
+bhrr.st{20}.dv = {'0'};
+bhrr.st{21}.dv = {''};
+bhrr.st{22}.dv = {'05'};
+bhrr.st{23}.dv = {'06'};
+bhrr.st{24}.dv = {''};
+bhrr.st{25}.dv = {'03'};
+bhrr.st{26}.dv = {''};
+bhrr.st{27}.dv = {'0'};
+bhrr.st{28}.dv = {'05'};
+bhrr.st{29}.dv = {'0'};
+bhrr.st{30}.dv = {'0'};
+bhrr.st{31}.dv = {''};
+bhrr.st{32}.dv = {''};
+bhrr.st{33}.dv = {''};
+bhrr.st{34}.dv = {''};
+bhrr.st{35}.dv = {''};
+
 % _database_
-bhrr.st{1}.tp = {'itaca'};
-bhrr.st{2}.tp = {'itaca'};
-bhrr.st{3}.tp = {'itaca'};
-bhrr.st{4}.tp = {'itaca'};
-bhrr.st{5}.tp = {'itaca'};
-bhrr.st{6}.tp = {'itaca'};
+bhrr.st{1}.tp =  {'itaca'};
+bhrr.st{2}.tp =  {'itaca'};
+bhrr.st{3}.tp =  {'itaca'};
+bhrr.st{4}.tp =  {'itaca'};
+bhrr.st{5}.tp =  {'itaca'};
+bhrr.st{6}.tp =  {'itaca'};
+bhrr.st{7}.tp =  {'itaca'};
+bhrr.st{8}.tp =  {'itaca'};
+bhrr.st{9}.tp =  {'itaca'};
+bhrr.st{10}.tp = {'itaca'};
+bhrr.st{11}.tp = {'itaca'};
+bhrr.st{12}.tp = {'itaca'};
+bhrr.st{13}.tp = {'itaca'};
+bhrr.st{14}.tp = {'itaca'};
+bhrr.st{15}.tp = {'itaca'};
+bhrr.st{16}.tp = {'itaca'};
+bhrr.st{17}.tp = {'itaca'};
+bhrr.st{18}.tp = {'itaca'};
+bhrr.st{19}.tp = {'itaca'};
+bhrr.st{20}.tp = {'itaca'};
+bhrr.st{21}.tp = {'itaca'};
+bhrr.st{22}.tp = {'itaca'};
+bhrr.st{23}.tp = {'itaca'};
+bhrr.st{24}.tp = {'itaca'};
+bhrr.st{25}.tp = {'itaca'};
+bhrr.st{26}.tp = {'itaca'};
+bhrr.st{27}.tp = {'itaca'};
+bhrr.st{28}.tp = {'itaca'};
+bhrr.st{29}.tp = {'itaca'};
+bhrr.st{30}.tp = {'itaca'};
+bhrr.st{31}.tp = {'itaca'};
+bhrr.st{32}.tp = {'itaca'};
+bhrr.st{33}.tp = {'itaca'};
+bhrr.st{34}.tp = {'itaca'};
+bhrr.st{35}.tp = {'itaca'};
 
 % _bhrr field names_
 fni.bhrr = fieldnames(bhrr);
@@ -51,7 +233,43 @@ fnn.bhrr = numel(fni.bhrr);
 
 %% *MONITOR STATION: monn*
 % _station identity_
-monn.id = [16928,15045,1,2,18446,18437];
+% monn.id = [16928,15045,1,2,18446,18437,18446
+monn.id = [...
+    18446;
+    16928; 
+    18437;
+    17670;
+    15045;
+    16909;
+    16532;
+    13249;
+    13781;
+    13916;
+    16236;
+    17724;
+    16294;
+    12052;
+    10265;
+    13497;
+    12306;
+    17869;
+    14652;
+    14120;
+    13346;
+    14521;
+     3298;
+    12720;
+    15196;
+     6833;
+    15406;
+    14506;
+     5576;
+    14279;
+     3695;
+     4506;
+     5782;
+        1;
+        2];
 
 % _monn field names_
 fni.monn = fieldnames(monn);
@@ -60,20 +278,24 @@ fnn.monn = numel(fni.monn);
 %% *EMPIRICAL ANALYSIS: mtdd*
 % _Sabetta&Pugliese 1996 - metadata_
 % STORED IN COLUMNS
-mtdd.sp96.mw = [6;6;6.3;6.3;6;6];
-mtdd.sp96.dtm_sp96 = [0.01;0.01;0.01;0.01;0.01;0.01];
-mtdd.sp96.scc = [2;1;2;2;2;2];
-mtdd.sp96.sst = zeros(6,1);
-mtdd.sp96.scl = 0.01*ones(6,1);
+mtdd.sp96.mw = [6.0*ones(33,1);6.3;6.3];
+mtdd.sp96.dtm_sp96 = 0.01*ones(35,1);
+% site conditions (0=rock, (Vs,30>800m/s); 1=shallow all. (H<=20); 2=deep alluvium (H>20m));
+mtdd.sp96.scc = [2*ones(33,1);1;2];
+mtdd.sp96.sst = zeros(35,1);
+mtdd.sp96.scl = 0.01*ones(35,1);
 % _hybridization frequencies_
 % horizontal components (stored in (na x 2) matrix)
-mtdd.sp96.ew = [1.5,1.5,1.5,1.5,1.5,1.5;...
-    1.5,1.5,1.5,1.5,1.5,1.5]'; % in Hz
-mtdd.sp96.ns = [1.5,1.5,1.5,1.5,1.5,1.5;...
-    1.5,1.5,1.5,1.5,1.5,1.5]'; % in Hz
+%mtdd.sp96.ew = [1.5,1.5,1.5,1.5,1.5,1.5;...
+%    1.5,1.5,1.5,1.5,1.5,1.5]'; % in Hz
+%mtdd.sp96.ns = [1.5,1.5,1.5,1.5,1.5,1.5;...
+%    1.5,1.5,1.5,1.5,1.5,1.5]'; % in Hz
+mtdd.sp96.ew = 3.0*ones(35,2);
+mtdd.sp96.ns = 3.0*ones(35,2);
 % vertical components (stored in (na x 2) matrix)  
-mtdd.sp96.ud = [1.5,1.5,1.5,1.5,1.5,1.5;...
-    1.5,1.5,1.5,1.5,1.5,1.5]'; % in Hz
+%mtdd.sp96.ud = [1.5,1.5,1.5,1.5,1.5,1.5;...
+%    1.5,1.5,1.5,1.5,1.5,1.5]'; % in Hz
+mtdd.sp96.ud = 3.0*ones(35,2);
 %% _Exsim - reference files_
 %mtdd.exsim.fnm{1} = fullfile(wd,'exsim_old','exsim_emilia','MRN_new');
 %mtdd.exsim.fnm{2} = fullfile(wd,'exsim_old','exsim_emilia','MIR08_new');

@@ -81,6 +81,21 @@ function [varargout] = syn2ann_sm(varargin)
             %
             %             spm.(hbs.mon.cp{j_}).mon.vtm{i_} = spm.(hbs.mon.cp{j_}).mon.dtm(i_)*...
             %                 (0:spm.(hbs.mon.cp{j_}).mon.ntm(i_)-1)'+hbs.mon.vtm{i_}(1);
+            if NC<27
+                disp(' ')
+                disp('Info: Match is not found to be spectrally satisfactory.')
+                disp('      You may want to observe the agreement, increase the iteration number and re-run.')
+                
+                %%% COMMENT IS OPTIONAL, in this version program does not need any
+                %%% input from the user.
+                %        disp('    Press any key to continue...')
+                %        pause
+                %%% COMMENT IS OPTIONAL
+                
+                %MAIN
+            else
+                disp('Info: Match is acceptable.')
+            end
         end
     end
     %% *OUTPUT*

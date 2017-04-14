@@ -18,4 +18,6 @@ else
         'ylm',{ylm.fsa},'ylb',ylb.fsa,'ytk',{ytk.fsa},...
         'leg',leg,'tit',std);
 end
+obj=get(gcf,'children');
+obj(1).Location='southwest';
 saveas(gcf,strcat(fnm,sprintf('_fsa_%s',cpp)),'epsc');

@@ -2,7 +2,7 @@ function syn2ann_plot_compare(varargin)
     global pfg xlm xlb xtk ylm ylb ytk grd scl utd tit
     
     %% *SET-UP*
-    flags = logical(varargin{1});
+    flags = varargin{1};
     xplot = varargin{2};
     identity = varargin{3};
     dlg = varargin{4};
@@ -20,7 +20,7 @@ function syn2ann_plot_compare(varargin)
     end
     
     spg = numel(xplot);
-    if any(flags(3:end))
+    if any(flags(3:end)>0)
         pfg.tha.c = (spg==1)*(pfg.tha.s)+(spg==2)*(pfg.tha.d)+(spg==3)*(pfg.tha.t);
         pfg.thv.c = pfg.tha.c;
         pfg.thd.c = pfg.tha.c;
@@ -34,28 +34,28 @@ function syn2ann_plot_compare(varargin)
     end
     %% *PSA SPECTRUM*
     
-    if flags(1)
+    if flags(1)>0
         syn2ann_plot_psa;
         close all;
     end
     %% *FOURIER SPECTRUM*
-    if flags(2)
+    if flags(2)==1
         syn2ann_plot_fsa;
         close all;
     end
     
     %% *ACCELERATION TIME-HISTORY*
-    if flags(3)
+    if flags(3)==1
         syn2ann_plot_tha;
         close all;
     end
     %% *VELOCITY TIME-HISTORY*
-    if flags(4)
+    if flags(4)==1
         syn2ann_plot_thv;
         close all;
     end
     %% *DISPLACEMENT TIME-HISTORY*
-    if flags(5)
+    if flags(5)==1
         syn2ann_plot_thd;
         close all;
     end

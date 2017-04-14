@@ -27,12 +27,16 @@ function set_axis_grid(varargin)
     else
         idx.y = 1:numel(YTick);
     end
-    newGrid = cat(1, ...
-        line([XTick(idx.x);XTick(idx.x)],YLimit,'Parent',hax,GridStyle), ...
-        line(XLimit,[YTick(idx.y);YTick(idx.y)],'Parent',hax,GridStyle));
     
+    newGrid = cat(1, ...
+        line([XTick(idx.x);XTick(idx.x)],YLimit,'Parent',hax,GridStyle,'displayname','none'), ...
+        line(XLimit,[YTick(idx.y);YTick(idx.y)],'Parent',hax,GridStyle,'displayname','none'));
+    %% FOR MATLAB 2017A
+    obj=get(gcf,'children');
+    obj(1).String = obj(1).String(1:end-numel(newGrid)) ;
     % New grid on top or bottom of other objects:
     %set(hax, 'Child', [newGrid; Child(:)]);
+    
     set(hax, 'Child', [Child(:); newGrid]);
     
     % Disable original dashed grid:

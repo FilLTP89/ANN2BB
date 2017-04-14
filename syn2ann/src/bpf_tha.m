@@ -11,6 +11,7 @@
 % * _tha (input accelerogram)_
 % * _lfr (corner frequency)_
 % * _hfr (cut-off frequency)_
+% * _bfo (Butterworth's filter order)
 %% OUTPUT:
 % * _tha (band-pass filtered acceleration time-history column vector)_
 % * _thv (velocity time-history column vector)_
@@ -74,7 +75,12 @@ function [varargout] = bpf_tha(varargin)
         % _acceleration base-line correction_
         %
         % BASE LINE CORRECTION
-        [tha,~,~] = blc_tha(dtm,tha);
+%         [tha,~,~] = blc_tha(dtm,tha);
+        tha = detrend(tha);
+        %
+        % _tapering_
+        %
+        tha = cos_taper(tha);
         %
         %  _pad definition_
         %
@@ -85,7 +91,7 @@ function [varargout] = bpf_tha(varargin)
         % _padding acceleration_
         %
         tha = padarray(tha,npd0,'pre');
-        tha = padarray(tha,npd1,'post');
+        tha = padarray(tha,npd1,'post'); 
         %
         % _acceleration acausal Butterworth filtering_
         %
@@ -95,6 +101,7 @@ function [varargout] = bpf_tha(varargin)
         [tha,thv,thd] = idc_tha(dtm,tha,bfb,bfa);
         
     else
+        disp('---> TIME-INTEGRATION UNCORRECTED ACCELERATION!')
         npd0 = 0;
         npd1 = 0;
         %% *TIME INTEGRATION*
