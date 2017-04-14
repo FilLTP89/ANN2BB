@@ -79,9 +79,9 @@ mtdd.sp96.sst = zeros(numel(monn.id),1);
 mtdd.sp96.scl = 0.01*ones(numel(monn.id),1);
 % _hybridization frequencies_
 % horizontal components (stored in (na x 2) matrix)
-mtdd.sp96.ew = 1.5*ones(numel(monn.id),2); % in Hz
-mtdd.sp96.ns = 1.5*ones(numel(monn.id),2); % in Hz
-mtdd.sp96.ud = 1.5*ones(numel(monn.id),2); % in Hz
+mtdd.sp96.ew = 3.0*ones(numel(monn.id),2); % in Hz 1.5*ones(numel(monn.id),2); % in Hz
+mtdd.sp96.ns = 3.0*ones(numel(monn.id),2); % in Hz 1.5*ones(numel(monn.id),2); % in Hz
+mtdd.sp96.ud = 3.0*ones(numel(monn.id),2); % in Hz 1.5*ones(numel(monn.id),2); % in Hz
 %% _Exsim - reference files_
 %mtdd.exsim.fnm{1} = fullfile(wd,'exsim_old','exsim_emilia','MRN_new');
 %mtdd.exsim.fnm{2} = fullfile(wd,'exsim_old','exsim_emilia','MIR08_new');

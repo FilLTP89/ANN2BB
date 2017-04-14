@@ -1,0 +1,39 @@
+#!/bin/bash
+
+#PBS -S /bin/bash
+#PBS -N s2a_m_001_020
+#PBS -o ro_001_020.txt
+#PBS -j oe
+#PBS -l walltime=04:00:00
+#PBS -l select=32:ncpus=12
+#PBS -q iceq
+#PBS -m e -M filippo.gatti@centralesupelec.fr
+
+#chargement des modules
+module purge
+module load matlab/r2015b
+
+#On se place dans le repertoire depouis lequel le job a ete soumis
+cd $PBS_O_WORKDIR
+cd /home/gattif/PHD_passing_through_polimi/syn2ann/src/
+
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(1)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(2)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(3)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(4)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(5)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(6)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(7)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(8)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(9)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(10)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(11)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(12)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(13)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(14)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(15)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(16)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(17)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(18)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(19)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(20)"
