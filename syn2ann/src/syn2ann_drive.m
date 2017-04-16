@@ -17,7 +17,7 @@
 
 %function syn2ann_drive(varargin)
 
-flag_map = 0;
+flag_map = 1;
 
 %    if nargin>0
 %        flag_map = varargin{1};
@@ -30,7 +30,6 @@ if flag_map
     
     %% *2). RUN SYN2ANN TO GET SHAKE MAPS*
     syn2ann_run_maps;
-    exit    
 else
     
     %% *1). ANALYSIS SET-UP*

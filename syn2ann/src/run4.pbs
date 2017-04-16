@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #PBS -S /bin/bash
-#PBS -N s2a_m_081_100
-#PBS -o ro_081_100.txt
+#PBS -N s2a_m_046_060
+#PBS -o ro_046_060.txt
 #PBS -j oe
 #PBS -l walltime=04:00:00
 #PBS -l select=32:ncpus=12
@@ -17,23 +17,18 @@ module load matlab/r2015b
 cd $PBS_O_WORKDIR
 cd /home/gattif/PHD_passing_through_polimi/syn2ann/src/
 
-matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(81)"
-matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(82)"
-matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(83)"
-matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(84)"
-matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(85)"
-matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(86)"
-matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(87)"
-matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(88)"
-matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(89)"
-matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(90)"
-matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(91)"
-matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(92)"
-matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(93)"
-matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(94)"
-matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(95)"
-matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(96)"
-matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(97)"
-matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(98)"
-matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(99)"
-matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(100)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(46)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(47)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(48)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(49)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(50)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(51)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(52)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(53)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(54)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(55)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(56)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(57)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(58)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(59)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(60)"

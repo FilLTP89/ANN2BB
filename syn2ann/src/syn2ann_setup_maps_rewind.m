@@ -85,6 +85,9 @@ mon.map.flg = 1;
 mon.map.typ = {'pga','pgv','psa'};
 mon.map.stk = 95;
 mon.map.vTn.psa = [0.1,0.2,0.3,0.5,0.75,1,2];
+for i_=1:numel(mon.map.vTn.psa)
+    fprintf('%.2f s',mon.map.vTn.psa(i_))
+end
 mon.map.vTn.rsd = 0.75;
 mon.map.fnm = '/workdir/gattif/syn2ann_maps/map_mrn';
 
@@ -97,4 +100,5 @@ for m_ = 1:mtd.sp96.na
     end
 end
 
+keyboard
 save(sprintf('syn2ann_input_maps_%u.mat',NJB),'wd','mon','bhr','mtd','ann','hybrid_type','MAXIT');

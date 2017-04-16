@@ -23,9 +23,9 @@ sp = '/home/filippo/Scrivania/ann';
 
 if exist(wd,'dir')~=7
     % _main workdir_
-    wd = '/mssmat2/home/gattif/Documents/PHD_passing_through_polimi/syn2ann/';
+    wd = '/workdir/gattif/syn2ann_maps';
     % _save path_
-    sp = '/tmp1/gattif/syn2ann_maps';
+    sp = '/workdir/gattif/syn2ann_maps';
 end
 
 %% *LOAD ALL METADATA AVAILABLE*

@@ -1,0 +1,31 @@
+#!/bin/bash
+
+#PBS -S /bin/bash
+#PBS -N s2a_m_091_100
+#PBS -o ro_091_100.txt
+#PBS -j oe
+#PBS -l walltime=04:00:00
+#PBS -l select=32:ncpus=12
+#PBS -q iceq
+#PBS -m e -M filippo.gatti@centralesupelec.fr
+
+#chargement des modules
+module purge
+module load matlab/r2015b
+
+#On se place dans le repertoire depouis lequel le job a ete soumis
+cd $PBS_O_WORKDIR
+cd /home/gattif/PHD_passing_through_polimi/syn2ann/src/
+
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(91)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(92)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(93)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(94)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(95)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(96)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(97)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(98)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(99)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(100)"
+
+

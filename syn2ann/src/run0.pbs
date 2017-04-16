@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #PBS -S /bin/bash
-#PBS -N s2a_m_001_020
-#PBS -o ro_001_020.txt
+#PBS -N s2a_m_001_015
+#PBS -o ro_001_015.txt
 #PBS -j oe
 #PBS -l walltime=04:00:00
 #PBS -l select=32:ncpus=12
@@ -32,8 +32,3 @@ matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(12)"
 matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(13)"
 matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(14)"
 matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(15)"
-matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(16)"
-matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(17)"
-matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(18)"
-matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(19)"
-matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(20)"
