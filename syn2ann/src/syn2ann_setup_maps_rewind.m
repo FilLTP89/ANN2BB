@@ -100,5 +100,4 @@ for m_ = 1:mtd.sp96.na
     end
 end
 
-keyboard
 save(sprintf('syn2ann_input_maps_%u.mat',NJB),'wd','mon','bhr','mtd','ann','hybrid_type','MAXIT');
