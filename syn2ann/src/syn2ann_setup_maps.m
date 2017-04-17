@@ -17,15 +17,15 @@ fprintf('============================\n');
 
 %% *DEFINE WORKDIR*
 % _main workdir_
-wd = '/media/filippo/Data/Filippo/PHD_passing_through_polimi/syn2ann/database';
+wd = '/workdir/gattif/syn2ann_maps';
 % _save path_
-sp = '/home/filippo/Scrivania/ann';
+sp = '/workdir/gattif/syn2ann_maps';
 
 if exist(wd,'dir')~=7
     % _main workdir_
-    wd = '/workdir/gattif/syn2ann_maps';
+    wd = '/mssmat2/home/gattif/Documents/PHD_passing_through_polimi/syn2ann/database';
     % _save path_
-    sp = '/workdir/gattif/syn2ann_maps';
+    sp = '/mssmat2/home/gattif/Documents/PHD_passing_through_polimi/syn2ann/database';
 end
 
 %% *LOAD ALL METADATA AVAILABLE*
