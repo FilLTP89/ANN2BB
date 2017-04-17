@@ -17,9 +17,9 @@ fprintf('============================\n');
 
 %% *DEFINE WORKDIR*
 % _main workdir_
-wd = '/media/filippo/Data/Filippo/PHD_passing_through_polimi/syn2ann/database';
+wd = '/mssmat2/home/gattif/Documents/PHD_passing_through_polimi/syn2ann/database';
 % _save path_
-sp = '/home/filippo/Scrivania/ann';
+sp = '/mssmat2/home/gattif/Documents/PHD_passing_through_polimi/syn2ann/database';
 
 if exist(wd,'dir')~=7
     % _main workdir_

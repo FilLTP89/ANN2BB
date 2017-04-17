@@ -48,7 +48,7 @@ fprintf('---------------------------------------------------------------\n');
 mon.pt  = fullfile(wd,'monitors');
 fprintf('--> Monitor Path: %s\n',mon.pt);
 % _metadata filename_
-mon.fnm  = fullfile(wd,'SM_Stations_Monitors.csv');
+mon.fnm  = fullfile(wd,'SM_Stations_Monitors4maps.csv');
 fprintf('--> Monitor File: %s\n',mon.fnm);
 % _type of simulation_
 mon.typ  = 'S';
@@ -82,6 +82,7 @@ mon.hyb = 'butter';
 
 %% *MAP METADATA*
 mon.map.flg = 1;
+mon.map.tag = 'ppe2012';
 mon.map.typ = {'pga','pgv','psa'};
 mon.map.stk = 95;
 mon.map.vTn.psa = [0.1,0.2,0.3,0.5,0.75,1,2];
@@ -89,7 +90,8 @@ for i_=1:numel(mon.map.vTn.psa)
     fprintf('%.2f s',mon.map.vTn.psa(i_))
 end
 mon.map.vTn.rsd = 0.75;
-mon.map.fnm = '/workdir/gattif/syn2ann_maps/map_mrn';
+mon.map.fnm = fullfile(wd,'maps');
+eval(sprintf('!mkdir -p %s',mon.map.fnm));
 
 % _SP96 metadata_
 mtd.sp96.na = mon.na;
@@ -100,5 +102,5 @@ for m_ = 1:mtd.sp96.na
     end
 end
 
-keyboard
-save(sprintf('syn2ann_input_maps_%u.mat',NJB),'wd','mon','bhr','mtd','ann','hybrid_type','MAXIT');
+save(fullfile(mon.map.fnm,sprintf('syn2ann_input_maps_%u.mat',NJB)),...
+    'wd','mon','bhr','mtd','ann','hybrid_type','MAXIT');

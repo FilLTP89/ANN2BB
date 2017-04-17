@@ -15,14 +15,7 @@
 % _syn2ann_setup_maps.m,syn2ann_run_maps.m,
 % syn2ann_setup_fast.m,syn2ann_run_fast.m_
 
-%function syn2ann_drive(varargin)
-
 flag_map = 1;
-
-%    if nargin>0
-%        flag_map = varargin{1};
-%    end
-%
 if flag_map
     
     %% *1). ANALYSIS SET-UP*
@@ -49,6 +42,3 @@ else
     %% *6). PLOT RESULTS*
     syn2ann_plot_res_single;
 end
-%    return
-%
-%end
