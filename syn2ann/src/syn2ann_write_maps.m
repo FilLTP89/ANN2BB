@@ -14,8 +14,8 @@ function [varargout] = syn2ann_write_maps(varargin)
     NJB = varargin{1};
     fprintf('JOB: %u',NJB);
     status = 1;
-    load(sprintf('/mssmat2/home/gattif/Documents/PHD_passing_through_polimi/syn2ann/database/maps/syn2ann_input_maps_%u.mat',NJB));
-%     load(sprintf('/home/gattif/PHD_passing_through_polimi/syn2ann/src/syn2ann_input_maps_%u.mat',NJB));
+    %load(sprintf('/mssmat2/home/gattif/Documents/PHD_passing_through_polimi/syn2ann/database/maps/syn2ann_input_maps_%u.mat',NJB));
+    load(sprintf('/workdir/gattif/syn2ann_maps/maps/syn2ann_input_maps_%u.mat',NJB));
     syn2ann_run;
     %% *SPM MAP*
     for i_ = 1:mon.na
