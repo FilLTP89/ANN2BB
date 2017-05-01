@@ -106,13 +106,12 @@ function [varargout] = super_utm2wgs(varargin)
         Smeridian=((geozone*6)-183);
         
         if (ZONE_UTM(i,end)>'X' || ZONE_UTM(i,end)<'C')
-            fprintf('utm2wgs: Warning you cannot use lowercase letters in UTM geozone\n');
+            warning('utm2wgs: Warning you cannot use lowercase letters in UTM geozone\n');
         end
         
         if (ZONE_UTM(i,end)>'M')
             flag_hemis='N';    % Northern hemisphere
         else
-            keyboard
             flag_hemis='S';    % Southern hemisphere
         end
         

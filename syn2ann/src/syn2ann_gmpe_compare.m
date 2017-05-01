@@ -23,10 +23,11 @@ function [varargout]=syn2ann_gmpe_compare(varargin)
     def.fld   = ['/home/filippo/Data/Filippo/PHD_passing_through_polimi/',...
         'syn2ann/database/maps'];
     def.map   = {'null'};
+    def.fnm   = 'null';
     def.var   = {'pga'};
     def.cpn   = {'Rgh [m/s2]'};
     def.hyp   = zeros(3,1);
-    def.utmzone = 'T32';
+    def.utmzone = '32T';
     
     % parser parameters
     inp = inputParser;
@@ -36,6 +37,7 @@ function [varargout]=syn2ann_gmpe_compare(varargin)
     addParameter(inp,'hrupt',def.hrupt,@isnumeric);
     addParameter(inp,'fsof',def.fsof,@ischar);
     addParameter(inp,'EC8',def.EC8,@ischar);
+    addParameter(inp,'fnm',def.fnm,@iscell);
     addParameter(inp,'bas',def.bas,@isnumeric);
     addParameter(inp,'map',def.map,@iscell);
     addParameter(inp,'var',def.var,@iscell);
@@ -88,6 +90,7 @@ function [varargout]=syn2ann_gmpe_compare(varargin)
         end
         
         %% *GMPE*
+        
         gmpe = generate_gmpe('mod',inp.Results.mod,...
             'Mw',Mw,...
             'Delta',Delta,...
@@ -97,7 +100,30 @@ function [varargout]=syn2ann_gmpe_compare(varargin)
             'fsof',inp.Results.fsof,...
             'EC8',EC8,'bas',bas);
         
-        keyboard
+        gmpe.fn = fieldnames(gmpe);
+        
+        for j_=1:numel(inp.Results.var)
+            
+            [~,~,idx_var]=cellfun(@(x) intersect(inp.Results.var{j_},x,'stable'),...
+                gmpe.fn,'UniformOutput',false);
+            idx_var=cellfun(@(x) numel(x),idx_var);
+            idx_var=find(idx_var==numel(inp.Results.var{j_}));
+            keyboard
+            if ~isempty(idx_var)
+                fid=fopen(fullfile(inp.Results.fld,strcat(inp.Results.fnm{i_},'_',...
+                    inp.Results.var{j_},'.csv')),'w+');
+                fprintf(fid,'LON [dd], LAT [dd], %s\n',inp.Results.cpn{j_});
+                for k_=1:numel(crd.lon)
+                    fprintf(fid,'%20.10f,%20.10f,%20.10f,\n',...
+                        crd.lon(k_),crd.lat(k_),...
+                        (10.^gmpe.(gmpe.fn{idx_var})(k_))./100);
+                end
+                fclose(fid);
+            else
+                error('no correspondent field:%s\n',inp.Results.var{j_});
+            end
+            
+        end
     end
     
     %% *SIMULATIONS*

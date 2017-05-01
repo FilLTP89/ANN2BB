@@ -1,6 +1,8 @@
 ccc;
 [hyp(1,1),hyp(2,1)]=super_wgs2utm(11.07,44.84);
 hyp(3,1) = 10.40*1e3;
+
 syn2ann_gmpe_compare('Mw',6,'mod','lanzano_et_al_2016_rfocal',...
     'hyp',hyp,'fsof','tf','EC8','C','bas',1,'utmzone','32T',...
-    'map',{'ppe2012_all_spm_pga.csv'})
+    'fnm',{'ppe2012_gmpe'},'var',{'pga'},...
+    'map',{'ppe2012_all_spm_pga.csv'});
