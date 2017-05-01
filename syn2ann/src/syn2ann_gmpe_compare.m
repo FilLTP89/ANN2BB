@@ -108,7 +108,7 @@ function [varargout]=syn2ann_gmpe_compare(varargin)
                 gmpe.fn,'UniformOutput',false);
             idx_var=cellfun(@(x) numel(x),idx_var);
             idx_var=find(idx_var==numel(inp.Results.var{j_}));
-            keyboard
+            
             if ~isempty(idx_var)
                 fid=fopen(fullfile(inp.Results.fld,strcat(inp.Results.fnm{i_},'_',...
                     inp.Results.var{j_},'.csv')),'w+');
