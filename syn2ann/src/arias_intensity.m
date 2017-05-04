@@ -38,8 +38,9 @@ function [varargout] = arias_intensity(varargin)
     % _normalization
     %
     Ain = (0.5.*pi.*dtm./grv).*Ain;
-    varargout{4} = max(Ain);
-    Ain = Ain./max(Ain);
+    varargout{4} = max(max(Ain));
+    Ain = Ain./max(max(Ain));
+    
     %% *INDEX*
     idx = find(Ain<=idx,1,'last');
     vtm_idx = dtm*(idx-1);

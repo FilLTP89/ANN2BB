@@ -10,11 +10,12 @@
 % Need for:
 % __
 ccc;
-maps.pfn = '/media/filippo/Data/Filippo/PHD_passing_through_polimi/syn2ann/database/maps/maps_mrn';
-maps.tag.org = 'map_mrn';
-maps.tag.all = 'maps_ppe2012';
-maps.typ = {'spm';'hyb'};
-maps.cnt = {'pga';'pgv';'psa_10';'psa_20';'psa_50'};
+maps.pfn = '/tmp1/gattif/syn2ann_maps/maps';
+maps.tag.org = 'ppe2012';
+maps.tag.all = 'ppe2012_all';
+maps.typ = {'pbs';'spm';'hyb'};
+maps.cnt = {'pga';'pgv';'psa_10';'psa_20';'psa_30';...
+    'psa_50';'psa_75';'psa_100';'psa_200'};
 maps.fid = 1:100;
 maps.nb.typ = numel(maps.typ);
 maps.nb.cnt = numel(maps.cnt);
