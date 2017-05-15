@@ -37,6 +37,7 @@ function [varargout] = seismo_rsmpl(varargin)
     
     %% RESAMPLING
     tha_rsmpl = scl*interp1(vtm,tha,vtm_rsmpl,'spline');
+    
     %% OUTPUT
     varargout{1} = dtm_rsmpl;
     varargout{2} = tha_rsmpl;

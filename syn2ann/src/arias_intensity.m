@@ -24,21 +24,21 @@ function [varargout] = arias_intensity(varargin)
         idx = varargin{3};
     end
     ntm = length(tha);
-    Ain = -ones(ntm,1);
+    Ain = -999*ones(ntm,1);
     %
     % _gravity acceleration_
     %
     grv = 9.81;
     
     %% *ARIAS INTENSITY*
-    Ain = cumtrapz(tha(1:end).^2);
-    % Ain = cumsum(tha.^2);
-    
+    Ain = cumtrapz(tha.^2);
     %
-    % _normalization
-    %
+    %% *NORMALIZED ARIAS INTENSITY*
     Ain = (0.5.*pi.*dtm./grv).*Ain;
+    
+    %% *OUTPUT*
     varargout{4} = max(max(Ain));
+    
     Ain = Ain./max(max(Ain));
     
     %% *INDEX*
