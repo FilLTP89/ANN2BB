@@ -24,7 +24,6 @@ function [varargout]=plot_set_up
     %% DEFAULT PLOT STYLE
     set(0,'defaultaxesfontsize',20);
     set(0,'defaultaxesxminortick','on','defaultaxesyminortick','on');
-    
 %     %% DEFAULT PLOT COLORS
 %     color_order = [0.000 0.000 1.000;
 %                    1.000 0.000 0.000;
