@@ -10,7 +10,7 @@
 % Need for:
 % __
 ccc;
-maps.pfn = '/tmp1/gattif/syn2ann_maps/maps';
+maps.pfn = '/tmp1/gattif/syn2ann_maps/maps_1_5_Hz';
 maps.tag.org = 'ppe2012';
 maps.tag.all = 'ppe2012_all';
 maps.typ = {'pbs';'spm';'hyb'};
