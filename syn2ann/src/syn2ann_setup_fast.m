@@ -17,7 +17,9 @@ fprintf('============================\n');
 
 %% *DEFINE WORKDIR*
 % _main workdir_
-wd = '/home/filippo/Data/Filippo/PHD_passing_through_polimi/syn2ann/database';
+% wd = '/home/filippo/Data/Filippo/PHD_passing_through_polimi/syn2ann/database';
+%#THESS
+wd = '/home/filippo/Data/Filippo/PHD_passing_through_polimi/syn2ann/thess';
 fprintf('Workdir: %s\n',wd);
 % _save path_
 sp = '/home/filippo/Data/Filippo/aeolus/ann_3Hz';
@@ -26,9 +28,11 @@ if exist(wd,'dir')~=7
     sp = '/tmp1/gattif/ann';
 end
 %% *LOAD ALL METADATA AVAILABLE*
-syn2ann_case_list_fast;
+% syn2ann_case_list_fast;
+% # THESS
+syn2ann_case_list_fast_thess;
 % _select analyses : selected_case = [a,b,...,d]_
-selected_case = [1,2,3,5,34,35];
+selected_case = [1,2];%[1,2,3,5,34,35];
 
 %% *DEFINE REAL RECORDS METADATA*
 % _path to record files_
