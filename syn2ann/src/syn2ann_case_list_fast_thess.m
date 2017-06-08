@@ -22,6 +22,9 @@ bhrr.st{2}.ni = {'CIT';'HN'};
 bhrr.st{1}.ev  = {'20120529.070002'};
 bhrr.st{2}.ev  = {'20120529.070002'};
 
+bhrr.st{1}.dv = {'01'};
+bhrr.st{2}.dv = {''};
+
 % _database_
 bhrr.st{1}.tp =  {'itaca'};
 bhrr.st{2}.tp =  {'itaca'};
@@ -44,24 +47,24 @@ fnn.monn = numel(fni.monn);
 %% *EMPIRICAL ANALYSIS: mtdd*
 % _Sabetta&Pugliese 1996 - metadata_
 % STORED IN COLUMNS
-mtdd.sp96.mw = [6.0*ones(33,1);6.3;6.3];
-mtdd.sp96.dtm_sp96 = 0.01*ones(35,1);
+mtdd.sp96.mw = 6.5*ones(2,1);
+mtdd.sp96.dtm_sp96 = 0.01*ones(2,1);
 % site conditions (0=rock, (Vs,30>800m/s); 1=shallow all. (H<=20); 2=deep alluvium (H>20m));
-mtdd.sp96.scc = [2*ones(33,1);1;2];
-mtdd.sp96.sst = zeros(35,1);
-mtdd.sp96.scl = 0.01*ones(35,1);
+mtdd.sp96.scc = [2*ones(2,1)];
+mtdd.sp96.sst = zeros(2,1);
+mtdd.sp96.scl = 0.01*ones(2,1);
 % _hybridization frequencies_
 % horizontal components (stored in (na x 2) matrix)
 %mtdd.sp96.ew = [1.5,1.5,1.5,1.5,1.5,1.5;...
 %    1.5,1.5,1.5,1.5,1.5,1.5]'; % in Hz
 %mtdd.sp96.ns = [1.5,1.5,1.5,1.5,1.5,1.5;...
 %    1.5,1.5,1.5,1.5,1.5,1.5]'; % in Hz
-mtdd.sp96.ew = 3.0*ones(35,2);
-mtdd.sp96.ns = 3.0*ones(35,2);
+mtdd.sp96.ew = 3.0*ones(2,2);
+mtdd.sp96.ns = 3.0*ones(2,2);
 % vertical components (stored in (na x 2) matrix)  
 %mtdd.sp96.ud = [1.5,1.5,1.5,1.5,1.5,1.5;...
 %    1.5,1.5,1.5,1.5,1.5,1.5]'; % in Hz
-mtdd.sp96.ud = 3.0*ones(35,2);
+mtdd.sp96.ud = 3.0*ones(2,2);
 %% _Exsim - reference files_
 %mtdd.exsim.fnm{1} = fullfile(wd,'exsim_old','exsim_emilia','MRN_new');
 %mtdd.exsim.fnm{2} = fullfile(wd,'exsim_old','exsim_emilia','MIR08_new');
