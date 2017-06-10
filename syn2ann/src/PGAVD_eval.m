@@ -11,7 +11,8 @@
 % * _tha (input acceleration)_
 % * _thv (input velocity)_
 % * _thd (input displacement)_
-%% OUTPUT: t_pga (time of pga)
+%% OUTPUT: 
+% * _t_pga (time of pga)_
 % * _pga   (peak ground acceleration)_
 % * _t_pgv (time of pgv)_
 % * _pgv   (peak ground velocity)_

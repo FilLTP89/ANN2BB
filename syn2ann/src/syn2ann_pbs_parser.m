@@ -26,7 +26,7 @@ function [varargout] = syn2ann_pbs_parser(varargin)
     
     mtd = importdata(mon.fnm);
     idm = find(strcmpi('Monitor ID',mtd.textdata(1,:))==1);
-    idd = find(strcmpi('Repi (km)',mtd.textdata(1,:))==1);
+    idd = find(strcmpi('Repi [km]',mtd.textdata(1,:))==1);
     ids = find(strcmpi('Station code',mtd.textdata(1,:))==1);
     idg.eutm = find(strcmpi('E_UTM [m]',mtd.textdata(1,:))==1);
     idg.nutm = find(strcmpi('N_UTM [m]',mtd.textdata(1,:))==1);

@@ -12,22 +12,18 @@
 %% *RECORDING STATION: bhrr*
 % _station identity_
 % MIR01
+bhrr.st = cell(2985,1);
 bhrr.st{1}.id = {'MIR'};
 bhrr.st{1}.ni = {'TV';'HN'};
-% MRN
-bhrr.st{2}.id = {'MRN'};
-bhrr.st{2}.ni = {'CIT';'HN'};
-
 % _recorded events_
 bhrr.st{1}.ev  = {'20120529.070002'};
-bhrr.st{2}.ev  = {'20120529.070002'};
-
 bhrr.st{1}.dv = {'01'};
-bhrr.st{2}.dv = {''};
-
 % _database_
 bhrr.st{1}.tp =  {'itaca'};
-bhrr.st{2}.tp =  {'itaca'};
+
+for i_=2:2985
+    bhrr.st{i_}=bhrr.st{1};
+end
 
 % _bhrr field names_
 fni.bhrr = fieldnames(bhrr);
@@ -36,9 +32,7 @@ fnn.bhrr = numel(fni.bhrr);
 %% *MONITOR STATION: monn*
 % _station identity_
 % monn.id = [16928,15045,1,2,18446,18437,18446
-monn.id = [...
-    1406;
-    1776];
+monn.id = 1:2985;
 
 % _monn field names_
 fni.monn = fieldnames(monn);
@@ -47,24 +41,24 @@ fnn.monn = numel(fni.monn);
 %% *EMPIRICAL ANALYSIS: mtdd*
 % _Sabetta&Pugliese 1996 - metadata_
 % STORED IN COLUMNS
-mtdd.sp96.mw = 6.5*ones(2,1);
-mtdd.sp96.dtm_sp96 = 0.01*ones(2,1);
+mtdd.sp96.mw = 6.5*ones(2985,1);
+mtdd.sp96.dtm_sp96 = 0.01*ones(2985,1);
 % site conditions (0=rock, (Vs,30>800m/s); 1=shallow all. (H<=20); 2=deep alluvium (H>20m));
-mtdd.sp96.scc = [2*ones(2,1)];
-mtdd.sp96.sst = zeros(2,1);
-mtdd.sp96.scl = 0.01*ones(2,1);
+mtdd.sp96.scc = load(fullfile(wd,'site_SP96.csv'));
+mtdd.sp96.sst = zeros(2985,1);
+mtdd.sp96.scl = 0.01*ones(2985,1);
 % _hybridization frequencies_
 % horizontal components (stored in (na x 2) matrix)
 %mtdd.sp96.ew = [1.5,1.5,1.5,1.5,1.5,1.5;...
 %    1.5,1.5,1.5,1.5,1.5,1.5]'; % in Hz
 %mtdd.sp96.ns = [1.5,1.5,1.5,1.5,1.5,1.5;...
 %    1.5,1.5,1.5,1.5,1.5,1.5]'; % in Hz
-mtdd.sp96.ew = 3.0*ones(2,2);
-mtdd.sp96.ns = 3.0*ones(2,2);
+mtdd.sp96.ew = 2.0*ones(2985,2);
+mtdd.sp96.ns = 2.0*ones(2985,2);
 % vertical components (stored in (na x 2) matrix)  
 %mtdd.sp96.ud = [1.5,1.5,1.5,1.5,1.5,1.5;...
 %    1.5,1.5,1.5,1.5,1.5,1.5]'; % in Hz
-mtdd.sp96.ud = 3.0*ones(2,2);
+mtdd.sp96.ud = 2.0*ones(2985,2);
 %% _Exsim - reference files_
 %mtdd.exsim.fnm{1} = fullfile(wd,'exsim_old','exsim_emilia','MRN_new');
 %mtdd.exsim.fnm{2} = fullfile(wd,'exsim_old','exsim_emilia','MIR08_new');
