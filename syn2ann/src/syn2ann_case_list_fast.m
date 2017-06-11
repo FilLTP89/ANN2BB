@@ -290,11 +290,10 @@ mtdd.sp96.scl = 0.01*ones(35,1);
 %    1.5,1.5,1.5,1.5,1.5,1.5]'; % in Hz
 %mtdd.sp96.ns = [1.5,1.5,1.5,1.5,1.5,1.5;...
 %    1.5,1.5,1.5,1.5,1.5,1.5]'; % in Hz
-mtdd.sp96.ew = 3.0*ones(35,2);
-mtdd.sp96.ns = 3.0*ones(35,2);
-% vertical components (stored in (na x 2) matrix)  
 %mtdd.sp96.ud = [1.5,1.5,1.5,1.5,1.5,1.5;...
 %    1.5,1.5,1.5,1.5,1.5,1.5]'; % in Hz
+mtdd.sp96.ew = 3.0*ones(35,2);
+mtdd.sp96.ns = 3.0*ones(35,2);
 mtdd.sp96.ud = 3.0*ones(35,2);
 %% _Exsim - reference files_
 %mtdd.exsim.fnm{1} = fullfile(wd,'exsim_old','exsim_emilia','MRN_new');
