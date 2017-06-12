@@ -1,34 +1,30 @@
 #!/bin/bash
 
 #PBS -S /bin/bash
-#PBS -N s2a_m_016_030
-#PBS -o ro_016_030.txt
+#PBS -N s2a_m_008_015
+#PBS -o ro_008_015.txt
 #PBS -j oe
 #PBS -l walltime=04:00:00
-#PBS -l select=32:ncpus=12
-#PBS -q iceq
-#PBS -m e -M filippo.gatti@centralesupelec.fr
+#PBS -l select=4:ncpus=24
+#PBS -q haswellq
+#PBS -P omaha
+#PBS -m e -M filippo.gatti@centralesupelec.fr 
 
 #chargement des modules
 module purge
-module load matlab/r2015b
+module load matlab/r2016b
 
 #On se place dans le repertoire depouis lequel le job a ete soumis
 cd $PBS_O_WORKDIR
 cd /home/gattif/PHD_passing_through_polimi/syn2ann/src/
 
-matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(16)"
-matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(17)"
-matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(18)"
-matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(19)"
-matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(20)"
-matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(21)"
-matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(22)"
-matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(23)"
-matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(24)"
-matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(25)"
-matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(26)"
-matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(27)"
-matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(28)"
-matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(29)"
-matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(30)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(7)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(8)"
+matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(9)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(10)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(11)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(12)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(13)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(14)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(15)"
+

@@ -17,6 +17,8 @@ function [varargout] = syn2ann_write_maps(varargin)
     %load(sprintf('/mssmat2/home/gattif/Documents/PHD_passing_through_polimi/syn2ann/database/maps/syn2ann_input_maps_%u.mat',NJB));
     load(sprintf('/workdir/gattif/syn2ann_maps/maps/syn2ann_input_maps_%u.mat',NJB));
     syn2ann_run;
+    save(fullfile(wd,sprintf('syn2ann_res_thess_%s_%u',ann.mtd.scl{1},NJB)),'mon','bhr','mtd',...
+        'pbs','sps','hbs','trs','spm');
     %% *SPM MAP*
     for i_ = 1:mon.na
         % _SPM_

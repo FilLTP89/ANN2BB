@@ -30,7 +30,9 @@ end
 
 %% *LOAD ALL METADATA AVAILABLE*
 fprintf('Workdir: %s\n',wd);
-syn2ann_case_list_maps;
+% syn2ann_case_list_maps;
+% # THESS
+syn2ann_case_list_maps_thess;
 
 hybrid_type='sp96';
 MAXIT = 5;
