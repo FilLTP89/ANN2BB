@@ -1,17 +1,18 @@
 #!/bin/bash
 
 #PBS -S /bin/bash
-#PBS -N s2a_m_001_015
-#PBS -o ro_001_015.txt
+#PBS -N s2a_m_001_007
+#PBS -o ro_001_007.txt
 #PBS -j oe
 #PBS -l walltime=04:00:00
-#PBS -l select=32:ncpus=12
-#PBS -q iceq
-#PBS -m e -M filippo.gatti@centralesupelec.fr
+#PBS -l select=8:ncpus=24
+#PBS -q haswellq
+#PBS -P omaha
+#PBS -m e -M filippo.gatti@centralesupelec.fr 
 
 #chargement des modules
 module purge
-module load matlab/r2015b
+module load matlab/r2016b
 
 #On se place dans le repertoire depouis lequel le job a ete soumis
 cd $PBS_O_WORKDIR
@@ -24,11 +25,11 @@ matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(4)"
 matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(5)"
 matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(6)"
 matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(7)"
-matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(8)"
-matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(9)"
-matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(10)"
-matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(11)"
-matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(12)"
-matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(13)"
-matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(14)"
-matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(15)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(8)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(9)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(10)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(11)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(12)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(13)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(14)"
+#matlab -nodesktop -nosplash -nodisplay -r "syn2ann_write_maps(15)"
