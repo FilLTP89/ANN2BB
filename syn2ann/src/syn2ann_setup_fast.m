@@ -30,11 +30,12 @@ if exist(wd,'dir')~=7
 end
 %% *LOAD ALL METADATA AVAILABLE*
 % syn2ann_case_list_fast;
-% # THESS
-syn2ann_case_list_fast_thess;
-% _select analyses : selected_case = [a,b,...,d]_
-selected_case = 1:2985;%[1,2,3,5,34,35];
-
+% % % # THESS
+% % syn2ann_case_list_fast_thess;
+% % % _select analyses : selected_case = [a,b,...,d]_
+% % selected_case = 1:2985;%[1,2,3,5,34,35];
+syn2ann_case_list_fast_as4;
+selected_case = 1:8;
 %% *DEFINE REAL RECORDS METADATA*
 % _path to record files_
 bhr.pt  = fullfile(wd,'records');
@@ -81,13 +82,15 @@ fprintf('---------------------------------------------------------------\n');
 
 %% *DEFINE SPEED MONITORS METADATA*
 % _path to monitor files_
-mon.pt  = fullfile(wd,'monitors');
+%mon.pt  = fullfile(wd,'monitors');
+mon.pt  = ['/home/filippo/Data/Filippo/aeolus/SEM_calculs/ncoeq2007_small_scale_OK/ncoeq2007_as4/',...
+    'kknpp_as4_topo_rf5_small_bsn_wdmp_npml_sb35_25_grd_tsuda_water_fold'];
 fprintf('--> Monitor Path: %s\n',mon.pt);
 % _metadata filename_
 mon.fnm  = fullfile(wd,'SM_Stations_Monitors.csv');
 fprintf('--> Monitor File: %s\n',mon.fnm);
 % _type of simulation_
-mon.typ  = 'S';
+mon.typ  = 'sem3d';
 fprintf('--> Type of Simulation: %s\n',mon.typ);
 % _monitor identity_
 mon.na = bhr.ns;

@@ -51,7 +51,7 @@ function [varargout] = syn2ann_pbs_parser(varargin)
     %%
     % _parsing records_
     switch(lower(mon.typ))
-        case 's'
+        case 'speed'
             %%
             % _speed simulations_
             
@@ -86,6 +86,45 @@ function [varargout] = syn2ann_pbs_parser(varargin)
                 % time-vector
                 pbs.mon.vtm{i_} = pbs.mon.dtm(i_)*(0:pbs.mon.ntm(i_)-1);
                 
+            end
+        case 'sem3d'
+            %%
+            % _sem3d simulations_
+            
+            %% *PARSING*
+            sem3d = parse_sem_results('pfn', mon.pt);
+            
+            %% *RESAMPLING*
+            sem3d = sem_rsmpl(sem3d,'dtt',0.01);
+            
+            %% *BASELINE CORRECTION + FILTERING*
+            sem3d = sem_bpf(sem3d,'hfr',[],'lfr',0.05,'avd','idc');
+            rc_sem3d = {'Accel';'Veloc';'Displ'};
+            cpn_sem3d = {'ew','x';'ns','y';'ud','z'};
+            
+            for i_ = 1:mon.na % number of monitors
+                fprintf('monitor: \n');
+                disp(mon.id(i_));
+                
+                % time-step
+                pbs.mon.dtm(i_) = sem3d.dTime;
+                
+                % parse acceleration components
+                fprintf('components: \n');
+                for k_=1:numel(rc_sem3d)
+                    for j_ = 1:mon.nc
+                        cpp = mon.cp{j_};
+                        idx_sem3d = find(strcmpi(cpn_sem3d(:,1),cpp)==1);
+                        disp(cpp);
+                        pbs.syn{i_}.(strcat('th',lower(rc_sem3d{k_}(1)))).(cpp) = ...
+                            sem3d.(rc_sem3d{k_}).(cpn_sem3d{idx_sem3d,2})(:,mon.id(i_));
+                        
+                    end
+                end
+                % time-step number
+                pbs.mon.ntm(i_) = numel(pbs.syn{i_}.tha.(cpp));
+                % time-vector
+                pbs.mon.vtm{i_} = pbs.mon.dtm(i_)*(0:pbs.mon.ntm(i_)-1);
             end
     end
     pbs.mon.rc  = {'a';'v';'d'};
