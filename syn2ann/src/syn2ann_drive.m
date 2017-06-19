@@ -15,7 +15,7 @@
 % _syn2ann_setup_maps.m,syn2ann_run_maps.m,
 % syn2ann_setup_fast.m,syn2ann_run_fast.m_
 
-flag_map = 1;
+flag_map = 0;
 if flag_map
     
     %% *1). ANALYSIS SET-UP*
