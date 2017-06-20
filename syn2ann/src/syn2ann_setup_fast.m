@@ -19,13 +19,13 @@ fprintf('============================\n');
 % _main workdir_
 %wd = '/home/filippo/Data/Filippo/PHD_passing_through_polimi/syn2ann/database';
 %#THESS
-wd = '/home/filippo/Data/Filippo/PHD_passing_through_polimi/syn2ann/thess';
+wd = '/home/filippo/Data/Filippo/PHD_passing_through_polimi/syn2ann/database';
 fprintf('Workdir: %s\n',wd);
 % _save path_
-sp = '/home/filippo/Data/Filippo/aeolus/ann_3Hz';
+sp = '/home/filippo/Data/Filippo/aeolus/ann_4Hz';
 if exist(wd,'dir')~=7
-    %wd = '/mssmat2/home/gattif/Documents/PHD_passing_through_polimi/syn2ann/database';
-    wd = '/mssmat2/home/gattif/Documents/PHD_passing_through_polimi/syn2ann/thess';
+    wd = '/mssmat2/home/gattif/Documents/PHD_passing_through_polimi/syn2ann/database';
+    %wd = '/mssmat2/home/gattif/Documents/PHD_passing_through_polimi/syn2ann/thess';
     sp = '/tmp1/gattif/ann';
 end
 %% *LOAD ALL METADATA AVAILABLE*
@@ -87,7 +87,7 @@ mon.pt  = ['/home/filippo/Data/Filippo/aeolus/SEM_calculs/ncoeq2007_small_scale_
     'kknpp_as4_topo_rf5_small_bsn_wdmp_npml_sb35_25_grd_tsuda_water_fold'];
 fprintf('--> Monitor Path: %s\n',mon.pt);
 % _metadata filename_
-mon.fnm  = fullfile(wd,'SM_Stations_Monitors.csv');
+mon.fnm  = fullfile(wd,'SM_Stations_Monitors_sem3d.csv');
 fprintf('--> Monitor File: %s\n',mon.fnm);
 % _type of simulation_
 mon.typ  = 'sem3d';
@@ -149,11 +149,11 @@ end
 % _site class considered : ALL,AB,CD_
 ann.mtd.scl = {'ALL';'ALL';'ALL'};
 % _corner period for each ANN_
-ann.mtd.TnC = {0.75;0.75;0.75};
+ann.mtd.TnC = {0.25;0.25;0.25};
 % _ANN motion component : gh,ud (geometric mean horizontal, updip)_
 ann.mtd.cpn = {'gh';'gh';'ud'};
 for i_ = 1:numel(ann.mtd.TnC)
-    ann.mtd.nl(i_) = {sprintf('net_%u_%s_%s_new.mat',...
+    ann.mtd.nl(i_) = {sprintf('net_%u_%s_%s_30n.mat',...
         round(ann.mtd.TnC{i_}*100),ann.mtd.scl{i_},ann.mtd.cpn{i_})};
     ann.mtd.tol(i_).low.psa = 0.15;
     ann.mtd.tol(i_).low.pga = 0.15;
