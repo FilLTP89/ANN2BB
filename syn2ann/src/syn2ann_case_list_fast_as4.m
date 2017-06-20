@@ -11,18 +11,25 @@
 
 %% *RECORDING STATION: bhrr*
 % _station identity_
-% MIR01
-bhrr.st = cell(2985,1);
-bhrr.st{1}.id = {'MON'};
+stss = {'G07','G08','G09','G10','1G1','SG1','SG2','SG3','SG4','NIG016','NIG018'};
+
+bhrr.st = cell(numel(stss),1);
+for i_=1
+    bhrr.st{i_}.id=stss(i_);
+end
 bhrr.st{1}.ni = {'TV';'HN'};
 % _recorded events_
-bhrr.st{1}.ev  = {'20120529.070002'};
-bhrr.st{1}.dv = {'01'};
+bhrr.st{1}.ev  = {'070716.210800'};
+bhrr.st{1}.dv = {''};
 % _database_
 bhrr.st{1}.tp =  {'sem3d'};
 
-for i_=2:8
+for i_=2:numel(stss)
     bhrr.st{i_}=bhrr.st{1};
+end
+
+for i_=2:numel(stss)
+    bhrr.st{i_}.id=stss(i_);
 end
 
 % _bhrr field names_
@@ -32,7 +39,7 @@ fnn.bhrr = numel(fni.bhrr);
 
 %% *MONITOR STATION: monn*
 % _station identity_
-monn.id =[28;23;19;20;21;22;14;16];
+monn.id =[(28:31)';28;(19:22)';14;16];
 
 % _monn field names_
 fni.monn = fieldnames(monn);
@@ -41,12 +48,13 @@ fnn.monn = numel(fni.monn);
 %% *EMPIRICAL ANALYSIS: mtdd*
 % _Sabetta&Pugliese 1996 - metadata_
 % STORED IN COLUMNS
-mtdd.sp96.mw = [4.4*ones(33,1);6.3;6.3];
-mtdd.sp96.dtm_sp96 = 0.01*ones(35,1);
+mtdd.sp96.mw = 4.4*ones(numel(stss),1);
+mtdd.sp96.dtm_sp96 = 0.005*ones(numel(stss),1);
 % site conditions (0=rock, (Vs,30>800m/s); 1=shallow all. (H<=20); 2=deep alluvium (H>20m));
-mtdd.sp96.scc = [2*ones(33,1);1;2];
-mtdd.sp96.sst = zeros(35,1);
-mtdd.sp96.scl = 0.01*ones(35,1);
+mtdd.sp96.scc = 2*ones(numel(stss),1);
+mtdd.sp96.scc([1:2,5:7,10:numel(stss)]) = 1;
+mtdd.sp96.sst = zeros(numel(stss),1);
+mtdd.sp96.scl = 0.01*ones(numel(stss),1);
 % _hybridization frequencies_
 % horizontal components (stored in (na x 2) matrix)
 %mtdd.sp96.ew = [1.5,1.5,1.5,1.5,1.5,1.5;...

@@ -35,7 +35,7 @@ end
 % % % _select analyses : selected_case = [a,b,...,d]_
 % % selected_case = 1:2985;%[1,2,3,5,34,35];
 syn2ann_case_list_fast_as4;
-selected_case = 1:8;
+selected_case = 1:11;
 %% *DEFINE REAL RECORDS METADATA*
 % _path to record files_
 bhr.pt  = fullfile(wd,'records');
