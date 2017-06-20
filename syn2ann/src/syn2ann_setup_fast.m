@@ -35,7 +35,7 @@ end
 % % % _select analyses : selected_case = [a,b,...,d]_
 % % selected_case = 1:2985;%[1,2,3,5,34,35];
 syn2ann_case_list_fast_as4;
-selected_case = 12;
+selected_case = 1:12;
 %% *DEFINE REAL RECORDS METADATA*
 % _path to record files_
 bhr.pt  = fullfile(wd,'records');
@@ -83,8 +83,8 @@ fprintf('---------------------------------------------------------------\n');
 %% *DEFINE SPEED MONITORS METADATA*
 % _path to monitor files_
 %mon.pt  = fullfile(wd,'monitors');
-mon.pt  = ['/home/filippo/Data/Filippo/aeolus/SEM_calculs/ncoeq2007_small_scale_OK/ncoeq2007_as4/',...
-    'kknpp_as4_topo_rf5_small_bsn_wdmp_npml_sb35_25_grd_tsuda_water_fold'];
+mon.pt  = ['/home/filippo/Data/Filippo/aeolus/SEM_calculs/ncoeq2007_small_scale_OK/ncoeq2007_as8/',...
+    'kknpp_as8_topo_rf5_small_bsn_wdmp_npml_sb88_grd_tsuda_water_fold'];
 fprintf('--> Monitor Path: %s\n',mon.pt);
 % _metadata filename_
 mon.fnm  = fullfile(wd,'SM_Stations_Monitors_sem3d.csv');
