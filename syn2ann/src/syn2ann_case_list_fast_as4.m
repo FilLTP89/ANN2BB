@@ -12,7 +12,7 @@
 %% *RECORDING STATION: bhrr*
 % _station identity_
 % MIR01
-bhrr.st = cell(2985,1);
+bhrr.st = cell(8,1);
 bhrr.st{1}.id = {'MON'};
 bhrr.st{1}.ni = {'TV';'HN'};
 % _recorded events_

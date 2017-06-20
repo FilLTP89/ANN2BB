@@ -33,7 +33,11 @@ function [varargout] = syn2ann_pbs_parser(varargin)
     
     for i_ = 1:mon.na
         idn = find(round(mtd.data(:,idm-1))==mon.id(i_)==1);
+        try
         mon.dep(i_) = mtd.data(idn,idd-1);
+        catch
+            keyboard
+        end
         mon.st(i_) = mtd.textdata(idn+1,ids);
         mon.eutm(i_) = mtd.data(idn,idg.eutm-1);
         mon.nutm(i_) = mtd.data(idn,idg.nutm-1);
