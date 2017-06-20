@@ -37,6 +37,11 @@ function [varargout] = trann_define_inout(varargin)
             % ANN with corner period = 1.0 s
             inp.vTn = [1.0:0.25:5.0];
             tar.vTn = [0,0.05,0.1:0.1:0.9];
+        case 0.25
+            % ANN with corner period = 1.0 s
+            inp.vTn = [0.25:0.25:5.0];
+            tar.vTn = [0:0.05:0.20];
+            
     end
     
     inp.nT  = length(inp.vTn);
