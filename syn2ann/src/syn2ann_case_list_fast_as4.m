@@ -11,7 +11,7 @@
 
 %% *RECORDING STATION: bhrr*
 % _station identity_
-stss = {'G07','G08','G09','G10','1G1','SG1','SG2','SG3','SG4','NIG016','NIG018'};
+stss = {'G07','G08','G09','G10','1G1','SG1','SG2','SG3','SG4','NIG016','NIG018','5G1'};
 
 bhrr.st = cell(numel(stss),1);
 for i_=1
@@ -39,7 +39,7 @@ fnn.bhrr = numel(fni.bhrr);
 
 %% *MONITOR STATION: monn*
 % _station identity_
-monn.id =[(28:31)';28;(19:22)';14;16];
+monn.id =[(28:31)';28;(19:22)';14;16;23];
 
 % _monn field names_
 fni.monn = fieldnames(monn);
@@ -49,7 +49,7 @@ fnn.monn = numel(fni.monn);
 % _Sabetta&Pugliese 1996 - metadata_
 % STORED IN COLUMNS
 mtdd.sp96.mw = 4.4*ones(numel(stss),1);
-mtdd.sp96.dtm_sp96 = 0.005*ones(numel(stss),1);
+mtdd.sp96.dtm_sp96 = 0.01*ones(numel(stss),1);
 % site conditions (0=rock, (Vs,30>800m/s); 1=shallow all. (H<=20); 2=deep alluvium (H>20m));
 mtdd.sp96.scc = 2*ones(numel(stss),1);
 mtdd.sp96.scc([1:2,5:7,10:numel(stss)]) = 1;
@@ -63,9 +63,9 @@ mtdd.sp96.scl = 0.01*ones(numel(stss),1);
 %    1.5,1.5,1.5,1.5,1.5,1.5]'; % in Hz
 %mtdd.sp96.ud = [1.5,1.5,1.5,1.5,1.5,1.5;...
 %    1.5,1.5,1.5,1.5,1.5,1.5]'; % in Hz
-mtdd.sp96.ew = 4.0*ones(35,2);
-mtdd.sp96.ns = 4.0*ones(35,2);
-mtdd.sp96.ud = 4.0*ones(35,2);
+mtdd.sp96.ew = 4.0*ones(numel(stss),2);
+mtdd.sp96.ns = 4.0*ones(numel(stss),2);
+mtdd.sp96.ud = 4.0*ones(numel(stss),2);
 %% _Exsim - reference files_
 %mtdd.exsim.fnm{1} = fullfile(wd,'exsim_old','exsim_emilia','MRN_new');
 %mtdd.exsim.fnm{2} = fullfile(wd,'exsim_old','exsim_emilia','MIR08_new');
