@@ -25,7 +25,7 @@
     % slip_vec.m calculates the slip vector for a given fault geometry
     %
     % INPUTS:
-    % - phi = STRIKE   ( measured clockwise from north.)
+    % - phi_s = STRIKE   ( measured clockwise from north.)
     % - lambda = RAKE  ( measured counter clockwise from horiz. strike direc.,
     %                    as in Aki&Richard )
     % - delta =  DIP   ( measured down from the horizontal)
@@ -47,7 +47,7 @@
     %                Z = DOWN
 function [varargout] = slip_vec(varargin)
     %% *SET-UP*
-    phi    = varargin{1}*pi/180; % STRIKE (DEG)
+    phi_s    = varargin{1}*pi/180; % STRIKE (DEG)
     lambda = varargin{2}*pi/180; % RAKE (DEG)
     delta  = varargin{3}*pi/180; % DIP (DEG)
     ref_sys = 0;
@@ -59,13 +59,13 @@ function [varargout] = slip_vec(varargin)
     slp = zeros(3,1);
     if ref_sys==0
         disp('UTM REFSYS');
-        slp(1) = +cos(lambda)*sin(phi) - sin(lambda)*cos(delta)*cos(phi);
-        slp(2) = +cos(lambda)*cos(phi) + sin(lambda)*cos(delta)*sin(phi);
+        slp(1) = +cos(lambda)*sin(phi_s) - sin(lambda)*cos(delta)*cos(phi_s);
+        slp(2) = +cos(lambda)*cos(phi_s) + sin(lambda)*cos(delta)*sin(phi_s);
         slp(3) = sin(lambda)*sin(delta);
     elseif ref_sys==1
         disp('HISADA REFSYS');
-        slp(1) = +cos(lambda)*cos(phi) + cos(delta)*sin(lambda)*sin(phi);
-        slp(2) = +cos(lambda)*sin(phi) - cos(delta)*sin(lambda)*cos(phi);
+        slp(1) = +cos(lambda)*cos(phi_s) + cos(delta)*sin(lambda)*sin(phi_s);
+        slp(2) = +cos(lambda)*sin(phi_s) - cos(delta)*sin(lambda)*cos(phi_s);
         slp(3) = -sin(lambda)*sin(delta);
     end
     
