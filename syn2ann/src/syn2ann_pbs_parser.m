@@ -95,7 +95,7 @@ function [varargout] = syn2ann_pbs_parser(varargin)
             sem3d = parse_sem_results('pfn', mon.pt);
             
             %% *RESAMPLING*
-            sem3d = sem_rsmpl(sem3d,'dtt',0.01);
+            sem3d = sem_rsmpl(sem3d,'dtt',0.005);
             
             %% *BASELINE CORRECTION + FILTERING*
             sem3d = sem_bpf(sem3d,'hfr',[],'lfr',0.05,'avd','idc');
@@ -113,6 +113,7 @@ function [varargout] = syn2ann_pbs_parser(varargin)
                 fprintf('components: \n');
                 for k_=1:numel(rc_sem3d)
                     for j_ = 1:mon.nc
+                        
                         cpp = mon.cp{j_};
                         idx_sem3d = find(strcmpi(cpn_sem3d(:,1),cpp)==1);
                         disp(cpp);

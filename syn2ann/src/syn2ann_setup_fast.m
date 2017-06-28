@@ -83,8 +83,10 @@ fprintf('---------------------------------------------------------------\n');
 %% *DEFINE SPEED MONITORS METADATA*
 % _path to monitor files_
 %mon.pt  = fullfile(wd,'monitors');
-mon.pt  = ['/home/filippo/Data/Filippo/aeolus/SEM_calculs/ncoeq2007_small_scale_OK/ncoeq2007_as8/',...
-    'kknpp_as8_topo_rf5_small_bsn_wdmp_npml_sb88_grd_tsuda_water_fold'];
+% mon.pt  = ['/home/filippo/Data/Filippo/aeolus/SEM_calculs/ncoeq2007_small_scale_OK/ncoeq2007_as8/',...
+%     'kknpp_as8_topo_rf5_small_bsn_wdmp_npml_sb88_grd_tsuda_water_fold'];
+mon.pt  = ['/home/filippo/Data/Filippo/aeolus/SEM_calculs/ncoeq2007_small_scale_OK/ncoeq2007_as4/',...
+    'kknpp_as4_topo_rf5_small_bsn_wdmp_npml_sb35_25_grd_tsuda_water_fold'];
 fprintf('--> Monitor Path: %s\n',mon.pt);
 % _metadata filename_
 mon.fnm  = fullfile(wd,'SM_Stations_Monitors_sem3d.csv');
@@ -128,7 +130,7 @@ mon.map.fnm = '/tmp1/gattif/syn2ann_maps/map_mrn';
 
 %% *DEFINE HYBRIDIZATION METADATA*
 % number of iteration for hybrid selections
-MAXIT = 10;
+MAXIT = 15;
 % _SP96 metadata_
 hybrid_type='sp96';
 mtd.sp96.na = mon.na;
@@ -155,10 +157,10 @@ ann.mtd.cpn = {'gh';'gh';'ud'};
 for i_ = 1:numel(ann.mtd.TnC)
     ann.mtd.nl(i_) = {sprintf('net_%u_%s_%s_30n.mat',...
         round(ann.mtd.TnC{i_}*100),ann.mtd.scl{i_},ann.mtd.cpn{i_})};
-    ann.mtd.tol(i_).low.psa = 0.15;
-    ann.mtd.tol(i_).low.pga = 0.15;
-    ann.mtd.tol(i_).hgh.psa = 0.15;
-    ann.mtd.tol(i_).hgh.pga = 0.15;
+    ann.mtd.tol(i_).low.psa = 0.1;
+    ann.mtd.tol(i_).low.pga = 0.1;
+    ann.mtd.tol(i_).hgh.psa = 0.1;
+    ann.mtd.tol(i_).hgh.pga = 0.1;
 end
 % tolerances
-ann.mtd.nit = [10;10;40];
+ann.mtd.nit = [20;20;50];
