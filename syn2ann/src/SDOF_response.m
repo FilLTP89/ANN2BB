@@ -82,6 +82,7 @@ function [varargout] = SDOF_response(varargin)
     end
     
     if any(out_sel==2)
+        % _pseudo-spectral displacement_
         varargout{out_sel==2} = sd;
     end
     
