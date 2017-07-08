@@ -19,7 +19,7 @@ sp = fullfile(filesep,'home','filippo','Data','Filippo','aeolus',...
     'image_database');
 % _database_
 dbn = fullfile(filesep,'home','filippo','Data','Filippo',...
-    'PHD_passing_through_heavyweight','simbad_v05','SIMBAD_v05_1.mat');
+    'PHD_passing_through_heavyweight','simbad_v05','SIMBAD_v05_1_vigne.mat');
 
 if exist(wd,'dir')~=7
     wd = '/mssmat2/home/gattif/Documents/PHD_passing_through_polimi/syn2ann/database';

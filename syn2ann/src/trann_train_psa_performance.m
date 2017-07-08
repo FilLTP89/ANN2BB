@@ -20,7 +20,7 @@ function trann_train_psa_performance(varargin)
     ylm = [-2;2];
     [xtk,ytk] = get_axis_tick(xlm,ylm,abs(diff(xlm))/4,abs(diff(ylm))/4);
     
-    
+    xlm = [-0.03;1];
     %% *COMPUTE ERROR BARS*
     % _TRAINING SET_ 
     %
@@ -46,7 +46,7 @@ function trann_train_psa_performance(varargin)
     err{4,1}(:,1) = abs(ypl{4,1}-min(ann.out_trn.tst-ann.out_tar.tst,[],2));
     err{4,1}(:,2) = abs(ypl{4,1}-max(ann.out_trn.tst-ann.out_tar.tst,[],2));
     
-    figure('position',[0,0,10,11]);
+    figure('position',[0,0,15,10]);
     
     %
 %     erb.all = errorbarxy(xpl{1,1},ypl{1,1},...
@@ -60,33 +60,64 @@ function trann_train_psa_performance(varargin)
     erb.trn = errorbarxy(xpl{2,1},ypl{2,1},...
         zeros(size(xpl{2,1})),zeros(size(xpl{2,1})),...
         err{2,1}(:,1),err{2,1}(:,2),...
-        {'bs--', 'b', 'b'});
-    erb.trn.hMain.MarkerSize = 12;
-    erb.trn.hMain.LineWidth = 1;
-    erb.trn.hMain.MarkerEdgeColor = [1,1,1];
-    erb.trn.hMain.MarkerFaceColor = [0,0,1];
+        {'b-', 'b', 'b'});
+    erb.trn.hMain.Color = [0.00,0.00,0.00];
+    erb.trn.hMain.Marker='none';
+    erb.trn.hMain.LineWidth = 3;
+%     erb.trn.hMain.MarkerSize = 15;
+%     erb.trn.hMain.MarkerEdgeColor = [0,0,0];
+%     erb.trn.hMain.MarkerFaceColor = [0,0,0];
+    
+    for j_=1:size(erb.trn.hErrorbar,2)
+        for i_=1:size(erb.trn.hErrorbar,1)
+            set(erb.trn.hErrorbar(i_,j_),'color',[0,0,0],...
+                'linewidth',3);
+            
+        end
+    end
+   
     %
     erb.vld = errorbarxy(xpl{3,1},ypl{3,1},...
         zeros(size(xpl{3,1})),zeros(size(xpl{3,1})),...
         err{3,1}(:,1),err{3,1}(:,2),...
-        {'g^--', 'g', 'g'});
-    erb.vld.hMain.MarkerSize = 10;
-    erb.vld.hMain.LineWidth = 1;
-    erb.vld.hMain.MarkerEdgeColor = [1,1,1];
-    erb.vld.hMain.MarkerFaceColor = [0,1,0];
+        {'g-', 'g', 'g'});
+    erb.vld.hMain.Color = [0.4,0.4,0.4];
+    erb.vld.hMain.LineWidth = 3;
+    erb.vld.hMain.Marker='none';
+%     erb.vld.hMain.MarkerSize = 11;
+%     erb.vld.hMain.MarkerEdgeColor = [0.0,0.0,0.0];
+%     erb.vld.hMain.MarkerFaceColor = [0.4,0.4,0.4];
+    
+    for j_=1:size(erb.vld.hErrorbar,2)
+        for i_=1:size(erb.vld.hErrorbar,1)
+            set(erb.vld.hErrorbar(i_,j_),'color',[0.4,0.4,0.4],...
+                'linewidth',3);
+            
+        end
+    end
     %
     erb.tst = errorbarxy(xpl{4,1},ypl{4,1},...
         zeros(size(xpl{4,1})),zeros(size(xpl{4,1})),...
         err{4,1}(:,1),err{4,1}(:,2),...
-        {'ro--', 'r', 'r'});
-    erb.tst.hMain.MarkerSize = 6;
-    erb.tst.hMain.LineWidth = 1;
-    erb.tst.hMain.MarkerEdgeColor = [1,1,1];
-    erb.tst.hMain.MarkerFaceColor = [1,0,0];
+        {'r-.', 'r', 'r'});
+    erb.tst.hMain.Color = [0,0.85,0];
+    erb.trn.hMain.Marker='none';
+    erb.tst.hMain.LineWidth = 3;
+%     erb.tst.hMain.MarkerSize = 7;
+%     erb.tst.hMain.MarkerEdgeColor = [0.0,0.0,0.0];
+%     erb.tst.hMain.MarkerFaceColor = [0.7,0.7,0.7];
+    
+    for j_=1:size(erb.tst.hErrorbar,2)
+        for i_=1:size(erb.tst.hErrorbar,1)
+            set(erb.tst.hErrorbar(i_,j_),'color',[0.0,0.85,0.0],...
+                'linewidth',3);
+            
+        end
+    end
     %
     xlim(gca,xlm);
     ylim(gca,ylm);
-    set(gca,'xtick',xtk,'ytick',ytk);
+    set(gca,'xtick',xtk,'ytick',ytk,'linewidth',2);
     set(gca,'ticklength',[.02,.02]);
     xlabel(gca,'T/T* [1]','fontsize',15,'fontweight','bold');
     ylabel(gca,'log_{10}(Sa_{ANN}/Sa_{TAR}) [1]','fontsize',15,'fontweight','bold');
