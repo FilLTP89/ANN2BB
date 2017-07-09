@@ -13,11 +13,10 @@ function [varargout] = trann_train_best_performance(varargin)
     prf.std = std(prf.vld);
     
     switch ann.train_strategy
-        
         case 'classic'
-            prf.mse = mse(ann.net,ann.tar.vld,prf.avg);
+            prf.mse = mse(ann.net,ann.tar.vld,prf.avg,'regularization', 0.01);
         case 'bootstrap'
-            prf.mse = mse(ann.net,ann.out_tar.vld,prf.avg);
+            prf.mse = mse(ann.net,ann.out_tar.vld,prf.avg,'regularization', 0.01);
     end
 
     %% *COMPARE TRAINING*

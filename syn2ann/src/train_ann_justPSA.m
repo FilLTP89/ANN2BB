@@ -97,7 +97,6 @@ function train_ann_justPSA(varargin)
     end
     
     %% *DESIGN BASIC ANN*
-    
     dsg = train_ann_basics(ann,db.nr,ann.train_strategy);
     NNs = cell(dsg.ntr,1);
     prf.vld = -999*ones(dsg.ntr,1);
@@ -108,7 +107,6 @@ function train_ann_justPSA(varargin)
         case 'classic'
             
             for i_=1:dsg.ntr
-                
                 fprintf('ANN %u/%u: \n',i_,dsg.ntr);
                 %% *DEFINE INPUTS/TARGETS*
                 % _ALL INPUT/TARGET TRAINING VALUES_
