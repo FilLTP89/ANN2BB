@@ -1,4 +1,4 @@
-Station Code,Monitor ID,Repi (km),E_UTM [m],N_UTM [m],LON [°],LAT [°]
+Station Code,Monitor ID,Repi [km],E_UTM [m],N_UTM [m],LON [dd],LAT [dd]
 MIR01,18446,1.41,663690,4967900,11.071,44.844
 MRN,16928,4.1,662793.6,4971388,11.062,44.878
 MIR02,18437,4.12,663690,4972400,11.073,44.887
