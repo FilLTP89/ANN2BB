@@ -22,20 +22,21 @@ fprintf('============================\n');
 wd = '/home/filippo/Data/Filippo/PHD_passing_through_polimi/syn2ann/database';
 fprintf('Workdir: %s\n',wd);
 % _save path_
-sp = '/home/filippo/Data/Filippo/aeolus/ann_4Hz';
+sp = '/home/filippo/Data/Filippo/aeolus/ann_new';
 if exist(wd,'dir')~=7
     wd = '/mssmat2/home/gattif/Documents/PHD_passing_through_polimi/syn2ann/database';
     %wd = '/mssmat2/home/gattif/Documents/PHD_passing_through_polimi/syn2ann/thess';
     sp = '/tmp1/gattif/ann';
 end
 %% *LOAD ALL METADATA AVAILABLE*
-% syn2ann_case_list_fast;
+syn2ann_case_list_fast;
+selected_case = 1:33;
 % % % # THESS
 % % syn2ann_case_list_fast_thess;
 % % % _select analyses : selected_case = [a,b,...,d]_
 % % selected_case = 1:2985;%[1,2,3,5,34,35];
-syn2ann_case_list_fast_as4;
-selected_case = 1:12;
+% syn2ann_case_list_fast_as4;
+% selected_case = 1:12;
 %% *DEFINE REAL RECORDS METADATA*
 % _path to record files_
 bhr.pt  = fullfile(wd,'records');
@@ -82,17 +83,20 @@ fprintf('---------------------------------------------------------------\n');
 
 %% *DEFINE SPEED MONITORS METADATA*
 % _path to monitor files_
-%mon.pt  = fullfile(wd,'monitors');
+mon.pt  = fullfile(wd,'monitors');
 % mon.pt  = ['/home/filippo/Data/Filippo/aeolus/SEM_calculs/ncoeq2007_small_scale_OK/ncoeq2007_as8/',...
 %     'kknpp_as8_topo_rf5_small_bsn_wdmp_npml_sb88_grd_tsuda_water_fold'];
-mon.pt  = ['/home/filippo/Data/Filippo/aeolus/SEM_calculs/ncoeq2007_small_scale_OK/ncoeq2007_as4/',...
-    'kknpp_as4_topo_rf5_small_bsn_wdmp_npml_sb35_25_grd_tsuda_water_fold'];
+% mon.pt  = ['/home/filippo/Data/Filippo/aeolus/SEM_calculs/ncoeq2007_small_scale_OK/ncoeq2007_as4/',...
+%     'kknpp_as4_topo_rf5_small_bsn_wdmp_npml_sb35_25_grd_tsuda_water_fold'];
 fprintf('--> Monitor Path: %s\n',mon.pt);
 % _metadata filename_
-mon.fnm  = fullfile(wd,'SM_Stations_Monitors_sem3d.csv');
+mon.fnm  = fullfile(wd,'SM_Stations_Monitors.csv');
+
+% mon.fnm  = fullfile(wd,'SM_Stations_Monitors_sem3d.csv');
 fprintf('--> Monitor File: %s\n',mon.fnm);
 % _type of simulation_
-mon.typ  = 'sem3d';
+% mon.typ  = 'sem3d';
+mon.typ = 'speed';
 fprintf('--> Type of Simulation: %s\n',mon.typ);
 % _monitor identity_
 mon.na = bhr.ns;
@@ -151,7 +155,7 @@ end
 % _site class considered : ALL,AB,CD_
 ann.mtd.scl = {'ALL';'ALL';'ALL'};
 % _corner period for each ANN_
-ann.mtd.TnC = {0.25;0.25;0.25};
+ann.mtd.TnC = {0.75;0.75;0.75};
 % _ANN motion component : gh,ud (geometric mean horizontal, updip)_
 ann.mtd.cpn = {'gh';'gh';'ud'};
 for i_ = 1:numel(ann.mtd.TnC)

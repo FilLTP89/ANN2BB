@@ -75,10 +75,10 @@ else
     
     %% *PGA-PGV-PGD & ARIAS INTENSITY*
     fprintf('--> Peak Values and Arias\n');
-%     rec.org = syn2ann_thp(rec.org);
+    rec.org = syn2ann_thp(rec.org);
 %     rec.fil = syn2ann_thp(rec.fil);
     %% *SPECTRA*
     fprintf('--> Spectra\n');
-%     rec.org = syn2ann_spp(rec.org);
+    rec.org = syn2ann_spp(rec.org);
 %     rec.fil = syn2ann_spp(rec.fil);
 end

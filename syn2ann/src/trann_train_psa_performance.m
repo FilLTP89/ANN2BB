@@ -46,13 +46,13 @@ function trann_train_psa_performance(varargin)
         zeros(size(xpl{2,1})),zeros(size(xpl{2,1})),...
         err{2,1}(:,1),err{2,1}(:,2),...
         {'b-', 'b', 'b'});
-    erb.trn.hMain.Color = rgb('DarkOrange');
+    erb.trn.hMain.Color = rgb2gray(rgb('green'));
     erb.trn.hMain.Marker='none';
     erb.trn.hMain.LineWidth = 8;
     
     for j_=1:size(erb.trn.hErrorbar,2)
         for i_=1:size(erb.trn.hErrorbar,1)
-            set(erb.trn.hErrorbar(i_,j_),'color',rgb('DarkOrange'),...
+            set(erb.trn.hErrorbar(i_,j_),'color',rgb2gray(rgb('green')),...
                 'linewidth',8);
         end
     end
@@ -62,13 +62,13 @@ function trann_train_psa_performance(varargin)
         zeros(size(xpl{3,1})),zeros(size(xpl{3,1})),...
         err{3,1}(:,1),err{3,1}(:,2),...
         {'g-', 'g', 'g'});
-    erb.vld.hMain.Color = [0.5,0.5,0.5];
+    erb.vld.hMain.Color = rgb2gray([0.65,0.65,0.65]);
     erb.vld.hMain.LineWidth = 6;
     erb.vld.hMain.Marker='none';
     
     for j_=1:size(erb.vld.hErrorbar,2)
         for i_=1:size(erb.vld.hErrorbar,1)
-            set(erb.vld.hErrorbar(i_,j_),'color',[0.5,0.5,0.5],...
+            set(erb.vld.hErrorbar(i_,j_),'color',rgb2gray([0.65,0.65,0.65]),...
                 'linewidth',6);
             
         end
@@ -78,13 +78,13 @@ function trann_train_psa_performance(varargin)
         zeros(size(xpl{4,1})),zeros(size(xpl{4,1})),...
         err{4,1}(:,1),err{4,1}(:,2),...
         {'r-', 'r', 'r'});
-    erb.tst.hMain.Color = [0,0,0];
+    erb.tst.hMain.Color = rgb2gray([0,0,0]);
     erb.trn.hMain.Marker='none';
     erb.tst.hMain.LineWidth = 4;
     
     for j_=1:size(erb.tst.hErrorbar,2)
         for i_=1:size(erb.tst.hErrorbar,1)
-            set(erb.tst.hErrorbar(i_,j_),'color',[0,0,0],...
+            set(erb.tst.hErrorbar(i_,j_),'color',rgb2gray([0,0,0]),...
                 'linewidth',4);
             
         end
@@ -94,7 +94,7 @@ function trann_train_psa_performance(varargin)
     ylim(gca,ylm);
     set(gca,'xtick',xtk,'ytick',ytk,'linewidth',2);
     set(gca,'ticklength',[.02,.02]);
-    xlabel(gca,'T/T* [1]','fontsize',15,'fontweight','bold');
+    xlabel(gca,'T/T*','fontsize',15,'fontweight','bold');
     ylabel(gca,'log_{10}(Sa_{ANN}/Sa_{Obs})','fontsize',15,'fontweight','bold');
     leg=legend(gca,{'TRN';'VLD';'TST'});
     
@@ -106,7 +106,6 @@ function trann_train_psa_performance(varargin)
     rule_fig(gcf);
     
     saveas(gcf,fullfile(wd,strcat(dsg.fnm,'_bst_lSa_all_',num2str(dsg.nhn),'n')),'epsc');
-    
     
     return
 end
