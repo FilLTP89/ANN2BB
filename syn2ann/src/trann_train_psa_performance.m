@@ -16,11 +16,14 @@ function trann_train_psa_performance(varargin)
     
     %% *DEFINE LIMITS*
     % _TRAINING SET_ 
-    xlm = [0;1];
-    ylm = [-2;2];
-    [xtk,ytk] = get_axis_tick(xlm,ylm,abs(diff(xlm))/4,abs(diff(ylm))/4);
+    xlm =  [0.00;1.00];
+    ylm =  [-1.00;1.00];
+    xtk =  0.00:0.25:1.00;
+    ytk = -1.00:0.25:1.00;
     
-    xlm = [-0.03;1];
+    xlm = [-0.05;1];
+    cols = gray(6);
+    
     %% *COMPUTE ERROR BARS*
     % _TRAINING SET_ 
     %
@@ -41,67 +44,73 @@ function trann_train_psa_performance(varargin)
     err{4,1}(:,1) = prctile(ann.out_trn.tst-ann.out_tar.tst,16,2);
     err{4,1}(:,2) = prctile(ann.out_trn.tst-ann.out_tar.tst,84,2);
     
+    
+    
+    
     figure('position',[0,0,15,10]);
-    erb.trn = errorbarxy(xpl{2,1},ypl{2,1},...
-        zeros(size(xpl{2,1})),zeros(size(xpl{2,1})),...
-        err{2,1}(:,1),err{2,1}(:,2),...
-        {'b-', 'b', 'b'});
-    erb.trn.hMain.Color = rgb2gray(rgb('green'));
-    erb.trn.hMain.Marker='none';
-    erb.trn.hMain.LineWidth = 1.5;
     
-    for j_=1:size(erb.trn.hErrorbar,2)
-        for i_=1:size(erb.trn.hErrorbar,1)
-            set(erb.trn.hErrorbar(i_,j_),'color',rgb2gray(rgb('green')),...
-                'linewidth',1.5);
-        end
-    end
-   
-    %
-    erb.vld = errorbarxy(xpl{3,1},ypl{3,1},...
-        zeros(size(xpl{3,1})),zeros(size(xpl{3,1})),...
-        err{3,1}(:,1),err{3,1}(:,2),...
-        {'g-', 'g', 'g'});
-    erb.vld.hMain.Color = [0.45,0.45,0.45];
-    erb.vld.hMain.LineWidth = 5;
-    erb.vld.hMain.Marker='none';
+    pl11=plot(xpl{2,1},ypl{2,1}); hold all;
+%     pl11.LineWidth=4;
+%     pl11.Color=rgb('lightgrey');
+    pl11.LineStyle='none';
+    pl21=bar(xpl{2,1},err{2,1}(:,1)); hold all;
+    pl3=bar(xpl{2,1},err{2,1}(:,2)); hold all;
     
-    for j_=1:size(erb.vld.hErrorbar,2)
-        for i_=1:size(erb.vld.hErrorbar,1)
-            set(erb.vld.hErrorbar(i_,j_),'color',[0.45,0.45,0.45],...
-                'linewidth',5);
-            
-        end
-    end
-    %
-    erb.tst = errorbarxy(xpl{4,1},ypl{4,1},...
-        zeros(size(xpl{4,1})),zeros(size(xpl{4,1})),...
-        err{4,1}(:,1),err{4,1}(:,2),...
-        {'r-', 'r', 'r'});
-    erb.tst.hMain.Color = ([0,0,0]);
-    erb.trn.hMain.Marker='none';
-    erb.tst.hMain.LineWidth = 3;
+    pl21.BarWidth=0.9;
+    pl3.BarWidth=0.9;
     
-    for j_=1:size(erb.tst.hErrorbar,2)
-        for i_=1:size(erb.tst.hErrorbar,1)
-            set(erb.tst.hErrorbar(i_,j_),'color',([0,0,0]),...
-                'linewidth',3);
-            
-        end
-    end
-    %
+    pl21.FaceColor=rgb('lightgrey');
+    pl3.FaceColor=rgb('lightgrey');
+    
+    pl22=plot(xpl{3,1},ypl{3,1}); hold all;
+%     pl22.LineWidth=4;
+%     pl22.Color=[0.4,0.4,0.4];
+    pl22.LineStyle='none';
+    pl23=bar(xpl{3,1},err{3,1}(:,1)); hold all;
+    pl3=bar(xpl{3,1},err{3,1}(:,2)); hold all;
+    pl23.BarWidth=0.5;
+    pl3.BarWidth=0.5;
+    pl23.FaceColor=[0.4,0.4,0.4];
+    pl3.FaceColor=[0.4,0.4,0.4];
+    
+    pl33=plot(xpl{4,1},ypl{4,1}); hold all;
+    pl33.LineStyle='none';
+%     pl33.LineWidth=4;
+%     pl33.Color=rgb('black');
+    pl24=bar(xpl{4,1},err{4,1}(:,1)); hold all;
+    pl3=bar(xpl{4,1},err{4,1}(:,2)); hold all;
+    pl24.BarWidth=0.2;
+    pl3.BarWidth=0.2;
+    pl24.FaceColor=rgb('black');
+    pl3.FaceColor=rgb('black');
+    
+    
+    
+%     pl1.MarkerSize=13;
+%     pl1.MarkerFaceColor=rgb('white');
+%     pl1.MarkerEdgeColor=rgb('white');
+    
+%     pl1.MarkerSize=13;
+%     pl1.MarkerFaceColor=[.2,.2,.2];
+%     pl1.MarkerEdgeColor=[.2,.2,.2];
+    
+%     pl1.MarkerSize=13;
+%     pl1.MarkerFaceColor=rgb('black');
+%     pl1.MarkerEdgeColor=rgb('black');
+    
+    
     xlim(gca,xlm);
     ylim(gca,ylm);
     set(gca,'xtick',xtk,'ytick',ytk,'linewidth',2);
     set(gca,'ticklength',[.02,.02]);
     xlabel(gca,'T/T*','fontsize',15,'fontweight','bold');
     ylabel(gca,'log_{10}(Sa_{ANN}/Sa_{Obs})','fontsize',15,'fontweight','bold');
-    leg=legend(gca,{'TRN';'VLD';'TST'});
+    leg=legend(gca,[pl21,pl23,pl24],{'TRN';'VLD';'TST'});
     
     set(leg,'interpreter','latex','location','northeast',...
         'orientation','horizontal','box','off');
     
-    text(0.6,-1.5,strcat('$T^\star=$',num2str(TnC,'%.2f'),'$s$'),'parent',gca,...
+    text(0.7,-0.7,strcat('$T^\star=$',num2str(TnC,'%.2f'),'$s$'),'parent',gca,...
         'interpreter','latex','fontsize',18)
     rule_fig(gcf);
     

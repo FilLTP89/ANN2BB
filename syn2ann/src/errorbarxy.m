@@ -162,8 +162,8 @@ for k=1:length(x)
         l2=line([lx(k) lx(k)],[y(k)-0.1*erry(k) y(k)+0.1*erry(k)]);
         l3=line([ux(k) ux(k)],[y(k)-0.1*erry(k) y(k)+0.1*erry(k)]);
         l4=line([x(k) x(k)],[ly(k) uy(k)]);
-        l5=line([x(k)-0.05*erry(k) x(k)+0.05*erry(k)],[ly(k) ly(k)]);
-        l6=line([x(k)-0.05*erry(k) x(k)+0.05*erry(k)],[uy(k) uy(k)]);
+        l5=line([x(k)-0.15*erry(k) x(k)+0.15*erry(k)],[ly(k) ly(k)]);
+        l6=line([x(k)-0.15*erry(k) x(k)+0.15*erry(k)],[uy(k) uy(k)]);
         allh(k, :)=[l1, l2, l3, l4, l5, l6];
     elseif isempty(lx) & ~isempty(ly) % x errors are not specified
         l4=line([x(k) x(k)],[ly(k) uy(k)]);
