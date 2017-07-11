@@ -32,14 +32,14 @@ function trann_train_psa_performance(varargin)
     ypl{3,1} = mean(ann.out_trn.vld-ann.out_tar.vld,2);
     ypl{4,1} = mean(ann.out_trn.tst-ann.out_tar.tst,2);
     %
-    err{2,1}(:,1) = prctile(ann.out_trn.trn-ann.out_tar.trn,.16,2);
-    err{2,1}(:,2) = prctile(ann.out_trn.trn-ann.out_tar.trn,.84,2);
+    err{2,1}(:,1) = prctile(ann.out_trn.trn-ann.out_tar.trn,16,2);
+    err{2,1}(:,2) = prctile(ann.out_trn.trn-ann.out_tar.trn,84,2);
     
-    err{3,1}(:,1) = prctile(ann.out_trn.vld-ann.out_tar.vld,.16,2);
-    err{3,1}(:,2) = prctile(ann.out_trn.vld-ann.out_tar.vld,.84,2);
+    err{3,1}(:,1) = prctile(ann.out_trn.vld-ann.out_tar.vld,16,2);
+    err{3,1}(:,2) = prctile(ann.out_trn.vld-ann.out_tar.vld,84,2);
     %
-    err{4,1}(:,1) = prctile(ann.out_trn.tst-ann.out_tar.tst,.16,2);
-    err{4,1}(:,2) = prctile(ann.out_trn.tst-ann.out_tar.tst,.84,2);
+    err{4,1}(:,1) = prctile(ann.out_trn.tst-ann.out_tar.tst,16,2);
+    err{4,1}(:,2) = prctile(ann.out_trn.tst-ann.out_tar.tst,84,2);
     
     figure('position',[0,0,15,10]);
     erb.trn = errorbarxy(xpl{2,1},ypl{2,1},...
