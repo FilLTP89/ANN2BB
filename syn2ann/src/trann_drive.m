@@ -15,7 +15,7 @@
 %   Title                    = {{Neural Newtworks: a Comprehensive Foundation}},
 %   Author                   = {Haykin, S.},
 %   Publisher                = {Prentice-Hall International, Inc.},
-5%   Year                     = {1999},
+%   Year                     = {1999},
 % 
 %   File                     = {Book_Haykin_1999_ANN.pdf:Book_Haykin_1999_ANN.pdf:PDF}
 % }
