@@ -32,14 +32,14 @@ function trann_train_psa_performance(varargin)
     ypl{3,1} = mean(ann.out_trn.vld-ann.out_tar.vld,2);
     ypl{4,1} = mean(ann.out_trn.tst-ann.out_tar.tst,2);
     %
-    err{2,1}(:,1) = abs(ypl{2,1}-min(ann.out_trn.trn-ann.out_tar.trn,[],2));
-    err{2,1}(:,2) = abs(ypl{2,1}-max(ann.out_trn.trn-ann.out_tar.trn,[],2));
+    err{2,1}(:,1) = prctile(ann.out_trn.trn-ann.out_tar.trn,.16,2);
+    err{2,1}(:,2) = prctile(ann.out_trn.trn-ann.out_tar.trn,.84,2);
     
-    err{3,1}(:,1) = abs(ypl{3,1}-min(ann.out_trn.vld-ann.out_tar.vld,[],2));
-    err{3,1}(:,2) = abs(ypl{3,1}-max(ann.out_trn.vld-ann.out_tar.vld,[],2));
+    err{3,1}(:,1) = prctile(ann.out_trn.vld-ann.out_tar.vld,.16,2);
+    err{3,1}(:,2) = prctile(ann.out_trn.vld-ann.out_tar.vld,.84,2);
     %
-    err{4,1}(:,1) = abs(ypl{4,1}-min(ann.out_trn.tst-ann.out_tar.tst,[],2));
-    err{4,1}(:,2) = abs(ypl{4,1}-max(ann.out_trn.tst-ann.out_tar.tst,[],2));
+    err{4,1}(:,1) = prctile(ann.out_trn.tst-ann.out_tar.tst,.16,2);
+    err{4,1}(:,2) = prctile(ann.out_trn.tst-ann.out_tar.tst,.84,2);
     
     figure('position',[0,0,15,10]);
     erb.trn = errorbarxy(xpl{2,1},ypl{2,1},...
@@ -48,12 +48,12 @@ function trann_train_psa_performance(varargin)
         {'b-', 'b', 'b'});
     erb.trn.hMain.Color = rgb2gray(rgb('green'));
     erb.trn.hMain.Marker='none';
-    erb.trn.hMain.LineWidth = 8;
+    erb.trn.hMain.LineWidth = 1.5;
     
     for j_=1:size(erb.trn.hErrorbar,2)
         for i_=1:size(erb.trn.hErrorbar,1)
             set(erb.trn.hErrorbar(i_,j_),'color',rgb2gray(rgb('green')),...
-                'linewidth',8);
+                'linewidth',1.5);
         end
     end
    
@@ -62,14 +62,14 @@ function trann_train_psa_performance(varargin)
         zeros(size(xpl{3,1})),zeros(size(xpl{3,1})),...
         err{3,1}(:,1),err{3,1}(:,2),...
         {'g-', 'g', 'g'});
-    erb.vld.hMain.Color = rgb2gray([0.65,0.65,0.65]);
-    erb.vld.hMain.LineWidth = 6;
+    erb.vld.hMain.Color = [0.45,0.45,0.45];
+    erb.vld.hMain.LineWidth = 5;
     erb.vld.hMain.Marker='none';
     
     for j_=1:size(erb.vld.hErrorbar,2)
         for i_=1:size(erb.vld.hErrorbar,1)
-            set(erb.vld.hErrorbar(i_,j_),'color',rgb2gray([0.65,0.65,0.65]),...
-                'linewidth',6);
+            set(erb.vld.hErrorbar(i_,j_),'color',[0.45,0.45,0.45],...
+                'linewidth',5);
             
         end
     end
@@ -78,14 +78,14 @@ function trann_train_psa_performance(varargin)
         zeros(size(xpl{4,1})),zeros(size(xpl{4,1})),...
         err{4,1}(:,1),err{4,1}(:,2),...
         {'r-', 'r', 'r'});
-    erb.tst.hMain.Color = rgb2gray([0,0,0]);
+    erb.tst.hMain.Color = ([0,0,0]);
     erb.trn.hMain.Marker='none';
-    erb.tst.hMain.LineWidth = 4;
+    erb.tst.hMain.LineWidth = 3;
     
     for j_=1:size(erb.tst.hErrorbar,2)
         for i_=1:size(erb.tst.hErrorbar,1)
-            set(erb.tst.hErrorbar(i_,j_),'color',rgb2gray([0,0,0]),...
-                'linewidth',4);
+            set(erb.tst.hErrorbar(i_,j_),'color',([0,0,0]),...
+                'linewidth',3);
             
         end
     end
@@ -101,7 +101,7 @@ function trann_train_psa_performance(varargin)
     set(leg,'interpreter','latex','location','northeast',...
         'orientation','horizontal','box','off');
     
-    text(0.6,-1.5,strcat('$T^\star$=',num2str(TnC,'%.2f')),'parent',gca,...
+    text(0.6,-1.5,strcat('$T^\star=$',num2str(TnC,'%.2f'),'$s$'),'parent',gca,...
         'interpreter','latex','fontsize',18)
     rule_fig(gcf);
     
