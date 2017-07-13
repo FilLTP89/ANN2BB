@@ -161,7 +161,7 @@ elseif strcmpi(tst.typ_cmp,'scl')
     % _corner period for each ANN_
     tst.mtd.TnC = {0.75;0.75;0.75};
     % _ANN motion component : gh,ud (geometric mean horizontal, updip)_
-    tst.mtd.cpp = {'gh';'gh';'gh'};
+    tst.mtd.cpp = {'ud';'ud';'ud'};
     tst.mtd.Tno = [0.75;0.75;0.75];
 end
 % for i_ = 1:tst.mtd.nr
@@ -172,4 +172,3 @@ for i_ = 1:tst.mtd.nr
     tst.mtd.nl(i_) = {sprintf('net_%u_%s_%s_30n.mat',...
         round(tst.mtd.TnC{i_}*100),tst.mtd.scl{i_},tst.mtd.cpp{i_})};
 end
-
