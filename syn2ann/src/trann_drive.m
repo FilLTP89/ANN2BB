@@ -24,8 +24,8 @@
 trann_setup;
 
 %% *TRAIN ANN*
-% trann_train;
-% return
+trann_train;
+return
 %% *TEST TRAINED ANN*
 trann_load;
 %trann_SPLP_regression;
