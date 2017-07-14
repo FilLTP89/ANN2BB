@@ -1,6 +1,5 @@
 %% *ANN METADATA ann*
 ann.trn.nr = 18;
-
 % ALL - GH - TnC = 0.50 s
 ann.trn.mtd(1).TnC = 0.50;
 ann.trn.mtd(1).cp  = 'gh';
