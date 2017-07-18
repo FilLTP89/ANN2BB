@@ -1,10 +1,11 @@
 ccc;
-delta=importdata('/home/filippo/Data/Filippo/aeolus/ann_new/Summary_Simulated_PG_Values.csv');
-datum = load('/home/filippo/Data/Filippo/aeolus/ann_new/syn2ann_res_emilia2012_ALL.mat');
+fld = '/home/filippo/Data/Filippo/aeolus/ppe2012_maps/ann_pp_emilia2012/';
+delta=importdata(strcat(fld,'Summary_Simulated_PG_Values.csv'));
+datum = load(strcat(fld,'syn2ann_res_emilia2012_ALL.mat'));
 stk = 95*pi/180;
 
-fid_pga=fopen('/home/filippo/Data/Filippo/aeolus/ann_new/pga_emilia2012_network.csv','w+');
-fid_pgv=fopen('/home/filippo/Data/Filippo/aeolus/ann_new/pgv_emilia2012_network.csv','w+');
+fid_pga=fopen(strcat(fld,'pga_emilia2012_network.csv'),'w+');
+fid_pgv=fopen(strcat(fld,'pgv_emilia2012_network.csv'),'w+');
 fprintf(fid_pga,'%10s,%20s,%20s,%20s,%20s,%20s,%20s,%20s,\n',...
     'ID','PGA-EW (m/s2)','PGA-NS (cm/s2)','PGA-FP (cm/s2)','PGA-FN (cm/s2)',...
     'PGA-GH (cm/s2)','PGA-LEA-2016 (cm/s2)','PGA-UD (cm/s2),');
@@ -35,14 +36,14 @@ gmpe = generate_gmpe('mod','lanzano_et_al_2016_rfocal',...
 gmpe.log10pga = 10.^(gmpe.log10pga);
 gmpe.log10pgv = 10.^(gmpe.log10pgv);
 
-rjb = 1:50;
+rjb = 0:0.5:50;
 njb = numel(rjb);
 gmpe_rjb = generate_gmpe('mod','lanzano_et_al_2016_rjb',...
     'Mw',repmat(6,njb,1),'Delta',rjb,...
     'lons',repmat(lons(1),[njb,1]),'lats',repmat(lats(1),[njb,1]),...
     'fsof','TF','EC8',repmat('C',[njb,1]),...
     'bas',ones(njb,1));
-save('lanzano_2016.mat','rjb','gmpe_rjb');
+save(strcat(fld,'lanzano_2016.mat'),'rjb','gmpe_rjb');
 return
 for i_=1:datum.mon.na
     %
