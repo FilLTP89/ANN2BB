@@ -16,4 +16,3 @@ block 3 curve 4
 block 4 curve 2 
 set large exodus file off
 export mesh "square2d.e" dimension 2 block 1 2 3 4 overwrite
-Exit

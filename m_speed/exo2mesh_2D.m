@@ -149,7 +149,7 @@ function exo2mesh_2D(varargin)
             end
         end
     end
-    
+    keyboard
     ['completed in ',char(num2str(cputime-tini)),' sec.']
     
     tini=cputime;

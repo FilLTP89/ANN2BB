@@ -1,4 +1,4 @@
-netcdf square2d {
+:xa
 dimensions:
 	len_string = 33 ;
 	len_line = 81 ;
