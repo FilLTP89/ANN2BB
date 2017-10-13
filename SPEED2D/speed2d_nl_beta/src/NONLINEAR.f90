@@ -4,30 +4,30 @@ module nonlinear2d
     !
     implicit none
     !
-    real*8, parameter                   :: zero=0.d0,one=1.0d0
-    real*8, parameter                   :: half=0.5d0,two=2.0d0,three=3.0d0
+    real*8, parameter :: zero=0.d0,one=1.0d0
+    real*8, parameter :: half=0.5d0,two=2.0d0,three=3.0d0
     !
-    real*8, parameter :: FTOL = 0.010D0
-    real*8, parameter :: LTOL = 0.00001D0
-    real*8, parameter :: STOL = 0.0010D0
+    real*8, parameter :: FTOL = 0.0010D0
+    real*8, parameter :: LTOL = 0.001D0
+    real*8, parameter :: STOL = 0.00010D0
     real*8, parameter :: PSI  = one!5.0d0!one
     real*8, parameter :: OMEGA= zero!1.0d6!zero
     !
-    real*8, parameter, dimension(4,4)   :: MM = reshape((/ &
+    real*8, parameter, dimension(4,4) :: MM = reshape((/ &
         one , zero, zero, zero, &
         zero, one , zero, zero, &
         zero, zero, one , zero, &
         zero, zero, zero, two   &
         /), (/4,4/))
     
-    real*8, parameter, dimension(4,4)   :: MM1 = reshape((/ &   
+    real*8, parameter, dimension(4,4) :: MM1 = reshape((/ &   
         one , zero, zero, zero, &
         zero, one , zero, zero, &
         zero, zero, one , zero, &
-        zero, zero, zero, half   &
+        zero, zero, zero, half  &
         /), (/4,4/))
     
-    real*8, parameter, dimension(4)     :: m = (/one,one,one,zero/)
+    real*8, parameter, dimension(4) :: m = (/one,one,one,zero/)
 
     contains
         
@@ -548,9 +548,9 @@ module nonlinear2d
             call hardening_increments(stress,radius,center,syld, &
                 biso,Rinf,ckin,kkin,dradius,dcenter,pstrain)
             
-            dradius = dPlast*dradius
-            dcenter = dPlast*dcenter
-            dpstrain = dPlast*matmul(MM1,gradF)
+            dradius  = dPlast*dradius
+            dcenter  = dPlast*dcenter
+            dpstrain = dPlast*gradF
             dstress = matmul(DEL,dstrain-dpstrain) 
             ! 
             return
@@ -717,11 +717,12 @@ module nonlinear2d
             !
             stress1 = zero
             if (present(mu).and.present(lambda)) then 
-                ! dincrement = dstrain
+                ! dincrement = strain increment
                 call STIFF_MATRIX_CRITICAL(stress0,dincrement,lambda,mu,DEL)
                 stress1 = stress0 + matmul(DEL,dincrement)
             else
-                ! dincrement = dstress
+                ! dincrement = stress increment
+                stress1 = zero
                 stress1 = stress0 + dincrement
             endif
             return
