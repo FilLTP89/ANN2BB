@@ -828,67 +828,67 @@ module nonlinear2d
             !
         end subroutine gotoFpegasus
         !
-        subroutine gotoFtan(start0,dtrial0,F0,Ftrial,center,radius,s0,alpha)
-            real(fpp), dimension(0:5), intent(in)    :: start0,dtrial0,center
-            real(fpp),                 intent(in)    :: radius,s0
-            real(fpp),                 intent(inout) :: F0,Ftrial
-            real(fpp),                 intent(out)   :: alpha
-            real(fpp), dimension(0:5)                :: start,gradF,dev,dev_temp,temp,dev0
-            real(fpp)                                :: Fstart,err0,err1,beta
-            integer                             :: counter
-            call tensor_deviator(start0,dev0)
-            alpha=F0/(F0-Ftrial)
-            start(0:5)=start0(0:5)
-            temp=start+alpha*dtrial0
-            do counter=0,9
-                call tensor_deviator(temp, dev_temp)
-                call tensor_deviator(start,dev)
-                call tau_mises(-dev+dev_temp,err0)
-                call tau_mises(dev-dev0,err1)
-                err0=err0/err1
-                start(0:5)=temp(0:5)
-                call mises_yld_locus(start,center,radius,s0,Fstart,gradF)
-                if (abs(Fstart).le.FTOL .or. err0.lt.0.000001) then
-                    exit
-                end if
-                beta=sum(gradF(0:5)*dtrial0(0:5))
-                alpha=alpha-Fstart/beta
-                temp(0:5)=start(0:5)-(Fstart/beta)*dtrial0(0:5)
-            end do
-        end subroutine gotoFtan
-
-        subroutine gotoFsec(start0,dtrial0,F0,Ftrial,center,radius,s0,alpha)
-            real(fpp), dimension(0:5), intent(in)    :: start0,dtrial0,center
-            real(fpp),                 intent(in)    :: radius,s0
-            real(fpp),                 intent(inout) :: F0,Ftrial
-            real(fpp),                 intent(out)   :: alpha
-            real(fpp), dimension(0:5)                :: start,gradF,dev,dev_temp,temp,dev0
-            real(fpp)                                :: alphanew,err0,err1,beta
-            integer                             :: counter
-            call tensor_deviator(start0,dev0)
-            alpha=F0/(F0-Ftrial)
-            beta=0d0
-            alphanew=0d0
-            start(0:5)=start0(0:5)
-            temp(0:5)=start(0:5)+alpha*dtrial0(0:5)
-            do counter=0,9
-                call tensor_deviator(temp, dev_temp)
-                call tensor_deviator(start,dev)
-                call tau_mises(-dev+dev_temp,err0)
-                call tau_mises(dev-dev0,err1)
-                err0=err0/err1
-                call mises_yld_locus(start,center,radius,s0,F0,gradF)
-                call mises_yld_locus(temp,center,radius,s0,Ftrial,gradF)
-                start(0:5)=temp(0:5)
-                if (abs(Ftrial).le.FTOL .or. err0.lt.0.0000001) exit
-                alphanew=alpha-(Ftrial/(Ftrial-F0))*(alpha-beta)
-                beta=alpha
-                alpha=alphanew
-                temp(0:5)=start(0:5)-(alpha-beta)*dtrial0(0:5)
-
-            enddo
-
-        end subroutine gotoFsec
+!        subroutine gotoFtan(start0,dtrial0,F0,Ftrial,center,radius,s0,alpha)
+!            real*8, dimension(0:5), intent(in)    :: start0,dtrial0,center
+!            real*8,                 intent(in)    :: radius,s0
+!            real*8,                 intent(inout) :: F0,Ftrial
+!            real*8,                 intent(out)   :: alpha
+!            real*8, dimension(0:5)                :: start,gradF,dev,dev_temp,temp,dev0
+!            real*8                                :: Fstart,err0,err1,beta
+!            integer                             :: counter
+!            call tensor_deviator(start0,dev0)
+!            alpha=F0/(F0-Ftrial)
+!            start(0:5)=start0(0:5)
+!            temp=start+alpha*dtrial0
+!            do counter=0,9
+!                call tensor_deviator(temp, dev_temp)
+!                call tensor_deviator(start,dev)
+!                call tau_mises(-dev+dev_temp,err0)
+!                call tau_mises(dev-dev0,err1)
+!                err0=err0/err1
+!                start(0:5)=temp(0:5)
+!                call mises_yld_locus(start,center,radius,s0,Fstart,gradF)
+!                if (abs(Fstart).le.FTOL .or. err0.lt.0.000001) then
+!                    exit
+!                end if
+!                beta=sum(gradF(0:5)*dtrial0(0:5))
+!                alpha=alpha-Fstart/beta
+!                temp(0:5)=start(0:5)-(Fstart/beta)*dtrial0(0:5)
+!            end do
+!        end subroutine gotoFtan
+!
+!        subroutine gotoFsec(start0,dtrial0,F0,Ftrial,center,radius,s0,alpha)
+!            real*8, dimension(0:5), intent(in)    :: start0,dtrial0,center
+!            real*8,                 intent(in)    :: radius,s0
+!            real*8,                 intent(inout) :: F0,Ftrial
+!            real*8,                 intent(out)   :: alpha
+!            real*8, dimension(0:5)                :: start,gradF,dev,dev_temp,temp,dev0
+!            real*8                                :: alphanew,err0,err1,beta
+!            integer                             :: counter
+!            call tensor_deviator(start0,dev0)
+!            alpha=F0/(F0-Ftrial)
+!            beta=0d0
+!            alphanew=0d0
+!            start(0:5)=start0(0:5)
+!            temp(0:5)=start(0:5)+alpha*dtrial0(0:5)
+!            do counter=0,9
+!                call tensor_deviator(temp, dev_temp)
+!                call tensor_deviator(start,dev)
+!                call tau_mises(-dev+dev_temp,err0)
+!                call tau_mises(dev-dev0,err1)
+!                err0=err0/err1
+!                call mises_yld_locus(start,center,radius,s0,F0,gradF)
+!                call mises_yld_locus(temp,center,radius,s0,Ftrial,gradF)
+!                start(0:5)=temp(0:5)
+!                if (abs(Ftrial).le.FTOL .or. err0.lt.0.0000001) exit
+!                alphanew=alpha-(Ftrial/(Ftrial-F0))*(alpha-beta)
+!                beta=alpha
+!                alpha=alphanew
+!                temp(0:5)=start(0:5)-(alpha-beta)*dtrial0(0:5)
+!
+!            enddo
+!
+!        end subroutine gotoFsec
 end module nonlinear2d
 !! mode: f90
 !! show-trailing-whitespace: t

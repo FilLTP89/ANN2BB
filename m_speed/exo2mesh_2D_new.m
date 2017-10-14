@@ -4,7 +4,7 @@ function exo2mesh_2D_new(varargin)
     fn.inp=strcat(char(fn.mod),'.txt');
     fn.out=strcat(char(fn.mod),'.mesh');
     
-    fid = fopen(fn.inp,'r');
+    fid.in = fopen(fn.inp,'r');
     
     prop.tag  = {'num_nodes';'num_elem';'num_el_blk'};
     prop.stag = {'num_el_in_blk';'num_nod_per_el'};
@@ -12,16 +12,10 @@ function exo2mesh_2D_new(varargin)
     prop.nmt = numel(prop.tag);
     prop.nms = numel(prop.stag);
     
-    cbar=0;
-    cshell=0;
-    grid=0;
-    num_cshell=0;
-    num_cbar=0;
-    
     for i_=1:prop.nmt
-        frewind(fid);
+        frewind(fid.in);
         while 1
-            tline = fgetl(fid);
+            tline = fgetl(fid.in);
             idx0=strfind(tline,prop.tag{i_});
             idx1=strfind(tline,' ;');
             if ~isempty(idx0)
@@ -34,7 +28,7 @@ function exo2mesh_2D_new(varargin)
     
     for b_=1:prop.(prop.tag{end})
         for i_=1:prop.nms
-            tline = fgetl(fid);
+            tline = fgetl(fid.in);
             idx0=strfind(tline,prop.stag{i_});
             idx1=strfind(tline,' ;');
             prop.(prop.stag{i_})(b_,1)=...
@@ -48,7 +42,7 @@ function exo2mesh_2D_new(varargin)
     while 1
         
         idx0=strfind(tline,'coord =');
-        tline = fgetl(fid);
+        tline = fgetl(fid.in);
         temp=[];
         if ~isempty(idx0)
             temp=[];
@@ -57,7 +51,7 @@ function exo2mesh_2D_new(varargin)
                 if isempty(idx1)
                     str = strread(tline, '%s','delimiter',',');
                     temp = [temp; str2double(str)];
-                    tline=fgetl(fid);
+                    tline=fgetl(fid.in);
                 else
                     str = strread(tline(1:end-2), '%s','delimiter',',');
                     temp = [temp; str2double(str)];
@@ -71,28 +65,10 @@ function exo2mesh_2D_new(varargin)
     nodes.coords.x = temp(1:prop.num_nodes);
     nodes.coords.y = temp(prop.num_nodes+1:2*prop.num_nodes);
     
-    %     grid.coords = zeros(prop.num_nodes*3,1);
-    %     grid_cord=zeros(num_nodes,3);
-    %     grid_id=zeros(num_nodes,1);
-    %     grid_x=zeros(num_nodes,1);
-    %     grid_y=zeros(num_nodes,1);
-    %     grid_z=zeros(num_nodes,1);
-    %
-    %     cshell_1=zeros(num_cshell,1);
-    %     cshell_2=zeros(num_cshell,1);
-    %     cshell_3=zeros(num_cshell,1);
-    %     cshell_4=zeros(num_cshell,1);
-    %
-    %     cbar_1=zeros(num_cbar,1);
-    %     cbar_2=zeros(num_cbar,1);
-    %
-    %
-    %
-    
     idxc=0;
     idxb=0;
     while 1
-        tline = fgetl(fid);
+        tline = fgetl(fid.in);
         idx0=strfind(tline,'connect');
         if ~isempty(idx0)
             idx0=str2num(tline(idx0+7:strfind(tline,'=')-2));
@@ -101,7 +77,7 @@ function exo2mesh_2D_new(varargin)
                 idxc=idxc+1;
                 elems.shell(idxc).tag = idx0;
                 for e_=1:prop.num_el_in_blk(idx0)
-                    tline=fgetl(fid);
+                    tline=fgetl(fid.in);
                     idx1=strfind(tline,' ;');
                     if isempty(idx1)
                         temp = str2double(strread(tline, '%s','delimiter',','));
@@ -114,7 +90,7 @@ function exo2mesh_2D_new(varargin)
                 idxb=idxb+1;
                 elems.bar(idxb).tag = idx0;
                 for e_=1:prop.num_el_in_blk(idx0)
-                    tline=fgetl(fid);
+                    tline=fgetl(fid.in);
                     idx1=strfind(tline,' ;');
                     if isempty(idx1)
                         temp = str2double(strread(tline, '%s','delimiter',','));
@@ -132,176 +108,50 @@ function exo2mesh_2D_new(varargin)
         end
     end
     
-    %     if cshell>0
-    %         cshell_1(1:cshell)=con_cshell(1:cshell,1);
-    %         cshell_2(1:cshell)=con_cshell(1:cshell,2);
-    %         cshell_3(1:cshell)=con_cshell(1:cshell,3);
-    %         cshell_4(1:cshell)=con_cshell(1:cshell,4);
-    %     end
-    %     if cbar>0
-    %         cbar_1(1:cbar)=con_cbar(1:cbar,1);
-    %         cbar_2(1:cbar)=con_cbar(1:cbar,2);
-    %     end
-    %
-    %     ['completed in ',char(num2str(cputime-tini)),' sec.']
-    %
-    %     tini=cputime;
-    %     ['BEGIN - Reading nodes coordinates']
-    %
-    %     %clear pos;
-    %
-    %     %cos� non funziona!!!
-    %
-    %     tline = fgetl(fid);
-    %     tline = fgetl(fid);
-    %     vero=[];
-    %     grid=1;
-    %
-    %     while strcmp(tline(1:l_tline),' coord =')~=1
-    %         %for i= 1:23+2*num_el_blk
-    %         tline = fgetl(fid);
-    %         if length(tline)<8
-    %             l_tline=length(tline);
-    %         elseif length(tline)==0
-    %             l_tline=1;
-    %         else
-    %             l_tline=8;
-    %         end
-    %     end
-    %
-    %     while length(vero)==0
-    %         %clear pos;
-    %         tline = fgetl(fid);
-    %         vero=findstr(tline,';');
-    %
-    %         if length(vero)==0
-    %
-    %             %pos=findstr(tline,',');
-    %             %pos(2:length(pos)+1)=pos(1:length(pos));
-    %             %pos(1)=1;
-    %             %for i=1:length(pos)-1
-    %             %grid=grid+1;
-    %             howmanynumb=length(str2num(tline));
-    %             grid_cord(grid:grid+howmanynumb-1)=str2num(tline);
-    %             grid=grid+howmanynumb;
-    %             %grid_cord(grid)=str2num(tline(pos(i)+1:pos(i+1)-1));
-    %             %end
-    %             %grid=grid+1;
-    %             %if i==[]
-    %             %    grid_cord(grid)=str2num(tline(1:vero));
-    %             %else
-    %             %    grid_cord(grid)=str2num(tline(pos(i+1)+1:vero));
-    %             %end
-    %         else
-    %             %pos=findstr(tline,',');
-    %             %pos(2:length(pos)+1)=pos(1:length(pos));
-    %             %pos(1)=1;
-    %             %for i=1:length(pos)-1
-    %             %grid=grid+1;
-    %             howmanynumb=length(str2num(tline));
-    %             grid_cord(grid:grid+howmanynumb-1)=str2num(tline);
-    %             grid=grid+howmanynumb;
-    %             %   grid_cord(grid)=str2num(tline(pos(i)+1:pos(i+1)-1));
-    %             %end
-    %         end
-    %     end
-    %
-    %     grid=num_nodes;
-    %     for i=1:num_nodes
-    %         grid_id(i)=i;
-    %     end
-    %     grid_x(1:num_nodes)=grid_cord(1:num_nodes);
-    %     grid_y(1:num_nodes)=grid_cord(num_nodes+1:2*num_nodes);
-    %     grid_z(1:num_nodes)=grid_cord(2*num_nodes+1:3*num_nodes);
-    %
-    %
-    %     %if test_jac==1
-    %     x1=grid_x(cshell_1(1:cshell));
-    %     x2=grid_x(cshell_2(1:cshell));
-    %     x3=grid_x(cshell_3(1:cshell));
-    %     x4=grid_x(cshell_4(1:cshell));
-    %
-    %     y1=grid_y(cshell_1(1:cshell));
-    %     y2=grid_y(cshell_2(1:cshell));
-    %     y3=grid_y(cshell_3(1:cshell));
-    %     y4=grid_y(cshell_4(1:cshell));
-    %
-    %     alfa1(1:cshell) = 0.25d0.*(-x1 +x2 +x3 -x4);
-    %     beta1(1:cshell) = 0.25d0.*(-x1 -x2 +x3 +x4);
-    %     alfa2(1:cshell) = 0.25d0.*(-y1 +y2 +y3 -y4);
-    %     beta2(1:cshell) = 0.25d0.*(-y1 -y2 +y3 +y4);
-    %
-    %     jac(1:cshell) = alfa1.*beta2 - alfa2.*beta1;
-    %     %     plot([1:cshell],jac,'b-');hold on
-    %
-    %     %end
-    %
-    %     for j=1:cshell
-    %         if jac(j)<0
-    %             tmp1=cshell_1(j);
-    %             tmp2=cshell_2(j);
-    %             tmp3=cshell_3(j);
-    %             tmp4=cshell_4(j);
-    %
-    %             cshell_1(j)=tmp4;
-    %             cshell_2(j)=tmp3;
-    %             cshell_3(j)=tmp2;
-    %             cshell_4(j)=tmp1;
-    %         end
-    %     end
-    %
-    %     x1=grid_x(cshell_1(1:cshell));
-    %     x2=grid_x(cshell_2(1:cshell));
-    %     x3=grid_x(cshell_3(1:cshell));
-    %     x4=grid_x(cshell_4(1:cshell));
-    %
-    %     y1=grid_y(cshell_1(1:cshell));
-    %     y2=grid_y(cshell_2(1:cshell));
-    %     y3=grid_y(cshell_3(1:cshell));
-    %     y4=grid_y(cshell_4(1:cshell));
-    %
-    %     alfa1(1:cshell) = 0.25d0.*(-x1 +x2 +x3 -x4);
-    %     beta1(1:cshell) = 0.25d0.*(-x1 -x2 +x3 +x4);
-    %     alfa2(1:cshell) = 0.25d0.*(-y1 +y2 +y3 -y4);
-    %     beta2(1:cshell) = 0.25d0.*(-y1 -y2 +y3 +y4);
-    %
-    %     jac(1:cshell) = alfa1.*beta2 - alfa2.*beta1;
-    %     %     plot([1:cshell],jac,'r--');hold on
-    %
-    %
-    %
-    %     fclose(fid);
-    %
-    %     ['END - Reading nodes coordinates in ',char(num2str(cputime-tini)),' sec.']
-    %
-    %     fid = fopen(fn.out,'w');
-    %
-    %     blank_space=length(num2str(grid_id(grid)));
-    %     %lunghezza_max+3spazi-lunghezza_corrente
-    %     fprintf(fid,'   %i   %i   %i   %i   %i\n',[grid; cshell+cbar; 0; 0; 0]);
-    %
-    %     tini=cputime;
-    %     ['BEGIN - Writing inp format']
-    %
+    %% Compute Jacobian
+    for i_=1:prop.num_cshell
+        
+        xn=nodes.coords.x(elems.shell.con{i_});
+        yn=nodes.coords.y(elems.shell.con{i_});
+        elem.shell.alfa1(i_) = 0.25d0.*(-xn(1) +xn(2) +xn(3) -xn(4));
+        elem.shell.beta1(i_) = 0.25d0.*(-xn(1) -xn(2) +xn(3) +xn(4));
+        elem.shell.alfa2(i_) = 0.25d0.*(-yn(1) +yn(2) +yn(3) -yn(4));
+        elem.shell.beta2(i_) = 0.25d0.*(-yn(1) -yn(2) +yn(3) +yn(4));
+        elem.shell.jac(i_) = elem.shell.alfa1(i_).*elem.shell.beta2(i_) - ...
+            elem.shell.alfa2(i_).*elem.shell.beta1(i_);
+        if elem.shell.jac(i_)<0
+            error('negative jacobian: element %u',i_)
+        end
+    end
+    fclose(fid.in);
+    
+    %% Write speed input file
+    fid.out = fopen(fn.out,'w+');
+    keyboard
+    fprintf(fid.out,'%15u%15u%15u%15u%15u\n',prop.num_nodes,...
+        prop.num_cshell+prop.num_cbar,0,0,0);
+%     for i_=1:prop.num_nodes
+%         fprintf(fid.out,'%15u%15.7e%15.7e\n',
+%     end
     %     if grid>0
-    %         fprintf(fid,'%i  %+13.7e  %+13.7e\n',[grid_id(1:grid)'; grid_x(1:grid)'; grid_y(1:grid)']);
+    %         fprintf(fid.in,'%i  %+13.7e  %+13.7e\n',[grid_id(1:grid)'; grid_x(1:grid)'; grid_y(1:grid)']);
     %     end
     %
     %     if cbar>0
-    %         fprintf(fid,'%i  %i  line  %i  %i\n',...
+    %         fprintf(fid.in,'%i  %i  line  %i  %i\n',...
     %             [cbar_id(1:cbar)'; cbar_tag(1:cbar)';...
     %             cbar_1(1:cbar)'; cbar_2(1:cbar)']);
     %     end
     %
     %     if cshell>0
-    %         fprintf(fid,'%i  %i   quad  %i  %i  %i  %i\n',...
+    %         fprintf(fid.in,'%i  %i   quad  %i  %i  %i  %i\n',...
     %             [cshell_id(1:cshell)'; cshell_tag(1:cshell)';...
     %             cshell_1(1:cshell)'; cshell_2(1:cshell)'; cshell_3(1:cshell)'; cshell_4(1:cshell)']);
     %     end
     %
     %     ['END - Writing inp format in ',char(num2str(cputime-tini)),' sec.']
     %     ['TOTAL CPU time ',char(num2str(cputime-tstart)),' sec.']
-    %     fclose(fid);
+    %     fclose(fid.in);
     %
     %     %get_func_value -> find out load function on Pelse3d
     
