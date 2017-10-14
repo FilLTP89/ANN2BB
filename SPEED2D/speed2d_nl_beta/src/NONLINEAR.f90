@@ -359,9 +359,6 @@ module nonlinear2d
             ! ***** CRITICAL STATE EXTENSION *****
             ! real*8, dimension(4), intent(in) :: dstrain
             ! real*8,               intent(in) :: lambda,mu
-            flagxit = .false.
-            st_epl = .true.
-            alpha_epl = zero
             !
             ! PREDICTION STRESS
             call update_stress(stress0,stress1,dtrial)
@@ -372,6 +369,7 @@ module nonlinear2d
             call mises_yld_locus(stress0,center,radius,syld,FS,gradFS)
             call mises_yld_locus(stress1,center,radius,syld,FT,gradFT)
            
+            alpha_epl = zero
             if (FT.le.FTOL) then
                 alpha_epl = one
                 st_epl = .false.
@@ -387,7 +385,6 @@ module nonlinear2d
             endif
 
             if ((abs(FS).le.FTOL).and.(FT.gt.FTOL)) then
-                dtrial=10.0*dtrial
                 ! CHECK LOAD DIRECTION 
                 checkload = dot_product(gradFS,dtrial)/&
                     sqrt(dot_product(gradFS,gradFS)*dot_product(dtrial,dtrial))
@@ -403,10 +400,14 @@ module nonlinear2d
                 flagxit = .true.
             endif
             
-            ! ON-LOCUS STRESS STATE 
-            dtrial = stress0+alpha_epl*dtrial
-            ! ***** CRITICAL STATE EXTENSION *****
-            ! call update_stress(stress0,dtrial,alpha_epl*dstrain,lambda,mu)
+            if (.not.flagxit)then
+                write(*,*) "ERROR IN FINDING INTERSECTION!!  F = ",FS,FT
+                alpha_epl=zero
+            endif
+
+            ! ON-LOCUS STRESS STATE
+            call update_stress(stress0,stress1,alpha_epl*dtrial)
+            dtrial = stress1
             call mises_yld_locus(dtrial,center,radius,syld,FS,gradFS)
             !
             return
