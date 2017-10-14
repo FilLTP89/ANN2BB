@@ -435,13 +435,14 @@ module nonlinear2d
             logical                             :: flag_fail
             real*8, dimension(4)                :: gradFM,S1,S2,X1,X2,Epl1
             real*8, dimension(4)                :: dS1,dS2,dX1,dX2,dEpl1,dEpl2
-            
+            integer                             :: counter
             call stiff_matrix(lambda,mu,DEL)
             deltaTk = one
             Ttot    = zero
-            deltaTmin = 0.00001D0
-            flag_fail =.true.
-            do while (Ttot.lt.one)
+            deltaTmin = 0.001D0
+            flag_fail =.false.
+            counter = 1
+            do while ((Ttot.lt.one).and.counter.le.10)
                 Resk  = zero
                 dS1   = zero
                 dX1   = zero
@@ -451,11 +452,6 @@ module nonlinear2d
                 dR2   = zero
                 dEpl1 = zero
                 dEpl2 = zero
-                S1    = zero
-                X1    = zero
-                R1    = zero
-                Epl1  = zero
-
                 ! FIRST ORDER COMPUTATION
                 call ep_integration(dEps_alpha*deltaTk,stress,center,radius,syld,&
                     mu,lambda,biso,Rinf,Ckin,kkin,dS1,dX1,dR1,dEpl1,hard1,pstrain)
@@ -499,16 +495,22 @@ module nonlinear2d
                         qq = min(qq,one)
                     endif
                     flag_fail=.false.
+                    counter = 1
                     Ttot=Ttot+deltaTk
                     deltaTk=qq*deltaTk
                     deltaTk=max(deltaTk,deltaTmin)
                     deltaTk=min(deltaTk,one-Ttot)
                 else
+                    counter = counter+1
                     qq=max(0.9d0*sqrt(STOL/Resk),0.1d0)
                     deltaTk=max(qq*deltaTk,deltaTmin)
                     flag_fail=.true.
                 end if
             end do
+            if (counter.eq.10)then
+                write(*,*) "FAILED CORRECTION"
+                stop
+            endif
             !
             return
             !
@@ -591,7 +593,6 @@ module nonlinear2d
             
             dPlastM = zero 
             
-            tempv = matmul(MM1,gradF)
             tempv = matmul(DEL,tempv)
             Ah    = dot_product(tempv,gradF)
             tempv = matmul(DEL,dstrain)
