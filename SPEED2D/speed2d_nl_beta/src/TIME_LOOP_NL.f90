@@ -509,7 +509,7 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         tt1 = dfloat(its) * dt
         tt2 = dfloat(its +1) * dt
 
-        write(*,'(A,F7.4)') 'TIME: ', tt1
+        !write(*,'(A,F7.4)') 'TIME: ', tt1
 
         !-----DRM-----------------------------------------------------------------------------------------		       
         if (tagstep.eq.2) then     !DRM Scandella 28-10-05   

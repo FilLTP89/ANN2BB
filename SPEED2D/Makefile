@@ -17,7 +17,7 @@ RM:= rm -fr
 FC_PC=gfortran
 # COMPILATION FLAGS
 LD_PC_FLAGS=-O3 -fopenmp -lgomp
-FC_PC_FLAGS=-O3 -g -c -ffree-form -ffree-line-length-none -fopenmp -fbounds-check -J speed2d_nl_beta/build 
+FC_PC_FLAGS=-O3 -g -c -ffree-form -ffree-line-length-none -fopenmp -fbounds-check -ffpe-trap=invalid,zero,overflow -J speed2d_nl_beta/build 
 
 # Make all instructions
 .PHONY: all
