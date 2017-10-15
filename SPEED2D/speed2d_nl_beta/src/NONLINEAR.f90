@@ -96,20 +96,16 @@ module nonlinear2d
                     fx,fy,displ,alfa1(ie),alfa2(ie),beta1(ie),beta2(ie),gamma1(ie),gamma2(ie),&
                     snl(ie)%lambda,snl(ie)%mu)
                 ! VELOCITY FORMULATION
-!                dstrain = dstrain*dt
-!                dstrial = dstrial*dt
-                !snl(ie)%strain(:,:,:) = snl(ie)%strain(:,:,:)+dstrain(:,:,:)
-                !snl(ie)%stress(:,:,:) = snl(ie)%stress(:,:,:)+dstrial(:,:,:) 
+                dstrain = dstrain*dt
+                dstrial = dstrial*dt
+                snl(ie)%strain(:,:,:) = snl(ie)%strain(:,:,:)+dstrain(:,:,:)
                 
 !                ! DISPLACEMENT FORMULATION (ELASTIC)
 !                snl(ie)%strain(:,:,:) = dstrain
 !                snl(ie)%stress(:,:,:) = dstrial
-
-                ! DISPLACEMENT FORMULATION (PLASTIC)
-                dstrain(:,:,:) = dstrain(:,:,:) - snl(ie)%strain(:,:,:)
-                dstrial(:,:,:) = dstrial(:,:,:) - snl(ie)%stress(:,:,:)!
-                snl(ie)%strain(:,:,:) = snl(ie)%strain(:,:,:)+dstrain(:,:,:)
-!                snl(ie)%stress(:,:,:) = snl(ie)%stress(:,:,:)+dstrial(:,:,:) 
+!                dstrain(:,:,:) = dstrain(:,:,:) - snl(ie)%strain(:,:,:)
+!                dstrial(:,:,:) = dstrial(:,:,:) - snl(ie)%stress(:,:,:)!
+!                snl(ie)%strain(:,:,:) = snl(ie)%strain(:,:,:)+dstrain(:,:,:)
                 
                 !*********************************************************************************
                 ! COMPUTE STRESS
@@ -160,13 +156,9 @@ module nonlinear2d
                     enddo
                 enddo
               
-               !*********************************************************************************
-               ! COMPUTE LOCAL INTERNAL FORCES
-               !*********************************************************************************
-                ! DISPLACEMENT FORMULATION (ELASTIC)
-                call MAKE_INTERNAL_FORCE(nn,ww,dd,dxdx,dxdy,dydx,dydy,dstrial(1,:,:),&
-                    dstrial(2,:,:),dstrial(4,:,:),fx,fy)
-               ! DISPLACEMENT FORMULATION (PLASTIC)
+                !*********************************************************************************
+                ! COMPUTE LOCAL INTERNAL FORCES
+                !*********************************************************************************
                 call MAKE_INTERNAL_FORCE(nn,ww,dd,dxdx,dxdy,dydx,dydy,snl(ie)%stress(1,:,:),&
                     snl(ie)%stress(2,:,:),snl(ie)%stress(4,:,:),fx,fy)
                 
@@ -271,10 +263,10 @@ module nonlinear2d
             call tau_mises(dev,tau_eq)
             FM = tau_eq - syld - radius
             ! COMPUTE MISES FUNCTION GRADIENT
-            gradFM(1) = three*half*dev(1)/tau_eq
-            gradFM(2) = three*half*dev(2)/tau_eq
-            gradFM(3) = three*half*dev(2)/tau_eq
-            gradFM(4) = three*dev(4)/tau_eq
+            gradFM(1) = three*half*dev(1)/max(1.0d-9,tau_eq)
+            gradFM(2) = three*half*dev(2)/max(1.0d-9,tau_eq)
+            gradFM(3) = three*half*dev(3)/max(1.0d-9,tau_eq)
+            gradFM(4) = three*dev(4)/max(1.0d-9,tau_eq)
             !  
             return
             !
@@ -360,6 +352,9 @@ module nonlinear2d
             ! real*8, dimension(4), intent(in) :: dstrain
             ! real*8,               intent(in) :: lambda,mu
             !
+            flagxit=.false.
+            st_epl=.true.
+            alpha_epl=zero
             ! PREDICTION STRESS
             call update_stress(stress0,stress1,dtrial)
             ! ***** CRITICAL STATE EXTENSION *****

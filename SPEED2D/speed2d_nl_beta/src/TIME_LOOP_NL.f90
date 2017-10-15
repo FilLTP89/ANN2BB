@@ -509,7 +509,7 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         tt1 = dfloat(its) * dt
         tt2 = dfloat(its +1) * dt
 
-        !write(*,'(A,F7.4)') 'TIME: ', tt1
+        write(*,'(A,F7.4)') 'TIME: ', tt1
 
         !-----DRM-----------------------------------------------------------------------------------------		       
         if (tagstep.eq.2) then     !DRM Scandella 28-10-05   
@@ -599,17 +599,17 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         !NO Damping
         !(u2 - 2*u1 + u0)/dt^2  = - Fint(u1) + Fel
         ! COMPUTE NL INTERNAL FORCES fk(u)
-        write(*,'(A)')
-        write(*,'(A)') '*************************************************************'
-        write(*,'(A)') '----------COMPUTING NON LINEAR INTERNAL FORCES---------------'
+        !write(*,'(A)')
+        !write(*,'(A)') '*************************************************************'
+        !write(*,'(A)') '----------COMPUTING NON LINEAR INTERNAL FORCES---------------'
         !
         !
-        write(*,'(A)') 'Non Linear Internal Forces: OK'
+        !write(*,'(A)') 'Non Linear Internal Forces: OK'
         ! COMPUTE EXTERNAL SEISMIC FORCES sism(fe) 
         if (nl_sism.gt.0) then 
-            write(*,'(A)')
-            write(*,'(A)') '*************************************************************'
-            write(*,'(A)') '----------COMPUTING SEISMIC EXTERNAL FORCES---------------'
+            !write(*,'(A)')
+            !write(*,'(A)') '*************************************************************'
+            !write(*,'(A)') '----------COMPUTING SEISMIC EXTERNAL FORCES---------------'
             !
             call system_clock(COUNT=clock_start,COUNT_RATE=clock(2))   
             !
@@ -620,9 +620,9 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
             call system_clock(COUNT=clock_finish)
             time_fe = time_fe+float(clock_finish - clock_start) / float(clock(2))
             !
-            write(*,'(A)') 'Seismic External Forces: OK'
+            !write(*,'(A)') 'Seismic External Forces: OK'
         else
-            write(*,*) "NO EXTERNAL SEISMIC FORCES"
+            !write(*,*) "NO EXTERNAL SEISMIC FORCES"
         endif
         
         !*******************************************************************************************
@@ -640,11 +640,11 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         call system_clock(COUNT=clock_start,COUNT_RATE=clock(2)) 
         
         
-        !u_predictor=u1+v1*dt+acc*0.5d0*dt2
+        u_predictor=v1*dt+acc*0.5d0*dt2
         
         fk(:) = 0.0d0
         call MAKE_INTERNAL_FORCES_NL(nnt,ne,nm,cs_nnz,cs,sdeg_mat,snl,&
-            alfa1,alfa2,beta1,beta2,gamma1,gamma2,u1,fk,mvec,dt)
+            alfa1,alfa2,beta1,beta2,gamma1,gamma2,u_predictor,fk,mvec,dt)
         call system_clock(COUNT=clock_finish)
         time_fk = float(clock_finish - clock_start) / float(clock(2))
 
@@ -737,7 +737,7 @@ subroutine TIME_LOOP_NL(nnt,xs,ys,cs_nnz,cs,nm,tag_mat,sdeg_mat,prop_mat,ne,    
         endif    
 
     enddo
-    write(*,'(A)') '*************************************************************'
+    !write(*,'(A)') '*************************************************************'
 
 
     if (nmonit.ge.1) then
