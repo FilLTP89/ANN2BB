@@ -1,8 +1,0 @@
-Starting input files generation...
-{Error using <a href="matlab:matlab.internal.language.introspective.errorDocCallback('Make_input_file_SPEED', '/home/ilario/Desktop/SPEED/PRE_AND_POST_PROC/PrePT/src/Make_input_file_SPEED.m', 61)" style="font-weight:bold">Make_input_file_SPEED</a> (<a href="matlab: opentoline('/home/ilario/Desktop/SPEED/PRE_AND_POST_PROC/PrePT/src/Make_input_file_SPEED.m',61,0)">line 61</a>)
-Not enough input arguments.
-} 
-SPEED_4_INPUT(712)
-{Undefined function 'SPEED_4_INPUT' for input arguments of type 'double'.
-} 
-SPEED_4_INPUT(712)
