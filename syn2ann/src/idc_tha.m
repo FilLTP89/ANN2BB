@@ -31,7 +31,7 @@ function [varargout] = idc_tha(varargin)
 
     if flag
         %% *CORRECTED ACCELERATION TIME INTEGRATION*
-        disp('--->IDC_THA: CORRECTING VELOCITY')
+%         disp('--->IDC_THA: CORRECTING VELOCITY')
         % velocity
         thv = cumtrapz(tha)*dtm;
         %
@@ -44,7 +44,7 @@ function [varargout] = idc_tha(varargin)
         thv = filtfilt(bfb,bfa,thv);
         
         %% *CORRECTED VELOCITY TIME INTEGRATION*
-        disp('--->IDC_THA: CORRECTING DISPLACEMENT')
+%         disp('--->IDC_THA: CORRECTING DISPLACEMENT')
         % displacement
         thd = cumtrapz(thv)*dtm;
         %
@@ -62,7 +62,7 @@ function [varargout] = idc_tha(varargin)
         thd = filtfilt(bfb,bfa,thd);
         
         %% *FINAL ACC/VEL/DIS*
-        disp('--->IDC_THA: BACK TO ACCELERATION')
+%         disp('--->IDC_THA: BACK TO ACCELERATION')
         % velocity 
         thv = avd_diff(dtm,thd);
         % acceleration
@@ -73,7 +73,7 @@ function [varargout] = idc_tha(varargin)
         thd = cumtrapz(thv)*dtm;
     else
         %% *ACCELERATION TIME INTEGRATION*
-        disp('--->IDC_THA: UNCORRECTED TIME INTEGRATION')
+%         disp('--->IDC_THA: UNCORRECTED TIME INTEGRATION')
         % velocity
         thv = cumtrapz(tha)*dtm;
         % displacement

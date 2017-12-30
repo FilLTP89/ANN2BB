@@ -70,7 +70,7 @@ function [varargout] = bpf_tha(varargin)
     
     if flag
         %% *PROCESSING ACCELERATION*
-        disp('--->BPF_ACC: CORRECTING ACCELERATION')
+%         disp('--->BPF_ACC: CORRECTING ACCELERATION')
         %
         % _acceleration base-line correction_
         %
@@ -101,7 +101,7 @@ function [varargout] = bpf_tha(varargin)
         [tha,thv,thd] = idc_tha(dtm,tha,bfb,bfa);
         
     else
-        disp('---> TIME-INTEGRATION UNCORRECTED ACCELERATION!')
+%         disp('---> TIME-INTEGRATION UNCORRECTED ACCELERATION!')
         npd0 = 0;
         npd1 = 0;
         %% *TIME INTEGRATION*
