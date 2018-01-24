@@ -15,30 +15,31 @@
 % _syn2ann_setup_maps.m,syn2ann_run_maps.m,
 % syn2ann_setup_fast.m,syn2ann_run_fast.m_
 
-flag_map = 0;
-if flag_map
-    
-    %% *1). ANALYSIS SET-UP*
+flag_map = 0; % flag to produce map data
+flag_plot_results =1;
+
+if flag_map % write map data
+    %% *1). CUSTOMIZE ANALYSIS SET-UP*
     syn2ann_setup_maps;
     
-    %% *2). RUN SYN2ANN TO GET SHAKE MAPS*
+    %% *2). RUN SYN2ANN TO GET SHAKE MAPS (DNC)*
     syn2ann_run_maps;
 else
     
-    %% *1). ANALYSIS SET-UP*
-    % #checked with Ali/Maria
+    %% *1). CUSTOMIZE ANALYSIS SET-UP*
     syn2ann_setup_fast;
     
-    % #checked with Ali/Maria
-    %% *2). PARSING REC*
+    %% *2). PARSING REC (DNC)*
     syn2ann_rec_drive;
     
-    %% *3). RUN SYN2ANN ON SINGLE STATIONS*
+    %% *3). RUN SYN2ANN ON SINGLE STATIONS (DNC)*
     syn2ann_run;
     
-    %% *5). SAVE RESULTS*
+    %% *5). SAVE RESULTS (DNC)*
     syn2ann_save_res;
     
     %% *6). PLOT RESULTS*
-%     syn2ann_plot_res_single;
+    if flag_plot_results
+        syn2ann_plot_res_single;
+    end
 end

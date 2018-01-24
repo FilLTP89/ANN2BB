@@ -17,8 +17,6 @@ fprintf('============================\n');
 
 %% *DEFINE WORKDIR*
 % _main workdir_
-%wd = '/home/filippo/Data/Filippo/PHD_passing_through_polimi/syn2ann/database';
-%#THESS
 wd = '/home/filippo/Data/Filippo/PHD_passing_through_polimi/syn2ann/database';
 fprintf('Workdir: %s\n',wd);
 % _save path_
@@ -29,14 +27,18 @@ if exist(wd,'dir')~=7
     sp = '/tmp1/gattif/ann';
 end
 %% *LOAD ALL METADATA AVAILABLE*
-syn2ann_case_list_fast;
-selected_case = 1:33;
+% % # PAPER BSSA
+% % syn2ann_case_list_fast;
+% % selected_case = 1:33;
 % % % # THESS
 % % syn2ann_case_list_fast_thess;
 % % % _select analyses : selected_case = [a,b,...,d]_
 % % selected_case = 1:2985;%[1,2,3,5,34,35];
-% syn2ann_case_list_fast_as4;
-% selected_case = 1:12;
+
+% # KKNPP
+syn2ann_case_list_fast_as4;
+selected_case = 1:12;
+
 %% *DEFINE REAL RECORDS METADATA*
 % _path to record files_
 bhr.pt  = fullfile(wd,'records');
@@ -83,21 +85,33 @@ fprintf('---------------------------------------------------------------\n');
 
 %% *DEFINE SPEED MONITORS METADATA*
 % _path to monitor files_
-mon.pt  = fullfile(wd,'monitors');
+% % # paper BSSA
+% mon.pt  = fullfile(wd,'monitors');
+% % # KKNPP AS8
 % mon.pt  = ['/home/filippo/Data/Filippo/aeolus/SEM_calculs/ncoeq2007_small_scale_OK/ncoeq2007_as8/',...
 %     'kknpp_as8_topo_rf5_small_bsn_wdmp_npml_sb88_grd_tsuda_water_fold'];
-% mon.pt  = ['/home/filippo/Data/Filippo/aeolus/SEM_calculs/ncoeq2007_small_scale_OK/ncoeq2007_as4/',...
-%     'kknpp_as4_topo_rf5_small_bsn_wdmp_npml_sb35_25_grd_tsuda_water_fold'];
+% # KKNPP AS4
+mon.pt  = ['/home/filippo/Data/Filippo/aeolus/SEM_calculs/ncoeq2007_small_scale_OK/ncoeq2007_as4/',...
+    'kknpp_as4_topo_rf5_small_bsn_wdmp_npml_sb35_25_grd_tsuda_water_fold'];
 fprintf('--> Monitor Path: %s\n',mon.pt);
-% _metadata filename_
-mon.fnm  = fullfile(wd,'SM_Stations_Monitors.csv');
 
-% mon.fnm  = fullfile(wd,'SM_Stations_Monitors_sem3d.csv');
+% _metadata filename_
+% % # paper BSSA
+% mon.fnm  = fullfile(wd,'SM_Stations_Monitors.csv');
+
+% # KKNPP
+mon.fnm  = fullfile(wd,'SM_Stations_Monitors_sem3d.csv');
 fprintf('--> Monitor File: %s\n',mon.fnm);
+
 % _type of simulation_
-% mon.typ  = 'sem3d';
-mon.typ = 'speed';
+% % SPEED
+% mon.typ = 'speed';
+
+% SEM3D
+mon.typ  = 'sem3d';
+
 fprintf('--> Type of Simulation: %s\n',mon.typ);
+
 % _monitor identity_
 mon.na = bhr.ns;
 for m_ = 1:mon.na
@@ -150,6 +164,8 @@ end
 %         mtd.exsim.(fni.mtdd.exsim{n_})(m_) = mtdd.exsim.(fni.mtdd.exsim{n_})(selected_case(m_));
 %     end
 % end
+
+
 %% *DEFINE ANN METADATA*
 % ANN vector follow the reference system mon.rs
 % _site class considered : ALL,AB,CD_
