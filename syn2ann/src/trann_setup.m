@@ -15,9 +15,10 @@ fprintf('---------------------\n0. SETUP\n---------------------\n');
 % _main workdir_
 wd = fullfile(filesep,'home','filippo','Data','Filippo',...
     'PHD_passing_through_polimi','syn2ann','database');
+% _save path_
 sp = fullfile(filesep,'home','filippo','Data','Filippo','aeolus',...
-    'image_database');
-% _database_
+    'image_database1');
+% _database path_
 dbn = fullfile(filesep,'home','filippo','Data','Filippo',...
     'PHD_passing_through_heavyweight','simbad_v05','SIMBAD_v05_1_vigne.mat');
 
@@ -25,24 +26,27 @@ if exist(wd,'dir')~=7
     wd = '/mssmat2/home/gattif/Documents/PHD_passing_through_polimi/syn2ann/database';
     sp = '/tmp1/gattif/ann_train';
     dbn= '/mssmat2/home/gattif/Documents/PHD_passing_through_heavyweight/simbad_v05/SIMBAD_v05_1_vigne.mat';
+    spp = '/tmp1/gattif/ann_train';
 end
 
 ann.trn.wd = fullfile(wd,'training');
 fprintf('Training Workdir: %s\n',ann.trn.wd);
 fprintf('Training Database: %s\n',dbn);
 
-%% *LOAD ALL METADATA AVAILABLE*
+%% *DEFINE TEST METADATA (CUSTOMIZE)*
+flag_test=1;
 trann_test_list;
 % _select test case : selected_case = [a,b,...,d]_
 selected_case = 1:24;
 
+%% *DEFINE TRAIN METADATA (CUSTOMIZE)*
+flag_train=0;
 trann_train_list;
 
 %% *DEFINE REAL RECORDS METADATA*
 % _path to record files_
 bhr.pt  = fullfile(wd,'records');
 fprintf('--> Record Path: %s\n',bhr.pt);
-
 
 bhr.ns = numel(selected_case);
 for m_ = 1:bhr.ns
@@ -61,9 +65,12 @@ for i_ = 1:bhr.ns
     bhr.na = bhr.na+bhr.nd(i_);
 end
 
+%% *GENERAL SET-UP (CUSTOMIZE)*
+
 % _reference system_
 bhr.rs = {'ew';'ns';'ud'};
-bhr.cp = {'ud'};
+% _select component (ew,ns,ud,gh)
+bhr.cp = {'ew';'ns'};
 bhr.nc = numel(bhr.cp);
 [~,bhr.ci] = ismember(bhr.cp,bhr.rs);
 fprintf('--> Reference system : ');

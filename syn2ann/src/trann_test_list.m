@@ -9,7 +9,7 @@
 %% *N.B.*
 % Need for:
 
-%% *RECORDING STATION: bhrr*
+%% *RECORDING STATION: ADD bhrr STRUCTURES TO DATABASE*
 % _station identity_
 % _ACCUMULI_
 bhrr.st{1}.id = {'ACC'};
@@ -140,22 +140,23 @@ bhrr.st{24}.tp = {'kiknet'};
 % _bhrr field names_
 fni.bhrr = fieldnames(bhrr);
 fnn.bhrr = numel(fni.bhrr);
-
-
     
-%% *DEFINE ANN TEST METADATA*
+%% *DEFINE ANN TEST METADATA (CUSTOMIZE)*
 % _number of ann to be tested_
-tst.mtd.nr = 3;
-tst.typ_cmp = 'scl';
-
+tst.mtd.nr = 2;
+% _type of testing (scl: by site class;TnC: by natural period)_
+% _NB: when testing by TnC, be careful to be coherent with ANN (same 
+% characteristics, but different TnC)_
+tst.typ_cmp = 'TnC';
+% select ann metadata to test
 if strcmpi(tst.typ_cmp,'TnC')
-    % _site class considered : ALL,AB,CD_
-    tst.mtd.scl = {'ALL';'ALL';'ALL'};
-    % _corner period for each ANN_
-    tst.mtd.TnC = {0.50;0.75;1.00};
-    % _ANN motion component : gh,ud (geometric mean horizontal, updip)_
-    tst.mtd.cpp = {'gh';'gh';'gh'};
-    tst.mtd.Tno = [0.50;0.75;1.00];
+    % _select site class considered : ALL,AB,CD_
+    tst.mtd.scl = {'ALL';'ALL'};
+    % _select corner period for each ANN_
+    tst.mtd.TnC = {0.75;0.25};
+    % _select ANN motion component : gh,ud (geometric mean horizontal, updip)_
+    tst.mtd.cpp = {'gh';'gh'};
+    tst.mtd.Tno = [0.75;0.25];
 elseif strcmpi(tst.typ_cmp,'scl')
     tst.mtd.scl = {'ALL';'AB';'CD'};
     % _corner period for each ANN_

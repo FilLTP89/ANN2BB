@@ -37,10 +37,12 @@ clr3 = [rgb('Navy');rgb('Red')];
 %dlg{2} = 'NS';
 %dlg{3} = 'UD';
 
-spp = '/home/filippo/Scrivania/ann_new';
-if exist(spp,'dir')~=7
-    spp = fullfile(filesep,'tmp1','gattif','heavy_images_new');
-end
+% spp = '/home/filippo/Scrivania/ann_new';
+% if exist(spp,'dir')~=7
+%     spp = fullfile(filesep,'tmp1','gattif','heavy_images_new');
+% end
+spp = sp;
+
 trann_setup_axes_common;
 switch(tst.typ_cmp)
     case 'TnC'

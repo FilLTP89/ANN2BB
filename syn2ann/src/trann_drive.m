@@ -20,18 +20,23 @@
 %   File                     = {Book_Haykin_1999_ANN.pdf:Book_Haykin_1999_ANN.pdf:PDF}
 % }
 
-%% *TRAIN SET-UP*
+
+%% *TRAIN SET-UP (CUSTOMIZE)*
 trann_setup;
 
-%% *TRAIN ANN*
-trann_train;
-return
-%% *TEST TRAINED ANN*
-trann_load;
-%trann_SPLP_regression;
-trann_test;
+%% *TRAIN ANN (DNC)*
+if flag_train == 1
+    trann_train;
+end
 
-%% *PLOTTING TEST RESULTS*
-% trann_test_plot_single;
-trann_test_plot_compare;
-
+if flag_test==1
+    
+    %% *TEST TRAINED ANN (DNC)*
+    trann_load;
+    %trann_SPLP_regression;
+    trann_test;
+    
+    %% *PLOTTING TEST RESULTS*
+    % trann_test_plot_single;
+    trann_test_plot_compare;
+end
