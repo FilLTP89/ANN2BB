@@ -17,11 +17,10 @@
 % _syn2ann_pbs_drive.m, syn2ann_ann_drive.m, syn2ann_super_hybridize.m,
 % syn2ann_scaling_drive.m_
 % 
-% #checked with Ali/Maria
+
 %% *1). PARSING PBS*
 syn2ann_pbs_drive;
 
-% #checked with Ali/Maria
 %% *2). ANN SIMULATION*
 syn2ann_ann_drive;
 

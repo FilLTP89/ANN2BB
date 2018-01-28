@@ -5,10 +5,10 @@
 % Copyright 2016_
 %% *NOTES*
 % _syn2ann_drive_: function to match the low-frequency synthetics' spectra
-% from numerical simulations (SPEED/HISADA) to target spectra obtained via
+% from numerical simulations (SPEED/HISADA/SEM3D) to target spectra obtained via
 % Artificial Neural Networks.
 %% *N.B.*
-% By setting flag_map, the user can run a fast analysis to plot single station
+% By setting flag_map=1, the user can run a fast analysis to plot single station
 % time-histories/spectra (flag_map=0, demonstrative case) or run an analysis to
 % obtain shake maps (flag_map=1, parallel implementation on remote cluster).
 % Need for:
@@ -16,7 +16,7 @@
 % syn2ann_setup_fast.m,syn2ann_run_fast.m_
 
 flag_map = 0; % flag to produce map data
-flag_plot_results =1;
+flag_plot_results =1; % flag to plot results
 
 if flag_map % write map data
     %% *1). CUSTOMIZE ANALYSIS SET-UP*
