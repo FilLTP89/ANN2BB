@@ -1,26 +1,26 @@
 
-%Programma per accelerogrammi spettro-compatibili da accelerogrammi reali%
-% Comment
-% function [varargout] = spectral_matching(varargin)
+Programma per accelerogrammi spettro-compatibili da accelerogrammi reali%
+Comment
+function [varargout] = spectral_matching(varargin)
 function  [out_t,out_acc,out_vel,out_dis,out_T,out_Se,out_freq,out_FAS,n_] = ...
         spectral_matching_review(target_Se,acc1,comp)
-    %% *SET-UP*
-    %     dt    = varargin{1};
-    %     acc1  = varargin{2};
-    %     T_in  = varargin{3};
-    %     Sp_in = varargin{4};
+    % *SET-UP*
+        dt    = varargin{1};
+        acc1  = varargin{2};
+        T_in  = varargin{3};
+        Sp_in = varargin{4};
     
-    %Notes:
-    %1. acc1 is in m/s2, if it is already in cm/s2, refer to (a)
-    %2. acc1 is in the format of time, acceleration
-    %3. target_Se is in the format of T, Se (cm/s2)
-    %4. refer to (b) to revert back to displacement spectrum approach
-    %5. ideally T=1s, should be enough to define the period range to be
-    %modified, see (c)
-    %6. The variability is not introduced yet.
-    %7. niter is a parameter in the inputs, if not uncomment (d)
+    Notes:
+    1. acc1 is in m/s2, if it is already in cm/s2, refer to (a)
+    2. acc1 is in the format of time, acceleration
+    3. target_Se is in the format of T, Se (cm/s2)
+    4. refer to (b) to revert back to displacement spectrum approach
+    5. ideally T=1s, should be enough to define the period range to be
+    modified, see (c)
+    6. The variability is not introduced yet.
+    7. niter is a parameter in the inputs, if not uncomment (d)
     
-    str_m=0;                                                               % strict_match=0 (No), 1 (yes)
+    str_m=0; % strict_match=0 (No), 1 (yes)
     
     tol_upp_pga=0.3;
     tol_low_pga=0.3;
@@ -39,7 +39,7 @@ function  [out_t,out_acc,out_vel,out_dis,out_T,out_Se,out_freq,out_FAS,n_] = ...
     
     dt = acc1(2,1)-acc1(1,1);
     T_vec = target_Se(:,1)';
-    % (
+    (
     target = target_Se;
     pga_target = target_Se(1,2);
     
@@ -61,7 +61,7 @@ function  [out_t,out_acc,out_vel,out_dis,out_T,out_Se,out_freq,out_FAS,n_] = ...
     t = acc1(:,1);
     acc = acc1(:,2).*100;% (a)
     
-    % zero padding
+    zero padding
     l_zeros=length(acc);
     acc=[zeros(1,length(acc)) acc' zeros(1,length(acc))]';
     t=[zeros(1,length(t)) t' zeros(1,length(t))]';
@@ -87,12 +87,12 @@ function  [out_t,out_acc,out_vel,out_dis,out_T,out_Se,out_freq,out_FAS,n_] = ...
     ACC=dt*fft(acc,Nfft);
     
     for i=2:length(T_in)
-        %Sp_acc(i)=4*pi^2*disp_spectra(acc,dt,T_in(i),0.05)./T_in(i)^2;    % (b)
+        Sp_acc(i)=4*pi^2*disp_spectra(acc,dt,T_in(i),0.05)./T_in(i)^2;    % (b)
         Sp_acc(i)=newmark_sa(acc',T_in(i),0.05,dt);
     end
     Sp_acc(1)=max(abs(acc));
     
-    % compute the ratio of the inpute PSA vs the target PSA
+    compute the ratio of the inpute PSA vs the target PSA
     
     for i=2:length(T_in)
         freq_in(length(T_in)-i+2)=1/T_in(i);
@@ -142,11 +142,11 @@ function  [out_t,out_acc,out_vel,out_dis,out_T,out_Se,out_freq,out_FAS,n_] = ...
         acc_pro=detrend(acc_pro,'constant');
         
         
-        % response spectrum of corrected waveform
+        response spectrum of corrected waveform
         
         for i=1:length(T_in)
-            %Sp_acc_pro(i)=4*pi^2*disp_spectra(acc_pro,dt,T_in(i),0.05)./...
-            %    T_in(i)^2;                                                 % (c)
+            Sp_acc_pro(i)=4*pi^2*disp_spectra(acc_pro,dt,T_in(i),0.05)./...
+               T_in(i)^2;                                                 % (c)
             Sp_acc_pro(i,k)=newmark_sa(acc_pro',T_in(i),0.05,dt);
         end
         
@@ -195,14 +195,14 @@ function  [out_t,out_acc,out_vel,out_dis,out_T,out_Se,out_freq,out_FAS,n_] = ...
     dis_p=cumsum(vel_p).*dt;
     dis_in=cumsum(vel_in).*dt;
     
-    % correction of initial acausal oscillations caused after SPM
+    correction of initial acausal oscillations caused after SPM
     [t_idx,idx,Ain] = arias_intensity(acc_in,dt,0.005);% at Ia=0.5%
     
     r = [(t_idx-100*dt):dt:(t_idx+100*dt)]';
     a1 = acc_in((idx-100):(idx+100));
     a2 = acc_pro((idx-100):(idx+100));
     
-    % doing the same thing for velocities
+    doing the same thing for velocities
     v1 = vel_in((idx-100):(idx+100));
     v2 = vel_p((idx-100):(idx+100));
     
@@ -214,15 +214,15 @@ function  [out_t,out_acc,out_vel,out_dis,out_T,out_Se,out_freq,out_FAS,n_] = ...
     s1 = length(0:dt:t1);
     acc_pro(1:s1)=acc_in(1:s1);
     
-    % Tapering is used to make sure that record ceases at the end of the time
-    % vector. Note that tukey with 20% (10% initial, 10% end) is usually a good
-    % compromise, and does not miss any significant motion
+    Tapering is used to make sure that record ceases at the end of the time
+    vector. Note that tukey with 20% (10% initial, 10% end) is usually a good
+    compromise, and does not miss any significant motion
     acc_pro = tukeywin(length(acc_pro),0.20).*acc_pro;
     
     
     
     for times=1:pga_corr
-        % PGA correction must not be repeated many times. Default=2 times
+        PGA correction must not be repeated many times. Default=2 times
         
         [pga ipga] = max(abs(acc_pro));
         
@@ -231,8 +231,8 @@ function  [out_t,out_acc,out_vel,out_dis,out_T,out_Se,out_freq,out_FAS,n_] = ...
         if mod(npun_cor,2)==0
             npun_cor = npun_cor+1;
         end
-        ipga-(npun_cor-1)/2
-        ipga+(npun_cor-1)/2
+        disp(ipga-(npun_cor-1)/2)
+        disp(ipga+(npun_cor-1)/2)
         x = [ t(ipga-(npun_cor-1)/2),t(ipga),t(ipga+(npun_cor-1)/2)];
         y = [acc_pro(ipga-(npun_cor-1)/2),pga_target.*sign(acc_pro(ipga)),...
             acc_pro(ipga+(npun_cor-1)/2)];
@@ -241,11 +241,12 @@ function  [out_t,out_acc,out_vel,out_dis,out_T,out_Se,out_freq,out_FAS,n_] = ...
         yi_c = interp1(x,y,xi,'PCHIP');
         
         yi_o=acc_pro(ipga-(npun_cor-1)/2:ipga+(npun_cor-1)/2);
+        keyboard
         yi_d=yi_c'-yi_o;
         
         acc_pro(ipga-(npun_cor-1)/2:ipga+(npun_cor-1)/2) = yi_c;
         
-        % taking care of potential velocity problems
+        taking care of potential velocity problems
         flag_rev=0;
         
         for n=ipga+(npun_cor+1)/2+1:ipga+(npun_cor+1)/2+100
@@ -266,9 +267,9 @@ function  [out_t,out_acc,out_vel,out_dis,out_T,out_Se,out_freq,out_FAS,n_] = ...
         
         if flag_rev==0
             disp('Warning: PGA is only corrected, residual velocity problems may occur')
-            %Comment: This warning advises user to expect residual velocity
-            %         problems, since the subtraction operation could not
-            %         be performed
+            Comment: This warning advises user to expect residual velocity
+                    problems, since the subtraction operation could not
+                    be performed
         end
         
         
@@ -277,30 +278,30 @@ function  [out_t,out_acc,out_vel,out_dis,out_T,out_Se,out_freq,out_FAS,n_] = ...
     
     vel_pro = cumsum(acc_pro)*dt;
     
-    % correcting the increasing displacements caused by residual velocity
-    % problem after the removal of initial oscillations and PGA arrangement
-    % steps
+    correcting the increasing displacements caused by residual velocity
+    problem after the removal of initial oscillations and PGA arrangement
+    steps
     [t_idx2,idx2,Ain2] = arias_intensity(acc_pro,dt,0.01);%
     
-    % calculating the residual velocity from the last 500 samples (last 5
-    % seconds). Note that this value may be customized.
+    calculating the residual velocity from the last 500 samples (last 5
+    seconds). Note that this value may be customized.
     vel_shift=mean(vel_pro(length(vel_pro)-499:length(vel_pro)));
     vel_corr=-vel_shift;
     
-    % now attributing to the acceleration point at selected Arias Intensity
-    % (Ia=1%)
+    now attributing to the acceleration point at selected Arias Intensity
+    (Ia=1%)
     acc_corr=vel_corr/dt;
     [pga ipga] = max(abs(acc_pro));
     
     if (abs(acc_corr)> 0.2*pga)
         disp('WARNING! Potentially significant spurious acceleration is added at');
         t_idx2
-        % This warning advises user to have a look at the
-        % acceleration record at for points between t=[t_idx2+dt t_idx2+4dt].
-        % Ideally even if the correction is 0.2pga, the change is distributed into
-        % 100 points. Most possibly, the output will be ok, if there were not
-        % significant velocity issues. User is adviced to provide an engineering
-        % judgment if this message appears.
+        This warning advises user to have a look at the
+        acceleration record at for points between t=[t_idx2+dt t_idx2+4dt].
+        Ideally even if the correction is 0.2pga, the change is distributed into
+        100 points. Most possibly, the output will be ok, if there were not
+        significant velocity issues. User is adviced to provide an engineering
+        judgment if this message appears.
     else
         disp('Info: Residual velocity is successfully corrected.');
     end
@@ -341,7 +342,7 @@ function  [out_t,out_acc,out_vel,out_dis,out_T,out_Se,out_freq,out_FAS,n_] = ...
             end
         else
             if rat_real<1.10 && rat_real>0.90 % T>T*, a fixed 10% tolerance
-                % is used.
+                is used.
                 n_=n_+1; % convergence criterion
             end
         end
@@ -359,12 +360,12 @@ function  [out_t,out_acc,out_vel,out_dis,out_T,out_Se,out_freq,out_FAS,n_] = ...
     out_FAS = abs(ACC_upd(1:length(freq)));
     out_freq = freq;
     
-    %     %% *OUTPUT*
-    %     varargout{1} = dt;
-    %     varargout{2} = acc_pro(:);
-    %     varargout{3} = T_out(:);
-    %     varargout{4} = Sp_acc_pro(:);
-    %     varargout{5} = vel_pro(:);
-    %     varargout{6} = dis_pro(:);
-    %     return
+        %% *OUTPUT*
+        varargout{1} = dt;
+        varargout{2} = acc_pro(:);
+        varargout{3} = T_out(:);
+        varargout{4} = Sp_acc_pro(:);
+        varargout{5} = vel_pro(:);
+        varargout{6} = dis_pro(:);
+        return
 end
