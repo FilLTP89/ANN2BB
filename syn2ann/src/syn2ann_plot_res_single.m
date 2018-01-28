@@ -29,6 +29,5 @@ if ~mon.map.flg
                 %% *EXSIM*
                 syn2ann_plot_res_station_exsim;
         end
-        %     syn2ann_fancy_plot;
     end
 end

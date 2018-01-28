@@ -11,7 +11,11 @@
 % * _vTn (vector of natural period)_
 % * _zeta (damping ratio)_
 %% OUTPUT:
-% * _ymax (maximum relative displacement of single dof)_
+% * _psa (pseudo-spectral acceleration)_
+% * _sd  (displacement spectrum)_
+% * _psv (pseudo-spectral velocity)_
+% * _sa  (spectral acceleration)_
+% * _sv  (spectral velocity)_
 %% N.B.:
 % interpolation of input acceleration TH to improve accuracy of numerical
 % integration (step = dtm)

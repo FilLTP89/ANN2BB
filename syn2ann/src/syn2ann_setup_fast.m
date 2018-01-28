@@ -8,9 +8,7 @@
 % analyses to be run.
 %% *N.B.*
 % Need for:
-% _ccc.m,syn2ann_case_list.m_
-
-ccc;
+% syn2ann_case_list.m_
 fprintf('============================\n');
 fprintf('----------0. SETUP----------\n');
 fprintf('============================\n');
@@ -27,7 +25,6 @@ if exist(wd,'dir')~=7
 end
 fprintf('Workdir: %s\n',wd);
 
-
 %% *LOAD ALL METADATA AVAILABLE (CUSTOMIZE)*
 % % # PAPER BSSA
 % % syn2ann_case_list_fast;
@@ -39,7 +36,7 @@ fprintf('Workdir: %s\n',wd);
 
 % # KKNPP
 syn2ann_case_list_fast_as4;
-selected_case = 1:12;
+selected_case = 1;
 
 %% *DEFINE REAL RECORDS METADATA (DNC)*
 % _path to record files_
@@ -183,3 +180,5 @@ for i_ = 1:numel(ann.mtd.TnC)
 end
 % _tolerances_
 ann.mtd.nit = [20;20;50];
+
+res.fnm = fullfile(wd,sprintf('syn2ann_res_kknpp_as4_%s',ann.mtd.scl{1}));

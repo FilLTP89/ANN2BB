@@ -14,9 +14,10 @@
 % Need for:
 % _syn2ann_setup_maps.m,syn2ann_run_maps.m,
 % syn2ann_setup_fast.m,syn2ann_run_fast.m_
+ccc;
 
 flag_map = 0; % flag to produce map data
-flag_plot_results =1; % flag to plot results
+flag_plot_results=1; % flag to plot results
 
 if flag_map % write map data
     %% *1). CUSTOMIZE ANALYSIS SET-UP*

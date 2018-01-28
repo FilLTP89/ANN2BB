@@ -19,7 +19,7 @@ for i_=1
 end
 bhrr.st{1}.ni = {'TV';'HN'};
 % _recorded events_
-bhrr.st{1}.ev  = {'070716.210800'};
+bhrr.st{1}.ev  = {'20070716.210800'};
 bhrr.st{1}.dv = {''};
 % _database_
 bhrr.st{1}.tp =  {'sem3d'};
@@ -63,9 +63,9 @@ mtdd.sp96.scl = 0.01*ones(numel(stss),1);
 %    1.5,1.5,1.5,1.5,1.5,1.5]'; % in Hz
 %mtdd.sp96.ud = [1.5,1.5,1.5,1.5,1.5,1.5;...
 %    1.5,1.5,1.5,1.5,1.5,1.5]'; % in Hz
-mtdd.sp96.ew = 5.0*ones(numel(stss),2);
-mtdd.sp96.ns = 5.0*ones(numel(stss),2);
-mtdd.sp96.ud = 5.0*ones(numel(stss),2);
+mtdd.sp96.ew = 4.0*ones(numel(stss),2);
+mtdd.sp96.ns = 4.0*ones(numel(stss),2);
+mtdd.sp96.ud = 4.0*ones(numel(stss),2);
 %% _Exsim - reference files_
 %mtdd.exsim.fnm{1} = fullfile(wd,'exsim_old','exsim_emilia','MRN_new');
 %mtdd.exsim.fnm{2} = fullfile(wd,'exsim_old','exsim_emilia','MIR08_new');

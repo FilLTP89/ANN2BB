@@ -8,9 +8,7 @@
 % analyses to be run.
 %% *N.B.*
 % Need for:
-% _ccc.m,syn2ann_case_list.m_
-
-ccc;
+% syn2ann_case_list.m_
 fprintf('============================\n');
 fprintf('----------0. SETUP----------\n');
 fprintf('============================\n');
