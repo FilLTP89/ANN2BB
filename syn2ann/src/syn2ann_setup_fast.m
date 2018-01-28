@@ -36,7 +36,7 @@ fprintf('Workdir: %s\n',wd);
 
 % # KKNPP
 syn2ann_case_list_fast_as4;
-selected_case = 1;
+selected_case = 1:12;
 
 %% *DEFINE REAL RECORDS METADATA (DNC)*
 % _path to record files_

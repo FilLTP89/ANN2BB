@@ -17,7 +17,7 @@
 ccc;
 
 flag_map = 0; % flag to produce map data
-flag_plot_results=1; % flag to plot results
+flag_plot_results=0; % flag to plot results
 
 if flag_map % write map data
     %% *1). CUSTOMIZE ANALYSIS SET-UP*
