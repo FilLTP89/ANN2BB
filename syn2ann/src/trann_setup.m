@@ -33,15 +33,15 @@ ann.trn.wd = fullfile(wd,'training');
 fprintf('Training Workdir: %s\n',ann.trn.wd);
 fprintf('Training Database: %s\n',dbn);
 
+%% *DEFINE TRAIN METADATA (CUSTOMIZE)*
+flag_train=1;
+trann_train_list;
+
 %% *DEFINE TEST METADATA (CUSTOMIZE)*
-flag_test=1;
+flag_test=0;
 trann_test_list;
 % _select test case : selected_case = [a,b,...,d]_
 selected_case = 1:24;
-
-%% *DEFINE TRAIN METADATA (CUSTOMIZE)*
-flag_train=0;
-trann_train_list;
 
 %% *DEFINE REAL RECORDS METADATA*
 % _path to record files_

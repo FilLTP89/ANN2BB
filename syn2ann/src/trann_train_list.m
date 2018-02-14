@@ -3,7 +3,7 @@
 % _number of ann_
 ann.trn.nr = 2; 
 % _corner periods_
-tmp.TnC = [0.25,0.25];
+tmp.TnC = [0.5,0.5];
 % _direction (gh=geometrical mean horizontal;ud=vertical)
 tmp.cp  = {'gh','ud'};
 % _site class (ALL,AB,CD)_
