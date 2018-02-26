@@ -63,9 +63,14 @@ mtdd.sp96.scl = 0.01*ones(numel(stss),1);
 %    1.5,1.5,1.5,1.5,1.5,1.5]'; % in Hz
 %mtdd.sp96.ud = [1.5,1.5,1.5,1.5,1.5,1.5;...
 %    1.5,1.5,1.5,1.5,1.5,1.5]'; % in Hz
-mtdd.sp96.ew = 4.0*ones(numel(stss),2);
-mtdd.sp96.ns = 4.0*ones(numel(stss),2);
-mtdd.sp96.ud = 4.0*ones(numel(stss),2);
+
+mtdd.sp96.ew = 1.5*ones(numel(stss),2);
+mtdd.sp96.ns = 1.5*ones(numel(stss),2);
+mtdd.sp96.ud = 1.5*ones(numel(stss),2);
+
+% mtdd.sp96.ew = 4.0*ones(numel(stss),2);
+% mtdd.sp96.ns = 4.0*ones(numel(stss),2);
+% mtdd.sp96.ud = 4.0*ones(numel(stss),2);
 %% _Exsim - reference files_
 %mtdd.exsim.fnm{1} = fullfile(wd,'exsim_old','exsim_emilia','MRN_new');
 %mtdd.exsim.fnm{2} = fullfile(wd,'exsim_old','exsim_emilia','MIR08_new');
