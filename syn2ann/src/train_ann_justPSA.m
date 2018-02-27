@@ -83,7 +83,6 @@ function train_ann_justPSA(varargin)
             for j_ = 1:db.nr
                 PSA(j_,:) = db.simbad(j_).psa_v(:)';
             end
-            
     end
     
     %% *DEFINE INPUT/TARGET PSA POOL (LOG)*
