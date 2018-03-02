@@ -17,3 +17,4 @@ for i_ = 1:tst.mtd.nr
     
 end
 
+save(res.fnm,'rec','bhr','ann');
