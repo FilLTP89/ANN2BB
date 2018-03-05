@@ -28,25 +28,25 @@ fprintf('Workdir: %s\n',wd);
 %% *LOAD ALL METADATA AVAILABLE (CUSTOMIZE)*
 % % # PAPER BSSA
 % % syn2ann_case_list_fast;
-% % selected_case = 1:33;
+% % run_selcase = 1:33;
 % % % # THESS
 % % syn2ann_case_list_fast_thess;
-% % % _select analyses : selected_case = [a,b,...,d]_
-% % selected_case = 1:2985;%[1,2,3,5,34,35];
+% % % _select analyses : run_selcase = [a,b,...,d]_
+% % run_selcase = 1:2985;%[1,2,3,5,34,35];
 
 % # KKNPP
 syn2ann_case_list_fast_as4;
-selected_case = 1:12;
+run_selcase = 5;%1:12;
 
 %% *DEFINE REAL RECORDS METADATA (DNC)*
 % _path to record files_
 bhr.pt  = fullfile(wd,'records');
 fprintf('--> Record Path: %s\n',bhr.pt);
-bhr.ns = numel(selected_case);
+bhr.ns = numel(run_selcase);
 ns = bhr.ns;
 for m_ = 1:ns
     for n_ = 1:fnn.bhrr
-        bhr.(fni.bhrr{n_}){m_} = bhrr.(fni.bhrr{n_}){selected_case(m_)};
+        bhr.(fni.bhrr{n_}){m_} = bhrr.(fni.bhrr{n_}){run_selcase(m_)};
     end
 end
 fprintf('--> N. Stations: %u\n',bhr.ns);
@@ -110,7 +110,7 @@ fprintf('--> Type of Simulation: %s\n',mon.typ);
 mon.na = bhr.ns;
 for m_ = 1:mon.na
     for n_ = 1:fnn.monn
-        mon.(fni.monn{n_})(m_) = monn.(fni.monn{n_})(selected_case(m_));
+        mon.(fni.monn{n_})(m_) = monn.(fni.monn{n_})(run_selcase(m_));
     end
 end
 
@@ -150,14 +150,14 @@ hybrid_type='sp96';
 mtd.sp96.na = mon.na;
 for m_ = 1:mtd.sp96.na
     for n_ = 1:fnn.mtdd.sp96
-        mtd.sp96.(fni.mtdd.sp96{n_})(m_,:) = mtdd.sp96.(fni.mtdd.sp96{n_})(selected_case(m_),:);
+        mtd.sp96.(fni.mtdd.sp96{n_})(m_,:) = mtdd.sp96.(fni.mtdd.sp96{n_})(run_selcase(m_),:);
     end
 end
 % % _EXSIM metadata_
 % mtd.exsim.na = mon.na;
 % for m_ = 1:mtd.exsim.na
 %     for n_ = 1:fnn.mtdd.exsim
-%         mtd.exsim.(fni.mtdd.exsim{n_})(m_) = mtdd.exsim.(fni.mtdd.exsim{n_})(selected_case(m_));
+%         mtd.exsim.(fni.mtdd.exsim{n_})(m_) = mtdd.exsim.(fni.mtdd.exsim{n_})(run_selcase(m_));
 %     end
 % end
 

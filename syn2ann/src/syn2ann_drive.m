@@ -18,6 +18,7 @@ ccc;
 
 flag_map = 0; % flag to produce map data
 flag_plot_results=0; % flag to plot results
+flag_sensitivity=1;
 
 if flag_map % write map data
     %% *1). CUSTOMIZE ANALYSIS SET-UP*
@@ -26,21 +27,45 @@ if flag_map % write map data
     %% *2). RUN SYN2ANN TO GET SHAKE MAPS (DNC)*
     syn2ann_run_maps;
 else
-    
-    %% *1). CUSTOMIZE ANALYSIS SET-UP*
-    syn2ann_setup_fast;
-    
-    %% *2). PARSING REC (DNC)*
-    syn2ann_rec_drive;
-    
-    %% *3). RUN SYN2ANN ON SINGLE STATIONS (DNC)*
-    syn2ann_run;
-    
-    %% *5). SAVE RESULTS (DNC)*
-    syn2ann_save_res;
-    
-    %% *6). PLOT RESULTS*
-    if flag_plot_results
-        syn2ann_plot_res_single;
+    if flag_sensitivity
+        
+        %% *1). CUSTOMIZE ANALYSIS SET-UP*
+        syn2ann_setup_fast;
+        keyboard
+        syn2ann_test_train;
+        
+        %% *2). PARSING REC (DNC)*
+        syn2ann_rec_drive;
+        
+        %% *3). RUN SYN2ANN ON SINGLE STATIONS (DNC)*
+        syn2ann_run;
+        
+        %% *5). SAVE RESULTS (DNC)*
+        syn2ann_save_res;
+        
+        %% *6). PLOT RESULTS*
+        if flag_plot_results
+            syn2ann_plot_res_single;
+        end
+        
+    else
+        
+        %% *1). CUSTOMIZE ANALYSIS SET-UP*
+        syn2ann_setup_fast;
+        
+        %% *2). PARSING REC (DNC)*
+        syn2ann_rec_drive;
+        
+        %% *3). RUN SYN2ANN ON SINGLE STATIONS (DNC)*
+        syn2ann_run_sensitivity;
+        
+        %% *5). SAVE RESULTS (DNC)*
+        syn2ann_save_res;
+        
+        %% *6). PLOT RESULTS*
+        if flag_plot_results
+            syn2ann_plot_res_single;
+        end
+        
     end
 end
