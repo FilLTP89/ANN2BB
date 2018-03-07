@@ -4,6 +4,7 @@
 % function [varargout] = spectral_matching(varargin)
 function  [out_t,out_acc,out_vel,out_dis,out_T,out_Se,out_freq,out_FAS,n_] = ...
         spectral_matching_review(target_Se,acc1,comp,TnC)
+    
     %% *SET-UP*
     %     dt    = varargin{1};
     %     acc1  = varargin{2};

@@ -48,6 +48,7 @@ function [varargout] = apply_ann2hbs_justPSA(varargin)
         trs.(hbs.mon.cp{j_}).mon.nT = numel(trs.(hbs.mon.cp{j_}).mon.vTn);
         trs.(hbs.mon.cp{j_}).mon.tol = ann.(hbs.mon.cp{j_}).tol;
         trs.(hbs.mon.cp{j_}).mon.nit = ann.(hbs.mon.cp{j_}).nit;
+        trs.(hbs.mon.cp{j_}).mon.TnC = ann.(hbs.mon.cp{j_}).TnC;
         for i_ = 1:hbs.mon.na
             out = 10.^(sim(ann.(hbs.mon.cp{j_}).net,inp(i_,:)'));
             out = out./100;
