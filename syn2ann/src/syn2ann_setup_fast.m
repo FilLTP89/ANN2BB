@@ -36,7 +36,7 @@ fprintf('Workdir: %s\n',wd);
 
 % # KKNPP
 syn2ann_case_list_fast_as4;
-run_selcase = 5;
+run_selcase = 1:12;
 
 %% *DEFINE REAL RECORDS METADATA (DNC)*
 % _path to record files_
@@ -181,4 +181,4 @@ end
 % _tolerances_
 ann.mtd.nit = [20;20;50];
 
-res.fnm = fullfile(wd,sprintf('syn2ann_res_kknpp_as4_%s',ann.mtd.scl{1}));
+res.fnm = fullfile(wd,sprintf('syn2ann_res_kknpp_as4_75_%s',ann.mtd.scl{1}));

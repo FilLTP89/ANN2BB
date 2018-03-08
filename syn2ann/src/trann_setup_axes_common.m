@@ -24,7 +24,7 @@ clr.rec_spmemp_spmsto_ann = [rgb('Navy');rgb('IntenseGreen');rgb('Orange');rgb('
 clr.rec_pbs_spmemp_spmsto = [rgb('Navy');rgb('IntenseBlue');rgb('OrangeRed');rgb('OrangeRed')];
 % records-spectral-matched
 clr.rec_spm = [rgb('Navy');rgb('Red')];
-clr121 = [rgb('OrangeRed');rgb('Black');[0.4 0.4 0.4];rgb('Black')];
+clr121 = [rgb('Red');rgb('Black');rgb('Black')];
 clr131 = [rgb('OrangeRed');rgb('Black');[0.5 0.5 0.5];[0.25 0.25 0.25]];
 %%% *FOURIER SPECTRA*
 %pfg.fsp = [0 0 28 14];

@@ -153,10 +153,10 @@ if strcmpi(tst.typ_cmp,'TnC')
     % _select site class considered : ALL,AB,CD_
     tst.mtd.scl = {'ALL';'ALL'};
     % _select corner period for each ANN_
-    tst.mtd.TnC = {0.75;0.25};
+    tst.mtd.TnC = {0.75;1.00};
     % _select ANN motion component : gh,ud (geometric mean horizontal, updip)_
     tst.mtd.cpp = {'gh';'gh'};
-    tst.mtd.Tno = [0.75;0.25];
+    tst.mtd.Tno = [0.75;1.00];
 elseif strcmpi(tst.typ_cmp,'scl')
     tst.mtd.scl = {'ALL';'AB';'CD'};
     % _corner period for each ANN_

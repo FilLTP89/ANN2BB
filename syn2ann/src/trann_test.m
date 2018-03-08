@@ -16,5 +16,3 @@ for i_ = 1:tst.mtd.nr
     ann.tst{i_} = test_ann_justPSA(ann.tst{i_},rec.org);
     
 end
-
-save(res.fnm,'rec','bhr','ann');

@@ -22,7 +22,7 @@ clr11 = [rgb('DarkGrey');rgb('DarkGrey');rgb('IntenseBlue');rgb('IntenseGreen');
 % records-pbs-empirical/stochastic-hybrid
 clr12 = [rgb('Navy');rgb('IntenseBlue');rgb('IntenseGreen');rgb('IntenseOrange')];
 % records-pbs-hybrid-hybrid
-clr121 = [rgb('Orange');rgb('Black');[0.4 0.4 0.4];rgb('Black')];
+clr121 = [rgb('Red');rgb('Black');rgb('Black')];
 % [rgb('Navy');rgb('IntenseBlue');rgb('Red');rgb('IntenseGreen')];
 %[rgb('DarkIntenseOrange');rgb('Black');[0.5 0.5 0.5];[0.7 0.7 0.7]];
 % record-hybrid-ann-spectral-matched
@@ -37,10 +37,6 @@ clr3 = [rgb('Navy');rgb('Red')];
 %dlg{2} = 'NS';
 %dlg{3} = 'UD';
 
-% spp = '/home/filippo/Scrivania/ann_new';
-% if exist(spp,'dir')~=7
-%     spp = fullfile(filesep,'tmp1','gattif','heavy_images_new');
-% end
 spp = sp;
 
 trann_setup_axes_common;
