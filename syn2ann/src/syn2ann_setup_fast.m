@@ -169,7 +169,7 @@ end
 % _site class considered : ALL,AB,CD_
 ann.mtd.scl = {'ALL';'ALL';'ALL'}; 
 % _corner period for each ANN_
-ann.mtd.TnC = {0.25;0.25;0.25};
+ann.mtd.TnC = {0.75;0.75;0.75};
 % _ANN motion component : gh,ud (geometric mean horizontal, updip)_
 ann.mtd.cpn = {'gh';'gh';'ud'};
 for i_ = 1:numel(ann.mtd.TnC)
@@ -183,4 +183,4 @@ end
 % _tolerances_
 ann.mtd.nit = [20;20;50];
 
-res.fnm = fullfile(wd,sprintf('syn2ann_res_kknpp_as4_75_%s',ann.mtd.scl{1}));
+res.fnm = fullfile(wd,sprintf('syn2ann_res_kknpp_as4_75_lay_%s',ann.mtd.scl{1}));
