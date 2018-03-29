@@ -48,8 +48,12 @@ fnn.monn = numel(fni.monn);
 %% *EMPIRICAL ANALYSIS: mtdd*
 % _Sabetta&Pugliese 1996 - metadata_
 % STORED IN COLUMNS
-mtdd.sp96.mw = 4.4*ones(numel(stss),1);
+% %%%% AS4
+% mtdd.sp96.mw = 4.4*ones(numel(stss),1);
+%%%% AS8
+mtdd.sp96.mw = 4.2*ones(numel(stss),1);
 mtdd.sp96.dtm_sp96 = 0.005*ones(numel(stss),1);
+
 % site conditions (0=rock, (Vs,30>800m/s); 1=shallow all. (H<=20); 2=deep alluvium (H>20m));
 mtdd.sp96.scc = 1*ones(numel(stss),1);
 mtdd.sp96.scc([1:2,5:7,10:numel(stss)]) = 1;

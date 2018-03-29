@@ -84,14 +84,18 @@ fprintf('---------------------------------------------------------------\n');
 % _path to monitor files_
 % % # paper BSSA
 % mon.pt  = fullfile(wd,'monitors');
-% % # KKNPP AS8
-% mon.pt  = ['/home/filippo/Data/Filippo/aeolus/SEM_calculs/ncoeq2007_small_scale_OK/ncoeq2007_as8/',...
-%     'kknpp_as8_topo_rf5_small_bsn_wdmp_npml_sb88_grd_tsuda_water_fold'];
+% # KKNPP AS8
+% FOLDED
+mon.pt  = ['/home/filippo/Data/Filippo/aeolus/SEM_calculs/ncoeq2007_small_scale_OK/ncoeq2007_as8/',...
+    'kknpp_as8_topo_rf5_small_bsn_wdmp_npml_sb88_grd_tsuda_water_fold'];
 % # KKNPP AS4
+% FOLDED
 % % % % mon.pt  = ['/home/filippo/Data/Filippo/aeolus/SEM_calculs/ncoeq2007_small_scale_OK/ncoeq2007_as4/',...
 % % % %     'kknpp_as4_topo_rf5_small_bsn_wdmp_npml_sb35_25_grd_tsuda_water_fold'];
-mon.pt  = ['/home/filippo/Data/Filippo/aeolus/SEM_calculs/ncoeq2007_small_scale_OK/ncoeq2007_as4/',...
-    'kknpp_as4_topo_rf5_small_bsn_wdmp_npml_sb35_25_grd_tsuda_water_1d'];
+% LAYERED
+% % % % mon.pt  = ['/home/filippo/Data/Filippo/aeolus/SEM_calculs/ncoeq2007_small_scale_OK/ncoeq2007_as4/',...
+% % % %     'kknpp_as4_topo_rf5_small_bsn_wdmp_npml_sb35_25_grd_tsuda_water_1d'];
+
 fprintf('--> Monitor Path: %s\n',mon.pt);
 % _metadata filename (for Sabetta-Pugliese)_
 % % # paper BSSA
@@ -183,4 +187,4 @@ end
 % _tolerances_
 ann.mtd.nit = [20;20;50];
 
-res.fnm = fullfile(wd,sprintf('syn2ann_res_kknpp_as4_75_lay_%s',ann.mtd.scl{1}));
+res.fnm = fullfile(wd,sprintf('syn2ann_res_kknpp_as8_75_bsn_%s',ann.mtd.scl{1}));
