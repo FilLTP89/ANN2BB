@@ -35,7 +35,8 @@ fprintf('Workdir: %s\n',wd);
 % % run_selcase = 1:2985;%[1,2,3,5,34,35];
 
 % # KKNPP
-syn2ann_case_list_fast_as4;
+%syn2ann_case_list_fast_as4;
+syn2ann_case_list_fast_as8;
 run_selcase = 1:12;
 
 %% *DEFINE REAL RECORDS METADATA (DNC)*
