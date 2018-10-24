@@ -31,8 +31,9 @@ trann_plot_sensitivity;
 %% *COMPARE CORRELATED VS DECORRELATED*
 clear all;
 clc;
-res0=load('/home/filippo/Data/Filippo/ares/workdir/ANN2BB/sensitivity/res_rho_0.mat');
-res1=load('/home/filippo/Data/Filippo/ares/workdir/ANN2BB/sensitivity/res_rho_fast.mat');
+wkd = '~/Documents';
+res0 = load(fullfile(wkd,'ares/workdir/ANN2BB/sensitivity/res_rho_0.mat'));
+res1 = load(fullfile(wkd,'ares/workdir/ANN2BB/sensitivity/res_rho_fast.mat'));
 
 xpl=cell(6,1);
 ypl=cell(6,1);
@@ -68,9 +69,9 @@ set(0,'defaultaxescolororder',cols);
 vline(hax(1),0.75,'k--');
 hax(1).XLabel.Interpreter='latex';
 hax(1).YLabel.Interpreter='latex';
-
-hax(1).Legend.Interpreter='latex';
-hax(1).Legend.Box='off';
-hax(1).Legend.FontSize=16;
+%hax.get
+%hax(2).Legend.Interpreter='latex';
+%hax(2).Legend.Box='off';
+%hax(2).Legend.FontSize=16;
 %saveas(hfg,'fig_rho_0','epsc');
 print('fig_cmp', '-depsc', '-r500');

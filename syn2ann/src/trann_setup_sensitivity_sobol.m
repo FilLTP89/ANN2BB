@@ -9,7 +9,6 @@
 % Need for:
 % _ccc.m,_
 
-ccc;
 fprintf('---------------------\n0. SETUP\n---------------------\n');
 %% *WORKDIR*
 % _main workdir_
@@ -33,30 +32,12 @@ ann.trn.wd = fullfile(wd,'training');
 fprintf('Training Workdir: %s\n',ann.trn.wd);
 fprintf('Training Database: %s\n',dbn);
 
-%% decorrelated
-% dat_rho_0.mat
-% res_rho_0.mat
-
-%% correlated
-% data_rho_1.mat'
-% res_rho_1.mat'
-
-%% correlated
-% data_rho_fast.mat'
-% res_rho_fast.mat'
-
-%% correlated
-% res_rho_fast_u.mat
-% data_rho_fast_u.mat
 wkd     = '~/Documents/ares/workdir/ANN2BB/sensitivity';
-mat     = load(fullfile(wkd,'data_rho_fast_u.mat'));
-res.fnm = load(fullfile(wkd,'res_rho_fast_u.mat'));
+mat     = load(fullfile(wkd,'data_rho_fast_1.mat'));
+res.fnm = load(fullfile(wkd,'res_rho_fast_1.mat'));
 
-trann_test_list_sensitivity;
-%trann_test_list_sensitivity_sem;
-% _select test case : selected_case = [a,b,...,d]_
-selected_case = 1:200;
-
+trann_test_list_sensitivity_sobol;
+selected_case = 1:100;
 
 %% *DEFINE REAL RECORDS METADATA*
 % _path to record files_
@@ -103,3 +84,6 @@ fprintf('\n');
 bhr.cp = bhr.cp(:);
 bhr.ci = bhr.ci(:);
 fprintf('---------------------------------------------------------------\n');
+
+
+

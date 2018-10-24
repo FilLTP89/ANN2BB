@@ -28,10 +28,9 @@ plsm=plot(ann.tst{1}.mon.vTn,geomean(stb,1)-std(stb,0,1),'k--','linewidth',3);
 hax(1).XLabel.Interpreter='latex';
 hax(1).YLabel.Interpreter='latex';
 
-legend(hax(1),[plgm,plsp],{'$\mu_{GH}$','$\mu_{GH}\pm\sigma$'});
-hax(1).Legend.Interpreter='latex';
-hax(1).Legend.Box='off';
-hax(1).Legend.FontSize=16;
+leg=legend(hax(1),[plgm,plsp],{'$\mu_{GH}$','$\mu_{GH}\pm\sigma$'});
+leg.Interpreter='latex';
+leg.Box='off';
+leg.FontSize=16;
 %saveas(hfg,'fig_rho_0','epsc');
 print('fig_rho_0', '-depsc', '-r500');
-

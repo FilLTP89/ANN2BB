@@ -8,12 +8,18 @@
 % analyses to be run.
 %% *N.B.*
 % Need for:
-    
 
-for i_=1:200
+%% *RECORDING STATION: ADD bhrr STRUCTURES TO DATABASE*
+% _station identity_
+% % decorrelated
+% mat=load('/home/filippo/Data/Filippo/ares/workdir/ANN2BB/sensitivity/data_rho_0.mat');
+% correlated
+%mat=load('/home/filippo/Data/Filippo/ares/workdir/ANN2BB/sensitivity/data_rho_1.mat');
+
+for i_=1:100
     bhrr.st{i_}.id = {''};
     bhrr.st{i_}.ni = {'';''};
-
+    
     % _recorded events_
     bhrr.st{i_}.ev  = {''};
     % _device list_
@@ -21,16 +27,16 @@ for i_=1:200
     % _database_
     bhrr.st{i_}.tp = {''};
     % psa variation
-    bhrr.sns{i_}.vTn=mat.T_ann;
-    bhrr.sns{i_}.mus=mat.mus(:,1);
-    bhrr.sns{i_}.psa=mat.psa_new(:,i_);
-    bhrr.sns{i_}.sig=mat.sigmas;
+    bhrr.sns{i_}.vTn = mat.T_ann;
+    bhrr.sns{i_}.mus = mat.mus(:,i_);
+    bhrr.sns{i_}.psa = mat.psa_new(:,i_);
+    bhrr.sns{i_}.sig = mat.sigmas;
 end
 
 % _bhrr field names_
 fni.bhrr = fieldnames(bhrr);
 fnn.bhrr = numel(fni.bhrr);
-
+    
 %% *DEFINE ANN TEST METADATA (CUSTOMIZE)*
 % _number of ann to be tested_
 tst.mtd.nr = 2;
@@ -61,5 +67,5 @@ end
 % end
 for i_ = 1:tst.mtd.nr
     tst.mtd.nl(i_) = {sprintf('net_%u_%s_%s_30n.mat',...
-    round(tst.mtd.TnC{i_}*100),tst.mtd.scl{i_},tst.mtd.cpp{i_})};
+        round(tst.mtd.TnC{i_}*100),tst.mtd.scl{i_},tst.mtd.cpp{i_})};
 end

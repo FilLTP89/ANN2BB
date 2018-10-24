@@ -1,0 +1,189 @@
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2015 The MathWorks, Inc.
+                   R2015b (8.6.0.267246) 64-bit (glnxa64)
+                              August 20, 2015
+
+ 
+To get started, type one of these: helpwin, helpdesk, or demo.
+For product information, visit www.mathworks.com.
+ 
+Welcome Filippo!
+This is your new MATLAB session on BaoBab
+Have a nice day
+[Warning: Name is nonexistent or not a directory:
+/mssmat2/home/gattif/Documents/PHD_passing_through_polimi/m_speed] 
+[> In startup (line 5)
+  In matlabrc (line 227)] 
+[Warning: Name is nonexistent or not a directory:
+/mssmat2/home/gattif/Documents/PHD_passing_through_polimi/m_speed/source_generation] 
+[> In startup (line 5)
+  In matlabrc (line 227)] 
+[Warning: Name is nonexistent or not a directory:
+/mssmat2/home/gattif/Documents/SEM_Thesards_V2/Matlab/coherenceAng] 
+[> In startup (line 5)
+  In matlabrc (line 227)] 
+
+	Academic License
+
+>> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> ---------------------
+0. SETUP
+---------------------
+Training Workdir: /mssmat2/home/gattif/Documents/PHD_passing_through_polimi/syn2ann/database/training
+Training Database: /mssmat2/home/gattif/Documents/PHD_passing_through_heavyweight/simbad_v05/SIMBAD_v05_1_vigne.mat
+--> Record Path: /mssmat2/home/gattif/Documents/PHD_passing_through_polimi/syn2ann/database/records
+--> N. Stations: 24
+--> Station ID: ACC
+--> Station ID: IT
+--> Station ID: HG
+--> Station ID: 20161026.171036
+--> Station ID: 
+--> Station ID: itaca
+--> Station ID: ACC
+--> Station ID: IT
+--> Station ID: HG
+--> Station ID: 20161026.191806
+--> Station ID: 
+--> Station ID: itaca
+--> Station ID: ACC
+--> Station ID: IT
+--> Station ID: HG
+--> Station ID: 20161030.064018
+--> Station ID: 
+--> Station ID: itaca
+--> Station ID: NRC
+--> Station ID: IT
+--> Station ID: HG
+--> Station ID: 20160824.013632
+--> Station ID: 
+--> Station ID: itaca
+--> Station ID: NRC
+--> Station ID: IT
+--> Station ID: HG
+--> Station ID: 20160824.023329
+--> Station ID: 
+--> Station ID: itaca
+--> Station ID: NRC
+--> Station ID: IT
+--> Station ID: HG
+--> Station ID: 20161026.171036
+--> Station ID: 
+--> Station ID: itaca
+--> Station ID: NRC
+--> Station ID: IT
+--> Station ID: HG
+--> Station ID: 20161026.191806
+--> Station ID: 
+--> Station ID: itaca
+--> Station ID: NRC
+--> Station ID: IT
+--> Station ID: HG
+--> Station ID: 20161030.064018
+--> Station ID: 
+--> Station ID: itaca
+--> Station ID: KMMH16
+--> Station ID: 
+--> Station ID: 
+--> Station ID: 1604142126
+--> Station ID: 1
+--> Station ID: kiknet
+--> Station ID: KMMH16
+--> Station ID: 
+--> Station ID: 
+--> Station ID: 1604142207
+--> Station ID: 1
+--> Station ID: kiknet
+--> Station ID: KMMH16
+--> Station ID: 
+--> Station ID: 
+--> Station ID: 1604150003
+--> Station ID: 1
+--> Station ID: kiknet
+--> Station ID: KMMH16
+--> Station ID: 
+--> Station ID: 
+--> Station ID: 1604160125
+--> Station ID: 1
+--> Station ID: kiknet
+--> Station ID: KMMH16
+--> Station ID: 
+--> Station ID: 
+--> Station ID: 1604160146
+--> Station ID: 1
+--> Station ID: kiknet
+--> Station ID: KMMH14
+--> Station ID: 
+--> Station ID: 
+--> Station ID: 1604142126
+--> Station ID: 1
+--> Station ID: kiknet
+--> Station ID: KMMH14
+--> Station ID: 
+--> Station ID: 
+--> Station ID: 1604150003
+--> Station ID: 1
+--> Station ID: kiknet
+--> Station ID: KMMH14
+--> Station ID: 
+--> Station ID: 
+--> Station ID: 1604160125
+--> Station ID: 1
+--> Station ID: kiknet
+--> Station ID: KMMH16
+--> Station ID: 
+--> Station ID: 
+--> Station ID: 1604142126
+--> Station ID: 2
+--> Station ID: kiknet
+--> Station ID: KMMH16
+--> Station ID: 
+--> Station ID: 
+--> Station ID: 1604142207
+--> Station ID: 2
+--> Station ID: kiknet
+--> Station ID: KMMH16
+--> Station ID: 
+--> Station ID: 
+--> Station ID: 1604150003
+--> Station ID: 2
+--> Station ID: kiknet
+--> Station ID: KMMH16
+--> Station ID: 
+--> Station ID: 
+--> Station ID: 1604160125
+--> Station ID: 2
+--> Station ID: kiknet
+--> Station ID: KMMH16
+--> Station ID: 
+--> Station ID: 
+--> Station ID: 1604160146
+--> Station ID: 2
+--> Station ID: kiknet
+--> Station ID: KMMH14
+--> Station ID: 
+--> Station ID: 
+--> Station ID: 1604142126
+--> Station ID: 2
+--> Station ID: kiknet
+--> Station ID: KMMH14
+--> Station ID: 
+--> Station ID: 
+--> Station ID: 1604150003
+--> Station ID: 2
+--> Station ID: kiknet
+--> Station ID: KMMH14
+--> Station ID: 
+--> Station ID: 
+--> Station ID: 1604160125
+--> Station ID: 2
+--> Station ID: kiknet
+---------------------------------------------------------------
+--> Reference system : ew; ns; ud; 
+--> Directions: ew ns 
+--> Components: a; 
+---------------------------------------------------------------
+>> >> >> >> >> ---------------------
+1. ANN (JUST PSA)
+---------------------
+--> Parsing 
+>> 
