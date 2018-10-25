@@ -17,5 +17,10 @@
 
 function [out] = apply_ann2hbs_sobol(x)
     global no contr epsilon1 
-        out = 10.^(sim(ann.(hbs.mon.cp{j_}).net,inp(i_,:)'));
-        out = out./100;
+    global ann hbs dsx s_
+    for i_ = 1:hbs.clc
+        out(:,i_) = 10.^(sim(ann.(hbs.mon.cp{dsx}).net,x(i_,:).'));
+    end
+    out = out(s_,:)./100;
+    return
+end

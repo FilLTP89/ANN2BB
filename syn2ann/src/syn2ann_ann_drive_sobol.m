@@ -13,6 +13,8 @@ fprintf('============================\n');
 fprintf('------3. ANN SIMULATIONS----\n');
 fprintf('============================\n');
 
+global hbs ann
+
 %% *PARSE ANN NETWORK ON EACH MOTION COMPONENT*
 fprintf('--> Parsing ANN \n');
 for j_ = 1:mon.nc
@@ -36,4 +38,5 @@ fprintf('--> Apply ANN:\n');
 
 pdf = 1;
 cv = 10.0/100.0;
-[trs.sps,VVarEntree] = prepare_ann2hbs_sobol(pbs.org,ann,pdf,cv);
+hbs = pbs.org;
+[trs.sps,VVarEntree] = prepare_ann2hbs_sobol(hbs,ann,pdf,cv);

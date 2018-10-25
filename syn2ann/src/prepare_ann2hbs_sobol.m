@@ -17,6 +17,7 @@
 
 function [varargout] = apply_ann2hbs_sobol(varargin)
     %% *SET-UP*
+    global srt
     hbs = varargin{1};
     ann = varargin{2};
     pdf = varargin{3};
@@ -39,7 +40,6 @@ function [varargout] = apply_ann2hbs_sobol(varargin)
         %
         inn{j_} = psa(:,trs.(cpp.hbs).iid);
     end
-    
     %% *ANN SIMULATION*
     trs.mon.cp = hbs.mon.cp;
 
