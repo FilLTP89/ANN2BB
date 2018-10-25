@@ -20,7 +20,9 @@
 
 function [varargout] = syn2ann_ann_parser(varargin)
     %% *SET-UP*
-    ann = load(varargin{2},'net');
+    %ann = load(varargin{2},'net');
+    ann = load(varargin{2});
+    ann = ann.NNs;
     if isempty(fieldnames(ann)) 
         ann = load(varargin{2});
         ann.net = ann.NNs.net; 
