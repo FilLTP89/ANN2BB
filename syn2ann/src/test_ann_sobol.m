@@ -11,3 +11,7 @@ dsx = 1;
 srt = numel(trs.sps.(hbs.mon.cp{j_}).tid);
 hbs.clc = 1000;
 [S,ST,retourTout] = Sobol(2,1,0,0,size(VVarEntree{1,1},1),hbs.clc,VVarEntree{1,1},'apply_ann2hbs_sobol(x)',2);
+
+test_ann_sobol_plot;
+
+keyboard
