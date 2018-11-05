@@ -65,7 +65,7 @@ function [varargout] = syn2ann_pbs_parser(varargin)
                 % time-step
                 pbs.mon.dtm(i_) = mean(diff(str(:,1)));
                 % parse acceleration components
-                fprintf('components: \n');
+                fprintf('components SPEED: \n');
                 for j_ = 1:mon.nc
                     cpp = mon.cp{j_};
                     disp(cpp);
@@ -110,10 +110,9 @@ function [varargout] = syn2ann_pbs_parser(varargin)
                 pbs.mon.dtm(i_) = sem3d.dTime;
                 
                 % parse acceleration components
-                fprintf('components: \n');
+                fprintf('components SEM3D: \n');
                 for k_=1:numel(rc_sem3d)
                     for j_ = 1:mon.nc
-                        
                         cpp = mon.cp{j_};
                         idx_sem3d = find(strcmpi(cpn_sem3d(:,1),cpp)==1);
                         disp(cpp);

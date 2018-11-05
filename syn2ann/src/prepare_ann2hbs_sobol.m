@@ -15,7 +15,7 @@
 % Need for:
 % _sim.m,trann_check_vTn.m_
 
-function [varargout] = apply_ann2hbs_sobol(varargin)
+function [varargout] = prepare_ann2hbs_sobol(varargin)
     %% *SET-UP*
     global srt
     hbs = varargin{1};
@@ -62,10 +62,6 @@ function [varargout] = apply_ann2hbs_sobol(varargin)
             VVarEntree{i_,j_}(:,2) = pdf*ones(numel(param),1);
             VVarEntree{i_,j_}(:,3) = param(:).*(1.0-cv);
             VVarEntree{i_,j_}(:,4) = param(:).*(1.0+cv);
-        %    out = 10.^(sim(ann.(hbs.mon.cp{j_}).net,inp(i_,:)'));
-        %    out = out./100;
-        %    trs.(hbs.mon.cp{j_}).syn{i_}.psa.(hbs.mon.cp{j_}) = ...
-        %        [out(:);inn{j_}(i_,:)'];
         end
     end
     

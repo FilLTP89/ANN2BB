@@ -4,8 +4,8 @@ close all;
 xpl = cell(2*srt,1);
 ypl = cell(2*srt,1);
 leg = cell(srt,1);
-col = parula(srt);
-
+col = hsv(srt);
+set(0,'defaultaxescolororder',col);
 for k_=1:srt
     xpl{2*k_-1,1} = hbs.mon.vTn(trs.sps.(hbs.mon.cp{dsx}).iid);
     ypl{2*k_-1,1} = S{k_,1}(:,2);
@@ -19,5 +19,5 @@ end
        'ylb',{'[1]'  },'ylm',{[-.01,1.0]                 },'ytk',{0:.25:1},...
        'lwd',1,'lst',{'--'},'mrk',{'o'},'leg',{leg},'tit',{'Sobol Indices-ANN2BB'});
 set(hax,'TickLabelInterpreter', 'latex');
-saveas(hfg,sprintf('results_sobol_ann2bb_%u_%u.eps',i_,j_),'epsc');
+saveas(hfg,sprintf('/tmp1/gattif/ann_sobol/results_sobol_ann2bb_%u_%u.eps',i_,j_),'epsc');
 close all;
