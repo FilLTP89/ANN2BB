@@ -14,9 +14,10 @@ hbs.clc = 2000;
 for j_=1:numel(dssx)
     dsx = dssx(j_);
     for i_=1:hbs.mon.na
-        [S,Yy,~,~] = Sobol(2,1,0,0,size(VVarEntree{i_,j_},1),hbs.clc,...
-            VVarEntree{i_,j_},'apply_ann2hbs_sobol(x)',2);
-        save(sprintf('/tmp1/gattif/ann_sobol/results_sobol_ann2bb_%u_%u.mat',i_,j_),'hbs','trs','S','Yy');
+%        [S,Yy,~,~] = Sobol(2,1,0,0,size(VVarEntree{i_,j_},1),hbs.clc,...
+%            VVarEntree{i_,j_},'apply_ann2hbs_sobol(x)',2);
+%        save(sprintf('/tmp1/gattif/ann_sobol/results_sobol_ann2bb_%u_%u.mat',i_,j_),'hbs','trs','S','Yy');
+        load(sprintf('/tmp1/gattif/ann_sobol/results_sobol_ann2bb_%u_%u.mat',i_,j_),'S');
         test_ann_sobol_plot;
     end
 end
