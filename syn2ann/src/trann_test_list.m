@@ -147,7 +147,7 @@ tst.mtd.nr = 2;
 % _type of testing (scl: by site class;TnC: by natural period)_
 % _NB: when testing by TnC, be careful to be coherent with ANN (same 
 % characteristics, but different TnC)_
-tst.typ_cmp = 'TnC';
+tst.typ_cmp = 'red';
 % select ann metadata to test
 if strcmpi(tst.typ_cmp,'TnC')
     % _select site class considered : ALL,AB,CD_
@@ -164,12 +164,31 @@ elseif strcmpi(tst.typ_cmp,'scl')
     % _ANN motion component : gh,ud (geometric mean horizontal, updip)_
     tst.mtd.cpp = {'ud';'ud';'ud'};
     tst.mtd.Tno = [0.75;0.75;0.75];
+elseif strcmpi(tst.typ_cmp,'red') 
+    tst.mtd.scl = {'ALL';'ALL'};
+    % _corner period for each ANN_
+    tst.mtd.TnC = {0.5;0.5};
+    % _ANN motion component : gh,ud (geometric mean horizontal, updip)_
+    tst.mtd.cpp = {'gh';'gh'};
+    tst.mtd.Tno = [0.75;0.75];
+
 end
 % for i_ = 1:tst.mtd.nr
 %     tst.mtd.nl(i_) = {sprintf('net_%u_%s_%s_new.mat',...
 %         round(tst.mtd.TnC{i_}*100),tst.mtd.scl{i_},tst.mtd.cpp{i_})};
 % end
-for i_ = 1:tst.mtd.nr
-    tst.mtd.nl(i_) = {sprintf('net_%u_%s_%s_30n.mat',...
-        round(tst.mtd.TnC{i_}*100),tst.mtd.scl{i_},tst.mtd.cpp{i_})};
+if strcmpi(tst.typ_cmp,'red')
+    for i_ = 1
+        tst.mtd.nl(i_) = {sprintf('net_%u_%s_%s_30n.mat',...
+            round(tst.mtd.TnC{i_}*100),tst.mtd.scl{i_},tst.mtd.cpp{i_})};
+    end
+    for i_ = 2
+        tst.mtd.nl(i_) = {sprintf('net_red_%u_%s_%s_30n.mat',...
+            round(tst.mtd.TnC{i_}*100),tst.mtd.scl{i_},tst.mtd.cpp{i_})};
+    end
+else
+    for i_ = 1:tst.mtd.nr
+        tst.mtd.nl(i_) = {sprintf('net_%u_%s_%s_30n.mat',...
+            round(tst.mtd.TnC{i_}*100),tst.mtd.scl{i_},tst.mtd.cpp{i_})};
+    end
 end

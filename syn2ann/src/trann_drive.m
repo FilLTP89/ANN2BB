@@ -26,7 +26,8 @@ trann_setup;
 
 %% *TRAIN ANN (DNC)*
 if flag_train == 1
-    trann_train;
+    %trann_train;
+    trann_train_reduced;
 end
 
 if flag_test==1

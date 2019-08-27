@@ -3,7 +3,7 @@
 % _number of ann_
 ann.trn.nr = 2; 
 % _corner periods_
-tmp.TnC = [1,1];
+tmp.TnC = [0.5,0.5];
 % _direction (gh=geometrical mean horizontal;ud=vertical)
 tmp.cp  = {'gh','ud'};
 % _site class (ALL,AB,CD)_
@@ -11,7 +11,7 @@ tmp.scl = {'ALL','ALL'};
 % _train strategy (classic)_
 tmp.str = {'classic','classic'};
 % _number of neurons_
-tmp.nnr = [30,30];
+tmp.nnr = [10,10];
 
 for i_=1:ann.trn.nr
     ann.trn.mtd(i_).TnC = tmp.TnC(i_);

@@ -4,13 +4,14 @@
 % DICA - Politecnico di Milano
 % Copyright 2016_
 %% *NOTES*
-% _trann_test_: function to test trained ANN
+% _trann_train_: function to train ANN
 %% *N.B.*
 % Need for:
-% _trann_rec_parser.m,test_ann_justPSA.m_
+% _train_ann_justPSA.m_
 
-%% *TEST ANN*
-fprintf('---------------------\n2. TEST ANN\n---------------------\n');
-for i_ = 1:tst.mtd.nr
-    ann.tst{i_} = test_ann_justPSA(ann.tst{i_},rec.org,tst.mtd.nl{i_});
+%% *TRAIN ANN*
+fprintf('---------------------\n1. TRAIN ANN\n---------------------\n');
+for i_ = 1:ann.trn.nr
+    train_ann_justPSA_reduced(ann.trn.wd,ann.trn.mtd(i_));
 end
+

@@ -14,12 +14,16 @@ function [varargout] = test_ann_justPSA(varargin)
     %% *SET-UP*
     ann = varargin{1};
     rec = varargin{2};
-    
+    red = varargin{3}; 
     inn = cell(rec.mon.nc,1);
     %
     % _define input/target natural periods_
     %
-    [inp.vTn,tar.vTn,inp.nT,tar.nT] = trann_define_inout(ann.TnC);
+    if ~isempty(strfind(red,'red'))
+        [inp.vTn,tar.vTn,inp.nT,tar.nT] = trann_define_inout_reduced(ann.TnC);
+    else
+        [inp.vTn,tar.vTn,inp.nT,tar.nT] = trann_define_inout(ann.TnC);
+    end
     [inp.idx,tar.idx] = trann_check_vTn(inp,tar,rec.mon,1e-8);
     ann.mon.vTn = [tar.vTn(:);inp.vTn(:)];
     
