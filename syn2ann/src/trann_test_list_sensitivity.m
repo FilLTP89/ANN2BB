@@ -9,9 +9,10 @@
 %% *N.B.*
 % Need for:
     
+stss = {'G07','G08','G09','G10','1G1','SG1','SG2','SG3','SG4','NIG016','NIG018','5G1'};
 
 for i_=1:200
-    bhrr.st{i_}.id = {''};
+    bhrr.st{i_}.id = stss(5);
     bhrr.st{i_}.ni = {'';''};
 
     % _recorded events_
@@ -21,12 +22,17 @@ for i_=1:200
     % _database_
     bhrr.st{i_}.tp = {''};
     % psa variation
+    %% [MODIFY] FLUCTUATION
     bhrr.sns{i_}.vTn=mat.T_ann;
     bhrr.sns{i_}.mus=mat.mus(:,1);
     bhrr.sns{i_}.psa=mat.psa_new(:,i_);
     bhrr.sns{i_}.sig=mat.sigmas;
 end
 
+monn.id =[(28:31)';28;(19:22)';14;16;23];
+% _monn field names_
+fni.monn = fieldnames(monn);
+fnn.monn = numel(fni.monn);
 % _bhrr field names_
 fni.bhrr = fieldnames(bhrr);
 fnn.bhrr = numel(fni.bhrr);

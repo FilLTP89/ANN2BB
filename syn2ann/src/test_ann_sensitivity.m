@@ -27,7 +27,7 @@ trann_load_sensitivity;
 trann_test;
 
 trann_plot_sensitivity;
-
+exit
 %% *COMPARE CORRELATED VS DECORRELATED*
 clear all;
 clc;

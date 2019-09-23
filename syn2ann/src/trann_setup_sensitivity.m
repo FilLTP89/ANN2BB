@@ -49,9 +49,10 @@
     % res_rho_fast_u.mat
     % data_rho_fast_u.mat
     wkd     = '~/Documents/ares/workdir/ANN2BB/sensitivity';
-    mat     = load(fullfile(wkd,'data_rho_fast_u.mat'));
-    res.fnm = load(fullfile(wkd,'res_rho_fast_u.mat'));
-
+    %mat     = load(fullfile(wkd,'data_rho_fast_u.mat'));
+    %res.fnm = load(fullfile(wkd,'res_rho_fast_u.mat'));
+mat     = load(fullfile(wkd,'data_rho_fast_u_2019.mat'));
+res.fnm = fullfile(wkd,'res_rho_fast_u_2019.mat'); 
 trann_test_list_sensitivity;
 %trann_test_list_sensitivity_sem;
 % _select test case : selected_case = [a,b,...,d]_

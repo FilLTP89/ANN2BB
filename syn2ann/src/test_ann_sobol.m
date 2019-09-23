@@ -29,8 +29,13 @@ for k_=1:hbs.clc
     trs = trss{k_};
     syn2ann_run;
     %% *5). SAVE RESULTS (DNC)*
-    res.fnm = sprintf('/tmp1/gattif/ann_sobol/ths_ann2bb_sobol_%u.mat',k_) 
-    syn2ann_save_res;
+    for i_=1:hbs.mon.na
+        for j_=1:hbs.mon.nc
+            fnm = sprintf('/tmp1/gattif/ann_sobol/ths_ann2bb_qMC_%s_%s_%u.csv',...
+                hbs.mon.cp{j_},hbs.mon.st{i_},k_);
+            csvwrite(fnm,spm.sps.(hbs.mon.cp{j_}).syn{i_}.tha.(hbs.mon.cp{j_}));
+        end
+    end
 end
 
 % PLOT SOBOL INDICES

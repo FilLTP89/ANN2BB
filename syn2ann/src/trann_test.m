@@ -14,3 +14,5 @@ fprintf('---------------------\n2. TEST ANN\n---------------------\n');
 for i_ = 1:tst.mtd.nr
     ann.tst{i_} = test_ann_justPSA(ann.tst{i_},rec.org,tst.mtd.nl{i_});
 end
+
+save(res.fnm,'ann','bhr','rec')
