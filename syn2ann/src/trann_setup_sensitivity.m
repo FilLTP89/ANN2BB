@@ -9,48 +9,48 @@
     % Need for:
     % _ccc.m,_
 
-    ccc;
-    fprintf('---------------------\n0. SETUP\n---------------------\n');
-    %% *WORKDIR*
-    % _main workdir_
-    wd = fullfile(filesep,'home','filippo','Data','Filippo',...
-        'PHD_passing_through_polimi','syn2ann','database');
-    % _save path_
-    sp = fullfile(filesep,'home','filippo','Data','Filippo','aeolus',...
-        'image_database1');
-    % _database path_
-    dbn = fullfile(filesep,'home','filippo','Data','Filippo',...
-        'PHD_passing_through_heavyweight','simbad_v05','SIMBAD_v05_1_vigne.mat');
+ccc;
+fprintf('---------------------\n0. SETUP\n---------------------\n');
+%% *WORKDIR*
+% _main workdir_
+wd = fullfile(filesep,'home','filippo','Data','Filippo',...
+    'PHD_passing_through_polimi','syn2ann','database');
+% _save path_
+sp = fullfile(filesep,'home','filippo','Data','Filippo','aeolus',...
+    'image_database1');
+% _database path_
+dbn = fullfile(filesep,'home','filippo','Data','Filippo',...
+    'PHD_passing_through_heavyweight','simbad_v05','SIMBAD_v05_1_vigne.mat');
 
-    if exist(wd,'dir')~=7
-        wd  = '/mssmat2/home/gattif/Documents/PHD_passing_through_polimi/syn2ann/database';
-        sp  = '/tmp1/gattif/ann_train';
-        dbn = '/mssmat2/home/gattif/Documents/SIMBAD_v05_1.mat';  
-        spp = '/tmp1/gattif/ann_train';
-    end
+if exist(wd,'dir')~=7
+    wd  = '/mssmat2/home/gattif/Documents/PHD_passing_through_polimi/syn2ann/database';
+    sp  = '/tmp1/gattif/ann_train';
+    dbn = '/mssmat2/home/gattif/Documents/SIMBAD_v05_1.mat';  
+    spp = '/tmp1/gattif/ann_train';
+end
 
-    ann.trn.wd = fullfile(wd,'training');
-    fprintf('Training Workdir: %s\n',ann.trn.wd);
-    fprintf('Training Database: %s\n',dbn);
+ann.trn.wd = fullfile(wd,'training');
+fprintf('Training Workdir: %s\n',ann.trn.wd);
+fprintf('Training Database: %s\n',dbn);
 
-    %% decorrelated
-    % dat_rho_0.mat
-    % res_rho_0.mat
+%% decorrelated
+% dat_rho_0.mat
+% res_rho_0.mat
 
-    %% correlated
-    % data_rho_1.mat'
-    % res_rho_1.mat'
+%% correlated
+% data_rho_1.mat'
+% res_rho_1.mat'
 
-    %% correlated
-    % data_rho_fast.mat'
-    % res_rho_fast.mat'
+%% correlated
+% data_rho_fast.mat'
+% res_rho_fast.mat'
 
-    %% correlated
-    % res_rho_fast_u.mat
-    % data_rho_fast_u.mat
-    wkd     = '~/Documents/ares/workdir/ANN2BB/sensitivity';
-    %mat     = load(fullfile(wkd,'data_rho_fast_u.mat'));
-    %res.fnm = load(fullfile(wkd,'res_rho_fast_u.mat'));
+%% correlated
+% res_rho_fast_u.mat
+% data_rho_fast_u.mat
+wkd     = '~/Documents/ares/workdir/ANN2BB/sensitivity';
+%mat     = load(fullfile(wkd,'data_rho_fast_u.mat'));
+%res.fnm = load(fullfile(wkd,'res_rho_fast_u.mat'));
 mat     = load(fullfile(wkd,'data_rho_fast_u_2019.mat'));
 res.fnm = fullfile(wkd,'res_rho_fast_u_2019.mat'); 
 trann_test_list_sensitivity;
