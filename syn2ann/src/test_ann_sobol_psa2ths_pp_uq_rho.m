@@ -20,7 +20,7 @@ function [varargout] = test_ann_sobol_psa2ths_pp_uq_rho(varargin)
     hbs = varargin{1};
     ann = varargin{2};
     ott = varargin{3};
-    s2X = varargin{4};
+    CV = varargin{4};
     %
     % _check input/target natural periods with hbs_
     %
@@ -55,9 +55,10 @@ function [varargout] = test_ann_sobol_psa2ths_pp_uq_rho(varargin)
 
     for j_ = 1:hbs.mon.nc
         for i_ = 1:hbs.mon.na
-            ots = s2X*diag(log(inn{j_}(i_,:).'))*ott;
+            muX = log(inn{j_}(i_,:).')/log(10.)+2.;
+            sdX = diag(CV*muX)*ott/log(10.);
             for k_=1:hbs.clc
-                inp_ann = log(inn{j_}(i_,:).')/log(10.)+2+ots(:,k_)/log(10.); 
+                inp_ann = muX(:)+sdX(:,k_); 
                 out = 10.^(sim(ann.(hbs.mon.cp{j_}).net,inp_ann));
                 trss{k_}.(hbs.mon.cp{j_}).syn{i_}.psa.(hbs.mon.cp{j_}) = ...
                     [out(:);10.^inp_ann(:)];

@@ -14,13 +14,14 @@ hbs.clc = 2000;
 
 flag = 'pp-uq-rho'; %'pp'
 if strcmpi(flag,'pp-uq-rho')
-    s2X = 0.2;
+    s2X = 0.0;
     R   = importdata('/mssmat2/home/gattif/Documents/ares/workdir/ANN2BB/sensitivity/tab8_jea2011.csv'); 
     vTn = R(2:end,1);
     R   = R(2:end,2:end);
     [T,L] = eig(R);
     S = load('/mssmat2/home/gattif/Documents/ares/workdir/ANN2BB/sensitivity/data_rho_fast_u_2019.mat');
     S = S.x.';
+    S = uni2norm(S);
     [inp_vTn,tar_vTn,inp_nT,tar_nT] = trann_define_inout(ann.mtd.TnC{1});
     inp.vTn = inp_vTn;
     inp.nT = numel(inp_vTn);
@@ -57,14 +58,14 @@ if strcmpi(flag,'pp-uq-rho')
     plot_set_up;
     close all;
     %hfg=figure('position',[0,0,12,12]);
-    xpl = cell(round(hbs.clc),1);
-    ypl = cell(round(hbs.clc),1);
-    leg = cell(round(hbs.clc),1);
-    col = hsv(hbs.mon.nc);
+    xpl = cell(hbs.mon.nc*(hbs.clc+1),1);
+    ypl = cell(hbs.mon.nc*(hbs.clc+1),1);
+    leg = cell(hbs.mon.nc*(hbs.clc+1),1);
+    col = [1,0,0;0,0,1];
     %col = [col(1:2:end,:);col(2:2:end,:)];
-    set(0,'defaultaxescolororder',col);
+    set(0,'defaultaxescolororder',[repmat(col,[hbs.mon.nc*hbs.clc,1]);0,0,0;0.4,0.4,0.4]);
     for i_ = 1:hbs.mon.na
-        for k_=1:round(hbs.clc)
+        for k_=1:hbs.clc
             for j_ = 1:hbs.mon.nc
                 xpl{hbs.mon.nc*(k_-1)+j_,1} = [hbs.mon.vTn(trs.sps.(hbs.mon.cp{j_}).tid);
                     hbs.mon.vTn(trs.sps.(hbs.mon.cp{j_}).iid)];
@@ -74,12 +75,18 @@ if strcmpi(flag,'pp-uq-rho')
                 %ypl{2*k_-0,1} = S{k_,1}(:,3)/2.;
             end
         end
+        xpl{end-1,1} = hbs.mon.vTn;
+        xpl{end+0,1} = hbs.mon.vTn;
+        ypl{end-1,1} = hbs.syn{i_}.psa.ew*100;
+        ypl{end+0,1} = hbs.syn{i_}.psa.ns*100;
         leg{1,1} = sprintf('%s',upper(hbs.mon.cp{1}));
         leg{2,1} = sprintf('%s',upper(hbs.mon.cp{2}));
+        leg{end-1,1} = sprintf('PBS-%s',upper(hbs.mon.cp{1}));
+        leg{end-0,1} = sprintf('PBS-%s',upper(hbs.mon.cp{2}));
         [hfg,hax,hpl]=fpplot('xpl',xpl,'ypl',ypl,'pfg',[0 0 12 12],'scl',{'lin'},...
                 'xlb',{'T [s]'},'xlm',{[0,3]},'xtk',{0:.5:3},...
                 'ylb',{'Sa [cm/s/s]'},'ylm',{[0,400]},'ytk',{0:100:400},...
-                'lwd',1,'lst',{'-'},'leg',{leg},'tit',{sprintf('ANN2BB-%s',hbs.mon.st{i_})});
+                'lwd',[ones(hbs.mon.nc*hbs.clc,1);3;3],'lst',{'-'},'leg',{leg},'tit',{sprintf('ANN2BB-%s',hbs.mon.st{i_})});
         set(hax,'TickLabelInterpreter', 'latex');
         saveas(hfg,sprintf('/tmp1/gattif/ann_sobol_2019/sensitivity_ann2bb_%u_%u.eps',i_),'epsc');
         close all;
