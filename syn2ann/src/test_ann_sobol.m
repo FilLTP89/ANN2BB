@@ -7,12 +7,15 @@ syn2ann_pbs_drive;
 
 syn2ann_ann_drive_sobol;
 
-save('/tmp1/gattif/ann_sobol/VVarEntree_2019.mat','VVarEntree');
-dssx = 1:2;
+save('/tmp1/gattif/ann_sobol_2020/VVarEntree_2020.mat','VVarEntree');
+dssx = 1:3;
 srt = numel(trs.sps.(hbs.mon.cp{1}).tid);
 hbs.clc = 2000; 
 
 flag = 'pp-uq-rho'; %'pp'
+flag = 'run';
+flag = 'pp-uq-sobol'; 
+flag = 'run';
 if strcmpi(flag,'pp-uq-rho')
     s2X = 0.0;
     R   = importdata('/mssmat2/home/gattif/Documents/ares/workdir/ANN2BB/sensitivity/tab8_jea2011.csv'); 
@@ -110,10 +113,10 @@ elseif strcmpi(flag,'pp-uq-sobol')
     ott = cell(hbs.clc,hbs.mon.na,hbs.mon.nc);
     for j_=1:numel(dssx)
         dsx = dssx(j_);
-        for i_=1:hbs.mon.na
+        for i_=hbs.mon.na
+            disp(sprintf('/tmp1/gattif/ann_sobol_2019/results_sobol_ann2bb_%u_%u_2019.mat',i_,j_))
             load(sprintf('/tmp1/gattif/ann_sobol_2019/results_sobol_ann2bb_%u_%u_2019.mat',i_,j_),'Yy');
             for k_=1:hbs.clc
-                keyboard
                 ott{k_,i_,j_} = cellfun(@(x) x(k_),Yy);
             end
         end
@@ -126,10 +129,11 @@ elseif strcmpi(flag,'pp-uq-sobol')
         trs = trss{k_};
         syn2ann_run;
         %% *5). SAVE RESULTS (DNC)*
-        for i_=1:hbs.mon.na
-            for j_=1:hbs.mon.nc
+        for i_=hbs.mon.na
+            for j_=1:numel(dssx)
+                dsx = dssx(j_);
                 fnm = sprintf('/tmp1/gattif/ann_sobol_2019/ths_ann2bb_qMC_%s_%s_%u.csv',...
-                    hbs.mon.cp{j_},hbs.mon.st{i_},k_);
+                    hbs.mon.cp{dsx},hbs.mon.st{i_},k_);
                 csvwrite(fnm,spm.sps.(hbs.mon.cp{j_}).syn{i_}.tha.(hbs.mon.cp{j_}));
             end
         end
@@ -149,7 +153,7 @@ elseif strcmpi(flag,'run')
         for i_=1:hbs.mon.na
             [S,Yy,~,~] = Sobol(2,1,0,0,size(VVarEntree{i_,j_},1),hbs.clc,...
                 VVarEntree{i_,j_},'apply_ann2hbs_sobol(x)',2);
-            save(sprintf('/tmp1/gattif/ann_sobol/results_sobol_ann2bb_%u_%u_2019.mat',i_,j_),'hbs','trs','S','Yy');
+            save(sprintf('/tmp1/gattif/ann_sobol_2020/results_sobol_ann2bb_%u_%u_2019.mat',i_,j_),'hbs','trs','S','Yy');
         end
     end
 end

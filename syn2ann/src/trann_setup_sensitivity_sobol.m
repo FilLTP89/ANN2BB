@@ -37,7 +37,7 @@ fprintf('Training Database: %s\n',dbn);
 %res.fnm = load(fullfile(wkd,'res_rho_fast_1.mat'));
 
 trann_test_list_sensitivity_semNsobol;
-run_selcase = 1:12;
+run_selcase = 13:16; %1:12;
 
 %% *DEFINE REAL RECORDS METADATA*
 % _path to record files_
@@ -66,7 +66,7 @@ end
 % _reference system_
 bhr.rs = {'ew';'ns';'ud'};
 % _select component (ew,ns,ud,gh)
-bhr.cp = {'ew';'ns'};
+bhr.cp = {'ew';'ns';'ud'};
 bhr.nc = numel(bhr.cp);
 [~,bhr.ci] = ismember(bhr.cp,bhr.rs);
 fprintf('--> Reference system : ');

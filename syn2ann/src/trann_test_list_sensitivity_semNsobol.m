@@ -12,7 +12,7 @@
 %% *RECORDING STATION: bhrr*
 % _station identity_
 
-stss = {'G07','G08','G09','G10','1G1','SG1','SG2','SG3','SG4','NIG016','NIG018','5G1'};
+stss = {'G07','G08','G09','G10','1G1','SG1','SG2','SG3','SG4','NIG016','NIG018','5G1','G52','G53','G54','G55'};
 
 bhrr.st = cell(numel(stss),1);
 for i_=1
@@ -40,7 +40,7 @@ fnn.bhrr = numel(fni.bhrr);
 
 %% *MONITOR STATION: monn*
 % _station identity_
-monn.id =[(28:31)';28;(19:22)';14;16;23];
+monn.id =[(28:31)';28;(19:22)';14;16;23;(24:27)'];
 
 % _monn field names_
 fni.monn = fieldnames(monn);
