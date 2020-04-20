@@ -26,18 +26,18 @@ end
 fprintf('Workdir: %s\n',wd);
 
 %% *LOAD ALL METADATA AVAILABLE (CUSTOMIZE)*
-% % # PAPER BSSA
-% % syn2ann_case_list_fast;
-% % run_selcase = 1:33;
+% # PAPER BSSA
+syn2ann_case_list_fast;
+run_selcase = 1:10;
 % % % # THESS
 % % syn2ann_case_list_fast_thess;
 % % % _select analyses : run_selcase = [a,b,...,d]_
 % % run_selcase = 1:2985;%[1,2,3,5,34,35];
 
-% # KKNPP
-%syn2ann_case_list_fast_as4;
-syn2ann_case_list_fast_as8;
-run_selcase = 1:12;
+%%  % # KKNPP
+%%  syn2ann_case_list_fast_as4;
+%%  %syn2ann_case_list_fast_as8;
+%%  run_selcase = 1:12;
 
 %% *DEFINE REAL RECORDS METADATA (DNC)*
 % _path to record files_
@@ -83,34 +83,35 @@ fprintf('---------------------------------------------------------------\n');
 
 %% *DEFINE SPEED MONITORS METADATA (CUSTOMIZE)*
 % _path to monitor files_
-% % # paper BSSA
-% mon.pt  = fullfile(wd,'monitors');
+% # paper BSSA
+mon.pt  = fullfile(wd,'monitors');
 % # KKNPP AS8
 % FOLDED
-mon.pt  = ['/home/filippo/Data/Filippo/aeolus/SEM_calculs/ncoeq2007_small_scale_OK/ncoeq2007_as8/',...
-    'kknpp_as8_topo_rf5_small_bsn_wdmp_npml_sb88_grd_tsuda_water_fold'];
+%%% mon.pt  = ['/home/filippo/Data/Filippo/aeolus/SEM_calculs/ncoeq2007_small_scale_OK/ncoeq2007_as8/kknpp_as8_topo_rf5_small_bsn_wdmp_npml_sb88_grd_tsuda_water_fold'];
 % # KKNPP AS4
-% FOLDED
-% % % % mon.pt  = ['/home/filippo/Data/Filippo/aeolus/SEM_calculs/ncoeq2007_small_scale_OK/ncoeq2007_as4/',...
-% % % %     'kknpp_as4_topo_rf5_small_bsn_wdmp_npml_sb35_25_grd_tsuda_water_fold'];
+%%% % FOLDED
+%%% mon.pt  = ['/home/filippo/Data/Filippo/aeolus/SEM_calculs/ncoeq2007_small_scale_OK/ncoeq2007_as4/kknpp_as4_topo_rf5_small_bsn_wdmp_npml_sb35_25_grd_tsuda_water_fold'];
+%%% if exist(mon.pt,'dir')~=7
+%%%     mon.pt  = ['/tmp1/gattif/SEM_calculs/ncoeq2007_small_scale_OK/ncoeq2007_as4/kknpp_as4_topo_rf5_small_bsn_wdmp_npml_sb35_25_grd_tsuda_water_fold']
+%%% end
 % LAYERED
 % % % % mon.pt  = ['/home/filippo/Data/Filippo/aeolus/SEM_calculs/ncoeq2007_small_scale_OK/ncoeq2007_as4/',...
 % % % %     'kknpp_as4_topo_rf5_small_bsn_wdmp_npml_sb35_25_grd_tsuda_water_1d'];
 
 fprintf('--> Monitor Path: %s\n',mon.pt);
 % _metadata filename (for Sabetta-Pugliese)_
-% % # paper BSSA
-% mon.fnm  = fullfile(wd,'SM_Stations_Monitors.csv');
-% # KKNPP
-mon.fnm  = fullfile(wd,'SM_Stations_Monitors_sem3d.csv');
+% # paper BSSA
+mon.fnm  = fullfile(wd,'SM_Stations_Monitors.csv');
+%% % # KKNPP
+%% mon.fnm  = fullfile(wd,'SM_Stations_Monitors_sem3d.csv');
 fprintf('--> Monitor File: %s\n',mon.fnm);
 
 %% *TYPE OF SIMULATION (CUSTOMIZE)*
 % % SPEED
-% mon.typ = 'speed';
+mon.typ = 'speed';
 
 % SEM3D
-mon.typ  = 'sem3d';
+%% mon.typ  = 'sem3d';
 fprintf('--> Type of Simulation: %s\n',mon.typ);
 
 % _monitor identity_
@@ -188,4 +189,5 @@ end
 % _tolerances_
 ann.mtd.nit = [20;20;50];
 
-res.fnm = fullfile(wd,sprintf('syn2ann_res_kknpp_as8_75_bsn_%s',ann.mtd.scl{1}));
+res.fnm = fullfile('/tmp1/gattif',sprintf('syn2ann_res_bssa_%s',ann.mtd.scl{1}));
+%% res.fnm = fullfile('/tmp1/gattif',sprintf('syn2ann_res_kknpp_as4_75_bsn_%s',ann.mtd.scl{1}));

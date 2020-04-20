@@ -70,15 +70,23 @@ else
     bhr.hfr = [];
     
     [bhr,rec.org] = syn2ann_rec_parser(bhr,cor);
-%     %% *BASELINE CORRECTION (OPTIONAL)*
-%     rec.fil = syn2ann_blc(rec.org);
-    
+    %% *BASELINE CORRECTION (OPTIONAL)*
+    rec.fil = syn2ann_blc(rec.org,5.0);
+    for i=1:rec.fil.mon.na
+        for j=1:rec.fil.mon.nc
+            rec.fil.syn{i}.thd.(rec.fil.mon.cp{j})=rec.fil.syn{i}.thd.(rec.fil.mon.cp{j})(rec.fil.mon.npd(1):end-rec.fil.mon.npd(2));
+            rec.fil.syn{i}.thv.(rec.fil.mon.cp{j})=rec.fil.syn{i}.thv.(rec.fil.mon.cp{j})(rec.fil.mon.npd(1):end-rec.fil.mon.npd(2));
+            rec.fil.syn{i}.tha.(rec.fil.mon.cp{j})=rec.fil.syn{i}.tha.(rec.fil.mon.cp{j})(rec.fil.mon.npd(1):end-rec.fil.mon.npd(2));
+        end
+        rec.fil.mon.ntm(i) = numel(rec.fil.syn{i}.tha.(rec.fil.mon.cp{j}));
+        rec.fil.mon.vtm{i} = rec.fil.mon.dtm(i)*(0:rec.fil.mon.ntm(i)-1);
+    end
 %     %% *PGA-PGV-PGD & ARIAS INTENSITY*
 %     fprintf('--> Peak Values and Arias\n');
 %     rec.org = syn2ann_thp(rec.org);
-% %     rec.fil = syn2ann_thp(rec.fil);
+    rec.fil = syn2ann_thp(rec.fil);
 %     %% *SPECTRA*
 %     fprintf('--> Spectra\n');
 %     rec.org = syn2ann_spp(rec.org);
-% %     rec.fil = syn2ann_spp(rec.fil);
+    rec.fil = syn2ann_spp(rec.fil);
 end

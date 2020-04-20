@@ -14,6 +14,11 @@
 function [varargout] = syn2ann_blc(varargin)
     %% *SET-UP*
     sas = varargin{1};
+    fmx=40.0;
+    if nargin>1
+        fmx=varargin{2};
+    end
+
     for i_ = 1:sas.mon.na
         for j_ = 1:sas.mon.nc
             %% *BASELINE CORRECTION*
@@ -23,7 +28,7 @@ function [varargout] = syn2ann_blc(varargin)
                 sas.mon.vtm{i_},...
                 sas.mon.npd(:,i_)] = ...
                 bpf_tha(sas.mon.dtm(i_),...
-                sas.syn{i_}.tha.(sas.mon.cp{j_}),0.05,40);
+                sas.syn{i_}.tha.(sas.mon.cp{j_}),0.05,fmx);
             sas.mon.ntm(i_) = numel(sas.syn{i_}.tha.(sas.mon.cp{j_}));
             sas.mon.vtm{i_} = sas.mon.vtm{i_}-sas.mon.vtm{i_}(sas.mon.npd(1,i_)+1);
         end

@@ -15,7 +15,7 @@ hbs.clc = 2000;
 flag = 'pp-uq-rho'; %'pp'
 flag = 'run';
 flag = 'pp-uq-sobol'; 
-flag = 'run';
+%flag = 'run';
 if strcmpi(flag,'pp-uq-rho')
     s2X = 0.0;
     R   = importdata('/mssmat2/home/gattif/Documents/ares/workdir/ANN2BB/sensitivity/tab8_jea2011.csv'); 
@@ -113,9 +113,9 @@ elseif strcmpi(flag,'pp-uq-sobol')
     ott = cell(hbs.clc,hbs.mon.na,hbs.mon.nc);
     for j_=1:numel(dssx)
         dsx = dssx(j_);
-        for i_=hbs.mon.na
-            disp(sprintf('/tmp1/gattif/ann_sobol_2019/results_sobol_ann2bb_%u_%u_2019.mat',i_,j_))
-            load(sprintf('/tmp1/gattif/ann_sobol_2019/results_sobol_ann2bb_%u_%u_2019.mat',i_,j_),'Yy');
+        for i_=1:hbs.mon.na
+            disp(sprintf('/tmp1/gattif/ann_sobol_2020/results_sobol_ann2bb_%u_%u_2019.mat',i_,j_))
+            load(sprintf('/tmp1/gattif/ann_sobol_2020/results_sobol_ann2bb_%u_%u_2019.mat',i_,j_),'Yy');
             for k_=1:hbs.clc
                 ott{k_,i_,j_} = cellfun(@(x) x(k_),Yy);
             end
@@ -129,10 +129,10 @@ elseif strcmpi(flag,'pp-uq-sobol')
         trs = trss{k_};
         syn2ann_run;
         %% *5). SAVE RESULTS (DNC)*
-        for i_=hbs.mon.na
+        for i_=1:hbs.mon.na
             for j_=1:numel(dssx)
                 dsx = dssx(j_);
-                fnm = sprintf('/tmp1/gattif/ann_sobol_2019/ths_ann2bb_qMC_%s_%s_%u.csv',...
+                fnm = sprintf('/tmp1/gattif/ann_sobol_2020/ths_ann2bb_qMC_%s_%s_%u.csv',...
                     hbs.mon.cp{dsx},hbs.mon.st{i_},k_);
                 csvwrite(fnm,spm.sps.(hbs.mon.cp{j_}).syn{i_}.tha.(hbs.mon.cp{j_}));
             end
